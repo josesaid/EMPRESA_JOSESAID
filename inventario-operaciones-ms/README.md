@@ -210,3 +210,16 @@ El alta de `POST /v1/movimientos` acepta la cabecera opcional `Idempotency-Key`.
 - **Sin la cabecera:** la petición se procesa como siempre.
 
 Las claves se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar.
+
+
+## Indicadores para reportes ejecutivos
+
+Publica un indicador mensual al tópico `indicadores-areas`, que consume `reportes-ejecutivos-ms`.
+
+- **Indicador:** `movimientos_mes` (área `OPERACIONES`).
+- **Definición:** Número de movimientos de inventario del mes, por hora de la Ciudad de México.
+- **Clave del mensaje:** `OPERACIONES|movimientos_mes|AAAA-MM`. Reportes actualiza el valor por área, nombre y periodo (upsert).
+- **Ciclo:** recalcula el mes actual y el anterior cada 60 minutos; el primer envío ocurre a los 30 segundos.
+- **Configuración:** `INDICADORES_TOPICO`, `INDICADORES_INTERVALO_MS`, `INDICADORES_INICIO_MS`.
+- **Entrega:** no pasa por el outbox. Es una foto del periodo; si un envío falla, el siguiente ciclo lo corrige.
+- **Clase:** `PublicadorIndicadoresMovimientos`. Prueba: `mvn verify -Dit.test='PublicadorIndicadores*IT'`.

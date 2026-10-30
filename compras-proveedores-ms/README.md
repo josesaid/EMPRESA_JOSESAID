@@ -210,3 +210,17 @@ El alta de `POST /v1/ordenes-compra` acepta la cabecera opcional `Idempotency-Ke
 - **Sin la cabecera:** la petición se procesa como siempre.
 
 Las claves se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar.
+
+
+## Indicadores para reportes ejecutivos
+
+Publica un indicador mensual al tópico `indicadores-areas`, que consume `reportes-ejecutivos-ms`.
+
+- **Indicador:** `ordenes_mes` (área `COMPRAS_PROVEEDORES`).
+- **Definición:** Número de órdenes de compra creadas en el mes, en cualquier estatus (incluidas canceladas). Las órdenes anteriores a V3 reciben, en la migración V4, la fecha en que se aplicó esa migración.
+- **Indicador adicional:** `ordenes_canceladas_mes` (mismo área). Cuenta solo las órdenes en estatus CANCELADA del mes.
+- **Clave del mensaje:** `COMPRAS_PROVEEDORES|ordenes_mes|AAAA-MM`. Reportes actualiza el valor por área, nombre y periodo (upsert).
+- **Ciclo:** recalcula el mes actual y el anterior cada 60 minutos; el primer envío ocurre a los 30 segundos.
+- **Configuración:** `INDICADORES_TOPICO`, `INDICADORES_INTERVALO_MS`, `INDICADORES_INICIO_MS`.
+- **Entrega:** no pasa por el outbox. Es una foto del periodo; si un envío falla, el siguiente ciclo lo corrige.
+- **Clase:** `PublicadorIndicadoresOrdenes`. Prueba: `mvn verify -Dit.test='PublicadorIndicadores*IT'`.

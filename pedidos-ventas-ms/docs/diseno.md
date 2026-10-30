@@ -46,3 +46,12 @@ JWT RS256 validado con la clave pública de usuarios-accesos-ms (JWKS). Autoriza
 ## Fuera de alcance
 
 Cobro, emisión de CFDI, descuentos por volumen y promociones.
+
+
+## Indicadores para reportes
+
+- **Indicador:** `ventas_mes` (área `VENTAS_ATENCION_CLIENTES`). Ventas del mes: líneas de pedidos MXN CONFIRMADO/ENTREGADO, con IVA, por mes de confirmación.
+- **Publicación:** clase `PublicadorIndicadoresVentas`, cada 60 minutos, a `indicadores-areas`. Clave `VENTAS_ATENCION_CLIENTES|ventas_mes|AAAA-MM`.
+- **Decisión:** es una foto del periodo, no un evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
+- **Consumo:** `reportes-ejecutivos-ms` lo guarda con upsert por área, nombre y periodo.
+- **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).

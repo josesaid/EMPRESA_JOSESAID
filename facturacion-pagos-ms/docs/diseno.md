@@ -44,7 +44,7 @@ La regla de dependencia apunta hacia adentro: el dominio no conoce JPA, Kafka ni
 - Cada cambio de estado escribe el evento en `outbox_eventos` dentro de la misma transacción.
 - Un retransmisor programado envía los eventos pendientes a Kafka, en orden, y se detiene en el primer fallo.
 - La clave del mensaje es el id del comprobante, para que los eventos de un mismo comprobante queden en la misma partición y en orden.
-- Consecuencia: los consumidores deben tolerar entrega al menos una vez (duplicados posibles).
+- Consecuencia: la entrega es al menos una vez; pueden llegar duplicados.
 
 ## 7. Seguridad
 
@@ -68,7 +68,6 @@ Todos los errores siguen RFC 9457. Cada `type` es estable y tiene el prefijo `ur
 |---|---|
 | Folio provisional no válido fiscalmente | Se documenta como pendiente; el timbrado con PAC reemplaza la generación. |
 | Pagos duplicados por reintentos del cliente | Pendiente `Idempotency-Key`. Mientras tanto, el cliente no debe reintentar sin consultar. |
-| Eventos duplicados en Kafka | Los consumidores son idempotentes por `agregadoId` y tipo. |
 | Expiración del token en un proceso largo | Los tokens duran 15 minutos. El cliente debe renovarlos. |
 
 ## 11. Decisiones pendientes
@@ -77,3 +76,12 @@ Todos los errores siguen RFC 9457. Cada `type` es estable y tiene el prefijo `ur
 2. Definir cancelación fiscal ante el SAT.
 3. Añadir `Idempotency-Key` a creación y pagos.
 4. Añadir trazas distribuidas y métricas de negocio.
+
+
+## Indicadores para reportes
+
+- **Indicador:** `cobrado_mes` (área `FINANZAS_CONTABILIDAD`). Cobrado del mes: pagos MXN de comprobantes EMITIDOS, por mes de pago, con IVA.
+- **Publicación:** clase `PublicadorIndicadoresCobranza`, cada 60 minutos, a `indicadores-areas`. Clave `FINANZAS_CONTABILIDAD|cobrado_mes|AAAA-MM`.
+- **Decisión:** es una foto del periodo, no un evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
+- **Consumo:** `reportes-ejecutivos-ms` lo guarda con upsert por área, nombre y periodo.
+- **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).

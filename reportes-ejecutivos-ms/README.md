@@ -135,7 +135,23 @@ Un indicador con la misma área, nombre y periodo reemplaza al anterior; no se d
 |---|---|---|
 | reporte-cerrado | Al cerrar un reporte | id, periodo |
 
-Entrada: mensajes JSON en el tópico `indicadores-areas` (confirmado) con `area`, `nombre`, `periodo`, `valor` y `fuenteActualizadaUtc`. Un mensaje inválido o que viola una regla se registra en el log y se descarta.
+Entrada: mensajes JSON en el tópico `indicadores-areas` (confirmado) con `area`, `nombre`, `periodo`, `valor` y `fuenteActualizadaUtc`. Un mensaje inválido o que viola una regla (por ejemplo, periodo cerrado) se registra en el log y se descarta.
+
+Productores activos (cada hora, recalculan el mes actual y el anterior):
+
+| Servicio | Indicador | Área |
+|---|---|---|
+| pedidos-ventas-ms | `ventas_mes` | `VENTAS_ATENCION_CLIENTES` |
+| facturacion-pagos-ms | `cobrado_mes` | `FINANZAS_CONTABILIDAD` |
+| contabilidad-ms | `polizas_mes` | `FINANZAS_CONTABILIDAD` |
+| compras-proveedores-ms | `ordenes_mes` | `COMPRAS_PROVEEDORES` |
+| compras-proveedores-ms | `ordenes_canceladas_mes` | `COMPRAS_PROVEEDORES` |
+| inventario-operaciones-ms | `movimientos_mes` | `OPERACIONES` |
+| documentos-cumplimiento-ms | `documentos_por_vencer_30d` | `ADMINISTRACION_LEGAL` |
+| clientes-ms | `clientes_nuevos_mes` | `VENTAS_ATENCION_CLIENTES` |
+| usuarios-accesos-ms | `usuarios_activos` | `ADMINISTRACION_LEGAL` |
+
+Un mismo indicador de la misma área y periodo se reemplaza en cada envío (upsert), así que los reenvíos no duplican.
 
 ## 14. Outbox
 
@@ -182,6 +198,7 @@ Imagen `reportes-ejecutivos-ms:0.1.0`. Requiere red `empresa-net`, base `reporte
 - **Descarte de mensajes inválidos:** hoy se registran y se descartan. Falta una cola de mensajes fallidos.
 - **Tópico de indicadores:** `indicadores-areas`, confirmado.
 - **Frescura:** 7 días por omisión; confirmar con Dirección.
+- **Órdenes de compra anteriores a V3:** reciben en V4 la fecha de aplicación de la migración, así que cuentan en ese mes (octubre 2026). Confirmar si el criterio es aceptable.
 
 ## 21. Referencias
 

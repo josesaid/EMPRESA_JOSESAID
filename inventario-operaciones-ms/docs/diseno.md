@@ -64,3 +64,12 @@ RFC 9457 con `type` estable bajo `urn:josesaid:inventario-operaciones:error:`. E
 2. Entidad de lote con liberación.
 3. Liberación de reservas y consumo automático desde ventas y compras.
 4. Conteo cíclico e integración con sensores.
+
+
+## Indicadores para reportes
+
+- **Indicador:** `movimientos_mes` (área `OPERACIONES`). Movimientos del mes: conteo de movimientos de inventario por mes de creación.
+- **Publicación:** clase `PublicadorIndicadoresMovimientos`, cada 60 minutos, a `indicadores-areas`. Clave `OPERACIONES|movimientos_mes|AAAA-MM`.
+- **Decisión:** es una foto del periodo, no un evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
+- **Consumo:** `reportes-ejecutivos-ms` lo guarda con upsert por área, nombre y periodo.
+- **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).

@@ -39,3 +39,12 @@ JWT RS256 con la clave pública de usuarios-accesos-ms (JWKS). Roles: LEGAL escr
 ## Fuera de alcance
 
 Firma electrónica, OCR, búsqueda de texto dentro de documentos y edición en línea.
+
+
+## Indicadores para reportes
+
+- **Indicador:** `documentos_por_vencer_30d` (área `ADMINISTRACION_LEGAL`). Documentos por vencer: no eliminados que vencen en los próximos 30 días; se publica solo el mes actual.
+- **Publicación:** clase `PublicadorIndicadoresVencimientos`, cada 60 minutos, a `indicadores-areas`. Clave `ADMINISTRACION_LEGAL|documentos_por_vencer_30d|AAAA-MM`.
+- **Decisión:** es una foto del periodo, no un evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
+- **Consumo:** `reportes-ejecutivos-ms` lo guarda con upsert por área, nombre y periodo.
+- **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).

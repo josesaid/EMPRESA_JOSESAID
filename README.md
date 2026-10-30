@@ -200,4 +200,4 @@ Interfaz web de Kafka en http://localhost:8090 (clúster `empresa`).
 - **Topics:** lista de tópicos, particiones y mensajes. Pestaña **Messages** para leer el contenido de cada mensaje.
 - **Consumer Groups:** muestra qué grupos (por ejemplo `reportes-ejecutivos-ms`) leen cada tópico y si van atrasados.
 - Solo lectura en la práctica: úsela para revisar, no para publicar mensajes de producción.
-- Tópicos de referencia: `indicadores-areas` (entrada de reportes) y los eventos de los outbox de cada servicio.
+- Tópicos de referencia: `indicadores-areas` (lo publican pedidos, facturación, contabilidad, compras, inventario y documentos; lo consume reportes) y los eventos de los outbox de cada servicio.

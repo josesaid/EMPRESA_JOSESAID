@@ -63,3 +63,10 @@ Canary con criterio del anexo de la empresa. Rollback por contenedor. Las migrac
 - Cifrado de columna AES-256-GCM y HMAC para búsquedas de correo.
 - Idempotency-Key en escrituras.
 - Argon2 para contraseñas (hoy BCrypt).
+
+## Indicadores para reportes
+
+- **Indicador:** `usuarios_activos` (área `ADMINISTRACION_LEGAL`). Usuarios activos: usuarios en estatus ACTIVO en este momento. Foto del mes actual.
+- **Publicación:** clase `PublicadorIndicadoresUsuarios`, cada 60 minutos (solo mes actual), a `indicadores-areas`. Clave `ADMINISTRACION_LEGAL|usuarios_activos|AAAA-MM`.
+- **Decisión:** foto del periodo, no evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
+- **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).

@@ -56,3 +56,13 @@ JWT emitido por usuarios-accesos-ms. Cada rol hace solo lo suyo: COMPRAS crea, D
 2. Endpoints para inactivar o bloquear proveedores.
 3. Rotación de claves con re-cifrado.
 4. Pagos a proveedores desde facturación.
+
+
+## Indicadores para reportes
+
+- **Indicador:** `ordenes_mes` (área `COMPRAS_PROVEEDORES`). Órdenes del mes: conteo de órdenes creadas en el mes (todos los estatus). Requiere `creado_utc` (V3). Las órdenes previas reciben en V4 la fecha de aplicación de la migración.
+- **Indicador adicional:** `ordenes_canceladas_mes`: las órdenes CANCELADA del mes, para medir la proporción de cancelaciones.
+- **Publicación:** clase `PublicadorIndicadoresOrdenes`, cada 60 minutos, a `indicadores-areas`. Clave `COMPRAS_PROVEEDORES|ordenes_mes|AAAA-MM`.
+- **Decisión:** es una foto del periodo, no un evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
+- **Consumo:** `reportes-ejecutivos-ms` lo guarda con upsert por área, nombre y periodo.
+- **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).

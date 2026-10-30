@@ -279,6 +279,7 @@ a { color: var(--acceso); }
         <li>Marca como desactualizado un indicador cuya fuente no se actualizó en 7 días.</li>
         <li>Al cerrar un reporte se guarda una foto que ya no cambia.</li>
         <li>Exporta en CSV, PDF y XLSX.</li>
+        <li>Recibe cada hora los indicadores mensuales de ventas, cobranza, pólizas, órdenes de compra, movimientos de inventario, documentos por vencer, clientes nuevos y usuarios activos.</li>
       </ul>
       <p class="nota">Recibe los indicadores de las áreas por el tópico <code>indicadores-areas</code>.</p>
     </article>
@@ -304,7 +305,7 @@ a { color: var(--acceso); }
     <article class="tarjeta infra">
       <span class="puerto">kafka</span>
       <h3>Kafka</h3>
-      <p>Transporta los eventos entre servicios. Cada servicio publica en su propio tópico, por ejemplo <code>clientes.eventos.v1</code> o <code>compras.eventos</code>. Reportes consume el tópico <code>indicadores-areas</code>.</p>
+      <p>Transporta los eventos entre servicios. Cada servicio publica en su propio tópico, por ejemplo <code>clientes.eventos.v1</code> o <code>compras.eventos</code>. Reportes consume el tópico <code>indicadores-areas</code>, al que publican pedidos, facturación, contabilidad, compras, inventario y documentos.</p>
       <p class="nota">Kafka UI (<code>http://localhost:8090</code>) muestra los tópicos y sus mensajes. Un tópico aparece en cuanto recibe su primer evento.</p>
     </article>
     <article class="tarjeta infra">
@@ -388,6 +389,7 @@ a { color: var(--acceso); }
     <li>Métricas de los servicios de área: hoy sin credenciales dentro de la red; decidir si necesitan token.</li>
     <li>Retención documental (años por tipo) y purga física al vencer, pendientes de confirmación legal.</li>
     <li>IVA fronterizo del 8 % pendiente de validar con Contabilidad.</li>
+    <li>Órdenes de compra anteriores a V3: reciben en V4 la fecha de aplicación de la migración, por lo que cuentan en ese mes. Confirmar si el criterio es aceptable.</li>
   </ul>
   <h2 id="endpoints">9. Endpoints y ejemplos JSON por microservicio</h2>
   <p>Cada bloque lista las rutas de un servicio y un cuerpo de ejemplo para probarlas. Por el gateway, la ruta lleva el nombre del servicio al inicio: <code>http://localhost:8080/clientes-ms/v1/clientes</code>. También se puede llamar directo al puerto del servicio (sección 1): <code>http://localhost:8101/v1/clientes</code>.</p>

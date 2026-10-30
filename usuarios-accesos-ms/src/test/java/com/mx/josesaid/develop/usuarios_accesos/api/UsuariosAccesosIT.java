@@ -33,6 +33,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 class UsuariosAccesosIT {
 
+    /** Correo único por ejecución: no choca con administradores de otras corridas o del entorno. */
+    private static final String CORREO_ADMIN = "admin-" + java.util.UUID.randomUUID() + "@prueba.mx";
+
     @Container
     @ServiceConnection
     static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17-alpine");
@@ -58,11 +61,11 @@ class UsuariosAccesosIT {
 
     @Test
     void loginEmiteTokenYLaRutaProtegidaRechazaSinToken() throws Exception {
-        servicio.crear("admin@empresa.mx", "Administrador General", "clave-admin-123", Set.of(Rol.ADMIN));
+        servicio.crear(CORREO_ADMIN, "Administrador General", "clave-admin-123", Set.of(Rol.ADMIN));
 
         mvc.perform(post("/v1/auth/login")
                         .contentType("application/json")
-                        .content("{\"correo\":\"admin@empresa.mx\",\"password\":\"clave-admin-123\"}"))
+                        .content("{\"correo\":\"" + CORREO_ADMIN + "\",\"password\":\"clave-admin-123\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value(notNullValue()))
                 .andExpect(jsonPath("$.tokenType").value("Bearer"));

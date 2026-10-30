@@ -70,3 +70,12 @@ Arranque después de PostgreSQL, Kafka y usuarios-accesos-ms. Salud y métricas 
 2. Consumidor de eventos de pagos y compras.
 3. Catálogo con código agrupador SAT y exportación fiscal.
 4. PDF y XLSX de estados financieros.
+
+
+## Indicadores para reportes
+
+- **Indicador:** `polizas_mes` (área `FINANZAS_CONTABILIDAD`). Pólizas del mes: conteo de pólizas APLICADAS por periodo.
+- **Publicación:** clase `PublicadorIndicadoresPolizas`, cada 60 minutos, a `indicadores-areas`. Clave `FINANZAS_CONTABILIDAD|polizas_mes|AAAA-MM`.
+- **Decisión:** es una foto del periodo, no un evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
+- **Consumo:** `reportes-ejecutivos-ms` lo guarda con upsert por área, nombre y periodo.
+- **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).

@@ -216,3 +216,16 @@ El alta de `POST /v1/comprobantes/{id}/pagos` acepta la cabecera opcional `Idemp
 - **Sin la cabecera:** la petición se procesa como siempre.
 
 Las claves se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar.
+
+
+## Indicadores para reportes ejecutivos
+
+Publica un indicador mensual al tópico `indicadores-areas`, que consume `reportes-ejecutivos-ms`.
+
+- **Indicador:** `cobrado_mes` (área `FINANZAS_CONTABILIDAD`).
+- **Definición:** Suma de pagos en MXN de comprobantes EMITIDOS, asignada al mes de la fecha de pago. Incluye IVA.
+- **Clave del mensaje:** `FINANZAS_CONTABILIDAD|cobrado_mes|AAAA-MM`. Reportes actualiza el valor por área, nombre y periodo (upsert).
+- **Ciclo:** recalcula el mes actual y el anterior cada 60 minutos; el primer envío ocurre a los 30 segundos.
+- **Configuración:** `INDICADORES_TOPICO`, `INDICADORES_INTERVALO_MS`, `INDICADORES_INICIO_MS`.
+- **Entrega:** no pasa por el outbox. Es una foto del periodo; si un envío falla, el siguiente ciclo lo corrige.
+- **Clase:** `PublicadorIndicadoresCobranza`. Prueba: `mvn verify -Dit.test='PublicadorIndicadores*IT'`.

@@ -53,6 +53,12 @@ pedidos:
   outbox:
     # Cada cuántos milisegundos el retransmisor envía eventos pendientes a Kafka
     intervalo-ms: ${OUTBOX_INTERVALO_MS:5000}
+  indicadores:
+    # Tópico al que se publican los indicadores de ventas para reportes-ejecutivos-ms
+    topico: ${INDICADORES_TOPICO:indicadores-areas}
+    # Cada cuántos milisegundos se recalculan y publican (una hora por defecto)
+    intervalo-ms: ${INDICADORES_INTERVALO_MS:3600000}
+    inicio-ms: ${INDICADORES_INICIO_MS:30000}
 
 # Descubrimiento de servicios: se registra al arrancar en discovery-ms.
 # Si discovery-ms no responde, el servicio arranca igual y se registra cuando el registro esté arriba.

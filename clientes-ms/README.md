@@ -678,3 +678,16 @@ Pendientes (responsable: área de negocio y legal):
 - **Orden de arranque:** `discovery-ms` primero. Si este servicio arranca antes, se registra solo cuando el registro esté disponible.
 - Métricas Prometheus en `/actuator/prometheus`, sin token, solo lectura.
 - Variables `EUREKA_USUARIO` y `EUREKA_PASSWORD`: obligatorias en Docker; el Compose arma la URL de registro `http://USUARIO:CLAVE@discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://USUARIO:CLAVE@localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.
+
+
+## Indicadores para reportes ejecutivos
+
+Publica un indicador mensual al tópico `indicadores-areas`, que consume `reportes-ejecutivos-ms`.
+
+- **Indicador:** `clientes_nuevos_mes` (área `VENTAS_ATENCION_CLIENTES`).
+- **Definición:** Clientes nuevos del mes: clientes dados de alta en el mes por fecha de alta, sin importar su estatus posterior.
+- **Clave del mensaje:** `VENTAS_ATENCION_CLIENTES|clientes_nuevos_mes|AAAA-MM`. Reportes actualiza el valor por área, nombre y periodo (upsert).
+- **Ciclo:** cada 60 minutos (mes actual y anterior); el primer envío ocurre a los 30 segundos.
+- **Configuración:** `INDICADORES_TOPICO`, `INDICADORES_INTERVALO_MS`, `INDICADORES_INICIO_MS`.
+- **Entrega:** no pasa por el outbox. Es una foto; si un envío falla, el siguiente ciclo lo corrige.
+- **Clase:** `PublicadorIndicadoresClientes`. Prueba: `mvn verify -Dit.test='PublicadorIndicadores*IT'`.

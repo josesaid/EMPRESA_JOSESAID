@@ -141,3 +141,10 @@ Criterios de aceptación del documento de especificación:
 4. Revisión legal del texto de consentimiento antes de producción.
 5. Procedimiento de anonimización para derechos ARCO.
 6. Confirmar si el control de concurrencia optimista (campo `version`) aplica también a clientes, además de prospectos.
+
+## Indicadores para reportes
+
+- **Indicador:** `clientes_nuevos_mes` (área `VENTAS_ATENCION_CLIENTES`). Clientes nuevos del mes: clientes dados de alta en el mes por fecha de alta, sin importar su estatus posterior.
+- **Publicación:** clase `PublicadorIndicadoresClientes`, cada 60 minutos (mes actual y anterior), a `indicadores-areas`. Clave `VENTAS_ATENCION_CLIENTES|clientes_nuevos_mes|AAAA-MM`.
+- **Decisión:** foto del periodo, no evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
+- **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).
