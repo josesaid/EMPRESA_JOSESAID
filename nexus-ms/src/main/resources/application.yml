@@ -12,9 +12,16 @@ spring:
   ai:
     anthropic:
       api-key: ${ANTHROPIC_API_KEY:}
+      # Tiempo máximo por llamada al modelo y reintentos. Acotan costo y latencia.
+      timeout: ${NEXUS_MODELO_TIMEOUT:20s}
+      max-retries: ${NEXUS_MODELO_REINTENTOS:1}
       chat:
         options:
           model: ${NEXUS_MODELO:claude-sonnet-5-5}
+  tools:
+    limits:
+      # Máximo de herramientas que el modelo puede invocar en una misma pregunta.
+      max-total-tool-calls: ${NEXUS_MAX_HERRAMIENTAS:4}
 
 nexus:
   gateway:
