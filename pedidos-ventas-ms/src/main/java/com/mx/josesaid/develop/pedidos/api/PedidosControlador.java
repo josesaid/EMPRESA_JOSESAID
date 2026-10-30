@@ -11,6 +11,7 @@ import com.mx.josesaid.develop.pedidos.domain.MotivoCancelacion;
 import com.mx.josesaid.develop.pedidos.domain.Monedas;
 import com.mx.josesaid.develop.pedidos.domain.Pedido;
 import com.mx.josesaid.develop.pedidos.domain.TasaIva;
+import com.mx.josesaid.develop.pedidos.infrastructure.idempotencia.Idempotencia;
 import com.mx.josesaid.develop.pedidos.domain.Totales;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,9 +51,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class PedidosControlador {
 
     private final PedidosService servicio;
+    private final Idempotencia idempotencia;
 
-    public PedidosControlador(PedidosService servicio) {
+    public PedidosControlador(PedidosService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
+        this.idempotencia = idempotencia;
     }
 
     // ---- Cotizaciones ----
@@ -93,9 +97,10 @@ public class PedidosControlador {
 
     @PostMapping("/pedidos")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
-    public ResponseEntity<PedidoRespuesta> crearPedido(@Valid @RequestBody CrearPedidoPeticion p) {
-        Pedido pedido = servicio.crearPedido(p.clienteId(), p.canal(), p.moneda(), p.tasaIva(), aComandos(p.lineas()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(PedidoRespuesta.de(pedido));
+    public ResponseEntity<?> crearPedido(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
+                                         @Valid @RequestBody CrearPedidoPeticion p) {
+        return idempotencia.ejecutar(clave, "POST /v1/pedidos", p, HttpStatus.CREATED,
+                () -> PedidoRespuesta.de(servicio.crearPedido(p.clienteId(), p.canal(), p.moneda(), p.tasaIva(), aComandos(p.lineas()))));
     }
 
     @GetMapping("/pedidos")

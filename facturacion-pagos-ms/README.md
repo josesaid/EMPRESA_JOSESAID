@@ -204,3 +204,15 @@ Imagen multi-etapa (Maven para compilar, JRE 21 para ejecutar), usuario sin priv
 - **Orden de arranque:** `discovery-ms` primero. Si este servicio arranca antes, se registra solo cuando el registro esté disponible.
 - Métricas Prometheus en `/actuator/prometheus`, sin token, solo lectura.
 - Variables `EUREKA_USUARIO` y `EUREKA_PASSWORD`: obligatorias en Docker; el Compose arma la URL de registro `http://USUARIO:CLAVE@discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://USUARIO:CLAVE@localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.
+
+
+## Idempotencia de altas (`Idempotency-Key`)
+
+El alta de `POST /v1/comprobantes/{id}/pagos` acepta la cabecera opcional `Idempotency-Key`. Úsela cuando un reintento no debe crear el registro dos veces (por ejemplo, si se cortó la conexión y no sabe si la petición llegó).
+
+- **Misma clave y mismo cuerpo:** responde la misma respuesta original; no se crea nada nuevo.
+- **Misma clave con otro cuerpo:** responde `422` (`regla-de-negocio`).
+- **Misma clave mientras la primera petición sigue en proceso:** responde `409` (`conflicto-de-estado`).
+- **Sin la cabecera:** la petición se procesa como siempre.
+
+Las claves se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar.

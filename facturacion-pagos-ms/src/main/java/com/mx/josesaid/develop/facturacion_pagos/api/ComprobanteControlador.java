@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.mx.josesaid.develop.facturacion_pagos.infrastructure.idempotencia.Idempotencia;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.http.ResponseEntity;
 
 /** Endpoints de comprobantes y pagos. Escribir exige FINANZAS; leer también permite VENTAS. */
 @RestController
@@ -32,9 +35,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ComprobanteControlador {
 
     private final FacturacionService servicio;
+    private final Idempotencia idempotencia;
 
-    public ComprobanteControlador(FacturacionService servicio) {
+    public ComprobanteControlador(FacturacionService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
+        this.idempotencia = idempotencia;
     }
 
     @PostMapping
@@ -64,12 +69,13 @@ public class ComprobanteControlador {
     }
 
     @PostMapping("/{id}/pagos")
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('FINANZAS')")
-    public ComprobanteRespuesta registrarPago(@PathVariable UUID id,
-                                              @Valid @RequestBody RegistrarPagoSolicitud solicitud) {
-        return ComprobanteRespuesta.de(servicio.registrarPago(
-                id, solicitud.monto(), solicitud.fechaPago(), solicitud.referencia()));
+    public ResponseEntity<?> registrarPago(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
+                                           @PathVariable UUID id,
+                                           @Valid @RequestBody RegistrarPagoSolicitud solicitud) {
+        return idempotencia.ejecutar(clave, "POST /v1/comprobantes/" + id + "/pagos", solicitud, HttpStatus.CREATED,
+                () -> ComprobanteRespuesta.de(servicio.registrarPago(
+                        id, solicitud.monto(), solicitud.fechaPago(), solicitud.referencia())));
     }
 
     public record CrearComprobanteSolicitud(

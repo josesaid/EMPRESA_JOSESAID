@@ -30,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.mx.josesaid.develop.contabilidad.infrastructure.idempotencia.Idempotencia;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.http.ResponseEntity;
 
 /** Endpoints de contabilidad. CONTADOR escribe; DIRECCION solo consulta estados financieros y pólizas. */
 @RestController
@@ -37,9 +40,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContabilidadControlador {
 
     private final ContabilidadService servicio;
+    private final Idempotencia idempotencia;
 
-    public ContabilidadControlador(ContabilidadService servicio) {
+    public ContabilidadControlador(ContabilidadService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
+        this.idempotencia = idempotencia;
     }
 
     @PostMapping("/cuentas")
@@ -50,13 +55,15 @@ public class ContabilidadControlador {
     }
 
     @PostMapping("/polizas")
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CONTADOR')")
-    public PolizaRespuesta registrarPoliza(@Valid @RequestBody RegistrarPolizaSolicitud solicitud) {
-        List<Movimiento> movimientos = solicitud.movimientos().stream()
-                .map(m -> new Movimiento(m.cuentaId(), m.cargo(), m.abono()))
-                .toList();
-        return PolizaRespuesta.de(servicio.registrarPoliza(solicitud.tipo(), solicitud.fecha(), movimientos));
+    public ResponseEntity<?> registrarPoliza(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
+                                             @Valid @RequestBody RegistrarPolizaSolicitud solicitud) {
+        return idempotencia.ejecutar(clave, "POST /v1/polizas", solicitud, HttpStatus.CREATED, () -> {
+            List<Movimiento> movimientos = solicitud.movimientos().stream()
+                    .map(m -> new Movimiento(m.cuentaId(), m.cargo(), m.abono()))
+                    .toList();
+            return PolizaRespuesta.de(servicio.registrarPoliza(solicitud.tipo(), solicitud.fecha(), movimientos));
+        });
     }
 
     @PostMapping("/polizas/{id}/reversa")

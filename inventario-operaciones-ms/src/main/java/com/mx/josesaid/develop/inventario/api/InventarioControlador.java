@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.mx.josesaid.develop.inventario.infrastructure.idempotencia.Idempotencia;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Endpoints de inventario. Los de la especificación más dos altas necesarias para usar el servicio:
@@ -38,9 +41,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class InventarioControlador {
 
     private final InventarioService servicio;
+    private final Idempotencia idempotencia;
 
-    public InventarioControlador(InventarioService servicio) {
+    public InventarioControlador(InventarioService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
+        this.idempotencia = idempotencia;
     }
 
     @PostMapping("/articulos")
@@ -59,11 +64,12 @@ public class InventarioControlador {
     }
 
     @PostMapping("/movimientos")
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ALMACEN')")
-    public MovimientoRespuesta registrarMovimiento(@Valid @RequestBody RegistrarMovimientoSolicitud s) {
-        return MovimientoRespuesta.de(servicio.registrarMovimiento(s.articuloId(), s.almacenId(), s.tipo(),
-                s.cantidad(), s.lote(), s.referencia()));
+    public ResponseEntity<?> registrarMovimiento(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
+                                                 @Valid @RequestBody RegistrarMovimientoSolicitud s) {
+        return idempotencia.ejecutar(clave, "POST /v1/movimientos", s, HttpStatus.CREATED,
+                () -> MovimientoRespuesta.de(servicio.registrarMovimiento(s.articuloId(), s.almacenId(), s.tipo(),
+                        s.cantidad(), s.lote(), s.referencia())));
     }
 
     @GetMapping("/existencias")

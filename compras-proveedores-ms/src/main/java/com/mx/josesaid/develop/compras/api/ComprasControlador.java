@@ -27,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.mx.josesaid.develop.compras.infrastructure.idempotencia.Idempotencia;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Proveedores y órdenes de compra. Los datos fiscales se enmascaran en las respuestas.
@@ -37,9 +40,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ComprasControlador {
 
     private final ComprasService servicio;
+    private final Idempotencia idempotencia;
 
-    public ComprasControlador(ComprasService servicio) {
+    public ComprasControlador(ComprasService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
+        this.idempotencia = idempotencia;
     }
 
     @PostMapping("/proveedores")
@@ -56,13 +61,15 @@ public class ComprasControlador {
     }
 
     @PostMapping("/ordenes-compra")
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('COMPRAS')")
-    public OrdenRespuesta crearOrden(@Valid @RequestBody CrearOrdenSolicitud s) {
-        List<LineaOrden> lineas = s.lineas().stream()
-                .map(l -> LineaOrden.nueva(l.articuloSku(), l.cantidad(), l.precioUnitario()))
-                .toList();
-        return OrdenRespuesta.de(servicio.crearOrden(s.proveedorId(), s.moneda(), lineas));
+    public ResponseEntity<?> crearOrden(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
+                                        @Valid @RequestBody CrearOrdenSolicitud s) {
+        return idempotencia.ejecutar(clave, "POST /v1/ordenes-compra", s, HttpStatus.CREATED, () -> {
+            List<LineaOrden> lineas = s.lineas().stream()
+                    .map(l -> LineaOrden.nueva(l.articuloSku(), l.cantidad(), l.precioUnitario()))
+                    .toList();
+            return OrdenRespuesta.de(servicio.crearOrden(s.proveedorId(), s.moneda(), lineas));
+        });
     }
 
     @GetMapping("/ordenes-compra/{id}")

@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.pedidos.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -17,6 +18,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import java.util.UUID;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.kafka.KafkaContainer;
@@ -140,5 +142,29 @@ class PedidosIT {
 
     private static RequestPostProcessor rol(String rol) {
         return jwt().authorities(new SimpleGrantedAuthority("ROLE_" + rol));
+    }
+
+    @Test
+    void mismaIdempotencyKeyNoDuplicaElPedido() throws Exception {
+        String cuerpo = """
+                {"clienteId":"%s","canal":"WEB","moneda":"MXN","tasaIva":"IVA_GENERAL",
+                 "lineas":[{"productoId":"%s","descripcion":"Tornillo","cantidad":2,"precioUnitario":10.00}]}
+                """.formatted(CLIENTE, PRODUCTO);
+        String clave = "prueba-" + UUID.randomUUID();
+
+        MvcResult primero = mvc.perform(post("/v1/pedidos").with(rol("VENTAS"))
+                        .header("Idempotency-Key", clave).contentType("application/json").content(cuerpo))
+                .andExpect(status().isCreated()).andReturn();
+        MvcResult reintento = mvc.perform(post("/v1/pedidos").with(rol("VENTAS"))
+                        .header("Idempotency-Key", clave).contentType("application/json").content(cuerpo))
+                .andExpect(status().isCreated()).andReturn();
+        assertEquals((String) JsonPath.read(primero.getResponse().getContentAsString(), "$.id"),
+                (String) JsonPath.read(reintento.getResponse().getContentAsString(), "$.id"));
+
+        // Misma clave con otra petición: 422
+        mvc.perform(post("/v1/pedidos").with(rol("VENTAS"))
+                        .header("Idempotency-Key", clave).contentType("application/json")
+                        .content(cuerpo.replace("\"WEB\"", "\"TIENDA\"")))
+                .andExpect(status().isUnprocessableEntity());
     }
 }
