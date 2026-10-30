@@ -33,7 +33,7 @@ Se emiten PedidoConfirmado, PedidoEntregado y PedidoCancelado por el outbox. Los
 
 ## Seguridad
 
-JWT HS256 validado con el secreto compartido de usuarios-accesos-ms. Autorización por rol con `@PreAuthorize`. Los errores no exponen detalles internos.
+JWT RS256 validado con la clave pública de usuarios-accesos-ms (JWKS). Autorización por rol con `@PreAuthorize`. Los errores no exponen detalles internos.
 
 ## Riesgos y pendientes
 

@@ -10,6 +10,8 @@ services:
       - "8080:8080"
     environment:
       # Dirección del servidor de registro en la red interna
+      # Clave pública de usuarios-accesos-ms para validar el JWT en el gateway
+      JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
       # Registro de servicios con las credenciales de Eureka (definidas en .env)
       EUREKA_URL: http://${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}:${EUREKA_PASSWORD:?Defina EUREKA_PASSWORD en .env}@discovery-ms:8761/eureka/
     networks:

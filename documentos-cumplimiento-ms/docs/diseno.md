@@ -27,7 +27,7 @@ Administración y legal necesita guardar contratos, permisos y registros con his
 
 ## Seguridad
 
-JWT HS256 con el secreto compartido. Roles: LEGAL escribe y lee; DIRECCION solo consulta. Cada descarga y eliminación se registra en la auditoría sin contenido.
+JWT RS256 con la clave pública de usuarios-accesos-ms (JWKS). Roles: LEGAL escribe y lee; DIRECCION solo consulta. Cada descarga y eliminación se registra en la auditoría sin contenido.
 
 ## Riesgos y pendientes
 

@@ -19,8 +19,8 @@ paso "2. Docker"
 docker info >/dev/null 2>&1; verificar $? "Docker responde"
 
 paso "3. Validar archivos de Compose"
-POSTGRES_PASSWORD=x CLIENTES_DB_PASSWORD=x USUARIOS_ACCESOS_DB_PASSWORD=x USUARIOS_JWT_SECRET=x docker compose -f "$RAIZ/docker-compose.yml" config -q 2>"$RAIZ/.cfg-raiz.err"; verificar $? "Compose de la raíz válido (valores de prueba; no crea nada)"
-(cd "$SERVICIO" && USUARIOS_ACCESOS_DB_PASSWORD=x USUARIOS_JWT_SECRET=y CLIENTES_DB_PASSWORD=x POSTGRES_PASSWORD=x docker compose config -q); verificar $? "Compose de usuarios-accesos-ms válido"
+POSTGRES_PASSWORD=x CLIENTES_DB_PASSWORD=x USUARIOS_ACCESOS_DB_PASSWORD=x USUARIOS_JWT_CLAVE_PRIVADA=x docker compose -f "$RAIZ/docker-compose.yml" config -q 2>"$RAIZ/.cfg-raiz.err"; verificar $? "Compose de la raíz válido (valores de prueba; no crea nada)"
+(cd "$SERVICIO" && USUARIOS_ACCESOS_DB_PASSWORD=x USUARIOS_JWT_CLAVE_PRIVADA=y CLIENTES_DB_PASSWORD=x POSTGRES_PASSWORD=x docker compose config -q); verificar $? "Compose de usuarios-accesos-ms válido"
 
 paso "4. Pruebas completas (unitarias + integración con Testcontainers)"
 (cd "$SERVICIO" && mvn -B verify > "$RAIZ/.verify-usuarios.log" 2>&1); verificar $? "mvn verify"

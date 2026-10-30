@@ -24,7 +24,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
  * Integración con PostgreSQL y Kafka reales (Testcontainers). Requiere Docker; se ejecuta con 'mvn verify'.
  * La autenticación se simula con el post-procesador jwt() de spring-security-test.
  */
-@SpringBootTest(properties = "facturacion.jwt.secreto=clave-de-prueba-de-al-menos-32-bytes-xx")
+@SpringBootTest(properties = "facturacion.jwt.jwks-uri=http://localhost:9/.well-known/jwks.json")
 @AutoConfigureMockMvc
 @Testcontainers
 class FacturacionPagosIT {

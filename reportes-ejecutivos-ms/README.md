@@ -49,14 +49,14 @@ reportes-ejecutivos-ms/
 - macOS con Docker Desktop en ejecución.
 - JDK 21 y Maven 3.9+ (solo para correr fuera de Docker).
 - Red `empresa-net`, postgres y kafka levantados desde la raíz.
-- Secreto JWT igual al de usuarios-accesos-ms.
+- Valida tokens con la clave pública de usuarios-accesos-ms (JWKS), sin secreto compartido.
 
 ## 5. Configuración
 
 | Variable | Obligatoria | Descripción |
 |---|---|---|
 | `REPORTES_DB_PASSWORD` | Sí (compose) | Contraseña del usuario `reportes`. |
-| `USUARIOS_JWT_SECRET` | Sí | Clave HMAC de al menos 32 bytes; igual a usuarios-accesos-ms. |
+| `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |
 | `REPORTES_FRESCURA_DIAS` | No | Días sin actualización para marcar un indicador como desactualizado. Por omisión 7. |
 | `REPORTES_TOPICO_INDICADORES` | No | Tópico Kafka de entrada. Por omisión `indicadores-areas`. |
 
@@ -98,7 +98,7 @@ Flyway ejecuta `V1__esquema_inicial.sql`. Hibernate solo valida. Los cambios fut
 
 ## 10. Seguridad
 
-- API sin estado con JWT HS256. Solo `/actuator/health` es público.
+- API sin estado con JWT RS256. Solo `/actuator/health` es público.
 - Toda la API es de rol DIRECCION (lectura completa, carga manual y cierre).
 - Cada área solo ve sus indicadores en el consolidado: **propuesta, pendiente**.
 
@@ -158,7 +158,7 @@ Desde la raíz, en tu Mac: `bash ejecutar-pruebas-reportes.sh`.
 
 ## 17. Despliegue
 
-Imagen `reportes-ejecutivos-ms:0.1.0`. Requiere red `empresa-net`, base `reportes` y secreto JWT. Canary según el anexo. Se despliega después de los servicios de área, porque depende de sus eventos.
+Imagen `reportes-ejecutivos-ms:0.1.0`. Requiere red `empresa-net`, base `reportes` y clave pública JWKS. Canary según el anexo. Se despliega después de los servicios de área, porque depende de sus eventos.
 
 ## 18. Rollback
 

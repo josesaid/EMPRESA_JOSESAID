@@ -1,10 +1,5 @@
 package com.mx.josesaid.develop.reportes.config;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,11 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -55,29 +47,14 @@ public class SeguridadConfig {
         return convertidor;
     }
 
+    /** Valida la firma con la clave pública que publica usuarios-accesos-ms (JWKS). */
     @Bean
     JwtDecoder jwtDecoder(PropiedadesJwt propiedades) {
-        return NimbusJwtDecoder.withSecretKey(claveSecreta(propiedades))
-                .macAlgorithm(MacAlgorithm.HS256)
-                .build();
-    }
-
-    @Bean
-    JwtEncoder jwtEncoder(PropiedadesJwt propiedades) {
-        return new NimbusJwtEncoder(new ImmutableSecret<>(claveSecreta(propiedades)));
+        return NimbusJwtDecoder.withJwkSetUri(propiedades.jwksUri()).build();
     }
 
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    /** Falla al arrancar si el secreto no existe o es demasiado corto: no se usa una clave débil por defecto. */
-    static SecretKey claveSecreta(PropiedadesJwt propiedades) {
-        String secreto = propiedades.secreto();
-        if (secreto == null || secreto.getBytes(UTF_8).length < 32) {
-            throw new IllegalStateException("reportes.jwt.secreto debe tener al menos 32 bytes");
-        }
-        return new SecretKeySpec(secreto.getBytes(UTF_8), "HmacSHA256");
     }
 }

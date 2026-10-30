@@ -22,7 +22,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 
 /** Integración con PostgreSQL y Kafka reales (Testcontainers). Requiere Docker; corre con 'mvn verify'. */
 @SpringBootTest(properties = {
-        "compras.jwt.secreto=clave-de-prueba-de-al-menos-32-bytes-xx",
+        "compras.jwt.jwks-uri=http://localhost:9/.well-known/jwks.json",
         "compras.cifrado.clave=MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
         "compras.cifrado.indice-clave=MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="})
 @AutoConfigureMockMvc

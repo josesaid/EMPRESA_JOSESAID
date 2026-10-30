@@ -52,19 +52,19 @@ pedidos-ventas-ms/
 - JDK 21 (solo si corre fuera de Docker) y Maven 3.9+.
 - Red `empresa-net` creada por la raíz.
 - postgres y kafka levantados desde la raíz.
-- Secreto JWT igual al de usuarios-accesos-ms (`USUARIOS_JWT_SECRET`).
+- Valida tokens con la clave pública de usuarios-accesos-ms (JWKS), sin secreto compartido.
 
 ## 5. Configuración
 
 | Variable | Obligatoria | Descripción |
 |---|---|---|
 | `PEDIDOS_DB_PASSWORD` | Sí (compose) | Contraseña del usuario de base `pedidos`. |
-| `USUARIOS_JWT_SECRET` | Sí | Clave HMAC de al menos 32 bytes. Debe ser la misma que usuarios-accesos-ms. |
+| `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |
 | `JWT_DURACION` | No | Duración del token aceptado, ISO-8601. Por omisión `PT15M`. |
 | `OUTBOX_INTERVALO_MS` | No | Cada cuántos ms se envían eventos pendientes. Por omisión 5000. |
 | `KAFKA_BOOTSTRAP` | No | Dentro de compose es `kafka:29092`. |
 
-El servicio no arranca si el secreto JWT falta o es menor a 32 bytes.
+El servicio no arranca si el clave pública JWKS falta o es menor a 32 bytes.
 
 ## 6. Ejecución
 
@@ -82,7 +82,7 @@ Sin Docker, con Maven:
 
 ```bash
 export DB_URL=jdbc:postgresql://localhost:5432/pedidos DB_USER=pedidos DB_PASSWORD=...
-export JWT_SECRET=...
+export JWT_JWKS_URI=http://localhost:8102/.well-known/jwks.json
 mvn spring-boot:run
 ```
 
@@ -114,7 +114,7 @@ Flyway ejecuta `V1__esquema_inicial.sql` al arrancar. Hibernate solo valida (`dd
 
 ## 10. Seguridad
 
-- API sin estado con token JWT HS256 (resource server). Solo `/actuator/health` es público.
+- API sin estado con token JWT RS256 (resource server). Solo `/actuator/health` es público.
 - Roles en el claim `roles` del token, convertidos a `ROLE_*`.
 - Autorización por método con `@PreAuthorize`.
 
@@ -199,7 +199,7 @@ Script de verificación en Mac, desde la raíz: `bash ejecutar-pruebas-pedidos.s
 
 ## 17. Despliegue
 
-Se despliega como contenedor con la imagen `pedidos-ventas-ms:0.1.0`. Requiere la red `empresa-net`, la base `pedidos` y el secreto JWT compartido. Un único replica es suficiente para el alcance actual.
+Se despliega como contenedor con la imagen `pedidos-ventas-ms:0.1.0`. Requiere la red `empresa-net`, la base `pedidos` y el clave pública JWKS. Un único replica es suficiente para el alcance actual.
 
 ## 18. Rollback
 
@@ -211,7 +211,7 @@ Se despliega como contenedor con la imagen `pedidos-ventas-ms:0.1.0`. Requiere l
 
 | Síntoma | Causa probable | Acción |
 |---|---|---|
-| Arranque falla con "secreto debe tener al menos 32 bytes" | `USUARIOS_JWT_SECRET` vacío o corto | Revise `.env` de la raíz. |
+| Arranque falla con "secreto debe tener al menos 32 bytes" | `JWT_JWKS_URI` no responde | Revise `.env` de la raíz. |
 | Error 401 con token válido | Secreto distinto al de usuarios-accesos-ms | Copie el mismo valor. |
 | Error de conexión a la base | Base `pedidos` no creada en un volumen existente | Ejecute el `CREATE ROLE` y `CREATE DATABASE` del README de la raíz. |
 | 409 al convertir cotización | Ya convertida | Consulte `pedido_id` de la cotización. |

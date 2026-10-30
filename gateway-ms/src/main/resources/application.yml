@@ -1,7 +1,13 @@
-# Configuración de gateway-ms. Sin credenciales: los tokens JWT pasan al servicio destino.
+# Configuración de gateway-ms. Valida la firma del JWT con la clave pública de usuarios-accesos-ms y la reenvía al servicio destino.
 spring:
   application:
     name: gateway-ms
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Clave pública de usuarios-accesos-ms (JWKS)
+          jwk-set-uri: ${JWT_JWKS_URI:http://usuarios-accesos-ms:8081/.well-known/jwks.json}
   cloud:
     gateway:
       server:

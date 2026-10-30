@@ -2,7 +2,7 @@
 # Requiere antes: postgres y kafka de la raíz (docker compose up -d desde la raíz).
 # Variables que se leen del .env de esta carpeta o del .env de la raíz:
 #   FACTURACION_DB_PASSWORD  contraseña del usuario facturacion_pagos
-#   USUARIOS_JWT_SECRET      mismo secreto que usuarios-accesos-ms, para validar sus tokens
+#   Tokens validados con la clave pública de usuarios-accesos-ms (JWKS)
 
 services:
   facturacion-pagos-ms:
@@ -18,7 +18,7 @@ services:
       # Broker interno de Kafka (listener INTERNAL definido en la raíz)
       KAFKA_BOOTSTRAP: kafka:29092
       # Secreto compartido con usuarios-accesos-ms: sin él no se validan los tokens
-      JWT_SECRET: ${USUARIOS_JWT_SECRET:?Defina USUARIOS_JWT_SECRET en .env}
+      JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
     ports:
       # Puerto de tu Mac 8103 -> puerto 8081 dentro del contenedor
       - "8103:8081"

@@ -48,7 +48,7 @@ La regla de dependencia apunta hacia adentro: el dominio no conoce JPA, Kafka ni
 
 ## 7. Seguridad
 
-- Tokens JWT HS256 emitidos por usuarios-accesos-ms. Este servicio solo valida firma y expiración.
+- Tokens JWT RS256 emitidos por usuarios-accesos-ms. Este servicio solo valida firma y expiración.
 - Autorización por rol en cada método. Escribir exige `FINANZAS`; leer también permite `VENTAS`.
 - Secreto de al menos 32 bytes, sin valor por defecto. El servicio no arranca sin él.
 

@@ -49,7 +49,7 @@ public class ClienteController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN_CLIENTES')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClienteResponse> crear(@Valid @RequestBody NuevoClienteRequest req,
                                                  @RequestParam(defaultValue = "false") boolean confirmarDuplicado) {
         var contacto = req.contactoPrincipal();
@@ -60,7 +60,7 @@ public class ClienteController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('VENDEDOR', 'GERENTE_VENTAS', 'ADMIN_CLIENTES')")
+    @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public PagedModel<ClienteResumenResponse> buscar(
             @RequestParam(required = false) String rfc,
             @RequestParam(required = false) String nombre,
@@ -76,7 +76,7 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('VENDEDOR', 'GERENTE_VENTAS', 'ADMIN_CLIENTES')")
+    @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public ClienteResponse obtener(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
         Cliente cliente = servicio.obtener(id);
         auditoria.registrar("consulta_cliente", id, Actor.de(jwt));
@@ -84,19 +84,19 @@ public class ClienteController {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN_CLIENTES')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ClienteResponse actualizar(@PathVariable UUID id, @Valid @RequestBody ActualizarClienteRequest req) {
         return ClienteResponse.de(servicio.actualizarRazonSocial(id, req.razonSocial()));
     }
 
     @PatchMapping("/{id}/estatus")
-    @PreAuthorize("hasRole('ADMIN_CLIENTES')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ClienteResponse cambiarEstatus(@PathVariable UUID id, @Valid @RequestBody CambioEstatusClienteRequest req) {
         return ClienteResponse.de(servicio.cambiarEstatus(id, req.estatus()));
     }
 
     @PostMapping("/{id}/contactos")
-    @PreAuthorize("hasRole('ADMIN_CLIENTES')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ContactoResponse> agregarContacto(@PathVariable UUID id,
                                                             @Valid @RequestBody ContactoRequest req) {
         Contacto contacto = servicio.agregarContacto(id, new Comandos.NuevoContacto(

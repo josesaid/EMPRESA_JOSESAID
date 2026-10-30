@@ -3,7 +3,7 @@
 # Variables que se leen del .env de la raíz:
 #   DOCUMENTOS_DB_PASSWORD      contraseña del usuario documentos
 #   DOCUMENTOS_CIFRADO_CLAVE    clave AES-256 en base64 para cifrar los archivos
-#   USUARIOS_JWT_SECRET         mismo secreto que usuarios-accesos-ms
+#   Tokens validados con la clave pública de usuarios-accesos-ms (JWKS)
 
 services:
   documentos-cumplimiento-ms:
@@ -19,7 +19,7 @@ services:
       # Broker interno de Kafka (listener INTERNAL definido en la raíz)
       KAFKA_BOOTSTRAP: kafka:29092
       # Secreto compartido con usuarios-accesos-ms: sin él no se validan los tokens
-      JWT_SECRET: ${USUARIOS_JWT_SECRET:?Defina USUARIOS_JWT_SECRET en .env}
+      JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
       # Clave de cifrado en reposo. Respáldela: sin ella no se pueden leer los archivos
       DOCUMENTOS_CIFRADO_CLAVE: ${DOCUMENTOS_CIFRADO_CLAVE:?Defina DOCUMENTOS_CIFRADO_CLAVE en .env}
       # Carpeta del contenedor donde viven los archivos cifrados

@@ -82,7 +82,7 @@ Reglas de dependencia:
 | `DB_PASSWORD` | Sí | (vacío) | Contraseña del usuario. En Docker se toma de `CLIENTES_DB_PASSWORD` |
 | `KAFKA_BOOTSTRAP` | No | `localhost:9092` | Servidores de arranque de Kafka. En Docker: `kafka:29092` |
 | `EVENTOS_TOPICO` | No | `clientes.eventos.v1` | Tópico donde se publican los eventos |
-| `JWT_ISSUER_URI` | Sí en producción | `http://localhost:9000` | Emisor de los JWT (Usuarios y Accesos) |
+| `JWT_JWKS_URI` | No | `http://usuarios-accesos-ms:8081/.well-known/jwks.json` | Clave pública de Usuarios y Accesos para validar los JWT (JWKS) |
 | `CRYPTO_CLAVE_CIFRADO` | Sí | (vacío) | Clave AES-256 en Base64, 32 bytes |
 | `CRYPTO_CLAVE_INDICE` | Sí | (vacío) | Clave HMAC-SHA256 en Base64, 32 bytes, distinta de la anterior |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | No | `http://localhost:4318/v1/traces` | Destino de las trazas OTLP HTTP |
@@ -145,7 +145,7 @@ Con PostgreSQL y Kafka accesibles en `localhost`:
 export DB_PASSWORD=...
 export CRYPTO_CLAVE_CIFRADO=...
 export CRYPTO_CLAVE_INDICE=...
-export JWT_ISSUER_URI=https://usuarios.empresa.mx
+export JWT_JWKS_URI=http://localhost:8102/.well-known/jwks.json
 mvn spring-boot:run
 ```
 
@@ -244,7 +244,7 @@ ACTIVO ◄──► SUSPENDIDO
 
 ### 8.1 Autenticación
 
-El token va en `Authorization: Bearer <token>`. El servicio valida la firma y el emisor contra `JWT_ISSUER_URI`.
+El token va en `Authorization: Bearer <token>`. El servicio valida la firma con la clave pública obtenida de `JWT_JWKS_URI`.
 
 Requisitos del token:
 
@@ -257,7 +257,7 @@ Ejemplo de payload:
 {
   "sub": "8f3c2a1e-6b4d-4e5f-9a7b-1c2d3e4f5a6b",
   "iss": "https://usuarios.empresa.mx",
-  "roles": ["VENDEDOR"],
+  "roles": ["VENTAS"],
   "exp": 1793400000
 }
 ```
@@ -268,10 +268,9 @@ Respuestas: token ausente o inválido → `401`. Rol insuficiente → `403`.
 
 | Rol | Puede |
 |---|---|
-| `VENDEDOR` | Registrar y convertir prospectos, cambiar su estatus, buscar y consultar clientes, registrar y consultar interacciones |
-| `GERENTE_VENTAS` | Consultar prospectos, clientes e interacciones; consultar métricas de conversión |
-| `ADMIN_CLIENTES` | Dar de alta y actualizar clientes, cambiar su estatus, agregar contactos, convertir prospectos, buscar y consultar clientes |
-| `RESPONSABLE_PROTECCION_DATOS` | Otorgar y revocar consentimientos |
+| `VENTAS` | Registrar y convertir prospectos, cambiar su estatus, buscar y consultar clientes, registrar y consultar interacciones |
+| `ADMIN` | Dar de alta y actualizar clientes, cambiar su estatus, agregar contactos, convertir prospectos, buscar y consultar clientes |
+| `LEGAL` | Otorgar y revocar consentimientos |
 
 ### 8.3 Datos personales
 
@@ -299,21 +298,21 @@ Todas las rutas empiezan con `/v1`. Los errores siguen RFC 9457 (`application/pr
 
 | Método | Ruta | Rol | Éxito | Errores |
 |---|---|---|---|---|
-| POST | `/v1/prospectos` | VENDEDOR | 201 | 400, 409 `rfc-duplicado`, 409 `posible-duplicado` |
-| GET | `/v1/prospectos/{id}` | VENDEDOR, GERENTE_VENTAS | 200 | 404 |
-| PATCH | `/v1/prospectos/{id}/estatus` | VENDEDOR | 200 | 400, 404, 409 `transicion-invalida` |
-| POST | `/v1/prospectos/{id}/conversion` | VENDEDOR, ADMIN_CLIENTES | 201 | 400, 404, 409 `rfc-duplicado`, 409 `transicion-invalida` |
-| POST | `/v1/clientes` | ADMIN_CLIENTES | 201 | 400, 409 `rfc-duplicado`, 409 `posible-duplicado` |
-| GET | `/v1/clientes?rfc=&nombre=&page=&size=` | VENDEDOR, GERENTE_VENTAS, ADMIN_CLIENTES | 200 | 422 sin `rfc` ni `nombre` |
-| GET | `/v1/clientes/{id}` | VENDEDOR, GERENTE_VENTAS, ADMIN_CLIENTES | 200 | 404 |
-| PATCH | `/v1/clientes/{id}` | ADMIN_CLIENTES | 200 | 400, 404 |
-| PATCH | `/v1/clientes/{id}/estatus` | ADMIN_CLIENTES | 200 | 400, 404, 409 `transicion-invalida` |
-| POST | `/v1/clientes/{id}/contactos` | ADMIN_CLIENTES | 201 | 400, 404 |
-| POST | `/v1/clientes/{clienteId}/interacciones` | VENDEDOR | 201 | 400, 404 |
-| GET | `/v1/clientes/{clienteId}/interacciones?page=&size=` | VENDEDOR, GERENTE_VENTAS | 200 | 404 |
-| POST | `/v1/contactos/{contactoId}/consentimientos` | RESPONSABLE_PROTECCION_DATOS | 201 | 400, 404 |
-| POST | `/v1/consentimientos/{id}/revocacion` | RESPONSABLE_PROTECCION_DATOS | 200 | 404 |
-| GET | `/v1/metricas/conversion?mes=yyyy-MM` | GERENTE_VENTAS | 200 | 400 si el formato del mes es inválido |
+| POST | `/v1/prospectos` | VENTAS | 201 | 400, 409 `rfc-duplicado`, 409 `posible-duplicado` |
+| GET | `/v1/prospectos/{id}` | VENTAS | 200 | 404 |
+| PATCH | `/v1/prospectos/{id}/estatus` | VENTAS | 200 | 400, 404, 409 `transicion-invalida` |
+| POST | `/v1/prospectos/{id}/conversion` | VENTAS, ADMIN | 201 | 400, 404, 409 `rfc-duplicado`, 409 `transicion-invalida` |
+| POST | `/v1/clientes` | ADMIN | 201 | 400, 409 `rfc-duplicado`, 409 `posible-duplicado` |
+| GET | `/v1/clientes?rfc=&nombre=&page=&size=` | VENTAS, ADMIN | 200 | 422 sin `rfc` ni `nombre` |
+| GET | `/v1/clientes/{id}` | VENTAS, ADMIN | 200 | 404 |
+| PATCH | `/v1/clientes/{id}` | ADMIN | 200 | 400, 404 |
+| PATCH | `/v1/clientes/{id}/estatus` | ADMIN | 200 | 400, 404, 409 `transicion-invalida` |
+| POST | `/v1/clientes/{id}/contactos` | ADMIN | 201 | 400, 404 |
+| POST | `/v1/clientes/{clienteId}/interacciones` | VENTAS | 201 | 400, 404 |
+| GET | `/v1/clientes/{clienteId}/interacciones?page=&size=` | VENTAS | 200 | 404 |
+| POST | `/v1/contactos/{contactoId}/consentimientos` | LEGAL | 201 | 400, 404 |
+| POST | `/v1/consentimientos/{id}/revocacion` | LEGAL | 200 | 404 |
+| GET | `/v1/metricas/conversion?mes=yyyy-MM` | VENTAS | 200 | 400 si el formato del mes es inválido |
 
 ### 9.2 Parámetros
 
@@ -611,7 +610,7 @@ Para revisar eventos atascados, use la consulta de la sección 11. Si un evento 
 Lista de verificación previa:
 
 - [ ] `CRYPTO_CLAVE_CIFRADO` y `CRYPTO_CLAVE_INDICE` están definidas en el entorno y son las de ese entorno.
-- [ ] `JWT_ISSUER_URI` apunta al emisor correcto.
+- [ ] `JWT_JWKS_URI` responde con la clave pública de usuarios-accesos-ms.
 - [ ] El usuario `clientes` y su base existen en PostgreSQL.
 - [ ] `KAFKA_BOOTSTRAP` responde y el tópico existe o el broker lo crea.
 - [ ] `mvn verify` pasó en el pipeline, incluidas las pruebas `*IT`.
@@ -630,7 +629,7 @@ Lista de verificación previa:
 |---|---|---|
 | Arranque falla con `Falta app.crypto.clave-cifrado` | `CRYPTO_CLAVE_CIFRADO` vacía | Definir la variable con 32 bytes en Base64 |
 | `... debe ser de 32 bytes en Base64` | Clave con otra longitud | Regenerar con `openssl rand -base64 32` |
-| `401` en todas las peticiones | `JWT_ISSUER_URI` no coincide con el claim `iss` | Revisar la variable y el token |
+| `401` en todas las peticiones | No se puede leer `JWT_JWKS_URI` | Verificar que usuarios-accesos-ms esté arriba y que el JWKS responda |
 | `403` con token válido | El claim `roles` no tiene el rol requerido | Revisar la tabla 8.2 |
 | `500` en peticiones con token válido | El claim `sub` no es un UUID | El emisor de tokens debe enviar UUID en `sub` |
 | Búsqueda por RFC no encuentra clientes | `CRYPTO_CLAVE_INDICE` cambió después de crear los datos | Restaurar la clave original o reindexar |

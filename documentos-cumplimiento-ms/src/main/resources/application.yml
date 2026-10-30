@@ -49,8 +49,8 @@ logging:
 
 documentos:
   jwt:
-    # Clave HMAC de al menos 32 caracteres. Sin ella el servicio no arranca.
-    secreto: ${JWT_SECRET:}
+    # Clave pública para validar tokens (JWKS de usuarios-accesos-ms)
+    jwks-uri: ${JWT_JWKS_URI:http://usuarios-accesos-ms:8081/.well-known/jwks.json}
     duracion: ${JWT_DURACION:PT15M}
     emisor: ${JWT_EMISOR:documentos-cumplimiento-ms}
   outbox:

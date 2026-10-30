@@ -47,7 +47,7 @@ inventario-operaciones-ms/
 | Variable | Obligatoria | Descripción |
 |---|---|---|
 | `INVENTARIO_DB_PASSWORD` | Sí (Compose) | Contraseña del usuario `inventario`. En el `.env` de la raíz o de esta carpeta. |
-| `USUARIOS_JWT_SECRET` | Sí (Compose) | Mismo secreto que usuarios-accesos-ms. Mínimo 32 caracteres. |
+| `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |
 | `KAFKA_BOOTSTRAP` | No | Por defecto `localhost:9092`. En Compose: `kafka:29092`. |
 | `OUTBOX_INTERVALO_MS` | No | Intervalo del retransmisor. Por defecto 5000. |
 
@@ -95,7 +95,7 @@ Flyway ejecuta `V1__esquema_inicial.sql`. Hibernate solo valida. Los cambios fut
 
 ## 10. Seguridad
 
-- JWT HS256 emitido por usuarios-accesos-ms. Solo `/actuator/health` es público.
+- JWT RS256 emitido por usuarios-accesos-ms. Solo `/actuator/health` es público.
 - **ALMACEN:** registra movimientos y da de alta almacenes.
 - **OPERACIONES:** da de alta artículos, abre y cierra órdenes, y consulta trazabilidad.
 - **CALIDAD:** consulta trazabilidad.

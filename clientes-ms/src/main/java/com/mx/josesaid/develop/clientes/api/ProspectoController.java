@@ -40,7 +40,7 @@ public class ProspectoController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('VENDEDOR')")
+    @PreAuthorize("hasRole('VENTAS')")
     public ResponseEntity<ProspectoResponse> crear(@Valid @RequestBody NuevoProspectoRequest req,
                                                    @RequestParam(defaultValue = "false") boolean confirmarDuplicado) {
         Prospecto creado = servicio.crear(new Comandos.NuevoProspecto(
@@ -50,7 +50,7 @@ public class ProspectoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('VENDEDOR', 'GERENTE_VENTAS')")
+    @PreAuthorize("hasAnyRole('VENTAS')")
     public ProspectoResponse obtener(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
         Prospecto prospecto = servicio.obtener(id);
         auditoria.registrar("consulta_prospecto", id, Actor.de(jwt));
@@ -58,14 +58,14 @@ public class ProspectoController {
     }
 
     @PatchMapping("/{id}/estatus")
-    @PreAuthorize("hasRole('VENDEDOR')")
+    @PreAuthorize("hasRole('VENTAS')")
     public ProspectoResponse cambiarEstatus(@PathVariable UUID id,
                                             @Valid @RequestBody CambioEstatusProspectoRequest req) {
         return ProspectoResponse.de(servicio.cambiarEstatus(id, req.estatus()), presentacion);
     }
 
     @PostMapping("/{id}/conversion")
-    @PreAuthorize("hasAnyRole('VENDEDOR', 'ADMIN_CLIENTES')")
+    @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public ResponseEntity<ClienteResponse> convertir(@PathVariable UUID id,
                                                      @Valid @RequestBody ConvertirProspectoRequest req) {
         var contacto = req.contactoPrincipal();

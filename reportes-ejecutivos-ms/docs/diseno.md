@@ -29,7 +29,7 @@ Dirección general necesita ver, por periodo, los indicadores de todas las área
 
 ## Seguridad
 
-JWT HS256 con el secreto compartido. Toda la API es de DIRECCION. Los datos no incluyen información personal.
+JWT RS256 con la clave pública de usuarios-accesos-ms (JWKS). Toda la API es de DIRECCION. Los datos no incluyen información personal.
 
 ## Riesgos y pendientes
 

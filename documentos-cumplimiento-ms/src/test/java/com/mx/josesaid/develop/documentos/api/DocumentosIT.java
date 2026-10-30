@@ -29,7 +29,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 
 /** Integración con PostgreSQL, Kafka y almacenamiento cifrado reales (Testcontainers). Requiere Docker. */
 @SpringBootTest(properties = {
-        "documentos.jwt.secreto=clave-de-prueba-de-al-menos-32-bytes-xx",
+        "documentos.jwt.jwks-uri=http://localhost:9/.well-known/jwks.json",
         "documentos.cifrado.clave=MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
         "documentos.almacen.directorio=${java.io.tmpdir}/documentos-it-${random.uuid}"})
 @AutoConfigureMockMvc

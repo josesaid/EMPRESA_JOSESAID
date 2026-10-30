@@ -38,7 +38,7 @@ Diagrama de cada servicio: `<servicio>/docs/diagramas/arquitectura.png`.
 ```bash
 docker network create empresa-net          # red externa compartida; solo una vez
 cp .env.example .env                       # y complete POSTGRES_PASSWORD y CLIENTES_DB_PASSWORD
-cp clientes-ms/.env.example clientes-ms/.env   # y complete las claves de cifrado y JWT_ISSUER_URI
+cp clientes-ms/.env.example clientes-ms/.env   # y complete las claves de cifrado
 docker compose up -d --build
 ```
 
@@ -58,7 +58,7 @@ openssl rand -base64 32    # CRYPTO_CLAVE_CIFRADO y CRYPTO_CLAVE_INDICE, una por
 | `EUREKA_PASSWORD` | Sí | Contraseña de Eureka. Se usa también para registrar cada servicio y el gateway |
 | `CLIENTES_DB_PASSWORD` | Sí | Contraseña del usuario `clientes`. Debe ser igual a la de `clientes-ms/.env` |
 | `USUARIOS_ACCESOS_DB_PASSWORD` | Sí | Contraseña del usuario `usuarios_accesos` |
-| `USUARIOS_JWT_SECRET` | Sí | Secreto JWT (mínimo 32 caracteres). Lo usan usuarios-accesos-ms y facturacion-pagos-ms |
+| `USUARIOS_JWT_CLAVE_PRIVADA` | Sí | Clave RSA privada (PKCS#8 en Base64) para firmar tokens. Solo la usa usuarios-accesos-ms. Los demás servicios validan con su clave pública (JWKS) |
 | `FACTURACION_DB_PASSWORD` | Sí | Contraseña del usuario `facturacion_pagos` |
 | `CONTABILIDAD_DB_PASSWORD` | Sí | Contraseña del usuario `contabilidad` |
 | `INVENTARIO_DB_PASSWORD` | Sí | Contraseña del usuario `inventario` |
@@ -147,7 +147,7 @@ Como el script solo corre en la primera inicialización, en un entorno ya creado
 | `password authentication failed for user "clientes"` | `CLIENTES_DB_PASSWORD` cambió después de la primera inicialización | Cambie la contraseña dentro de PostgreSQL: `ALTER ROLE clientes PASSWORD '...';` o recree el volumen con `docker compose down -v` (borra datos) |
 | Un microservicio nuevo no tiene base de datos | El script no corrió porque el volumen ya existía | Cree el rol y la base a mano dentro del contenedor `postgres`, o use `down -v` en desarrollo |
 | `Falta CLIENTES_DB_PASSWORD` al levantar | La variable no está en `.env` | Complete `.env` y vuelva a levantar |
-| `clientes-ms` reinicia en bucle | Falta una clave de cifrado o `JWT_ISSUER_URI` no es válido | Revise `docker compose logs clientes-ms`; el mensaje indica la variable |
+| `clientes-ms` reinicia en bucle | Falta una clave de cifrado o `JWT_JWKS_URI` no responde | Revise `docker compose logs clientes-ms`; el mensaje indica la variable |
 | Kafka no acepta conexiones desde el host | Se usó `kafka:29092` desde el host | Desde el host use `localhost:9092`; desde contenedores use `kafka:29092` |
 
 ## 10. Orden de arranque

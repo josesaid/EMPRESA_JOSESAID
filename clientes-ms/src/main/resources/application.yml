@@ -21,7 +21,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${JWT_ISSUER_URI:http://localhost:9000}
+          # Clave pública de usuarios-accesos-ms (JWKS)
+          jwk-set-uri: ${JWT_JWKS_URI:http://usuarios-accesos-ms:8081/.well-known/jwks.json}
   data:
     web:
       pageable:

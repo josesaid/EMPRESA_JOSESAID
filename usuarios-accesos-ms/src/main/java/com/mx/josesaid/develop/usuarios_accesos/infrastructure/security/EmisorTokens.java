@@ -4,14 +4,15 @@ import com.mx.josesaid.develop.usuarios_accesos.config.PropiedadesJwt;
 import com.mx.josesaid.develop.usuarios_accesos.domain.Usuario;
 import java.time.Clock;
 import java.time.Instant;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import com.mx.josesaid.develop.usuarios_accesos.config.ClavesJwt;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Component;
 
-/** Emite tokens de acceso firmados con HS256. El claim {@code roles} alimenta la autorización. */
+/** Emite tokens de acceso firmados con RS256. El claim {@code roles} alimenta la autorización. */
 @Component
 public class EmisorTokens {
 
@@ -34,7 +35,7 @@ public class EmisorTokens {
                 .expiresAt(ahora.plus(propiedades.duracion()))
                 .claim("roles", usuario.getRoles().stream().map(Enum::name).toList())
                 .build();
-        JwsHeader cabecera = JwsHeader.with(MacAlgorithm.HS256).build();
+        JwsHeader cabecera = JwsHeader.with(SignatureAlgorithm.RS256).keyId(ClavesJwt.KID).build();
         return encoder.encode(JwtEncoderParameters.from(cabecera, claims)).getTokenValue();
     }
 }

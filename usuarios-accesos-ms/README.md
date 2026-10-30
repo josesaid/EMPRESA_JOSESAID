@@ -12,7 +12,7 @@ Servicio de identidad de EMPRESA_JOSESAID. Autentica usuarios, emite tokens JWT,
 | Framework | Spring Boot 4.1.2 |
 | Base de datos | PostgreSQL 17 (esquema `usuarios_accesos`) |
 | Mensajería | Kafka, tópico `usuarios-accesos.eventos` |
-| Seguridad | OAuth2 resource server, JWT HS256 |
+| Seguridad | OAuth2 resource server, JWT RS256 |
 | Puerto | 8081 interno, 8102 en el host |
 
 ## 2. Propósito y alcance
@@ -49,7 +49,7 @@ usuarios-accesos-ms/
 | DB_USER | Sí | usuarios_accesos | Usuario de base de datos |
 | DB_PASSWORD | Sí | (vacío) | Contraseña de base de datos |
 | KAFKA_BOOTSTRAP | No | localhost:9092 | Servidores de Kafka |
-| JWT_SECRET | Sí | (vacío) | Clave HMAC de al menos 32 caracteres. Sin ella el servicio no arranca |
+| `USUARIOS_JWT_CLAVE_PRIVADA` | Sí | Clave RSA privada (PKCS#8 en Base64) para firmar tokens |
 | JWT_DURACION | No | PT15M | Vida del token (ISO-8601) |
 | JWT_EMISOR | No | usuarios-accesos-ms | Claim `iss` |
 | OUTBOX_INTERVALO_MS | No | 5000 | Frecuencia de envío de eventos pendientes |
@@ -59,7 +59,7 @@ usuarios-accesos-ms/
 
 **Generar una clave JWT:** `openssl rand -base64 48`.
 
-**Advertencia:** si cambias `JWT_SECRET`, todos los tokens emitidos quedan inválidos.
+**Advertencia:** si cambias `JWT_CLAVE_PRIVADA`, los tokens emitidos quedan inválidos y la clave pública cambia en `/.well-known/jwks.json`. Al rotar, los servicios toman la nueva clave al reintentar la validación.
 
 ## 6. Ejecución
 **Con todo el ecosistema (recomendado):** desde la raíz de EMPRESA_JOSESAID.
@@ -78,7 +78,7 @@ docker compose up -d --build
 
 **Localmente, con Maven** (requiere PostgreSQL y Kafka accesibles):
 ```bash
-export DB_PASSWORD=... JWT_SECRET=...
+export DB_PASSWORD=... JWT_CLAVE_PRIVADA=...
 mvn spring-boot:run
 ```
 
@@ -124,7 +124,7 @@ curl -s http://localhost:8102/actuator/health
 ## 10. Seguridad
 **Flujo:**
 1. El cliente envía correo y contraseña a `POST /v1/auth/login`.
-2. Si son correctos, recibe un JWT firmado con HS256 y válido por `JWT_DURACION`.
+2. Si son correctos, recibe un JWT firmado con RS256 y válido por `JWT_DURACION`.
 3. Cada petición posterior envía `Authorization: Bearer <token>`.
 
 **Ejemplo de token (decodificado):**
@@ -232,7 +232,7 @@ Este servicio se despliega primero, porque emite los tokens que usan los demás.
 ## 19. Solución de problemas
 | Síntoma | Causa probable | Solución |
 |---|---|---|
-| El servicio no arranca: "secreto debe tener al menos 32 bytes" | JWT_SECRET vacío o corto | Definir JWT_SECRET con al menos 32 caracteres |
+| 401 en todas las rutas | No se puede leer `JWT_JWKS_URI` | Verifique que usuarios-accesos-ms esté arriba y que `/.well-known/jwks.json` responda |
 | 401 con contraseña correcta | Cuenta bloqueada o dada de baja | Revisar `estatus` y `bloqueado_hasta` en la tabla usuarios |
 | 423 Locked | Cinco intentos fallidos | Esperar 15 minutos o desbloquear desde la base de datos |
 | 403 en endpoints de usuarios | El token no tiene rol ADMIN | Iniciar sesión con un usuario ADMIN |

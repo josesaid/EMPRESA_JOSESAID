@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.mx.josesaid.develop.usuarios_accesos.application.UsuarioService;
 import com.mx.josesaid.develop.usuarios_accesos.domain.Rol;
+import java.security.KeyPairGenerator;
+import java.util.Base64;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * Prueba de integración con PostgreSQL y Kafka reales (Testcontainers).
  * Requiere Docker. Se ejecuta con 'mvn verify'.
  */
-@SpringBootTest(properties = "usuarios.jwt.secreto=clave-de-prueba-de-al-menos-32-bytes-xx")
+@SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
 class UsuariosAccesosIT {
@@ -44,6 +46,15 @@ class UsuariosAccesosIT {
 
     @Autowired
     private UsuarioService servicio;
+
+    /** Genera una clave RSA de prueba en cada ejecución; no se guarda en el repositorio. */
+    @DynamicPropertySource
+    static void claveJwtDePrueba(DynamicPropertyRegistry registro) throws Exception {
+        KeyPairGenerator generador = KeyPairGenerator.getInstance("RSA");
+        generador.initialize(2048);
+        String pkcs8 = Base64.getEncoder().encodeToString(generador.generateKeyPair().getPrivate().getEncoded());
+        registro.add("usuarios.jwt.clave-privada", () -> pkcs8);
+    }
 
     @Test
     void loginEmiteTokenYLaRutaProtegidaRechazaSinToken() throws Exception {

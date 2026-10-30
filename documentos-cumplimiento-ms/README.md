@@ -52,7 +52,7 @@ documentos-cumplimiento-ms/
 - JDK 21 y Maven 3.9+ (solo para correr fuera de Docker).
 - Red `empresa-net` creada por la raíz.
 - postgres y kafka levantados desde la raíz.
-- Secreto JWT igual al de usuarios-accesos-ms y clave de cifrado de archivos.
+- Clave de cifrado de archivos. Valida tokens con la clave pública de usuarios-accesos-ms (JWKS), sin secreto compartido.
 
 ## 5. Configuración
 
@@ -60,13 +60,13 @@ documentos-cumplimiento-ms/
 |---|---|---|
 | `DOCUMENTOS_DB_PASSWORD` | Sí (compose) | Contraseña del usuario `documentos`. |
 | `DOCUMENTOS_CIFRADO_CLAVE` | Sí | Clave AES-256 en base64 (32 bytes). Respáldela: sin ella no se leen los archivos. |
-| `USUARIOS_JWT_SECRET` | Sí | Clave HMAC de al menos 32 bytes; igual a usuarios-accesos-ms. |
+| `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |
 | `DOCUMENTOS_ALMACEN_DIR` | No | Carpeta de archivos dentro del contenedor. Por omisión `/data/documentos`. |
 | `DOCUMENTOS_ALERTAS_DIAS` | No | Días de anticipación para alertar permisos. Por omisión 30. |
 | `DOCUMENTOS_ALERTAS_CRON` | No | Cuándo corre la tarea diaria. Por omisión 07:00. |
 | `DOCUMENTOS_MAX_ARCHIVO` | No | Tamaño máximo por archivo. Por omisión 20MB. |
 
-El servicio no arranca sin `DOCUMENTOS_CIFRADO_CLAVE` válida ni sin secreto JWT de 32 bytes o más.
+El servicio no arranca sin `DOCUMENTOS_CIFRADO_CLAVE` válida ni sin clave pública JWKS de 32 bytes o más.
 
 ## 6. Ejecución
 
@@ -107,7 +107,7 @@ Flyway ejecuta `V1__esquema_inicial.sql` al arrancar. Hibernate solo valida. Los
 
 ## 10. Seguridad
 
-- API sin estado con JWT HS256. Solo `/actuator/health` es público.
+- API sin estado con JWT RS256. Solo `/actuator/health` es público.
 - Autorización por rol con `@PreAuthorize`.
 - Los archivos se cifran con AES-256-GCM antes de escribirse en disco. Cada archivo tiene su propio IV aleatorio.
 - Al descargar se verifica el hash SHA-256. Si no coincide, responde 500 y no entrega el archivo.
@@ -175,7 +175,7 @@ Desde la raíz, en tu Mac: `bash ejecutar-pruebas-documentos.sh`.
 
 ## 17. Despliegue
 
-Imagen `documentos-cumplimiento-ms:0.1.0`. Requiere red `empresa-net`, base `documentos`, secreto JWT, clave de cifrado y el volumen `documentos-archivos`. Canary según el anexo de la empresa.
+Imagen `documentos-cumplimiento-ms:0.1.0`. Requiere red `empresa-net`, base `documentos`, clave pública JWKS, clave de cifrado y el volumen `documentos-archivos`. Canary según el anexo de la empresa.
 
 ## 18. Rollback
 

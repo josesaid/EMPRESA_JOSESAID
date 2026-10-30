@@ -1,10 +1,8 @@
 package com.mx.josesaid.develop.usuarios_accesos.config;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -38,7 +35,7 @@ public class SeguridadConfig {
             .csrf(csrf -> csrf.disable()) // API sin cookies de sesión: no aplica CSRF
             .sessionManagement(sesion -> sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/v1/auth/login", "/actuator/health", "/actuator/health/**", "/actuator/prometheus").permitAll()
+                .requestMatchers("/v1/auth/login", "/actuator/health", "/actuator/health/**", "/actuator/prometheus", "/.well-known/jwks.json").permitAll()
                 .anyRequest().authenticated())
             .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(convertidorJwt())));
         return http.build();
@@ -55,29 +52,26 @@ public class SeguridadConfig {
         return convertidor;
     }
 
+    /** Clave RSA (privada y pública) cargada desde usuarios.jwt.clave-privada. */
     @Bean
-    JwtDecoder jwtDecoder(PropiedadesJwt propiedades) {
-        return NimbusJwtDecoder.withSecretKey(claveSecreta(propiedades))
-                .macAlgorithm(MacAlgorithm.HS256)
-                .build();
+    RSAKey claveRsa(PropiedadesJwt propiedades) {
+        return ClavesJwt.desdeBase64(propiedades.clavePrivada());
     }
 
+    /** Valida los tokens con la clave pública; este mismo servicio también es resource server. */
     @Bean
-    JwtEncoder jwtEncoder(PropiedadesJwt propiedades) {
-        return new NimbusJwtEncoder(new ImmutableSecret<>(claveSecreta(propiedades)));
+    JwtDecoder jwtDecoder(RSAKey claveRsa) throws Exception {
+        return NimbusJwtDecoder.withPublicKey(claveRsa.toRSAPublicKey()).build();
+    }
+
+    /** Firma los tokens con la clave privada (RS256). */
+    @Bean
+    JwtEncoder jwtEncoder(RSAKey claveRsa) {
+        return new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(claveRsa)));
     }
 
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    /** Falla al arrancar si el secreto no existe o es demasiado corto: no se usa una clave débil por defecto. */
-    static SecretKey claveSecreta(PropiedadesJwt propiedades) {
-        String secreto = propiedades.secreto();
-        if (secreto == null || secreto.getBytes(UTF_8).length < 32) {
-            throw new IllegalStateException("usuarios.jwt.secreto debe tener al menos 32 bytes");
-        }
-        return new SecretKeySpec(secreto.getBytes(UTF_8), "HmacSHA256");
     }
 }

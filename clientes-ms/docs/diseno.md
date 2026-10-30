@@ -37,21 +37,21 @@ Los diagramas de entidades y relaciones están en [diagramas.md](diagramas.md).
 
 | Método | Ruta | Rol autorizado | Éxito | Errores |
 |---|---|---|---|---|
-| POST | `/v1/prospectos` | VENDEDOR | 201 | 400, 409 |
-| GET | `/v1/prospectos/{id}` | VENDEDOR, GERENTE_VENTAS | 200 | 404 |
-| PATCH | `/v1/prospectos/{id}/estatus` | VENDEDOR | 200 | 404, 409 |
-| POST | `/v1/prospectos/{id}/conversion` | VENDEDOR, ADMIN_CLIENTES | 201 | 404, 409 |
-| POST | `/v1/clientes` | ADMIN_CLIENTES | 201 | 400, 409 |
-| GET | `/v1/clientes?rfc=&nombre=` | VENDEDOR, GERENTE_VENTAS, ADMIN_CLIENTES | 200 | 422 |
-| GET | `/v1/clientes/{id}` | VENDEDOR, GERENTE_VENTAS, ADMIN_CLIENTES | 200 | 404 |
-| PATCH | `/v1/clientes/{id}` | ADMIN_CLIENTES | 200 | 400, 404 |
-| PATCH | `/v1/clientes/{id}/estatus` | ADMIN_CLIENTES | 200 | 404, 409 |
-| POST | `/v1/clientes/{id}/contactos` | ADMIN_CLIENTES | 201 | 400, 404 |
-| POST | `/v1/clientes/{id}/interacciones` | VENDEDOR | 201 | 400, 404 |
-| GET | `/v1/clientes/{id}/interacciones` | VENDEDOR, GERENTE_VENTAS | 200 | 404 |
-| POST | `/v1/contactos/{id}/consentimientos` | RESPONSABLE_PROTECCION_DATOS | 201 | 400, 404 |
-| POST | `/v1/consentimientos/{id}/revocacion` | RESPONSABLE_PROTECCION_DATOS | 200 | 404 |
-| GET | `/v1/metricas/conversion?mes=yyyy-MM` | GERENTE_VENTAS | 200 | 400 |
+| POST | `/v1/prospectos` | VENTAS | 201 | 400, 409 |
+| GET | `/v1/prospectos/{id}` | VENTAS | 200 | 404 |
+| PATCH | `/v1/prospectos/{id}/estatus` | VENTAS | 200 | 404, 409 |
+| POST | `/v1/prospectos/{id}/conversion` | VENTAS, ADMIN | 201 | 404, 409 |
+| POST | `/v1/clientes` | ADMIN | 201 | 400, 409 |
+| GET | `/v1/clientes?rfc=&nombre=` | VENTAS, ADMIN | 200 | 422 |
+| GET | `/v1/clientes/{id}` | VENTAS, ADMIN | 200 | 404 |
+| PATCH | `/v1/clientes/{id}` | ADMIN | 200 | 400, 404 |
+| PATCH | `/v1/clientes/{id}/estatus` | ADMIN | 200 | 404, 409 |
+| POST | `/v1/clientes/{id}/contactos` | ADMIN | 201 | 400, 404 |
+| POST | `/v1/clientes/{id}/interacciones` | VENTAS | 201 | 400, 404 |
+| GET | `/v1/clientes/{id}/interacciones` | VENTAS | 200 | 404 |
+| POST | `/v1/contactos/{id}/consentimientos` | LEGAL | 201 | 400, 404 |
+| POST | `/v1/consentimientos/{id}/revocacion` | LEGAL | 200 | 404 |
+| GET | `/v1/metricas/conversion?mes=yyyy-MM` | VENTAS | 200 | 400 |
 
 ## 6. Ejemplos de escritura
 

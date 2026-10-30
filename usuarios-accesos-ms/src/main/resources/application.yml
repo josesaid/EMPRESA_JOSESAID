@@ -45,8 +45,8 @@ logging:
 
 usuarios:
   jwt:
-    # Clave HMAC de al menos 32 caracteres. Sin ella el servicio no arranca.
-    secreto: ${JWT_SECRET:}
+    # Clave RSA privada (PKCS#8 DER en Base64). Solo este servicio la tiene; los demás validan con /.well-known/jwks.json
+    clave-privada: ${JWT_CLAVE_PRIVADA:}
     # Vida del token de acceso (ISO-8601)
     duracion: ${JWT_DURACION:PT15M}
     emisor: ${JWT_EMISOR:usuarios-accesos-ms}

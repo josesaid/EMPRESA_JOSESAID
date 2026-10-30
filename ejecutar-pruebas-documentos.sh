@@ -19,7 +19,7 @@ paso "2. Docker"
 docker info >/dev/null 2>&1; verificar $? "Docker responde"
 
 paso "3. Validar archivos de Compose"
-DOCUMENTOS_DB_PASSWORD=prueba USUARIOS_JWT_SECRET=prueba-prueba-prueba-prueba-prueba-32 DOCUMENTOS_CIFRADO_CLAVE=MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY= docker compose -f "$SERVICIO/docker-compose.yml" config >/dev/null 2>&1; verificar $? "Compose de documentos-cumplimiento-ms válido (valores de prueba; no crea nada)"
+DOCUMENTOS_DB_PASSWORD=prueba USUARIOS_JWT_CLAVE_PRIVADA=prueba-prueba-prueba-prueba-prueba-32 DOCUMENTOS_CIFRADO_CLAVE=MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY= docker compose -f "$SERVICIO/docker-compose.yml" config >/dev/null 2>&1; verificar $? "Compose de documentos-cumplimiento-ms válido (valores de prueba; no crea nada)"
 
 paso "4. Pruebas completas (unitarias + integración con Testcontainers)"
 (cd "$SERVICIO" && mvn -B verify > "$RAIZ/.verify-documentos.log" 2>&1); verificar $? "mvn verify"

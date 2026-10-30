@@ -39,9 +39,9 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 class FlujoClientesIT {
 
-    private static final String VENDEDOR = "VENDEDOR";
-    private static final String ADMIN = "ADMIN_CLIENTES";
-    private static final String GERENTE = "GERENTE_VENTAS";
+    private static final String VENTAS = "VENTAS";
+    private static final String ADMIN = "ADMIN";
+    private static final String GERENTE = "VENTAS";
     private static final Pattern ID = Pattern.compile("\"id\":\"([0-9a-f-]{36})\"");
 
     @Container
@@ -80,7 +80,7 @@ class FlujoClientesIT {
 
     @Test
     void conversionDeProspectoCalificadoCreaClienteActivo() throws Exception {
-        MvcResult prospecto = mvc.perform(post("/v1/prospectos").with(como(VENDEDOR))
+        MvcResult prospecto = mvc.perform(post("/v1/prospectos").with(como(VENTAS))
                         .contentType("application/json")
                         .content("""
                                 {"nombre":"Ana Flujo","correo":"ana.flujo@ejemplo.mx","fuente":"CAMPANA"}
@@ -89,14 +89,14 @@ class FlujoClientesIT {
                 .andReturn();
         String prospectoId = extraerId(prospecto);
 
-        mvc.perform(patch("/v1/prospectos/" + prospectoId + "/estatus").with(como(VENDEDOR))
+        mvc.perform(patch("/v1/prospectos/" + prospectoId + "/estatus").with(como(VENTAS))
                         .contentType("application/json").content("{\"estatus\":\"CONTACTADO\"}"))
                 .andExpect(status().isOk());
-        mvc.perform(patch("/v1/prospectos/" + prospectoId + "/estatus").with(como(VENDEDOR))
+        mvc.perform(patch("/v1/prospectos/" + prospectoId + "/estatus").with(como(VENTAS))
                         .contentType("application/json").content("{\"estatus\":\"CALIFICADO\"}"))
                 .andExpect(status().isOk());
 
-        mvc.perform(post("/v1/prospectos/" + prospectoId + "/conversion").with(como(VENDEDOR))
+        mvc.perform(post("/v1/prospectos/" + prospectoId + "/conversion").with(como(VENTAS))
                         .contentType("application/json").content("""
                                 {"razonSocial":"Industrias Flujo SA de CV","rfc":"IFL900101XY1",
                                  "contactoPrincipal":{"nombre":"Luis Pérez","correo":"luis.flujo@demo.mx","rol":"COMPRAS"}}
@@ -142,9 +142,9 @@ class FlujoClientesIT {
     }
 
     @Test
-    void vendedorNoPuedeConsultarMetricas() throws Exception {
-        mvc.perform(get("/v1/metricas/conversion").param("mes", "2026-10").with(como(VENDEDOR)))
-                .andExpect(status().isForbidden());
+    void ventasConsultaMetricasDelMes() throws Exception {
+        mvc.perform(get("/v1/metricas/conversion").param("mes", "2026-10").with(como(VENTAS)))
+                .andExpect(status().isOk());
     }
 
     @Test

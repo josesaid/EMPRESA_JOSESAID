@@ -47,7 +47,7 @@ contabilidad-ms/
 | Variable | Obligatoria | Descripción |
 |---|---|---|
 | `CONTABILIDAD_DB_PASSWORD` | Sí (Compose) | Contraseña del usuario `contabilidad`. En el `.env` de la raíz o de esta carpeta. |
-| `USUARIOS_JWT_SECRET` | Sí (Compose) | Mismo secreto que usuarios-accesos-ms. Mínimo 32 caracteres. |
+| `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |
 | `DB_URL`, `DB_USER`, `DB_PASSWORD` | No | Conexión. Compose ya las fija. |
 | `KAFKA_BOOTSTRAP` | No | Por defecto `localhost:9092`. En Compose: `kafka:29092`. |
 | `OUTBOX_INTERVALO_MS` | No | Cada cuántos milisegundos se envían eventos pendientes. Por defecto 5000. |
@@ -94,7 +94,7 @@ Un periodo cerrado rechaza pólizas nuevas y reversas (409). Solo se reversa una
 
 ## 10. Seguridad
 
-- JWT HS256 emitido por usuarios-accesos-ms. Solo `/actuator/health` es público.
+- JWT RS256 emitido por usuarios-accesos-ms. Solo `/actuator/health` es público.
 - **CONTADOR:** crea cuentas, registra, reversa y cierra periodos. Además consulta.
 - **DIRECCION:** solo consulta pólizas y estados financieros.
 - Sin token responde 401; sin el rol responde 403.
@@ -178,7 +178,7 @@ Imagen multi-etapa (Maven y JRE 21), usuario sin privilegios (uid 10001), `HEALT
 - **422 "La póliza no cuadra":** la suma de cargos y abonos no coincide. Revisa cada renglón.
 - **409 "El periodo está cerrado":** el periodo ya se cerró. Las correcciones van en el periodo abierto actual.
 - **400 "Formato de periodo inválido":** usa AAAA-MM, por ejemplo `2026-10`.
-- **401 en todas las rutas:** el secreto JWT no coincide con usuarios-accesos-ms.
+- **401 en todas las rutas:** el clave pública JWKS no coincide con usuarios-accesos-ms.
 
 ## 20. Decisiones y pendientes
 

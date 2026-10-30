@@ -21,7 +21,7 @@ public class MetricasController {
     }
 
     @GetMapping("/conversion")
-    @PreAuthorize("hasRole('GERENTE_VENTAS')")
+    @PreAuthorize("hasRole('VENTAS')")
     public MetricaConversionResponse conversion(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth mes) {
         return new MetricaConversionResponse(mes.toString(), servicio.conversionesDelMes(mes));

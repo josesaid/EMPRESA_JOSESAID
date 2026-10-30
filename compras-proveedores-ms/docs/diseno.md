@@ -40,7 +40,7 @@ El evento de aprobación y el de recepción se guardan en la misma transacción 
 
 ## 7. Seguridad
 
-JWT emitido por usuarios-accesos-ms. Cada rol hace solo lo suyo: COMPRAS crea, DIRECCION aprueba, ALMACEN recibe. El servicio no arranca sin secreto JWT ni claves de cifrado válidas.
+JWT emitido por usuarios-accesos-ms. Cada rol hace solo lo suyo: COMPRAS crea, DIRECCION aprueba, ALMACEN recibe. El servicio no arranca sin clave pública JWKS ni claves de cifrado válidas.
 
 ## 8. Riesgos
 

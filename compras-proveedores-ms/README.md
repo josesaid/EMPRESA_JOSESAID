@@ -48,7 +48,7 @@ compras-proveedores-ms/
 | Variable | Obligatoria | Descripción |
 |---|---|---|
 | `COMPRAS_DB_PASSWORD` | Sí (Compose) | Contraseña del usuario `compras` |
-| `USUARIOS_JWT_SECRET` | Sí (Compose) | Mismo secreto que usuarios-accesos-ms. Mínimo 32 caracteres. |
+| `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |
 | `COMPRAS_CIFRADO_CLAVE` | Sí (Compose) | Clave AES-256 en base64 (32 bytes). Si se pierde, los RFC cifrados no se recuperan. |
 | `COMPRAS_INDICE_CLAVE` | Sí (Compose) | Clave HMAC en base64 para buscar RFC. Si cambia, la búsqueda por RFC deja de encontrar proveedores existentes. |
 
@@ -96,7 +96,7 @@ Una orden aprobada no se modifica. Una orden recibida o cancelada no admite más
 
 ## 10. Seguridad
 
-- JWT HS256 emitido por usuarios-accesos-ms. Solo `/actuator/health` es público.
+- JWT RS256 emitido por usuarios-accesos-ms. Solo `/actuator/health` es público.
 - **COMPRAS:** alta de proveedores, órdenes y cancelaciones. Consulta órdenes.
 - **DIRECCION:** aprueba órdenes. Consulta órdenes.
 - **ALMACEN:** registra recepciones. Consulta órdenes.

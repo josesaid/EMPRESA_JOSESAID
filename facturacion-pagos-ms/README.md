@@ -47,7 +47,7 @@ facturacion-pagos-ms/
 | Variable | Obligatoria | Descripción |
 |---|---|---|
 | `FACTURACION_DB_PASSWORD` | Sí (Compose) | Contraseña del usuario `facturacion_pagos`. Va en el `.env` de la raíz o de esta carpeta. |
-| `USUARIOS_JWT_SECRET` | Sí (Compose) | Mismo secreto que usa usuarios-accesos-ms, para validar sus tokens. Mínimo 32 caracteres. |
+| `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |
 | `DB_URL`, `DB_USER`, `DB_PASSWORD` | No | Datos de conexión. Compose ya los fija. |
 | `KAFKA_BOOTSTRAP` | No | Por defecto `localhost:9092`. En Compose: `kafka:29092`. |
 | `JWT_DURACION` | No | Vida del token (ISO-8601), solo para referencia. Por defecto `PT15M`. |
@@ -101,12 +101,12 @@ Los pagos solo se aceptan en comprobantes emitidos y nunca exceden el saldo.
 
 ## 10. Seguridad
 
-- API sin estado con JWT HS256 (resource server). Solo `/actuator/health` es público.
+- API sin estado con JWT RS256 (resource server). Solo `/actuator/health` es público.
 - Roles por método con `@PreAuthorize`:
   - `FINANZAS`: crear, emitir, cancelar y registrar pagos. Además leer.
   - `VENTAS`: solo leer.
 - Sin `ROLE_FINANZAS` ni `ROLE_VENTAS` la respuesta es 403; sin token, 401.
-- El servicio falla al arrancar si el secreto JWT tiene menos de 32 bytes.
+- El servicio falla al arrancar si el clave pública JWKS tiene menos de 32 bytes.
 
 ## 11. API
 
@@ -178,7 +178,7 @@ Imagen multi-etapa (Maven para compilar, JRE 21 para ejecutar), usuario sin priv
 
 ## 19. Solución de problemas
 
-- **Arranque falla con "debe tener al menos 32 bytes":** `USUARIOS_JWT_SECRET` no existe o es corto.
+- **401 en todas las rutas:** `JWT_JWKS_URI` no responde; revise que usuarios-accesos-ms esté arriba.
 - **"Defina FACTURACION_DB_PASSWORD":** falta la variable en `.env`. Compose se detiene a propósito.
 - **Todas las peticiones dan 401:** el secreto no coincide con el de usuarios-accesos-ms, o el token expiró.
 - **Error de conexión a la base:** PostgreSQL no está arriba o `init-databases.sh` no creó el usuario. Revisa que se haya creado el volumen con la variable definida.
