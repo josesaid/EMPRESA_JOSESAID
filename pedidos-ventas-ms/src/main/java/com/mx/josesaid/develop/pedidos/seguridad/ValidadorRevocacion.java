@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 public class ValidadorRevocacion implements OAuth2TokenValidator<Jwt> {
 
     /** Motivo que se devuelve al cliente cuando la sesión fue cerrada. */
-    public static final String MOTIVO = "La sesión fue cerrada";
+    public static final String MOTIVO = "La sesion fue cerrada";
 
     private static final OAuth2Error REVOCADO = new OAuth2Error("invalid_token", MOTIVO, null);
 

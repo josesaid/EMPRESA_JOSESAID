@@ -115,3 +115,9 @@ Detenga el contenedor y regrese a la imagen anterior. No hay datos que revertir.
 - Diseño: `docs/diseno.md`.
 - Orden de arranque: sección 10 del README de la raíz.
 - Gateway y monitoreo: sección 11 del README de la raíz.
+
+## Ruta vieja tras recrear un servicio
+
+Cuando un servicio se recrea con `docker compose up -d --build`, el gateway puede seguir enrutando a la IP anterior durante un rato. Síntomas: el login responde 404 o 401 sin cuerpo, y la cabecera `WWW-Authenticate` trae solo `error` y `error_description`, que es la respuesta de un servicio de área y no del gateway.
+
+Solución: `docker compose restart gateway-ms` y esperar a que quede `healthy`.
