@@ -27,6 +27,8 @@ services:
       DOCUMENTOS_CIFRADO_CLAVE: ${DOCUMENTOS_CIFRADO_CLAVE:?Defina DOCUMENTOS_CIFRADO_CLAVE en .env}
       # Contraseña del usuario reportes
       REPORTES_DB_PASSWORD: ${REPORTES_DB_PASSWORD:?Defina REPORTES_DB_PASSWORD en .env}
+      # Contraseña del usuario nexus
+      NEXUS_DB_PASSWORD: ${NEXUS_DB_PASSWORD:?Defina NEXUS_DB_PASSWORD en .env}
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./infra/postgres/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh:ro
@@ -77,6 +79,7 @@ include:
   - pedidos-ventas-ms/docker-compose.yml
   - documentos-cumplimiento-ms/docker-compose.yml
   - reportes-ejecutivos-ms/docker-compose.yml
+  - nexus-ms/docker-compose.yml
   # Monitoreo: Prometheus y Grafana
   - infra/monitoring/docker-compose.yml
   # Trazabilidad: Jaeger

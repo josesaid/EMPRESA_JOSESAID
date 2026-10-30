@@ -1,0 +1,30 @@
+# Servicio nexus-ms. Se usa solo o incluido desde la raíz de EMPRESA_JOSESAID.
+# Requiere la red externa empresa-net, la infraestructura compartida y el servicio de Eureka.
+services:
+  nexus-ms:
+    build: .
+    image: nexus-ms:0.1.0
+    env_file:
+      # Opcional: si no existe, Compose usa solo 'environment'
+      - path: .env
+        required: false
+    environment:
+      SERVER_PORT: 8080
+      # Registro en Eureka con credenciales (definidas en .env)
+      EUREKA_URL: http://${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}:${EUREKA_PASSWORD:?Defina EUREKA_PASSWORD en .env}@discovery-ms:8761/eureka/
+      NEXUS_DB_URL: jdbc:postgresql://postgres:5432/nexus
+      NEXUS_DB_USER: nexus
+      NEXUS_DB_PASSWORD: ${NEXUS_DB_PASSWORD:?Defina NEXUS_DB_PASSWORD en el archivo .env}
+      JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
+      GATEWAY_URL: http://gateway-ms:8080
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?Defina ANTHROPIC_API_KEY en el archivo .env}
+    ports:
+      - "8097:8080"
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+networks:
+  empresa-net:
+    external: true
+    name: empresa-net

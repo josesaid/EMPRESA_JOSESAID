@@ -30,3 +30,4 @@ crear_servicio compras compras "${COMPRAS_DB_PASSWORD:?Falta COMPRAS_DB_PASSWORD
 crear_servicio pedidos pedidos "${PEDIDOS_DB_PASSWORD:?Falta PEDIDOS_DB_PASSWORD}"
 crear_servicio documentos documentos "${DOCUMENTOS_DB_PASSWORD:?Falta DOCUMENTOS_DB_PASSWORD}"
 crear_servicio reportes reportes "${REPORTES_DB_PASSWORD:?Falta REPORTES_DB_PASSWORD}"
+crear_servicio nexus nexus "${NEXUS_DB_PASSWORD:?Falta NEXUS_DB_PASSWORD}"

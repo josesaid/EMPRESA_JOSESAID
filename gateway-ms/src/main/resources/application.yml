@@ -15,6 +15,12 @@ spring:
     gateway:
       server:
         webflux:
+          routes:
+            # Nexus expone /nexus/** directamente, sin el prefijo del servicio
+            - id: nexus
+              uri: lb://nexus-ms
+              predicates:
+                - Path=/nexus/**
           discovery:
             locator:
               # Cada servicio registrado queda en /{nombre-del-servicio}/** sin configurar rutas
