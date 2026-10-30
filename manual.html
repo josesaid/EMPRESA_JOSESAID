@@ -384,9 +384,10 @@ a { color: var(--acceso); }
 
   <h2 id="pendientes">8. Lo que falta por decidir</h2>
   <ul>
-    <li>Rotación de la clave RS256: procedimiento documentado en usuarios-accesos-ms/README.md; calendario por definir. Sin periodo de traslape todavía.</li>
-    <li>Acceso por área en reportes: hoy solo ve todo el rol DIRECCION.</li>
-    <li>Métricas de los servicios de área: hoy sin credenciales dentro de la red; decidir si necesitan token.</li>
+    <li>Calendario de rotación de la clave RS256 (el procedimiento ya está documentado en usuarios-accesos-ms/README.md); sin periodo de traslape todavía.</li>
+    <li>Asignar área a los jefes de área actuales (el acceso por área ya está implementado).</li>
+    <li>Revocar también el access token al cerrar sesión; hoy vence en 15 minutos.</li>
+    <li>Métricas: usuarios-accesos ya no publica su puerto y el gateway bloquea /actuator; decidir si los demás servicios también dejan de publicar puertos.</li>
     <li>Retención documental (años por tipo) y purga física al vencer, pendientes de confirmación legal.</li>
     <li>IVA fronterizo del 8 % pendiente de validar con Contabilidad.</li>
     <li>Órdenes de compra anteriores a V3: reciben en V4 la fecha de aplicación de la migración, por lo que cuentan en ese mes. Confirmar si el criterio es aceptable.</li>
