@@ -114,4 +114,5 @@ El login devuelve `accessToken` (15 minutos) y `refreshToken` (opaco, 7 días de
 - `POST /v1/auth/cambiar-password-inicial` con `{"correo", "passwordActual", "passwordNueva"}` cambia la contraseña temporal por una definitiva (mínimo 12 caracteres). Es público y responde 204. Mientras la contraseña sea temporal, el login responde 403 `cambio-password-requerido`.
 - Solo se guarda el hash SHA-256 del refresh token, en la tabla `refresh_tokens` (migración `V3__refresh_tokens.sql`).
 - Bloqueo o baja: el refresh falla porque se vuelve a verificar la cuenta. El access token ya emitido sigue válido hasta 15 minutos.
-- Al cerrar sesión, el access token que ya existe no se revoca: sigue válido hasta vencer. Si eso no es aceptable, falta una lista de revocación de access tokens.
+- Al cerrar sesión, el access token de esa sesión también se revoca en todos los servicios. Ver «Revocación de access tokens» más abajo.
+- Revocación de access tokens: diseñada con eventos de logout y `sid` en el token. Diagramas y límites en `docs/diagramas.md`.

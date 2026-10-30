@@ -327,7 +327,39 @@ El login devuelve `accessToken` (15 minutos) y `refreshToken` (opaco, 7 días de
 - `POST /v1/auth/cambiar-password-inicial` con `{"correo", "passwordActual", "passwordNueva"}` cambia la contraseña temporal por una definitiva (mínimo 12 caracteres). Es público y responde 204. Mientras la contraseña sea temporal, el login responde 403 `cambio-password-requerido`.
 - Solo se guarda el hash SHA-256 del refresh token, en la tabla `refresh_tokens` (migración `V3__refresh_tokens.sql`).
 - Bloqueo o baja: el refresh falla porque se vuelve a verificar la cuenta. El access token ya emitido sigue válido hasta 15 minutos.
-- Al cerrar sesión, el access token que ya existe no se revoca: sigue válido hasta vencer. Si eso no es aceptable, falta una lista de revocación de access tokens.
+- Al cerrar sesión, el access token de esa sesión también se revoca en todos los servicios. Ver «Revocación de access tokens» más abajo.
+
+
+## Revocación de access tokens
+
+Al cerrar sesión, el access token de esa sesión deja de servir en todos los servicios, no solo en usuarios-accesos-ms. El claim `sid` del token es la familia del refresh token, así que basta con revocar ese identificador.
+
+- `POST /v1/auth/logout` revoca la sesión y escribe `sesion-cerrada` (`sid`, `usuarioId`, `ocurridoEn`) en el outbox, en la misma transacción.
+- `POST /v1/auth/logout-todas` escribe `sesiones-usuario-cerradas` (`usuarioId`, `ocurridoEn`). Los tokens emitidos antes de ese instante dejan de servir; un login posterior sí funciona.
+- Cada servicio mantiene su copia en memoria (`RevocacionSesiones`), alimentada por `ListenerRevocaciones` desde el topic `usuarios-accesos.eventos`. `ValidadorRevocacion` la consulta en cada petición, además de firma y vencimiento.
+- La copia conserva cada revocación 20 minutos, la vida del access token más un margen. Pasado ese tiempo, ningún token revocado sigue vigente.
+
+**Flujo al cerrar sesión**
+
+![Cierre de sesión: outbox, Kafka y rechazo en el servicio de área](docs/diagramas/01-cierre-de-sesion.png)
+
+**Validación en cada servicio**
+
+![Orden de validación: firma, sid revocado y cierre de todas las sesiones](docs/diagramas/02-validacion-token.png)
+
+**Cerrar todas las sesiones**
+
+![Cierre de todas las sesiones del usuario](docs/diagramas/03-cerrar-todas.png)
+
+**Ventana de consistencia**
+
+![Ventana entre el logout y la llegada del evento al servicio](docs/diagramas/04-ventana-consistencia.png)
+
+Límites conocidos:
+
+- Entre el logout y la llegada del evento a un servicio hay una ventana de segundos en la que el token todavía se acepta (diagrama 4).
+- Las copias viven en memoria. Al reiniciar un servicio, la copia se vacía y el consumidor retoma desde su último offset confirmado, así que los cierres anteriores no se reaplican. Un token revocado puede volver a aceptarse en ese servicio hasta que venza, como máximo 15 minutos. Pendiente: persistir las revocaciones o reconstruirlas desde el topic al arrancar.
+- El gateway no revisa revocación; la rechaza el servicio destino.
 
 
 ## Contraseña temporal

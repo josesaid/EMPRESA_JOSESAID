@@ -1,5 +1,12 @@
 package com.mx.josesaid.develop.clientes.config;
 
+import com.mx.josesaid.develop.clientes.seguridad.RevocacionSesiones;
+import com.mx.josesaid.develop.clientes.seguridad.ValidadorRevocacion;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.JwtValidators;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,5 +43,15 @@ public class SeguridadConfig {
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(convertidor)))
                 .build();
+    }
+
+    /** Valida los tokens por JWKS y rechaza las sesiones cerradas en usuarios-accesos-ms. */
+    @Bean
+    JwtDecoder jwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String jwksUri,
+                          RevocacionSesiones revocaciones) {
+        var decoder = NimbusJwtDecoder.withJwkSetUri(jwksUri).build();
+        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
+                new ValidadorRevocacion(revocaciones)));
+        return decoder;
     }
 }

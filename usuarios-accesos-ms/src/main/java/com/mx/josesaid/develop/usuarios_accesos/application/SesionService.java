@@ -1,5 +1,7 @@
 package com.mx.josesaid.develop.usuarios_accesos.application;
 
+import java.util.Map;
+
 import com.mx.josesaid.develop.usuarios_accesos.domain.BloqueoException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.CredencialesInvalidasException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.RefreshToken;
@@ -29,6 +31,9 @@ public class SesionService {
     /** Vigencia del refresh token desde su último uso. */
     public static final Duration DURACION_REFRESCO = Duration.ofDays(7);
 
+    public static final String EVENTO_SESION_CERRADA = "sesion-cerrada";
+    public static final String EVENTO_SESIONES_USUARIO_CERRADAS = "sesiones-usuario-cerradas";
+
     private static final SecureRandom ALEATORIO = new SecureRandom();
 
     /** Access token y refresh token en texto plano. Solo se devuelven al cliente, nunca se guardan. */
@@ -39,13 +44,16 @@ public class SesionService {
     private final UsuarioRepositorio usuarios;
     private final EmisorTokens emisor;
     private final Clock reloj;
+    private final PublicadorEventos publicador;
 
     public SesionService(RefreshTokenRepositorio refrescos, UsuarioRepositorio usuarios,
-                         EmisorTokens emisor, Clock reloj) {
+                         EmisorTokens emisor, Clock reloj,
+                         PublicadorEventos publicador) {
         this.refrescos = refrescos;
         this.usuarios = usuarios;
         this.emisor = emisor;
         this.reloj = reloj;
+        this.publicador = publicador;
     }
 
     /** Inicia una sesión nueva tras un login exitoso. */
@@ -81,20 +89,29 @@ public class SesionService {
     @Transactional
     public void cerrar(String refrescoPlano) {
         refrescos.buscarPorHash(hash(refrescoPlano))
-                .ifPresent(t -> refrescos.revocarFamilia(t.familiaId(), Instant.now(reloj)));
+                .ifPresent(t -> {
+                    Instant ahora = Instant.now(reloj);
+                    refrescos.revocarFamilia(t.familiaId(), ahora);
+                    publicador.publicar(new EventoDominio(EVENTO_SESION_CERRADA, t.usuarioId().toString(),
+                            Map.of("sid", t.familiaId().toString(), "usuarioId", t.usuarioId().toString(),
+                                   "ocurridoEn", ahora.toString())));
+                });
     }
 
     /** Cierra todas las sesiones del usuario. */
     @Transactional
     public void cerrarTodas(UUID usuarioId) {
-        refrescos.revocarTodasDeUsuario(usuarioId, Instant.now(reloj));
+        Instant ahora = Instant.now(reloj);
+        refrescos.revocarTodasDeUsuario(usuarioId, ahora);
+        publicador.publicar(new EventoDominio(EVENTO_SESIONES_USUARIO_CERRADAS, usuarioId.toString(),
+                Map.of("usuarioId", usuarioId.toString(), "ocurridoEn", ahora.toString())));
     }
 
     private Par emitirPar(Usuario usuario, UUID familia, Instant ahora) {
         String refresco = nuevoRefresco();
         refrescos.guardar(new RefreshToken(UUID.randomUUID(), usuario.getId(), familia, hash(refresco),
                 ahora.plus(DURACION_REFRESCO), null, null));
-        return new Par(emisor.emitir(usuario), refresco);
+        return new Par(emisor.emitir(usuario, familia), refresco);
     }
 
     private static String nuevoRefresco() {

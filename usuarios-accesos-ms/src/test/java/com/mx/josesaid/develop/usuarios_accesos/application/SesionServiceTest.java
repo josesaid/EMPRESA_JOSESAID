@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -32,13 +33,14 @@ class SesionServiceTest {
     private final RefreshTokenRepositorio refrescos = mock(RefreshTokenRepositorio.class);
     private final UsuarioRepositorio usuarios = mock(UsuarioRepositorio.class);
     private final EmisorTokens emisor = mock(EmisorTokens.class);
+    private final PublicadorEventos publicador = mock(PublicadorEventos.class);
     private final SesionService sesiones = new SesionService(refrescos, usuarios, emisor,
-            Clock.fixed(AHORA, ZoneOffset.UTC));
+            Clock.fixed(AHORA, ZoneOffset.UTC), publicador);
     private final Usuario ana = Usuario.crear("ana@empresa.mx", "Ana Ruiz", "hash", List.of(Rol.VENTAS));
 
     @Test
     void iniciarEmiteAccesoYRefrescoNuevo() {
-        when(emisor.emitir(ana)).thenReturn("acceso");
+        when(emisor.emitir(eq(ana), any())).thenReturn("acceso");
         SesionService.Par par = sesiones.iniciar(ana);
         assertThat(par.accessToken()).isEqualTo("acceso");
         assertThat(par.refreshToken()).isNotBlank();
@@ -52,7 +54,7 @@ class SesionServiceTest {
                 AHORA.plusSeconds(3600), null, null);
         when(refrescos.buscarPorHash(anyString())).thenReturn(Optional.of(actual));
         when(usuarios.buscarPorId(ana.getId())).thenReturn(Optional.of(ana));
-        when(emisor.emitir(ana)).thenReturn("acceso");
+        when(emisor.emitir(eq(ana), any())).thenReturn("acceso");
 
         sesiones.refrescar("plano");
 
@@ -70,7 +72,7 @@ class SesionServiceTest {
 
         assertThatThrownBy(() -> sesiones.refrescar("plano")).isInstanceOf(CredencialesInvalidasException.class);
         verify(refrescos).revocarFamilia(familia, AHORA);
-        verify(emisor, never()).emitir(any());
+        verify(emisor, never()).emitir(any(), any());
     }
 
     @Test
@@ -80,7 +82,7 @@ class SesionServiceTest {
         when(refrescos.buscarPorHash(anyString())).thenReturn(Optional.of(vencido));
 
         assertThatThrownBy(() -> sesiones.refrescar("plano")).isInstanceOf(CredencialesInvalidasException.class);
-        verify(emisor, never()).emitir(any());
+        verify(emisor, never()).emitir(any(), any());
     }
 
     @Test
@@ -99,5 +101,25 @@ class SesionServiceTest {
     void cerrarTodasRevocaTodasLasSesionesDelUsuario() {
         sesiones.cerrarTodas(ana.getId());
         verify(refrescos).revocarTodasDeUsuario(ana.getId(), AHORA);
+    }
+
+    @Test
+    void cerrarPublicaElEventoDeSesionCerrada() {
+        UUID familia = UUID.randomUUID();
+        RefreshToken t = new RefreshToken(UUID.randomUUID(), ana.getId(), familia, "h",
+                AHORA.plusSeconds(3600), null, null);
+        when(refrescos.buscarPorHash(anyString())).thenReturn(Optional.of(t));
+
+        sesiones.cerrar("plano");
+
+        verify(publicador).publicar(argThat((EventoDominio e) ->
+                e.tipo().equals("sesion-cerrada") && familia.toString().equals(e.datos().get("sid"))));
+    }
+
+    @Test
+    void cerrarTodasPublicaElEventoDeSesionesDelUsuario() {
+        sesiones.cerrarTodas(ana.getId());
+        verify(publicador).publicar(argThat((EventoDominio e) ->
+                e.tipo().equals("sesiones-usuario-cerradas") && ana.getId().toString().equals(e.datos().get("usuarioId"))));
     }
 }

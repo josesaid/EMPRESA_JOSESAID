@@ -1,5 +1,10 @@
 package com.mx.josesaid.develop.usuarios_accesos.config;
 
+import com.mx.josesaid.develop.usuarios_accesos.seguridad.RevocacionSesiones;
+import com.mx.josesaid.develop.usuarios_accesos.seguridad.ValidadorRevocacion;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.JwtValidators;
+
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.proc.SecurityContext;
@@ -76,8 +81,11 @@ public class SeguridadConfig {
 
     /** Valida los tokens por kid con las claves publicadas; este mismo servicio también es resource server. */
     @Bean
-    JwtDecoder jwtDecoder(JWKSet clavesPublicas) {
-        return NimbusJwtDecoder.withJwkSource(new ImmutableJWKSet<SecurityContext>(clavesPublicas)).build();
+    JwtDecoder jwtDecoder(JWKSet clavesPublicas, RevocacionSesiones revocaciones) {
+        var decoder = NimbusJwtDecoder.withJwkSource(new ImmutableJWKSet<SecurityContext>(clavesPublicas)).build();
+        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
+                new ValidadorRevocacion(revocaciones)));
+        return decoder;
     }
 
     /** Firma los tokens con la clave privada (RS256). */

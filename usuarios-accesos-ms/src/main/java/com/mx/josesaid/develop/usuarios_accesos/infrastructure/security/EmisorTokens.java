@@ -1,5 +1,7 @@
 package com.mx.josesaid.develop.usuarios_accesos.infrastructure.security;
 
+import java.util.UUID;
+
 import com.mx.josesaid.develop.usuarios_accesos.config.PropiedadesJwt;
 import com.mx.josesaid.develop.usuarios_accesos.domain.Usuario;
 import java.time.Clock;
@@ -26,14 +28,15 @@ public class EmisorTokens {
         this.reloj = reloj;
     }
 
-    public String emitir(Usuario usuario) {
+    public String emitir(Usuario usuario, UUID sesion) {
         Instant ahora = Instant.now(reloj);
         JwtClaimsSet.Builder reclamaciones = JwtClaimsSet.builder()
                 .issuer(propiedades.emisor())
                 .subject(usuario.getId().toString())
                 .issuedAt(ahora)
                 .expiresAt(ahora.plus(propiedades.duracion()))
-                .claim("roles", usuario.getRoles().stream().map(Enum::name).toList());
+                .claim("roles", usuario.getRoles().stream().map(Enum::name).toList())
+                .claim("sid", sesion.toString());
         if (usuario.getArea() != null) {
             reclamaciones.claim("area", usuario.getArea());
         }

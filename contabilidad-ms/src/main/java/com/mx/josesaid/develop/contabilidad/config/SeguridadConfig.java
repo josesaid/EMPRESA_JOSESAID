@@ -1,5 +1,10 @@
 package com.mx.josesaid.develop.contabilidad.config;
 
+import com.mx.josesaid.develop.contabilidad.seguridad.RevocacionSesiones;
+import com.mx.josesaid.develop.contabilidad.seguridad.ValidadorRevocacion;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.JwtValidators;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -49,8 +54,11 @@ public class SeguridadConfig {
 
     /** Valida la firma con la clave pública que publica usuarios-accesos-ms (JWKS). */
     @Bean
-    JwtDecoder jwtDecoder(PropiedadesJwt propiedades) {
-        return NimbusJwtDecoder.withJwkSetUri(propiedades.jwksUri()).build();
+    JwtDecoder jwtDecoder(PropiedadesJwt propiedades, RevocacionSesiones revocaciones) {
+        var decoder = NimbusJwtDecoder.withJwkSetUri(propiedades.jwksUri()).build();
+        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
+                new ValidadorRevocacion(revocaciones)));
+        return decoder;
     }
 
     @Bean
