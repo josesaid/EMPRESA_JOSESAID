@@ -1,5 +1,7 @@
 package com.mx.josesaid.develop.pedidos.config;
 
+import com.mx.josesaid.develop.pedidos.seguridad.EntradaNoAutorizada;
+
 import com.mx.josesaid.develop.pedidos.seguridad.RevocacionSesiones;
 import com.mx.josesaid.develop.pedidos.seguridad.ValidadorRevocacion;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
@@ -37,7 +39,7 @@ public class SeguridadConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/prometheus").permitAll()
                 .anyRequest().authenticated())
-            .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(convertidorJwt())));
+            .oauth2ResourceServer(oauth -> oauth.authenticationEntryPoint(new EntradaNoAutorizada()).jwt(jwt -> jwt.jwtAuthenticationConverter(convertidorJwt())));
         return http.build();
     }
 

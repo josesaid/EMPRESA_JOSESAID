@@ -8,7 +8,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 /** Rechaza los tokens de sesiones cerradas. Se combina con la validación estándar de firma y vencimiento. */
 public class ValidadorRevocacion implements OAuth2TokenValidator<Jwt> {
 
-    private static final OAuth2Error REVOCADO = new OAuth2Error("invalid_token", "La sesión fue cerrada", null);
+    /** Motivo que se devuelve al cliente cuando la sesión fue cerrada. */
+    public static final String MOTIVO = "La sesión fue cerrada";
+
+    private static final OAuth2Error REVOCADO = new OAuth2Error("invalid_token", MOTIVO, null);
 
     private final RevocacionSesiones revocaciones;
 
