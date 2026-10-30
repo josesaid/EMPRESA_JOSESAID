@@ -10,6 +10,7 @@ import com.mx.josesaid.develop.nexus.comun.prompts.RepositorioPrompts;
 import com.mx.josesaid.develop.nexus.comun.tokens.PreciosTokens;
 import com.mx.josesaid.develop.nexus.comun.tokens.RegistroTokens;
 import com.mx.josesaid.develop.nexus.infrastructure.ClaudeAsistenteIA;
+import com.mx.josesaid.develop.nexus.infrastructure.HerramientasClientes;
 import com.mx.josesaid.develop.nexus.infrastructure.HerramientasReportes;
 
 import io.micrometer.core.instrument.MeterRegistry;
@@ -34,8 +35,13 @@ public class NexusConfig {
     }
 
     @Bean
+    HerramientasClientes herramientasClientes(RestClient gatewayClient) {
+        return new HerramientasClientes(gatewayClient);
+    }
+
+    @Bean
     AsistenteIA asistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts,
-                            HerramientasReportes reportes) {
-        return new ClaudeAsistenteIA(modelo, registro, prompts, reportes);
+                            HerramientasReportes reportes, HerramientasClientes clientes) {
+        return new ClaudeAsistenteIA(modelo, registro, prompts, reportes, clientes);
     }
 }

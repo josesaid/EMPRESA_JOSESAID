@@ -1,5 +1,8 @@
 package com.mx.josesaid.develop.nexus.infrastructure;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 
@@ -23,10 +26,12 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
 
     private final ChatClient cliente;
     private final HerramientasReportes reportes;
+    private final HerramientasClientes clientes;
 
     public ClaudeAsistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts,
-                             HerramientasReportes reportes) {
+                             HerramientasReportes reportes, HerramientasClientes clientes) {
         this.reportes = reportes;
+        this.clientes = clientes;
         PromptVersionado prompt = prompts.obtener(PROMPT);
         this.cliente = ChatClient.builder(modelo)
                 .defaultSystem(prompt.texto())
@@ -43,8 +48,15 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
                 .advisors(a -> a
                         .param(RegistroTokensAdvisor.CLAVE_SERVICIO, SERVICIO)
                         .param(RegistroTokensAdvisor.CLAVE_USUARIO, pregunta.usuario()));
+        List<Object> permitidas = new ArrayList<>();
         if (AlcanceHerramientas.puedeConsultarReportes()) {
-            solicitud = solicitud.tools(reportes);
+            permitidas.add(reportes);
+        }
+        if (AlcanceHerramientas.puedeConsultarClientes()) {
+            permitidas.add(clientes);
+        }
+        if (!permitidas.isEmpty()) {
+            solicitud = solicitud.tools(permitidas.toArray());
         }
         String texto = solicitud.call().content();
         return new RespuestaAsistente(texto);

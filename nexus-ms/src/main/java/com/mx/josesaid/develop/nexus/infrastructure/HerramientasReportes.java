@@ -4,9 +4,12 @@ import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.web.client.RestClient;
 
+import com.mx.josesaid.develop.nexus.comun.filtro.FiltroDatosSensibles;
+
 /**
  * Herramientas de solo lectura sobre reportes-ejecutivos-ms.
  * Llaman por gateway-ms con el token del usuario; el servicio aplica sus propios permisos.
+ * La respuesta se redacta antes de volver al modelo.
  */
 public final class HerramientasReportes {
 
@@ -24,7 +27,7 @@ public final class HerramientasReportes {
             @ToolParam(description = "Periodo: AAAA-MM, AAAA-Q1..Q4 o AAAA", required = true) String periodo,
             @ToolParam(description = "Área opcional, por ejemplo OPERACIONES o FINANZAS_CONTABILIDAD. Vacío para todas.",
                        required = false) String area) {
-        return gateway.get()
+        String cuerpo = gateway.get()
                 .uri(constructor -> {
                     var uri = constructor.path(RUTA_BASE + "/indicadores").queryParam("periodo", periodo);
                     if (area != null && !area.isBlank()) {
@@ -34,15 +37,17 @@ public final class HerramientasReportes {
                 })
                 .retrieve()
                 .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
     @Tool(name = "consultar_reporte",
           description = "Devuelve el reporte ejecutivo de un periodo (AAAA-MM, AAAA-Qn o AAAA) con su estatus.")
     public String consultarReporte(
             @ToolParam(description = "Periodo: AAAA-MM, AAAA-Q1..Q4 o AAAA", required = true) String periodo) {
-        return gateway.get()
+        String cuerpo = gateway.get()
                 .uri(RUTA_BASE + "/reportes/{periodo}", periodo)
                 .retrieve()
                 .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 }
