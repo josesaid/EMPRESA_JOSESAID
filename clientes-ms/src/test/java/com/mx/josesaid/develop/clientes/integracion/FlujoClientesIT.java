@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
@@ -60,7 +61,8 @@ class FlujoClientesIT {
     static class ConfiguracionPruebas {
 
         @Bean
-        JwtDecoder jwtDecoder() {
+        @Primary
+        JwtDecoder jwtDecoderPruebas() {
             return token -> {
                 throw new JwtException("No se usa en pruebas de integración");
             };
