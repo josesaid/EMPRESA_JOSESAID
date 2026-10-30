@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EMPRESA_JOSESAID · Microservices Platform</title>
+<meta name="description" content="Eleven Spring Boot 4 / Java 21 microservices for sales, purchasing, inventory, billing, accounting, compliance and reporting, with RS256 JWT security, Eureka discovery and a single API gateway.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b0b;
+    --surface: #151310;
+    --panel: #1d1a15;
+    --gold: #d4af37;
+    --gold-soft: #8c7326;
+    --cream: #f3ead3;
+    --muted: #a79c82;
+    --line: rgba(212, 175, 55, 0.35);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--cream);
+    font-family: "Josefin Sans", system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  a { color: var(--gold); }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px; }
+
+  header.hero {
+    position: relative;
+    padding: 72px 0 56px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+    background:
+      repeating-conic-gradient(from 0deg at 50% 100%, rgba(212,175,55,.06) 0 6deg, transparent 6deg 12deg),
+      var(--bg);
+    overflow: hidden;
+  }
+  .eyebrow {
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: var(--gold);
+  }
+  h1 {
+    font-family: "Poiret One", "Josefin Sans", sans-serif;
+    font-weight: 400;
+    font-size: clamp(34px, 6vw, 60px);
+    letter-spacing: .08em;
+    margin: 14px 0 10px;
+  }
+  .lead { max-width: 720px; margin: 0 auto; color: var(--muted); font-size: 18px; }
+  .frame {
+    display: inline-block;
+    border: 1px solid var(--gold);
+    padding: 6px 14px;
+    margin-top: 8px;
+    font-size: 13px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 26px 0 0; padding: 0; list-style: none; }
+  .chips li {
+    border: 1px solid var(--line);
+    padding: 4px 12px;
+    font-size: 13px;
+    color: var(--cream);
+    background: var(--surface);
+  }
+  .buttons { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 28px; }
+  .btn {
+    text-decoration: none;
+    border: 1px solid var(--gold);
+    color: var(--bg);
+    background: var(--gold);
+    padding: 10px 20px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+  .btn.ghost { background: transparent; color: var(--gold); }
+
+  section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: 0; }
+  h2 {
+    font-family: "Poiret One", sans-serif;
+    font-weight: 400;
+    font-size: 30px;
+    letter-spacing: .08em;
+    margin: 0 0 22px;
+    color: var(--gold);
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 22px;
+    position: relative;
+  }
+  .card::before {
+    content: "";
+    position: absolute; inset: 6px;
+    border: 1px solid rgba(212,175,55,.15);
+    pointer-events: none;
+  }
+  .card h3 { margin: 0 0 8px; font-weight: 600; font-size: 17px; letter-spacing: .05em; color: var(--cream); }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--surface); }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid rgba(212,175,55,.15); vertical-align: top; }
+  th { color: var(--gold); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; }
+  td code, code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    color: var(--gold);
+  }
+
+  figure { margin: 0; border: 1px solid var(--line); background: var(--surface); padding: 12px; }
+  figure img { width: 100%; height: auto; display: block; }
+  figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; text-align: center; }
+
+  .docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+  .docs a {
+    display: block;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 18px;
+    color: var(--cream);
+  }
+  .docs a span { display: block; color: var(--muted); font-size: 14px; margin-top: 4px; }
+  .docs a:hover { border-color: var(--gold); }
+
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 14px;
+    color: var(--cream);
+  }
+  pre code { color: var(--cream); }
+
+  footer { padding: 32px 0 48px; text-align: center; color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 600px) {
+    header.hero { padding: 48px 0 40px; }
+    h2 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Portfolio · Java · Microservices</div>
+    <h1>EMPRESA_JOSESAID</h1>
+    <p class="lead">An ecosystem of eleven Spring Boot microservices for a company's core operations: sales, purchasing, inventory, billing, accounting, compliance and executive reporting.</p>
+    <span class="frame">Spring Boot 4 · Java 21 · Docker Compose</span>
+    <ul class="chips" aria-label="Technology stack">
+      <li>Java 21</li>
+      <li>Spring Boot 4.1</li>
+      <li>Spring Cloud Gateway</li>
+      <li>Eureka</li>
+      <li>Spring Security</li>
+      <li>JWT RS256 / JWKS</li>
+      <li>Spring Data JPA</li>
+      <li>Flyway</li>
+      <li>PostgreSQL 17</li>
+      <li>Apache Kafka 4.0</li>
+      <li>Prometheus · Grafana</li>
+      <li>Jaeger · OpenTelemetry</li>
+      <li>Testcontainers</li>
+      <li>Docker Compose</li>
+    </ul>
+    <div class="buttons">
+      <a class="btn" href="#architecture">Architecture</a>
+      <a class="btn ghost" href="files/manual.html">Technical manual</a>
+      <a class="btn ghost" href="https://github.com/josesaid/EMPRESA_JOSESAID">View on GitHub</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>What it does</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Eleven services</h3>
+        <p>Nine business services plus a service registry (Eureka) and a single API gateway. Each business service owns its own PostgreSQL database and user.</p>
+      </div>
+      <div class="card">
+        <h3>Secured by design</h3>
+        <p>Access tokens are signed with RS256. Services validate them with the public key from a JWKS endpoint, so no shared secret is needed. Internal endpoints are hidden from outside the gateway.</p>
+      </div>
+      <div class="card">
+        <h3>Idempotent writes</h3>
+        <p>Optional <code>Idempotency-Key</code> header on orders, payments, journal entries, inventory movements and purchase orders. A repeated request returns the original response; keys are valid for 24 hours.</p>
+      </div>
+      <div class="card">
+        <h3>Encrypted sensitive data</h3>
+        <p>AES-256 encryption for supplier tax data and legal documents, with an HMAC index so records can still be found without exposing the raw values.</p>
+      </div>
+      <div class="card">
+        <h3>Observable</h3>
+        <p>Prometheus metrics, Grafana dashboards, Jaeger traces across services, and Kafka UI to inspect topics and messages.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Services</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Service</th><th>Responsibility</th><th>Access</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>clientes-ms</code></td><td>Customer management API</td><td>Through the gateway</td></tr>
+          <tr><td><code>usuarios-accesos-ms</code></td><td>Users, roles, RS256 token issuance and JWKS</td><td>Internal only</td></tr>
+          <tr><td><code>facturacion-pagos-ms</code></td><td>Invoices, payments and cancellations</td><td>Through the gateway</td></tr>
+          <tr><td><code>contabilidad-ms</code></td><td>General ledger, journal entries, period closing and trial balance</td><td>Through the gateway</td></tr>
+          <tr><td><code>inventario-operaciones-ms</code></td><td>Stock, reservations, lots and operation orders</td><td>Through the gateway</td></tr>
+          <tr><td><code>compras-proveedores-ms</code></td><td>Suppliers with encrypted tax data, purchase orders and receipts</td><td>Through the gateway</td></tr>
+          <tr><td><code>pedidos-ventas-ms</code></td><td>Quotes, sales orders, returns and sales metrics</td><td>Through the gateway</td></tr>
+          <tr><td><code>documentos-cumplimiento-ms</code></td><td>Legal documents with versions, encryption, expiry and retention</td><td>Through the gateway</td></tr>
+          <tr><td><code>reportes-ejecutivos-ms</code></td><td>Period KPIs, report closing and export</td><td>Through the gateway</td></tr>
+          <tr><td><code>discovery-ms</code></td><td>Eureka service registry</td><td>Port 8761</td></tr>
+          <tr><td><code>gateway-ms</code></td><td>Single entry point that routes to registered services</td><td>Port 8080</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="wrap">
+    <h2>Architecture</h2>
+    <figure>
+      <img src="diagramas/arquitectura-general.png" alt="General architecture of the EMPRESA_JOSESAID platform">
+      <figcaption>General architecture of the platform</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Documents</h2>
+    <div class="docs">
+      <a href="files/manual.html">Technical manual<span>Full manual with diagrams for every service</span></a>
+      <a href="files/arquitectura-actual-v1.pdf">Current architecture<span>PDF · architecture v1</span></a>
+      <a href="files/presentacion-tecnica.pdf">Technical presentation<span>PDF</span></a>
+      <a href="files/nexus-diseno-asistente-ia.pdf">AI assistant design (Nexus)<span>PDF · planned Spring AI layer</span></a>
+      <a href="files/nexus-fases-implementacion.pptx">Nexus implementation phases<span>PowerPoint</span></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Run it locally</h2>
+    <p style="color: var(--muted);">Requirements: Docker 24+ and Docker Compose 2.20+. Free ports: 5432, 8080 and 9092.</p>
+<pre><code>docker network create empresa-net          # shared external network, once
+cp .env.example .env                       # complete the passwords and keys
+cp clientes-ms/.env.example clientes-ms/.env
+docker compose up -d --build</code></pre>
+    <p style="color: var(--muted);">Generate passwords with <code>openssl rand -base64 24</code> and encryption keys with <code>openssl rand -base64 32</code>. The full list of environment variables is in the <a href="https://github.com/josesaid/EMPRESA_JOSESAID#4-variables-de-env-de-la-ra%C3%ADz">README</a>.</p>
+
+    <div class="table-wrap" style="margin-top: 16px;">
+      <table>
+        <thead><tr><th>Tool</th><th>Port</th></tr></thead>
+        <tbody>
+          <tr><td>Gateway (entry point)</td><td>8080</td></tr>
+          <tr><td>Eureka dashboard</td><td>8761</td></tr>
+          <tr><td>Grafana</td><td>3000</td></tr>
+          <tr><td>Prometheus</td><td>9090</td></tr>
+          <tr><td>Jaeger</td><td>16686</td></tr>
+          <tr><td>Kafka UI</td><td>8090</td></tr>
+          <tr><td>PostgreSQL 17</td><td>5432</td></tr>
+          <tr><td>Kafka 4.0 (host access)</td><td>9092</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Built by <a href="https://josesaid.github.io/">Said Olano</a> · <a href="https://github.com/josesaid/EMPRESA_JOSESAID">Source on GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
