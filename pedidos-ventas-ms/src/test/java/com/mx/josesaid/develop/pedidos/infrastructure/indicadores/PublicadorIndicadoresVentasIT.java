@@ -1,5 +1,7 @@
 package com.mx.josesaid.develop.pedidos.infrastructure.indicadores;
 
+import com.mx.josesaid.develop.pedidos.application.ValidadorCliente;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.jayway.jsonpath.JsonPath;
@@ -27,6 +29,9 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 @SpringBootTest(properties = "pedidos.jwt.jwks-uri=http://localhost:9/.well-known/jwks.json")
 @Testcontainers
 class PublicadorIndicadoresVentasIT {
+
+    @MockitoBean
+    ValidadorCliente validadorCliente;
 
     @Container
     @ServiceConnection

@@ -93,6 +93,52 @@ class ReportesIT {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void jefeDeAreaSoloConsultaSuArea() throws Exception {
+        registrarEn("2026-09", "Ventas", "VENTAS_ATENCION_CLIENTES", Instant.now().toString(), "5")
+                .andExpect(status().isCreated());
+        registrarEn("2026-09", "Cartera", "FINANZAS_CONTABILIDAD", Instant.now().toString(), "7")
+                .andExpect(status().isCreated());
+
+        mvc.perform(get("/v1/indicadores?periodo=2026-09").with(jefe("VENTAS_ATENCION_CLIENTES")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].nombre").value("Ventas"));
+
+        mvc.perform(get("/v1/indicadores?periodo=2026-09&area=FINANZAS_CONTABILIDAD")
+                        .with(jefe("VENTAS_ATENCION_CLIENTES")))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(get("/v1/indicadores?periodo=2026-09&area=VENTAS_ATENCION_CLIENTES")
+                        .with(jefe("VENTAS_ATENCION_CLIENTES")))
+                .andExpect(status().isOk());
+
+        mvc.perform(get("/v1/reportes/2026-09").with(jefe("VENTAS_ATENCION_CLIENTES")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.indicadores.length()").value(1));
+
+        // Un jefe no carga ni cierra
+        registrarEn("2026-09", "Otra", "VENTAS_ATENCION_CLIENTES", Instant.now().toString(), "1")
+                .andExpect(status().isForbidden());
+        mvc.perform(post("/v1/reportes/2026-09/cierre").with(jefe("VENTAS_ATENCION_CLIENTES")))
+                .andExpect(status().isForbidden());
+    }
+
+    private ResultActions registrarEn(String periodo, String nombre, String area, String fuente, String valor)
+            throws Exception {
+        String cuerpo = """
+                {"area":"%s","nombre":"%s","periodo":"%s","valor":%s,"fuenteActualizadaUtc":"%s"}
+                """.formatted(area, nombre, periodo, valor, fuente);
+        RequestPostProcessor quien = nombre.equals("Otra") ? jefe(area) : rol("DIRECCION");
+        return mvc.perform(post("/v1/indicadores").with(quien)
+                .contentType("application/json").content(cuerpo));
+    }
+
+    private static RequestPostProcessor jefe(String area) {
+        return jwt().authorities(new SimpleGrantedAuthority("ROLE_JEFE_AREA"))
+                .jwt(j -> j.claim("area", area));
+    }
+
     private ResultActions registrar(String nombre, String area, String fuente, String valor) throws Exception {
         String cuerpo = """
                 {"area":"%s","nombre":"%s","periodo":"2026-10","valor":%s,"fuenteActualizadaUtc":"%s"}

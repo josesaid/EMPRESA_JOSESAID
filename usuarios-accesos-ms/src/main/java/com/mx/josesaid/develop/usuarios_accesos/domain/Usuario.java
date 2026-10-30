@@ -29,6 +29,7 @@ public class Usuario {
     private EstatusUsuario estatus;
     private int intentosFallidos;
     private Instant bloqueadoHasta;
+    private String area;
 
     private Usuario(UUID id, String correo, String nombreCompleto, String passwordHash,
                     Set<Rol> roles, EstatusUsuario estatus, int intentosFallidos, Instant bloqueadoHasta) {
@@ -123,8 +124,29 @@ public class Usuario {
         }
         requerido(motivo, "El motivo del cambio de roles es obligatorio");
         Set<Rol> validados = validarRoles(nuevos);
+        if (validados.contains(Rol.JEFE_AREA) && (area == null || area.isBlank())) {
+            throw new ReglaDeNegocioException("Asigne un área al usuario antes del rol JEFE_AREA");
+        }
         roles.clear();
         roles.addAll(validados);
+    }
+
+    /**
+     * Asigna el área del usuario. Un JEFE_AREA solo consulta indicadores de esta área.
+     * El motivo es obligatorio para auditoría.
+     */
+    public void asignarArea(String nuevaArea, String motivo) {
+        if (estatus == EstatusUsuario.BAJA) {
+            throw new ReglaDeNegocioException("No se puede asignar área a un usuario dado de baja");
+        }
+        area = requerido(nuevaArea, "El área es obligatoria");
+        requerido(motivo, "El motivo del cambio de área es obligatorio");
+    }
+
+    /** Fija el área al reconstruir desde persistencia. */
+    public Usuario conArea(String area) {
+        this.area = area;
+        return this;
     }
 
     /** Da de baja al usuario. Es definitivo: no se puede reactivar; se debe crear uno nuevo. */
@@ -174,6 +196,10 @@ public class Usuario {
     /** Copia defensiva: el conjunto interno solo cambia mediante {@link #asignarRoles}. */
     public Set<Rol> getRoles() {
         return EnumSet.copyOf(roles.isEmpty() ? EnumSet.noneOf(Rol.class) : roles);
+    }
+
+    public String getArea() {
+        return area;
     }
 
     public EstatusUsuario getEstatus() {

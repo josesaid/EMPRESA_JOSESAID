@@ -70,3 +70,45 @@ Canary con criterio del anexo de la empresa. Rollback por contenedor. Las migrac
 - **Publicación:** clase `PublicadorIndicadoresUsuarios`, cada 60 minutos (solo mes actual), a `indicadores-areas`. Clave `ADMINISTRACION_LEGAL|usuarios_activos|AAAA-MM`.
 - **Decisión:** foto del periodo, no evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
 - **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).
+
+
+## Rotación de la clave RS256
+
+usuarios-accesos-ms firma los tokens con una sola clave RS256. Su identificador (`kid`) es `empresa-usuarios-1`. La clave pública se publica en `/.well-known/jwks.json` y los servicios la cachean.
+
+**Procedimiento (corte en ventana de baja actividad):**
+
+1. Generar la nueva clave privada en PKCS#8 DER en Base64:
+   `openssl genrsa 2048 | openssl pkcs8 -topk8 -nocrypt -outform DER | base64`
+2. Guardarla en el gestor de secretos de producción, nunca en el repositorio.
+3. Actualizar `USUARIOS_JWT_CLAVE_PRIVADA` en el `.env` de la raíz (se entrega al contenedor como `JWT_CLAVE_PRIVADA`). Cambiar también la constante `KID` en `ClavesJwt.java` (valor actual `empresa-usuarios-1`) a un valor nuevo; el `kid` es código, no configuración, así que requiere recompilar y desplegar.
+4. Desplegar usuarios-accesos-ms. El JWKS publica solo la clave nueva.
+5. Los servicios que validan tokens obtienen la nueva clave cuando su proveedor de JWKS la recarga. Revisar en la práctica cuánto tarda; no está medido.
+
+**Efecto:** los tokens emitidos con la clave anterior dejan de validarse en cuanto los servicios refrescan el JWKS. Todas las sesiones deben iniciar sesión de nuevo; el costo es como máximo los 15 minutos de vida del token.
+
+**Limitación:** no hay periodo de traslape. Para rotar sin cortar sesiones, el JWKS debe publicar ambas claves durante al menos la duración del token y firmar solo con la nueva. Eso requiere cambiar `ClavesJwt` y `SeguridadConfig` para aceptar varias claves; hoy no está implementado.
+
+**Calendario:** por definir. Se recomienda rotar al menos una vez al año y de inmediato si la clave se expone.
+
+## Área por usuario y rol JEFE_AREA
+
+Cada usuario puede tener un área (`area`, texto de hasta 40 caracteres, por ejemplo `VENTAS_ATENCION_CLIENTES`). El área se asigna con `PUT /v1/usuarios/{id}/area`, body `{"area": "...", "motivo": "..."}`, solo con rol ADMIN. El motivo es obligatorio.
+
+- El rol `JEFE_AREA` exige área. No se puede asignar sin ella (422), y no se puede crear un usuario con ese rol directamente: primero se crea, luego se asigna el área y después el rol.
+- El token incluye el claim `area` cuando el usuario tiene una. reportes-ejecutivos-ms lo usa para limitar la consulta de indicadores.
+- Un usuario que ya tenía sesión abierta antes de este cambio no trae el claim hasta volver a iniciar sesión.
+- El valor de `area` debe coincidir con los nombres del enum `Area` de reportes-ejecutivos-ms. Este servicio no lo valida; si no coincide, reportes responde 403.
+- Migración `V2__area_jefe.sql`: agrega la columna `area` y amplía la restricción de roles con `JEFE_AREA`.
+
+## Sesiones: refresh token y cierre de sesión
+
+El login devuelve `accessToken` (15 minutos) y `refreshToken` (opaco, 7 días desde su último uso).
+
+- `POST /v1/auth/refresh` con `{"refreshToken": "..."}` devuelve un access token y un refresh token nuevos. El anterior queda invalidado.
+- Reusar un refresh token ya rotado revoca toda la sesión: el token nuevo también deja de servir. Es la señal de que el token se copió.
+- `POST /v1/auth/logout` con `{"refreshToken": "..."}` cierra esa sesión. Es público porque basta con tener el token. Responde 204.
+- `POST /v1/auth/logout-todas` requiere access token y cierra todas las sesiones del usuario. Responde 204.
+- Solo se guarda el hash SHA-256 del refresh token, en la tabla `refresh_tokens` (migración `V3__refresh_tokens.sql`).
+- Bloqueo o baja: el refresh falla porque se vuelve a verificar la cuenta. El access token ya emitido sigue válido hasta 15 minutos.
+- Al cerrar sesión, el access token que ya existe no se revoca: sigue válido hasta vencer. Si eso no es aceptable, falta una lista de revocación de access tokens.

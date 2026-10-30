@@ -11,5 +11,6 @@ public enum Rol {
     OPERACIONES,
     CALIDAD,
     DIRECCION,
-    LEGAL
+    LEGAL,
+    JEFE_AREA
 }

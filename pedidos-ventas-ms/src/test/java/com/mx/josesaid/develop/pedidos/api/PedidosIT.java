@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import com.mx.josesaid.develop.pedidos.application.ValidadorCliente;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -40,6 +42,10 @@ class PedidosIT {
 
     @Autowired
     private MockMvc mvc;
+
+    /** Sustituye la consulta a clientes-ms: el adaptador se prueba aparte con un servidor REST simulado. */
+    @MockitoBean
+    private ValidadorCliente validadorCliente;
 
     private static final String CLIENTE = "11111111-1111-1111-1111-111111111111";
     private static final String PRODUCTO = "22222222-2222-2222-2222-222222222222";

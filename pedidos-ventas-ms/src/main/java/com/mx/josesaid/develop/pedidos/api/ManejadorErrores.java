@@ -50,6 +50,11 @@ public class ManejadorErrores {
                 "El registro cambió mientras se procesaba. Vuelva a leerlo e intente de nuevo.");
     }
 
+    @ExceptionHandler(com.mx.josesaid.develop.pedidos.domain.ServicioNoDisponibleException.class)
+    ResponseEntity<ProblemDetail> servicioNoDisponible(com.mx.josesaid.develop.pedidos.domain.ServicioNoDisponibleException e) {
+        return respuesta(HttpStatus.SERVICE_UNAVAILABLE, "servicio-no-disponible", e.getMessage());
+    }
+
     private static ResponseEntity<ProblemDetail> respuesta(HttpStatus estado, String slug, String detalle) {
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(estado, detalle);
         problema.setTitle(estado.getReasonPhrase());
