@@ -11,6 +11,8 @@ import tools.jackson.databind.ObjectMapper;
 /**
  * Recibe de usuarios-accesos-ms los cierres de sesión y los aplica a la copia local de revocaciones.
  * Los eventos ajenos se ignoran; un mensaje inválido se registra y se descarta.
+ * Cada arranque usa un grupo de consumo nuevo y lee el topic desde el inicio: así reconstruye las
+ * revocaciones vigentes. Los eventos vencidos los descarta RevocacionSesiones.
  */
 @Component
 public class ListenerRevocaciones {
@@ -26,7 +28,8 @@ public class ListenerRevocaciones {
     }
 
     @KafkaListener(topics = "${seguridad.revocaciones.topico:usuarios-accesos.eventos}",
-                   groupId = "contabilidad-ms-revocaciones")
+                   groupId = "contabilidad-ms-revocaciones-#{T(java.util.UUID).randomUUID()}",
+                   properties = "auto.offset.reset=earliest")
     public void recibir(String mensaje) {
         try {
             Sobre sobre = mapper.readValue(mensaje, Sobre.class);

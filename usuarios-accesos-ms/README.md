@@ -358,7 +358,7 @@ Al cerrar sesión, el access token de esa sesión deja de servir en todos los se
 Límites conocidos:
 
 - Entre el logout y la llegada del evento a un servicio hay una ventana de segundos en la que el token todavía se acepta (diagrama 4).
-- Las copias viven en memoria. Al reiniciar un servicio, la copia se vacía y el consumidor retoma desde su último offset confirmado, así que los cierres anteriores no se reaplican. Un token revocado puede volver a aceptarse en ese servicio hasta que venza, como máximo 15 minutos. Pendiente: persistir las revocaciones o reconstruirlas desde el topic al arrancar.
+- Las copias viven en memoria. Al arrancar, cada servicio lee de nuevo el topic desde el inicio y reconstruye las revocaciones vigentes. Esto requiere que la retención del topic sea mayor a 20 minutos; la retención por defecto de Kafka es de 7 días.
 - El gateway no revisa revocación; la rechaza el servicio destino.
 
 
