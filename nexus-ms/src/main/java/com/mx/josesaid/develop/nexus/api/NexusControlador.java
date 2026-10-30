@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.nexus.api;
 
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,7 +33,7 @@ public class NexusControlador {
 
     @PostMapping("/consultas")
     @PreAuthorize("hasAnyRole('DIRECCION','JEFE_AREA','VENTAS','ADMIN')")
-    public ConsultaResponse consultar(@RequestBody ConsultaRequest solicitud,
+    public ConsultaResponse consultar(@RequestBody @Valid ConsultaRequest solicitud,
                                       @AuthenticationPrincipal Jwt jwt) {
         String usuario = jwt.getSubject();
         var respuesta = asistente.consultar(new PreguntaAsistente(usuario, solicitud.pregunta()));
