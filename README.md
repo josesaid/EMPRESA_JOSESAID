@@ -54,6 +54,8 @@ openssl rand -base64 32    # CRYPTO_CLAVE_CIFRADO y CRYPTO_CLAVE_INDICE, una por
 | Variable | Obligatoria | Descripción |
 |---|---|---|
 | `POSTGRES_PASSWORD` | Sí | Contraseña del superusuario `postgres` |
+| `EUREKA_USUARIO` | Sí | Usuario del panel y registro de Eureka (`discovery-ms`) |
+| `EUREKA_PASSWORD` | Sí | Contraseña de Eureka. Se usa también para registrar cada servicio y el gateway |
 | `CLIENTES_DB_PASSWORD` | Sí | Contraseña del usuario `clientes`. Debe ser igual a la de `clientes-ms/.env` |
 | `USUARIOS_ACCESOS_DB_PASSWORD` | Sí | Contraseña del usuario `usuarios_accesos` |
 | `USUARIOS_JWT_SECRET` | Sí | Secreto JWT (mínimo 32 caracteres). Lo usan usuarios-accesos-ms y facturacion-pagos-ms |
@@ -171,16 +173,17 @@ Para contabilidad-ms, la misma regla aplica con su usuario: `CREATE ROLE contabi
 
 ## 11. Gateway, descubrimiento y monitoreo
 
-**Descubrimiento (`discovery-ms`, 8761).** Servidor Eureka. Cada servicio se registra al arrancar usando el nombre de su contenedor en `empresa-net`. Panel: http://localhost:8761.
+**Descubrimiento (`discovery-ms`, 8761).** Servidor Eureka. Cada servicio se registra al arrancar usando el nombre de su contenedor en `empresa-net`. Panel: http://localhost:8761 (pide usuario y contraseña: `EUREKA_USUARIO` y `EUREKA_PASSWORD` del `.env` de la raíz).
 
 **Gateway (`gateway-ms`, 8080).** Punto de entrada único. Cada servicio registrado queda disponible en `http://localhost:8080/{nombre-del-servicio}/...` sin configurar rutas a mano. Ejemplo: `http://localhost:8080/usuarios-accesos-ms/v1/auth/login`. El gateway no valida tokens: pasa el encabezado `Authorization` y cada servicio valida su JWT.
 
 **Monitoreo (`infra/monitoring`).** Prometheus (9090) lee `/actuator/prometheus` de cada servicio cada 15 segundos. Grafana (3000) ya tiene Prometheus como fuente de datos; para ver tableros, importe el dashboard "JVM (Micrometer)" (ID 4701) desde Dashboards → Import.
 
 **Límites conocidos:**
-- Las métricas no requieren token; solo son accesibles dentro de la red y por los puertos publicados en tu Mac.
+- Las métricas de los servicios no requieren token y solo son accesibles dentro de la red y por los puertos publicados en tu Mac. El gateway no las reenvía: `/actuator/**` responde 404 desde afuera.
 - Los objetivos de Prometheus están fijos en `infra/monitoring/prometheus.yml`. Un servicio nuevo debe agregarse ahí.
-- El panel de Eureka no tiene autenticación. Úselo solo en la red local.
+- El panel de Eureka pide usuario y contraseña, pero el puerto 8761 está publicado en tu Mac. Úselo solo en la red local y cambie `EUREKA_PASSWORD` si la red es compartida.
+- Prometheus lee `/actuator/prometheus` de `discovery-ms` sin credenciales; el gateway bloquea esa ruta hacia afuera.
 
 ## 12. Trazabilidad con Jaeger
 

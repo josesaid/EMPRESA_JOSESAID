@@ -8,6 +8,10 @@ services:
     ports:
       # Puerto de tu Mac 8761 -> puerto 8761 dentro del contenedor
       - "8761:8761"
+    environment:
+      # Credenciales del panel y registro de Eureka; se definen en el .env de la raíz
+      EUREKA_USUARIO: ${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD:?Defina EUREKA_PASSWORD en .env}
     networks:
       - empresa-net
     restart: unless-stopped

@@ -2,6 +2,10 @@
 spring:
   application:
     name: discovery-ms
+  security:
+    user:
+      name: ${EUREKA_USUARIO:eureka}
+      password: ${EUREKA_PASSWORD:}
 
 server:
   port: 8761

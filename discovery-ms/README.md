@@ -32,7 +32,7 @@ discovery-ms/
 
 ## 5. Configuración
 
-Sin credenciales. Variables opcionales en el compose o en el entorno; ver `application.yml`.
+Requiere `EUREKA_USUARIO` y `EUREKA_PASSWORD` en el `.env` de la raíz. Si faltan, el Compose no arranca.
 
 ## 6. Ejecución
 
@@ -53,13 +53,15 @@ No aplica.
 
 ## 10. Seguridad
 
-Sin autenticación de usuarios. Solo `/actuator/health` y `/actuator/prometheus` son públicos dentro de la red.
+El panel y la API de Eureka piden usuario y contraseña (HTTP Basic), definidos con `EUREKA_USUARIO` y `EUREKA_PASSWORD`. Sin ellos, los servicios no se registran.
+
+Públicos sin credenciales: `/actuator/health`, `/actuator/info` y `/actuator/prometheus`. El gateway no reenvía `/actuator/**` ni `/discovery-ms/**`, así que solo son visibles dentro de `empresa-net` y en tu Mac.
 
 ## 11. API
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | / | Panel de Eureka con las instancias registradas |
+| GET | / | Panel de Eureka con las instancias registradas (requiere usuario y contraseña) |
 | GET | /eureka/apps | Instancias registradas (XML/JSON) |
 | GET | /actuator/health | Salud del servicio |
 

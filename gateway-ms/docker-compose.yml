@@ -10,7 +10,8 @@ services:
       - "8080:8080"
     environment:
       # Dirección del servidor de registro en la red interna
-      EUREKA_URL: ${EUREKA_URL:-http://discovery-ms:8761/eureka/}
+      # Registro de servicios con las credenciales de Eureka (definidas en .env)
+      EUREKA_URL: http://${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}:${EUREKA_PASSWORD:?Defina EUREKA_PASSWORD en .env}@discovery-ms:8761/eureka/
     networks:
       - empresa-net
     restart: unless-stopped

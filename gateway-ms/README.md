@@ -32,7 +32,7 @@ gateway-ms/
 
 ## 5. Configuración
 
-Sin credenciales. Variables opcionales en el compose o en el entorno; ver `application.yml`.
+Requiere `EUREKA_USUARIO` y `EUREKA_PASSWORD` en el `.env` de la raíz. El Compose arma `EUREKA_URL` con esas credenciales.
 
 ## 6. Ejecución
 
@@ -53,7 +53,7 @@ No aplica.
 
 ## 10. Seguridad
 
-Sin autenticación de usuarios. Solo `/actuator/health` y `/actuator/prometheus` son públicos dentro de la red.
+El gateway no valida tokens (lo hace cada servicio). Bloquea hacia afuera `/actuator/**` y `/discovery-ms/**` con 404, para que el panel de Eureka y las métricas no sean accesibles desde la entrada única. Prometheus y Eureka se comunican dentro de `empresa-net`.
 
 ## 11. API
 
@@ -76,7 +76,7 @@ No aplica.
 
 ## 15. Observabilidad
 
-Salud y métricas Prometheus en `/actuator/health` y `/actuator/prometheus`.
+Salud y métricas Prometheus en `/actuator/health` y `/actuator/prometheus` dentro de la red interna. Desde `localhost:8080`, `/actuator/**` responde 404 por diseño.
 
 ## 16. Pruebas
 
@@ -97,7 +97,8 @@ Detenga el contenedor y regrese a la imagen anterior. No hay datos que revertir.
 
 | Síntoma | Causa probable | Acción |
 |---|---|---|
-| 404 en `/{servicio}/...` | El servicio no está registrado | Verifique en http://localhost:8761 que aparezca. |
+| 404 en `/{servicio}/...` | El servicio no está registrado | Verifique en http://localhost:8761 que aparezca (con usuario y contraseña de Eureka). |
+| 404 en `/actuator/...` o `/discovery-ms/...` | Ruta bloqueada a propósito | Use la red interna o el panel de Eureka en `localhost:8761`. |
 | 503 | Ninguna instancia disponible | Levante el servicio y espere su registro. |
 | 401 | Token inválido o ausente | El gateway lo reenvía; revise el token con el servicio de usuarios. |
 

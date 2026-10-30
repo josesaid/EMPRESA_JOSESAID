@@ -197,4 +197,4 @@ Las migraciones no revierten solas. Para volver atrás, despliega la imagen ante
 - Al arrancar, `inventario-operaciones-ms` se registra en `discovery-ms` (Eureka). Después queda accesible por el gateway en `http://localhost:8080/inventario-operaciones-ms/...`.
 - **Orden de arranque:** `discovery-ms` primero. Si este servicio arranca antes, se registra solo cuando el registro esté disponible.
 - Métricas Prometheus en `/actuator/prometheus`, sin token, solo lectura.
-- Variable opcional `EUREKA_URL`. Por defecto `http://discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.
+- Variables `EUREKA_USUARIO` y `EUREKA_PASSWORD`: obligatorias en Docker; el Compose arma la URL de registro `http://USUARIO:CLAVE@discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://USUARIO:CLAVE@localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.
