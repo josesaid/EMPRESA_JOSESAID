@@ -5,7 +5,7 @@ Microservicio del área **Operaciones** de EMPRESA_JOSESAID. Controla existencia
 ## 1. Identidad
 
 - **Servicio:** inventario-operaciones-ms · **Versión:** 0.1.0 · **Lenguaje:** Java 21 · **Framework:** Spring Boot 4.1.2
-- **Puerto en tu Mac:** 8105 (contenedor: 8081) · **Base de datos:** `inventario`
+- **Acceso:** vía gateway, sin puerto publicado (contenedor: contenedor: 8081) · **Base de datos:** `inventario`
 - **Responsable:** pendiente de asignar · **Estado:** funcional; producción vs. servicio pendiente de confirmar (sección 20)
 
 ## 2. Propósito y alcance
@@ -65,7 +65,7 @@ Las credenciales viven solo en `.env`, que está en `.gitignore`.
 ```bash
 cd inventario-operaciones-ms
 docker compose up -d --build
-curl -s http://localhost:8105/actuator/health
+curl -s http://localhost:8080/inventario-operaciones-ms/actuator/health
 ```
 
 ## 7. Modelo de datos

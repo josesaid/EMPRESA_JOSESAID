@@ -282,22 +282,26 @@ Publica un indicador mensual al tópico `indicadores-areas`, que consume `report
 
 ## Rotación de la clave RS256
 
-usuarios-accesos-ms firma los tokens con una sola clave RS256. Su identificador (`kid`) es `empresa-usuarios-1`. La clave pública se publica en `/.well-known/jwks.json` y los servicios la cachean.
+usuarios-accesos-ms firma con una clave RS256 identificada por `kid` (por defecto `empresa-usuarios-1`). La clave pública se publica en `/.well-known/jwks.json`. Los servicios validan por `kid` y recargan el JWKS cuando reciben un `kid` que no conocen, así que no hace falta reiniciarlos.
 
-**Procedimiento (corte en ventana de baja actividad):**
+**Procedimiento sin cortar sesiones (dos reinicios de usuarios-accesos-ms):**
 
-1. Generar la nueva clave privada en PKCS#8 DER en Base64:
+1. Obtener la parte pública de la clave actual, en X.509 Base64. Ese valor va en `USUARIOS_JWT_CLAVE_PUBLICA_ANTERIOR`, y el `kid` actual en `USUARIOS_JWT_KID_ANTERIOR`:
+   `echo "$USUARIOS_JWT_CLAVE_PRIVADA" | base64 -d | openssl pkey -inform DER -pubout -outform DER | base64`
+2. Generar la clave nueva en PKCS#8 DER Base64 y guardarla en el gestor de secretos, nunca en el repositorio:
    `openssl genrsa 2048 | openssl pkcs8 -topk8 -nocrypt -outform DER | base64`
-2. Guardarla en el gestor de secretos de producción, nunca en el repositorio.
-3. Actualizar `USUARIOS_JWT_CLAVE_PRIVADA` en el `.env` de la raíz (se entrega al contenedor como `JWT_CLAVE_PRIVADA`). Cambiar también la constante `KID` en `ClavesJwt.java` (valor actual `empresa-usuarios-1`) a un valor nuevo; el `kid` es código, no configuración, así que requiere recompilar y desplegar.
-4. Desplegar usuarios-accesos-ms. El JWKS publica solo la clave nueva.
-5. Los servicios que validan tokens obtienen la nueva clave cuando su proveedor de JWKS la recarga. Revisar en la práctica cuánto tarda; no está medido.
+3. En el `.env` de la raíz: `USUARIOS_JWT_CLAVE_PRIVADA` con la clave nueva, `USUARIOS_JWT_KID` con un valor nuevo (por ejemplo `empresa-usuarios-2`), y `USUARIOS_JWT_CLAVE_PUBLICA_ANTERIOR` y `USUARIOS_JWT_KID_ANTERIOR` con los valores del paso 1.
+4. Reiniciar: `docker compose up -d usuarios-accesos-ms`. Desde aquí el JWKS publica las dos claves y los tokens nuevos se firman con la clave nueva.
+5. Esperar al menos 15 minutos (`JWT_DURACION`, por defecto 15 minutos) para que expiren los tokens firmados con la anterior.
+6. Quitar `USUARIOS_JWT_CLAVE_PUBLICA_ANTERIOR` y `USUARIOS_JWT_KID_ANTERIOR` del `.env` y reiniciar otra vez. El JWKS deja de publicar la clave anterior.
 
-**Efecto:** los tokens emitidos con la clave anterior dejan de validarse en cuanto los servicios refrescan el JWKS. Todas las sesiones deben iniciar sesión de nuevo; el costo es como máximo los 15 minutos de vida del token.
+**Efecto:** durante los pasos 4 y 5 validan tanto los tokens anteriores como los nuevos, así que las sesiones no se cortan.
 
-**Limitación:** no hay periodo de traslape. Para rotar sin cortar sesiones, el JWKS debe publicar ambas claves durante al menos la duración del token y firmar solo con la nueva. Eso requiere cambiar `ClavesJwt` y `SeguridadConfig` para aceptar varias claves; hoy no está implementado.
+**Si la clave se expone:** no esperar. Rotar y quitar la anterior de inmediato; los tokens firmados con ella dejan de validarse al recargar el JWKS.
 
-**Calendario:** por definir. Se recomienda rotar al menos una vez al año y de inmediato si la clave se expone.
+**Refresh tokens:** son opacos y no dependen de la clave RS256; no cambian con la rotación.
+
+**Calendario:** por definir. Se recomienda rotar al menos una vez al año.
 
 ## Área por usuario y rol JEFE_AREA
 

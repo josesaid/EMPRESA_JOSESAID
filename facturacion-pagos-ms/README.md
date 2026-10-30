@@ -5,7 +5,7 @@ Microservicio del área **Facturación y pagos** de EMPRESA_JOSESAID. Emite comp
 ## 1. Identidad
 
 - **Servicio:** facturacion-pagos-ms · **Versión:** 0.1.0 · **Lenguaje:** Java 21 · **Framework:** Spring Boot 4.1.2
-- **Puerto en tu Mac:** 8103 (contenedor: 8081) · **Base de datos:** `facturacion_pagos`
+- **Acceso:** vía gateway, sin puerto publicado (contenedor: contenedor: 8081) · **Base de datos:** `facturacion_pagos`
 - **Responsable:** pendiente de asignar · **Estado:** emisión provisional, sin timbrado fiscal (ver sección 20)
 
 ## 2. Propósito y alcance
@@ -69,7 +69,7 @@ Este servicio puede arrancar solo, pero sin PostgreSQL y Kafka no inicia. Para l
 ```bash
 cd facturacion-pagos-ms
 docker compose up -d --build
-curl -s http://localhost:8103/actuator/health
+curl -s http://localhost:8080/facturacion-pagos-ms/actuator/health
 ```
 
 Para desarrollo sin contenedor: `mvn spring-boot:run`, con las variables de la sección 5 y PostgreSQL y Kafka accesibles en localhost.

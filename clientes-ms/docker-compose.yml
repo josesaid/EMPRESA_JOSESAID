@@ -16,8 +16,6 @@ services:
       DB_PASSWORD: ${CLIENTES_DB_PASSWORD:?Defina CLIENTES_DB_PASSWORD en el archivo .env}
       KAFKA_BOOTSTRAP: kafka:29092
       EVENTOS_TOPICO: clientes.eventos.v1
-    ports:
-      - "8101:8080"
     networks:
       - empresa-net
     restart: unless-stopped

@@ -18,6 +18,9 @@ services:
       KAFKA_BOOTSTRAP: kafka:29092
       # Clave RSA privada (PKCS#8 en Base64) para firmar JWT. Definida en el .env de la raíz
       JWT_CLAVE_PRIVADA: ${USUARIOS_JWT_CLAVE_PRIVADA:?Defina USUARIOS_JWT_CLAVE_PRIVADA en el .env de la raíz}
+      JWT_KID: ${USUARIOS_JWT_KID:-empresa-usuarios-1}
+      JWT_CLAVE_PUBLICA_ANTERIOR: ${USUARIOS_JWT_CLAVE_PUBLICA_ANTERIOR:-}
+      JWT_KID_ANTERIOR: ${USUARIOS_JWT_KID_ANTERIOR:-}
       # Administrador inicial opcional: se crea al arrancar si el correo no existe
       ADMIN_INICIAL_CORREO: ${USUARIOS_ADMIN_INICIAL_CORREO:-}
       ADMIN_INICIAL_PASSWORD: ${USUARIOS_ADMIN_INICIAL_PASSWORD:-}

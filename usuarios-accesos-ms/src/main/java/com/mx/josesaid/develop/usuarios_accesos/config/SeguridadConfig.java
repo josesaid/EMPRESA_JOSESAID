@@ -1,6 +1,10 @@
 package com.mx.josesaid.develop.usuarios_accesos.config;
 
+import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.proc.SecurityContext;
+import java.util.ArrayList;
+import java.util.List;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.context.annotation.Bean;
@@ -55,13 +59,25 @@ public class SeguridadConfig {
     /** Clave RSA (privada y pública) cargada desde usuarios.jwt.clave-privada. */
     @Bean
     RSAKey claveRsa(PropiedadesJwt propiedades) {
-        return ClavesJwt.desdeBase64(propiedades.clavePrivada());
+        return ClavesJwt.desdeBase64(propiedades.clavePrivada(), propiedades.kid());
     }
 
-    /** Valida los tokens con la clave pública; este mismo servicio también es resource server. */
+    /** Claves públicas que validan los tokens: la actual y, durante una rotación, la anterior. */
     @Bean
-    JwtDecoder jwtDecoder(RSAKey claveRsa) throws Exception {
-        return NimbusJwtDecoder.withPublicKey(claveRsa.toRSAPublicKey()).build();
+    JWKSet clavesPublicas(RSAKey claveRsa, PropiedadesJwt propiedades) {
+        List<JWK> claves = new ArrayList<>();
+        claves.add(claveRsa.toPublicJWK());
+        if (propiedades.clavePublicaAnterior() != null && !propiedades.clavePublicaAnterior().isBlank()) {
+            claves.add(ClavesJwt.publicaAnterior(propiedades.clavePublicaAnterior(),
+                    propiedades.kidAnterior(), claveRsa.getKeyID()));
+        }
+        return new JWKSet(claves);
+    }
+
+    /** Valida los tokens por kid con las claves publicadas; este mismo servicio también es resource server. */
+    @Bean
+    JwtDecoder jwtDecoder(JWKSet clavesPublicas) {
+        return NimbusJwtDecoder.withJwkSource(new ImmutableJWKSet<SecurityContext>(clavesPublicas)).build();
     }
 
     /** Firma los tokens con la clave privada (RS256). */

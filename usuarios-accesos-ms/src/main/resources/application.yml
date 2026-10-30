@@ -50,6 +50,11 @@ usuarios:
     # Vida del token de acceso (ISO-8601)
     duracion: ${JWT_DURACION:PT15M}
     emisor: ${JWT_EMISOR:usuarios-accesos-ms}
+    # Identificador de la clave actual (encabezado kid). Cambiarlo al rotar la clave
+    kid: ${JWT_KID:empresa-usuarios-1}
+    # Solo durante una rotación: clave pública anterior (X.509 DER Base64) y su kid
+    clave-publica-anterior: ${JWT_CLAVE_PUBLICA_ANTERIOR:}
+    kid-anterior: ${JWT_KID_ANTERIOR:}
   outbox:
     # Cada cuántos milisegundos el retransmisor envía eventos pendientes a Kafka
     intervalo-ms: ${OUTBOX_INTERVALO_MS:5000}

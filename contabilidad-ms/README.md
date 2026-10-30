@@ -5,7 +5,7 @@ Microservicio del área **Finanzas y contabilidad** de EMPRESA_JOSESAID. Lleva e
 ## 1. Identidad
 
 - **Servicio:** contabilidad-ms · **Versión:** 0.1.0 · **Lenguaje:** Java 21 · **Framework:** Spring Boot 4.1.2
-- **Puerto en tu Mac:** 8104 (contenedor: 8081) · **Base de datos:** `contabilidad`
+- **Acceso:** vía gateway, sin puerto publicado (contenedor: contenedor: 8081) · **Base de datos:** `contabilidad`
 - **Responsable:** pendiente de asignar · **Estado:** libro contable funcional; estados financieros parciales (ver sección 20)
 
 ## 2. Propósito y alcance
@@ -66,7 +66,7 @@ Ningún valor real está en el código. Las credenciales viven en `.env`, que es
 ```bash
 cd contabilidad-ms
 docker compose up -d --build
-curl -s http://localhost:8104/actuator/health
+curl -s http://localhost:8080/contabilidad-ms/actuator/health
 ```
 
 Para desarrollo sin contenedor: `mvn spring-boot:run` con las variables de la sección 5.

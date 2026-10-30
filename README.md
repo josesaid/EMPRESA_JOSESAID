@@ -12,15 +12,15 @@ Diagrama de cada servicio: `<servicio>/docs/diagramas/arquitectura.png`.
 |---|---|---|
 | PostgreSQL 17 | 5432 | Una base de datos y un usuario por microservicio |
 | Kafka 4.0 | 9092 | Para acceso desde el host. Los contenedores usan `kafka:29092` |
-| clientes-ms | 8101 | API de clientes. Ver [clientes-ms/README.md](clientes-ms/README.md) |
+| clientes-ms | vía gateway | API de clientes. Ver [clientes-ms/README.md](clientes-ms/README.md) |
 | usuarios-accesos-ms | interno (sin puerto en el host) | Usuarios, roles y emisión de JWT. Ver [usuarios-accesos-ms/README.md](usuarios-accesos-ms/README.md) |
-| facturacion-pagos-ms | 8103 | Comprobantes, pagos y cancelaciones. Ver [facturacion-pagos-ms/README.md](facturacion-pagos-ms/README.md) |
-| contabilidad-ms | 8104 | Libro contable, pólizas, cierres y balanza. Ver [contabilidad-ms/README.md](contabilidad-ms/README.md) |
-| inventario-operaciones-ms | 8105 | Existencias, reservas, lotes y órdenes de operación. Ver [inventario-operaciones-ms/README.md](inventario-operaciones-ms/README.md) |
-| compras-proveedores-ms | 8106 | Proveedores con datos cifrados, órdenes de compra y recepciones. Ver [compras-proveedores-ms/README.md](compras-proveedores-ms/README.md) |
-| pedidos-ventas-ms | 8107 | Cotizaciones, pedidos, devoluciones y métricas de ventas. Ver [pedidos-ventas-ms/README.md](pedidos-ventas-ms/README.md) |
-| documentos-cumplimiento-ms | 8108 | Documentos legales con versiones, cifrado, vencimientos y retención. Ver [documentos-cumplimiento-ms/README.md](documentos-cumplimiento-ms/README.md) |
-| reportes-ejecutivos-ms | 8109 | Consolidado de indicadores por periodo, cierre de reportes y exportación. Ver [reportes-ejecutivos-ms/README.md](reportes-ejecutivos-ms/README.md) |
+| facturacion-pagos-ms | vía gateway | Comprobantes, pagos y cancelaciones. Ver [facturacion-pagos-ms/README.md](facturacion-pagos-ms/README.md) |
+| contabilidad-ms | vía gateway | Libro contable, pólizas, cierres y balanza. Ver [contabilidad-ms/README.md](contabilidad-ms/README.md) |
+| inventario-operaciones-ms | vía gateway | Existencias, reservas, lotes y órdenes de operación. Ver [inventario-operaciones-ms/README.md](inventario-operaciones-ms/README.md) |
+| compras-proveedores-ms | vía gateway | Proveedores con datos cifrados, órdenes de compra y recepciones. Ver [compras-proveedores-ms/README.md](compras-proveedores-ms/README.md) |
+| pedidos-ventas-ms | vía gateway | Cotizaciones, pedidos, devoluciones y métricas de ventas. Ver [pedidos-ventas-ms/README.md](pedidos-ventas-ms/README.md) |
+| documentos-cumplimiento-ms | vía gateway | Documentos legales con versiones, cifrado, vencimientos y retención. Ver [documentos-cumplimiento-ms/README.md](documentos-cumplimiento-ms/README.md) |
+| reportes-ejecutivos-ms | vía gateway | Consolidado de indicadores por periodo, cierre de reportes y exportación. Ver [reportes-ejecutivos-ms/README.md](reportes-ejecutivos-ms/README.md) |
 | discovery-ms | 8761 | Registro de servicios (Eureka). Panel en http://localhost:8761. Ver [discovery-ms/README.md](discovery-ms/README.md) |
 | gateway-ms | 8080 | Punto de entrada único; enruta a cada servicio registrado. Ver [gateway-ms/README.md](gateway-ms/README.md) |
 | prometheus | 9090 | Recolección de métricas de todos los servicios. Ver [sección 11](#11-gateway-descubrimiento-y-monitoreo) |
@@ -31,7 +31,7 @@ Diagrama de cada servicio: `<servicio>/docs/diagramas/arquitectura.png`.
 ## 2. Requisitos
 
 - Docker 24 o posterior y Docker Compose 2.20 o posterior.
-- Puertos 5432, 8101 y 9092 libres en el host.
+- Puertos 5432, 8080 y 9092 libres en el host.
 
 ## 3. Primera vez
 

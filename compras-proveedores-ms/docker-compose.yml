@@ -1,4 +1,4 @@
-# Microservicio compras-proveedores-ms (puerto 8106 en tu Mac).
+# Microservicio compras-proveedores-ms (sin puerto publicado; acceso por el gateway).
 # Requiere antes: postgres y kafka de la raíz (docker compose up -d desde la raíz).
 # Variables que se leen del .env de esta carpeta o del .env de la raíz:
 #   COMPRAS_DB_PASSWORD  contraseña del usuario compras
@@ -22,9 +22,6 @@ services:
       # Claves de cifrado de datos fiscales (AES-256-GCM e índice HMAC). Generar con openssl rand -base64 32
       COMPRAS_CIFRADO_CLAVE: ${COMPRAS_CIFRADO_CLAVE:?Defina COMPRAS_CIFRADO_CLAVE en .env}
       COMPRAS_INDICE_CLAVE: ${COMPRAS_INDICE_CLAVE:?Defina COMPRAS_INDICE_CLAVE en .env}
-    ports:
-      # Puerto de tu Mac 8106 -> puerto 8081 dentro del contenedor
-      - "8106:8081"
     # No hay depends_on: Compose rechaza depender de servicios de otro archivo.
     # El orden de arranque está documentado en el README de la raíz y en el de este servicio.
     networks:

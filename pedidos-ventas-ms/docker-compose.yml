@@ -1,4 +1,4 @@
-# Microservicio pedidos-ventas-ms (puerto 8107 en tu Mac).
+# Microservicio pedidos-ventas-ms (sin puerto publicado; acceso por el gateway).
 # Requiere antes: postgres y kafka de la raíz (docker compose up -d desde la raíz).
 # Variables que se leen del .env de esta carpeta o del .env de la raíz:
 #   PEDIDOS_DB_PASSWORD  contraseña del usuario pedidos
@@ -19,9 +19,6 @@ services:
       KAFKA_BOOTSTRAP: kafka:29092
       # Secreto compartido con usuarios-accesos-ms: sin él no se validan los tokens
       JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
-    ports:
-      # Puerto de tu Mac 8107 -> puerto 8081 dentro del contenedor
-      - "8107:8081"
     # No hay depends_on: Compose rechaza depender de servicios de otro archivo.
     # El orden de arranque está documentado en el README de la raíz y en el de este servicio.
     networks:

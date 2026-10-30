@@ -5,7 +5,7 @@ Microservicio del área **Compras y proveedores**. Administra proveedores con da
 ## 1. Identidad
 
 - **Servicio:** compras-proveedores-ms · **Versión:** 0.1.0 · **Lenguaje:** Java 21 · **Framework:** Spring Boot 4.1.2
-- **Puerto en tu Mac:** 8106 (contenedor: 8081) · **Base de datos:** `compras`
+- **Acceso:** vía gateway, sin puerto publicado (contenedor: contenedor: 8081) · **Base de datos:** `compras`
 - **Responsable:** pendiente de asignar · **Estado:** funcional; monto límite de aprobación pendiente de confirmar (sección 20)
 
 ## 2. Propósito y alcance
@@ -66,7 +66,7 @@ Las claves de cifrado nunca se escriben en el código ni en el repositorio. Guá
 ```bash
 cd compras-proveedores-ms
 docker compose up -d --build
-curl -s http://localhost:8106/actuator/health
+curl -s http://localhost:8080/compras-proveedores-ms/actuator/health
 ```
 
 ## 7. Modelo de datos

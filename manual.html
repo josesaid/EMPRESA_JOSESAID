@@ -181,15 +181,15 @@ a { color: var(--acceso); }
       <thead><tr><th>Componente</th><th>Puerto en tu Mac</th><th>Para qué</th></tr></thead>
       <tbody>
         <tr><td>gateway-ms</td><td class="num">8080</td><td>Entrada única a todos los servicios</td></tr>
-        <tr><td>clientes-ms</td><td class="num">8101</td><td>Clientes</td></tr>
+        <tr><td>clientes-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Clientes</td></tr>
         <tr><td>usuarios-accesos-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Usuarios, login y roles</td></tr>
-        <tr><td>facturacion-pagos-ms</td><td class="num">8103</td><td>Facturas y pagos</td></tr>
-        <tr><td>contabilidad-ms</td><td class="num">8104</td><td>Pólizas contables</td></tr>
-        <tr><td>inventario-operaciones-ms</td><td class="num">8105</td><td>Inventario</td></tr>
-        <tr><td>compras-proveedores-ms</td><td class="num">8106</td><td>Proveedores y órdenes de compra</td></tr>
-        <tr><td>pedidos-ventas-ms</td><td class="num">8107</td><td>Cotizaciones, pedidos y ventas</td></tr>
-        <tr><td>documentos-cumplimiento-ms</td><td class="num">8108</td><td>Documentos legales</td></tr>
-        <tr><td>reportes-ejecutivos-ms</td><td class="num">8109</td><td>Indicadores y reportes de dirección</td></tr>
+        <tr><td>facturacion-pagos-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Facturas y pagos</td></tr>
+        <tr><td>contabilidad-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Pólizas contables</td></tr>
+        <tr><td>inventario-operaciones-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Inventario</td></tr>
+        <tr><td>compras-proveedores-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Proveedores y órdenes de compra</td></tr>
+        <tr><td>pedidos-ventas-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Cotizaciones, pedidos y ventas</td></tr>
+        <tr><td>documentos-cumplimiento-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Documentos legales</td></tr>
+        <tr><td>reportes-ejecutivos-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Indicadores y reportes de dirección</td></tr>
         <tr><td>discovery-ms</td><td class="num">8761</td><td>Registro de servicios (Eureka)</td></tr>
         <tr><td>prometheus</td><td class="num">9090</td><td>Recolección de métricas</td></tr>
         <tr><td>grafana</td><td class="num">3000</td><td>Tableros de métricas</td></tr>
@@ -208,13 +208,13 @@ a { color: var(--acceso); }
   <h3>Ventas y clientes</h3>
   <div class="grupo">
     <article class="tarjeta ventas">
-      <span class="puerto">clientes-ms · 8101</span>
+      <span class="puerto">clientes-ms · vía gateway</span>
       <h3>Clientes</h3>
       <p>Guarda los datos de cada cliente. Los datos sensibles se cifran antes de guardarse, y se busca por un índice protegido para no exponer el valor original.</p>
       <p class="nota">Requiere las claves <code>CRYPTO_CLAVE_CIFRADO</code> y <code>CRYPTO_CLAVE_INDICE</code> en su propio archivo <code>.env</code>.</p>
     </article>
     <article class="tarjeta ventas">
-      <span class="puerto">pedidos-ventas-ms · 8107</span>
+      <span class="puerto">pedidos-ventas-ms · vía gateway</span>
       <h3>Pedidos y ventas</h3>
       <ul>
         <li>Cotizaciones: borrador, enviada, aceptada o vencida.</li>
@@ -228,12 +228,12 @@ a { color: var(--acceso); }
   <h3>Finanzas</h3>
   <div class="grupo">
     <article class="tarjeta finanzas">
-      <span class="puerto">facturacion-pagos-ms · 8103</span>
+      <span class="puerto">facturacion-pagos-ms · vía gateway</span>
       <h3>Facturación y pagos</h3>
       <p>Emite facturas y registra los pagos que las cubren.</p>
     </article>
     <article class="tarjeta finanzas">
-      <span class="puerto">contabilidad-ms · 8104</span>
+      <span class="puerto">contabilidad-ms · vía gateway</span>
       <h3>Contabilidad</h3>
       <p>Registra las pólizas contables. Los movimientos se guardan para no alterar el histórico.</p>
     </article>
@@ -242,12 +242,12 @@ a { color: var(--acceso); }
   <h3>Operaciones y compras</h3>
   <div class="grupo">
     <article class="tarjeta operaciones">
-      <span class="puerto">inventario-operaciones-ms · 8105</span>
+      <span class="puerto">inventario-operaciones-ms · vía gateway</span>
       <h3>Inventario</h3>
       <p>Controla existencias y movimientos de almacén. Las cantidades usan tres decimales.</p>
     </article>
     <article class="tarjeta operaciones">
-      <span class="puerto">compras-proveedores-ms · 8106</span>
+      <span class="puerto">compras-proveedores-ms · vía gateway</span>
       <h3>Compras y proveedores</h3>
       <p>Administra proveedores y órdenes de compra. El RFC del proveedor se muestra enmascarado y los datos sensibles van cifrados.</p>
       <p class="nota">Usa <code>COMPRAS_CIFRADO_CLAVE</code> e <code>COMPRAS_INDICE_CLAVE</code>.</p>
@@ -257,7 +257,7 @@ a { color: var(--acceso); }
   <h3>Legal</h3>
   <div class="grupo">
     <article class="tarjeta legal">
-      <span class="puerto">documentos-cumplimiento-ms · 8108</span>
+      <span class="puerto">documentos-cumplimiento-ms · vía gateway</span>
       <h3>Documentos de cumplimiento</h3>
       <ul>
         <li>Guarda contratos, permisos y registros legales en versiones.</li>
@@ -272,7 +272,7 @@ a { color: var(--acceso); }
   <h3>Dirección</h3>
   <div class="grupo">
     <article class="tarjeta direccion">
-      <span class="puerto">reportes-ejecutivos-ms · 8109</span>
+      <span class="puerto">reportes-ejecutivos-ms · vía gateway</span>
       <h3>Reportes ejecutivos</h3>
       <ul>
         <li>Consolida los indicadores de todas las áreas por periodo.</li>
@@ -359,7 +359,7 @@ a { color: var(--acceso); }
   <h2 id="ver">6. Dónde revisar que todo funciona</h2>
   <ul>
     <li><strong>Servicios registrados:</strong> http://localhost:8761 (con usuario y contraseña de Eureka)</li>
-    <li><strong>Salud de un servicio:</strong> http://localhost:8101/actuator/health (clientes-ms; los demás tienen su propio puerto)</li>
+    <li><strong>Salud de un servicio:</strong> http://localhost:8080/clientes-ms/actuator/health (clientes-ms; los demás tienen su propio puerto)</li>
     <li><strong>Objetivos de métricas:</strong> http://localhost:9090/targets</li>
     <li><strong>Tableros:</strong> http://localhost:3000</li>
     <li><strong>Trazas:</strong> http://localhost:16686</li>
@@ -384,16 +384,16 @@ a { color: var(--acceso); }
 
   <h2 id="pendientes">8. Lo que falta por decidir</h2>
   <ul>
-    <li>Calendario de rotación de la clave RS256 (el procedimiento ya está documentado en usuarios-accesos-ms/README.md); sin periodo de traslape todavía.</li>
+    <li>Rotación de la clave RS256 con periodo de traslape implementada (procedimiento en usuarios-accesos-ms/README.md). Falta definir el calendario de rotación.</li>
     <li>Cambio de la contraseña temporal de los diez jefes de área: cada uno debe cambiarla antes de iniciar sesión.</li>
     <li>Revocar también el access token al cerrar sesión; hoy vence en 15 minutos.</li>
-    <li>Métricas: usuarios-accesos ya no publica su puerto y el gateway bloquea /actuator; decidir si los demás servicios también dejan de publicar puertos.</li>
+    <li>Métricas: ningún servicio de área publica puerto; solo el gateway (8080) y Eureka (8761). El gateway bloquea /actuator.</li>
     <li>Retención documental de 5 años para todos los tipos. Falta la confirmación legal y la purga física al vencer.</li>
     <li>IVA fronterizo del 8 % pendiente de validar con Contabilidad.</li>
     <li>Órdenes de compra anteriores a V3: reciben en V4 la fecha de aplicación de la migración, por lo que cuentan en ese mes. Confirmar si el criterio es aceptable.</li>
   </ul>
   <h2 id="endpoints">9. Endpoints y ejemplos JSON por microservicio</h2>
-  <p>Cada bloque lista las rutas de un servicio y un cuerpo de ejemplo para probarlas. Por el gateway, la ruta lleva el nombre del servicio al inicio: <code>http://localhost:8080/clientes-ms/v1/clientes</code>. También se puede llamar directo al puerto del servicio (sección 1): <code>http://localhost:8101/v1/clientes</code>.</p>
+  <p>Cada bloque lista las rutas de un servicio y un cuerpo de ejemplo para probarlas. Por el gateway, la ruta lleva el nombre del servicio al inicio: <code>http://localhost:8080/clientes-ms/v1/clientes</code>. También se puede llamar directo al puerto del servicio (sección 1): <code>http://localhost:8080/clientes-ms/v1/clientes</code>.</p>
   <p>Todas las rutas, salvo el login, piden el encabezado <code>Authorization: Bearer &lt;token&gt;</code>. Los ejemplos usan un UUID de prueba, <code>3fa85f64-5717-4562-b3fc-2c963f66afa6</code>: reemplácelo por el id real que devuelve cada creación.</p>
   <p>Formatos: fecha <code>2026-10-29</code>, instante UTC <code>2026-10-29T16:30:00Z</code>, mes o periodo <code>2026-10</code>. Los errores siguen RFC 9457 (campos <code>type</code>, <code>title</code>, <code>status</code> y <code>detail</code>). Los campos que no aparecen como obligatorios pueden omitirse.</p>
 

@@ -38,7 +38,7 @@ public class EmisorTokens {
             reclamaciones.claim("area", usuario.getArea());
         }
         JwtClaimsSet claims = reclamaciones.build();
-        JwsHeader cabecera = JwsHeader.with(SignatureAlgorithm.RS256).keyId(ClavesJwt.KID).build();
+        JwsHeader cabecera = JwsHeader.with(SignatureAlgorithm.RS256).keyId(ClavesJwt.kid(propiedades.kid())).build();
         return encoder.encode(JwtEncoderParameters.from(cabecera, claims)).getTokenValue();
     }
 }

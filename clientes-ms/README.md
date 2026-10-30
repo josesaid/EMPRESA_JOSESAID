@@ -11,7 +11,7 @@ Microservicio de Clientes del área comercial. Gestiona prospectos, clientes, co
 | Base de datos | PostgreSQL 17 con Flyway |
 | Mensajería | Kafka, con patrón outbox |
 | Seguridad | OAuth2 / JWT (resource server) |
-| Puerto | 8080 en el contenedor, 8101 en el host |
+| Puerto | 8080 en el contenedor; sin puerto publicado en el host (acceso por el gateway) |
 
 Documentación: [diseño](docs/diseno.md) · [diagramas](docs/diagramas.md)
 
@@ -126,7 +126,7 @@ docker network create empresa-net    # solo la primera vez
 docker compose up -d --build
 ```
 
-La API queda en `http://localhost:8101`.
+La API queda en `http://localhost:8080/clientes-ms`.
 
 ### 4.2 Solo este servicio
 
@@ -154,7 +154,7 @@ Flyway aplica las migraciones pendientes al arrancar.
 ### 4.4 Verificar que está arriba
 
 ```bash
-curl http://localhost:8101/actuator/health
+curl http://localhost:8080/clientes-ms/actuator/health
 ```
 
 Respuesta esperada: `{"status":"UP"}`.
@@ -326,7 +326,7 @@ Todas las rutas empiezan con `/v1`. Los errores siguen RFC 9457 (`application/pr
 
 ### 9.3 Ejemplos
 
-Use `$TOKEN` con un JWT válido y `BASE=http://localhost:8101`.
+Use `$TOKEN` con un JWT válido y `BASE=http://localhost:8080/clientes-ms`.
 
 **Crear prospecto**
 

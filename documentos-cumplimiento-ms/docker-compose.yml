@@ -1,4 +1,4 @@
-# Microservicio documentos-cumplimiento-ms (puerto 8108 en tu Mac).
+# Microservicio documentos-cumplimiento-ms (sin puerto publicado; acceso por el gateway).
 # Requiere antes: postgres y kafka de la raíz (docker compose up -d desde la raíz).
 # Variables que se leen del .env de la raíz:
 #   DOCUMENTOS_DB_PASSWORD      contraseña del usuario documentos
@@ -24,9 +24,6 @@ services:
       DOCUMENTOS_CIFRADO_CLAVE: ${DOCUMENTOS_CIFRADO_CLAVE:?Defina DOCUMENTOS_CIFRADO_CLAVE en .env}
       # Carpeta del contenedor donde viven los archivos cifrados
       DOCUMENTOS_ALMACEN_DIR: /data/documentos
-    ports:
-      # Puerto de tu Mac 8108 -> puerto 8081 dentro del contenedor
-      - "8108:8081"
     volumes:
       # Volumen propio para los archivos: sobrevive a la recreación del contenedor
       - documentos-archivos:/data/documentos

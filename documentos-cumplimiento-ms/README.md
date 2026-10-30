@@ -4,7 +4,7 @@
 
 - **Nombre:** documentos-cumplimiento-ms
 - **Área de negocio:** Administración y legal
-- **Puerto en tu Mac:** 8108 (dentro del contenedor escucha en 8081)
+- **Acceso:** vía gateway, sin puerto publicado (contenedor: dentro del contenedor escucha en 8081)
 - **Base de datos:** `documentos`, usuario `documentos` (creados por `infra/postgres/init-databases.sh`)
 - **Versión:** 0.1.0 · Java 21 · Spring Boot 4.1.2 · PostgreSQL 17 · Kafka 4.0.0
 
@@ -76,7 +76,7 @@ Desde la raíz:
 docker compose up -d postgres kafka
 cd documentos-cumplimiento-ms
 docker compose up -d --build
-curl -s http://localhost:8108/actuator/health
+curl -s http://localhost:8080/documentos-cumplimiento-ms/actuator/health
 ```
 
 ## 7. Modelo de datos
