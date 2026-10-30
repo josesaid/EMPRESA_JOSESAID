@@ -1,0 +1,7 @@
+.env
+*.log
+.cfg-raiz.err
+.DS_Store
+target/
+.idea/
+*.iml

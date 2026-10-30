@@ -1,0 +1,77 @@
+# Configuración de documentos-cumplimiento-ms.
+# Las credenciales y claves se leen de variables de entorno; nunca se escriben valores reales aquí.
+spring:
+  application:
+    name: documentos-cumplimiento-ms
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/documentos}
+    username: ${DB_USER:documentos}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # El esquema lo controla Flyway; Hibernate solo valida que coincida
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+  servlet:
+    multipart:
+      # Tamaño máximo por archivo y por petición
+      max-file-size: ${DOCUMENTOS_MAX_ARCHIVO:20MB}
+      max-request-size: ${DOCUMENTOS_MAX_ARCHIVO:20MB}
+
+server:
+  port: ${SERVER_PORT:8081}
+
+management:
+  tracing:
+    sampling:
+      # 100% de las solicitudes para ver todo en la práctica; bajar en producción
+      probability: 1.0
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          # Jaeger recibe OTLP en la red empresa-net
+          endpoint: ${TRAZAS_OTLP_ENDPOINT:http://jaeger:4318/v1/traces}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+logging:
+  structured:
+    format:
+      # Logs JSON en formato ECS. Nunca se registra el contenido de los documentos.
+      file: ecs
+
+documentos:
+  jwt:
+    # Clave HMAC de al menos 32 caracteres. Sin ella el servicio no arranca.
+    secreto: ${JWT_SECRET:}
+    duracion: ${JWT_DURACION:PT15M}
+    emisor: ${JWT_EMISOR:documentos-cumplimiento-ms}
+  outbox:
+    intervalo-ms: ${OUTBOX_INTERVALO_MS:5000}
+  cifrado:
+    # Clave AES-256 en base64 (32 bytes). Sin ella el servicio no arranca.
+    clave: ${DOCUMENTOS_CIFRADO_CLAVE:}
+  almacen:
+    # Carpeta del contenedor donde se guardan los archivos cifrados (volumen propio)
+    directorio: ${DOCUMENTOS_ALMACEN_DIR:/data/documentos}
+  alertas:
+    # Cuándo se revisan vencimientos (cron de Spring) y cuántos días de anticipación alertan
+    cron: ${DOCUMENTOS_ALERTAS_CRON:0 0 7 * * *}
+    umbral-dias: ${DOCUMENTOS_ALERTAS_DIAS:30}
+
+# Descubrimiento de servicios: se registra al arrancar en discovery-ms.
+# Si discovery-ms no responde, el servicio arranca igual y se registra cuando el registro esté arriba.
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://discovery-ms:8761/eureka/}
+  instance:
+    hostname: ${EUREKA_INSTANCIA_HOST:${spring.application.name}}
+    prefer-ip-address: false

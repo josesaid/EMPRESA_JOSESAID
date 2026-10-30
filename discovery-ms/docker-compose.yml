@@ -1,0 +1,18 @@
+# Microservicio discovery-ms (registro de servicios; puerto 8761 en tu Mac).
+# Arranca antes que los servicios de área para que se registren en Eureka.
+
+services:
+  discovery-ms:
+    build: .
+    image: discovery-ms:0.1.0
+    ports:
+      # Puerto de tu Mac 8761 -> puerto 8761 dentro del contenedor
+      - "8761:8761"
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+networks:
+  empresa-net:
+    external: true
+    name: empresa-net

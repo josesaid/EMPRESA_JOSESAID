@@ -1,0 +1,37 @@
+# Servicio usuarios-accesos-ms.
+# Se puede levantar solo, o incluido desde la raíz de EMPRESA_JOSESAID (levanta toda la infraestructura).
+# Requiere: red externa "empresa-net", PostgreSQL y Kafka de la raíz.
+services:
+  usuarios-accesos-ms:
+    # Construye la imagen desde el Dockerfile de esta carpeta
+    build: .
+    image: usuarios-accesos-ms:0.1.0
+    environment:
+      # Base de datos propia del servicio dentro del PostgreSQL compartido
+      DB_URL: jdbc:postgresql://postgres:5432/usuarios_accesos
+      DB_USER: usuarios_accesos
+      # Contraseña definida en el .env de la raíz (USUARIOS_ACCESOS_DB_PASSWORD)
+      DB_PASSWORD: ${USUARIOS_ACCESOS_DB_PASSWORD:?Defina USUARIOS_ACCESOS_DB_PASSWORD en el .env de la raíz}
+      # Kafka compartido, listener interno de la red empresa-net
+      KAFKA_BOOTSTRAP: kafka:29092
+      # Clave para firmar JWT (mínimo 32 caracteres). Definida en el .env de la raíz
+      JWT_SECRET: ${USUARIOS_JWT_SECRET:?Defina USUARIOS_JWT_SECRET en el .env de la raíz}
+      # Administrador inicial opcional: se crea al arrancar si el correo no existe
+      ADMIN_INICIAL_CORREO: ${USUARIOS_ADMIN_INICIAL_CORREO:-}
+      ADMIN_INICIAL_PASSWORD: ${USUARIOS_ADMIN_INICIAL_PASSWORD:-}
+    ports:
+      # Puerto del host 8102 -> puerto 8081 del contenedor (clientes-ms usa 8101)
+      - "8102:8081"
+    # Orden de arranque: PostgreSQL y Kafka deben estar arriba antes que este servicio.
+    # Compose no permite depends_on hacia servicios de la raíz cuando este archivo se incluye,
+    # así que se documenta aquí y en el README. Si la base aún no responde, el servicio falla
+    # al arrancar y "restart: unless-stopped" lo vuelve a intentar.
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+networks:
+  # Red compartida creada una sola vez con: docker network create empresa-net
+  empresa-net:
+    external: true
+    name: empresa-net

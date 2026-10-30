@@ -1,0 +1,865 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Manual EMPRESA_JOSESAID</title>
+<style>
+/* Layout: columna de lectura con encabezado de color, tarjetas por área y tabla de puertos. */
+:root {
+  --bg: #f6f5f1;
+  --surface: #ffffff;
+  --fg: #1d1f24;
+  --muted: #5b6070;
+  --line: #dcdfe7;
+  --ventas: #d9480f;
+  --finanzas: #2b8a3e;
+  --operaciones: #1864ab;
+  --legal: #7048e8;
+  --direccion: #c2255c;
+  --acceso: #0b7285;
+  --infra: #495057;
+  --code-bg: #eceef3;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161b;
+    --surface: #1d2028;
+    --fg: #e9ebf0;
+    --muted: #a3a9b8;
+    --line: #313642;
+    --ventas: #ff8a5c;
+    --finanzas: #69db7c;
+    --operaciones: #74c0fc;
+    --legal: #b197fc;
+    --direccion: #f783ac;
+    --acceso: #66d9e8;
+    --infra: #adb5bd;
+    --code-bg: #262a33;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14161b;
+  --surface: #1d2028;
+  --fg: #e9ebf0;
+  --muted: #a3a9b8;
+  --line: #313642;
+  --ventas: #ff8a5c;
+  --finanzas: #69db7c;
+  --operaciones: #74c0fc;
+  --legal: #b197fc;
+  --direccion: #f783ac;
+  --acceso: #66d9e8;
+  --infra: #adb5bd;
+  --code-bg: #262a33;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+main { max-width: 960px; margin: 0 auto; }
+h1, h2, h3 { line-height: 1.25; text-wrap: balance; }
+h1 { font-size: 2.2rem; margin: 0 0 8px; }
+h2 { font-size: 1.5rem; margin: 40px 0 12px; border-bottom: 2px solid var(--line); padding-bottom: 6px; }
+h3 { font-size: 1.1rem; margin: 0 0 6px; }
+p { margin: 0 0 12px; max-width: 65ch; }
+code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px; }
+pre { background: var(--code-bg); padding: 12px 14px; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+.hero {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 8px solid var(--acceso);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 8px;
+}
+.hero p { color: var(--muted); }
+.leyenda { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+.chip {
+  font-size: 0.85rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 2px 12px;
+  font-weight: 600;
+}
+.grupo { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 14px; }
+.tarjeta {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--c);
+  border-radius: 10px;
+  padding: 16px 18px;
+  min-width: 0;
+}
+.tarjeta .puerto {
+  display: inline-block;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.85rem;
+  color: var(--c);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.tarjeta ul { margin: 6px 0 0; padding-left: 18px; }
+.tarjeta li { margin-bottom: 3px; }
+.tarjeta .nota { color: var(--muted); font-size: 0.92rem; }
+.ventas { --c: var(--ventas); }
+.finanzas { --c: var(--finanzas); }
+.operaciones { --c: var(--operaciones); }
+.legal { --c: var(--legal); }
+.direccion { --c: var(--direccion); }
+.acceso { --c: var(--acceso); }
+.infra { --c: var(--infra); }
+.tabla-wrap { overflow-x: auto; margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; background: var(--surface); }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+td.num { font-variant-numeric: tabular-nums; font-family: ui-monospace, Menlo, monospace; white-space: nowrap; }
+.flujo { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 14px 0; }
+.paso {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.92rem;
+}
+.flecha { color: var(--muted); font-weight: 700; }
+.glosario dt { font-weight: 700; margin-top: 10px; }
+.glosario dd { margin: 2px 0 0 0; color: var(--muted); max-width: 65ch; }
+.aviso {
+  background: var(--surface);
+  border: 1px dashed var(--direccion);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 14px;
+}
+.servicio { border-left: 6px solid var(--c); padding: 4px 0 4px 18px; margin: 28px 0; }
+.servicio h3 { color: var(--c); font-size: 1.2rem; margin-bottom: 4px; }
+.servicio h4 { font-size: 1rem; margin: 18px 0 6px; }
+.servicio table { font-size: 0.93rem; }
+.diagrama { margin: 14px 0 22px; background: #ffffff; border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+.diagrama img { display: block; width: 100%; height: auto; }
+.diagrama figcaption { color: #5b6070; font-size: 0.9rem; margin-top: 8px; }
+.valores { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 12px 0 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.valores > div { display: contents; }
+.valores dt { font-family: ui-monospace, Menlo, monospace; font-size: 0.9rem; font-weight: 700; color: var(--c); }
+.valores dd { margin: 0; }
+@media (max-width: 560px) { .valores { grid-template-columns: 1fr; gap: 2px; } .valores > div { display: block; margin-bottom: 8px; } }
+.tabla-wrap + h4 { margin-top: 18px; }
+a { color: var(--acceso); }
+:focus-visible { outline: 3px solid var(--acceso); outline-offset: 2px; }
+</style>
+
+<main>
+  <header class="hero">
+    <h1>Manual de EMPRESA_JOSESAID</h1>
+    <p>Este manual explica qué es cada pieza del sistema, para qué sirve y cómo se conecta con las demás. Está pensado para quien va a operar, probar o mantener la plataforma, aunque no haya escrito el código.</p>
+    <p>La plataforma tiene <strong>9 microservicios de área</strong>, un <strong>gateway</strong> de entrada, un <strong>servidor de registro</strong> y herramientas de <strong>monitoreo y trazabilidad</strong>. Cada color de este manual representa un área.</p>
+    <ul class="leyenda" aria-label="Colores por área">
+      <li class="chip ventas" style="color:var(--ventas)">Ventas y clientes</li>
+      <li class="chip finanzas" style="color:var(--finanzas)">Finanzas</li>
+      <li class="chip operaciones" style="color:var(--operaciones)">Operaciones y compras</li>
+      <li class="chip legal" style="color:var(--legal)">Legal</li>
+      <li class="chip direccion" style="color:var(--direccion)">Dirección</li>
+      <li class="chip acceso" style="color:var(--acceso)">Acceso</li>
+      <li class="chip infra" style="color:var(--infra)">Infraestructura</li>
+    </ul>
+  </header>
+
+  <h2 id="mapa">1. Mapa rápido de puertos</h2>
+  <p>Estos son los puertos en tu Mac. Dentro de Docker, cada servicio usa su propio nombre y puerto interno.</p>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Componente</th><th>Puerto en tu Mac</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>gateway-ms</td><td class="num">8080</td><td>Entrada única a todos los servicios</td></tr>
+        <tr><td>clientes-ms</td><td class="num">8101</td><td>Clientes</td></tr>
+        <tr><td>usuarios-accesos-ms</td><td class="num">8102</td><td>Usuarios, login y roles</td></tr>
+        <tr><td>facturacion-pagos-ms</td><td class="num">8103</td><td>Facturas y pagos</td></tr>
+        <tr><td>contabilidad-ms</td><td class="num">8104</td><td>Pólizas contables</td></tr>
+        <tr><td>inventario-operaciones-ms</td><td class="num">8105</td><td>Inventario</td></tr>
+        <tr><td>compras-proveedores-ms</td><td class="num">8106</td><td>Proveedores y órdenes de compra</td></tr>
+        <tr><td>pedidos-ventas-ms</td><td class="num">8107</td><td>Cotizaciones, pedidos y ventas</td></tr>
+        <tr><td>documentos-cumplimiento-ms</td><td class="num">8108</td><td>Documentos legales</td></tr>
+        <tr><td>reportes-ejecutivos-ms</td><td class="num">8109</td><td>Indicadores y reportes de dirección</td></tr>
+        <tr><td>discovery-ms</td><td class="num">8761</td><td>Registro de servicios (Eureka)</td></tr>
+        <tr><td>prometheus</td><td class="num">9090</td><td>Recolección de métricas</td></tr>
+        <tr><td>grafana</td><td class="num">3000</td><td>Tableros de métricas</td></tr>
+        <tr><td>jaeger</td><td class="num">16686</td><td>Trazas de cada solicitud</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="areas">2. Servicios de área</h2>
+  <p>Cada servicio es dueño de sus datos y tiene su propia base de datos en PostgreSQL. Ningún servicio lee la base de otro: se comunican por la API o por eventos de Kafka.</p>
+  <figure class="diagrama">
+    <img src="img/general.png" alt="Diagrama general de la arquitectura de EMPRESA_JOSESAID" loading="lazy">
+    <figcaption>Vista general: gateway, registro, servicios de área, Kafka, PostgreSQL y monitoreo.</figcaption>
+  </figure>
+
+  <h3>Ventas y clientes</h3>
+  <div class="grupo">
+    <article class="tarjeta ventas">
+      <span class="puerto">clientes-ms · 8101</span>
+      <h3>Clientes</h3>
+      <p>Guarda los datos de cada cliente. Los datos sensibles se cifran antes de guardarse, y se busca por un índice protegido para no exponer el valor original.</p>
+      <p class="nota">Requiere las claves <code>CRYPTO_CLAVE_CIFRADO</code> y <code>CRYPTO_CLAVE_INDICE</code> en su propio archivo <code>.env</code>.</p>
+    </article>
+    <article class="tarjeta ventas">
+      <span class="puerto">pedidos-ventas-ms · 8107</span>
+      <h3>Pedidos y ventas</h3>
+      <ul>
+        <li>Cotizaciones: borrador, enviada, aceptada o vencida.</li>
+        <li>Pedidos: borrador, confirmado, entregado, cancelado o devuelto.</li>
+        <li>Totales con IVA general (16 %), fronterizo (8 %) y exento.</li>
+      </ul>
+      <p class="nota">Una cotización vencida no se puede aceptar: responde 410.</p>
+    </article>
+  </div>
+
+  <h3>Finanzas</h3>
+  <div class="grupo">
+    <article class="tarjeta finanzas">
+      <span class="puerto">facturacion-pagos-ms · 8103</span>
+      <h3>Facturación y pagos</h3>
+      <p>Emite facturas y registra los pagos que las cubren.</p>
+    </article>
+    <article class="tarjeta finanzas">
+      <span class="puerto">contabilidad-ms · 8104</span>
+      <h3>Contabilidad</h3>
+      <p>Registra las pólizas contables. Los movimientos se guardan para no alterar el histórico.</p>
+    </article>
+  </div>
+
+  <h3>Operaciones y compras</h3>
+  <div class="grupo">
+    <article class="tarjeta operaciones">
+      <span class="puerto">inventario-operaciones-ms · 8105</span>
+      <h3>Inventario</h3>
+      <p>Controla existencias y movimientos de almacén. Las cantidades usan tres decimales.</p>
+    </article>
+    <article class="tarjeta operaciones">
+      <span class="puerto">compras-proveedores-ms · 8106</span>
+      <h3>Compras y proveedores</h3>
+      <p>Administra proveedores y órdenes de compra. El RFC del proveedor se muestra enmascarado y los datos sensibles van cifrados.</p>
+      <p class="nota">Usa <code>COMPRAS_CIFRADO_CLAVE</code> e <code>COMPRAS_INDICE_CLAVE</code>.</p>
+    </article>
+  </div>
+
+  <h3>Legal</h3>
+  <div class="grupo">
+    <article class="tarjeta legal">
+      <span class="puerto">documentos-cumplimiento-ms · 8108</span>
+      <h3>Documentos de cumplimiento</h3>
+      <ul>
+        <li>Guarda contratos, permisos y registros legales en versiones.</li>
+        <li>Los archivos se cifran con AES-256 antes de escribirse en disco.</li>
+        <li>Calcula el tiempo de retención según el tipo de documento.</li>
+        <li>Una tarea diaria a las 7:00 avisa de los documentos por vencer.</li>
+      </ul>
+      <p class="nota">Las versiones no se pueden modificar: una base de datos lo impide.</p>
+    </article>
+  </div>
+
+  <h3>Dirección</h3>
+  <div class="grupo">
+    <article class="tarjeta direccion">
+      <span class="puerto">reportes-ejecutivos-ms · 8109</span>
+      <h3>Reportes ejecutivos</h3>
+      <ul>
+        <li>Consolida los indicadores de todas las áreas por periodo.</li>
+        <li>Marca como desactualizado un indicador cuya fuente no se actualizó en 7 días.</li>
+        <li>Al cerrar un reporte se guarda una foto que ya no cambia.</li>
+        <li>Exporta en CSV, PDF y XLSX.</li>
+      </ul>
+      <p class="nota">Recibe los indicadores de las áreas por el tópico <code>indicadores-areas</code>.</p>
+    </article>
+  </div>
+
+  <h3>Acceso</h3>
+  <div class="grupo">
+    <article class="tarjeta acceso">
+      <span class="puerto">usuarios-accesos-ms · 8102</span>
+      <h3>Usuarios y accesos</h3>
+      <p>Emite los tokens JWT que usan todos los servicios para saber quién hace cada solicitud y qué rol tiene. Los roles son ADMIN, FINANZAS, CONTADOR, VENTAS, COMPRAS, ALMACEN, OPERACIONES, CALIDAD, DIRECCION y LEGAL.</p>
+      <p class="nota">Todos los servicios usan el mismo <code>USUARIOS_JWT_SECRET</code>.</p>
+    </article>
+  </div>
+
+  <h2 id="infra">3. Infraestructura</h2>
+  <div class="grupo">
+    <article class="tarjeta infra">
+      <span class="puerto">postgres</span>
+      <h3>PostgreSQL 17</h3>
+      <p>Una base de datos por servicio, creada al iniciar por <code>infra/postgres/init-databases.sh</code>. Si el volumen ya existía, la base y el rol se crean a mano.</p>
+    </article>
+    <article class="tarjeta infra">
+      <span class="puerto">kafka</span>
+      <h3>Kafka</h3>
+      <p>Transporta los eventos entre servicios. Cada servicio publica en su propio tópico, por ejemplo <code>clientes.eventos.v1</code> o <code>compras.eventos</code>. Reportes consume el tópico <code>indicadores-areas</code>.</p>
+      <p class="nota">Kafka UI (<code>http://localhost:8090</code>) muestra los tópicos y sus mensajes. Un tópico aparece en cuanto recibe su primer evento.</p>
+    </article>
+    <article class="tarjeta infra">
+      <span class="puerto">discovery-ms · 8761</span>
+      <h3>Registro de servicios (Eureka)</h3>
+      <p>Cada servicio se registra al arrancar. Su panel muestra qué está en línea. Si este registro se levanta después, los servicios aparecen solos en menos de un minuto.</p>
+    </article>
+    <article class="tarjeta infra">
+      <span class="puerto">gateway-ms · 8080</span>
+      <h3>Gateway</h3>
+      <p>Recibe todas las solicitudes y las reenvía al servicio correcto. Cada servicio registrado queda en <code>/{nombre-del-servicio}/...</code>. Por ejemplo, <code>/usuarios-accesos-ms/v1/auth/login</code>.</p>
+      <p class="nota">No valida tokens: cada servicio lo hace.</p>
+    </article>
+    <article class="tarjeta infra">
+      <span class="puerto">prometheus · 9090</span>
+      <h3>Prometheus</h3>
+      <p>Lee cada 15 segundos las métricas de todos los servicios, como tiempos de respuesta, memoria y solicitudes.</p>
+    </article>
+    <article class="tarjeta infra">
+      <span class="puerto">grafana · 3000</span>
+      <h3>Grafana</h3>
+      <p>Muestra las métricas en tableros. Entra con el usuario <code>admin</code> y la contraseña de <code>GRAFANA_ADMIN_PASSWORD</code>.</p>
+    </article>
+    <article class="tarjeta infra">
+      <span class="puerto">jaeger · 16686</span>
+      <h3>Jaeger</h3>
+      <p>Muestra el camino de cada solicitud: por qué servicios pasó y cuánto tardó en cada uno. Se busca por servicio en <strong>Find Traces</strong>.</p>
+    </article>
+  </div>
+
+  <h2 id="flujo">4. Cómo viaja una solicitud</h2>
+  <div class="flujo" role="img" aria-label="Flujo de una solicitud: cliente, gateway, servicio de área y base de datos">
+    <span class="paso">Cliente o aplicación</span><span class="flecha">→</span>
+    <span class="paso">gateway-ms (8080)</span><span class="flecha">→</span>
+    <span class="paso">servicio de área</span><span class="flecha">→</span>
+    <span class="paso">su base de datos</span>
+  </div>
+  <p>El servicio de área valida el token JWT y revisa el rol. Si la operación cambia datos y debe avisar a otras áreas, guarda el evento en su tabla <code>outbox_eventos</code> dentro de la misma transacción. Un proceso lo envía después a Kafka. Así un evento nunca se pierde aunque Kafka esté caído en ese momento.</p>
+  <p>Las solicitudes quedan registradas en Jaeger de principio a fin, y sus métricas llegan a Prometheus.</p>
+
+  <h2 id="arranque">5. Orden para levantar todo</h2>
+  <ol>
+    <li><strong>Red y base:</strong> <code>docker network create empresa-net</code> (una sola vez), luego <code>docker compose up -d postgres kafka</code>.</li>
+    <li><strong>Registro:</strong> <code>docker compose up -d discovery-ms</code>. Los servicios deben encontrarlo al arrancar.</li>
+    <li><strong>Gateway y servicios de área:</strong> <code>docker compose up -d --build</code> desde la raíz. Pueden levantarse en cualquier orden entre sí.</li>
+    <li><strong>Monitoreo y trazas:</strong> ya quedan incluidos en el mismo comando.</li>
+  </ol>
+  <p>Cada servicio también puede levantarse solo desde su carpeta. Su README indica qué necesita antes.</p>
+
+  <h2 id="ver">6. Dónde revisar que todo funciona</h2>
+  <ul>
+    <li><strong>Servicios registrados:</strong> http://localhost:8761</li>
+    <li><strong>Salud a través del gateway:</strong> http://localhost:8080/usuarios-accesos-ms/actuator/health</li>
+    <li><strong>Objetivos de métricas:</strong> http://localhost:9090/targets</li>
+    <li><strong>Tableros:</strong> http://localhost:3000</li>
+    <li><strong>Trazas:</strong> http://localhost:16686</li>
+  </ul>
+  <div class="aviso">
+    <p><strong>Antes de empezar:</strong> cada servicio necesita sus variables en el <code>.env</code> de la raíz o en el suyo. Si falta una, Docker Compose lo indica con un mensaje que empieza por <em>Defina</em>. Guarde las claves de cifrado: sin ellas no se pueden leer los datos cifrados.</p>
+  </div>
+
+  <h2 id="glosario">7. Glosario</h2>
+  <dl class="glosario">
+    <dt>Microservicio</dt><dd>Programa pequeño que hace una sola cosa de negocio y tiene su propia base de datos.</dd>
+    <dt>Gateway</dt><dd>Punto de entrada único que reenvía cada solicitud al servicio correcto.</dd>
+    <dt>Eureka (discovery)</dt><dd>Registro donde cada servicio se anuncia para que los demás lo encuentren.</dd>
+    <dt>JWT</dt><dd>Token firmado que identifica al usuario y su rol. Lo emite usuarios-accesos-ms.</dd>
+    <dt>DDD</dt><dd>Diseño guiado por el dominio: el código se organiza según los conceptos del negocio, como Cotización o Reporte.</dd>
+    <dt>Outbox</dt><dd>Tabla donde un servicio deja los eventos que debe publicar, dentro de la misma transacción que el cambio de datos.</dd>
+    <dt>Flyway</dt><dd>Herramienta que aplica los cambios de la base de datos en orden y una sola vez.</dd>
+    <dt>RFC 9457</dt><dd>Formato estándar de los errores de la API: indica tipo, título, estado y detalle.</dd>
+    <dt>Trazas (OTLP)</dt><dd>Protocolo con el que los servicios envían sus trazas a Jaeger.</dd>
+    <dt>Métricas (Prometheus)</dt><dd>Números que describen el estado de cada servicio: memoria, solicitudes y tiempos.</dd>
+  </dl>
+
+  <h2 id="pendientes">8. Lo que falta por decidir</h2>
+  <ul>
+    <li>Validación de tokens centralizada en el gateway.</li>
+    <li>Acceso por área en reportes: hoy solo ve todo el rol DIRECCION.</li>
+    <li>Autenticación en el panel de Eureka y en las métricas.</li>
+    <li>Retención documental (años por tipo) y purga física al vencer, pendientes de confirmación legal.</li>
+    <li>IVA fronterizo del 8 % pendiente de validar con Contabilidad.</li>
+  </ul>
+  <h2 id="endpoints">9. Endpoints y ejemplos JSON por microservicio</h2>
+  <p>Cada bloque lista las rutas de un servicio y un cuerpo de ejemplo para probarlas. Por el gateway, la ruta lleva el nombre del servicio al inicio: <code>http://localhost:8080/clientes-ms/v1/clientes</code>. También se puede llamar directo al puerto del servicio (sección 1): <code>http://localhost:8101/v1/clientes</code>.</p>
+  <p>Todas las rutas, salvo el login, piden el encabezado <code>Authorization: Bearer &lt;token&gt;</code>. Los ejemplos usan un UUID de prueba, <code>3fa85f64-5717-4562-b3fc-2c963f66afa6</code>: reemplácelo por el id real que devuelve cada creación.</p>
+  <p>Formatos: fecha <code>2026-10-29</code>, instante UTC <code>2026-10-29T16:30:00Z</code>, mes o periodo <code>2026-10</code>. Los errores siguen RFC 9457 (campos <code>type</code>, <code>title</code>, <code>status</code> y <code>detail</code>). Los campos que no aparecen como obligatorios pueden omitirse.</p>
+
+  <h3>Primer paso: obtener el token</h3>
+  <pre><code>curl -s -X POST http://localhost:8080/usuarios-accesos-ms/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"correo":"admin@empresa.mx","password":"&lt;su-contraseña&gt;"}'</code></pre>
+  <p>La respuesta trae <code>accessToken</code>, <code>tokenType</code> y <code>expiresIn</code>. Ese valor va en el encabezado <code>Authorization</code> de las demás llamadas.</p>
+
+  <section class="servicio ventas" id="ep-clientes">
+    <h3>Clientes · <code>/clientes-ms</code></h3>
+    <figure class="diagrama"><img src="img/clientes-ms.png" alt="Diagrama de arquitectura de clientes-ms" loading="lazy"><figcaption>Arquitectura de clientes-ms.</figcaption></figure>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td class="num">POST</td><td class="num">/v1/prospectos</td><td>Crea un prospecto. Con <code>?confirmarDuplicado=true</code> lo crea aun si hay un posible duplicado.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/prospectos/{id}</td><td>Consulta un prospecto.</td></tr>
+        <tr><td class="num">PATCH</td><td class="num">/v1/prospectos/{id}/estatus</td><td>Cambia el estatus del prospecto.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/prospectos/{id}/conversion</td><td>Convierte el prospecto en cliente con su contacto principal.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/clientes</td><td>Crea un cliente directamente.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/clientes?rfc=&amp;nombre=</td><td>Busca clientes por RFC o por nombre.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/clientes/{id}</td><td>Consulta un cliente.</td></tr>
+        <tr><td class="num">PATCH</td><td class="num">/v1/clientes/{id}</td><td>Cambia la razón social.</td></tr>
+        <tr><td class="num">PATCH</td><td class="num">/v1/clientes/{id}/estatus</td><td>Cambia el estatus del cliente.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/clientes/{id}/contactos</td><td>Agrega un contacto al cliente.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/contactos/{contactoId}/consentimientos</td><td>Registra un consentimiento de privacidad del contacto.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/consentimientos/{id}/revocacion</td><td>Revoca un consentimiento. No lleva cuerpo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/clientes/{clienteId}/interacciones</td><td>Registra una llamada, correo o visita.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/clientes/{clienteId}/interacciones</td><td>Lista las interacciones del cliente.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/metricas/conversion?mes=2026-10</td><td>Tasa de conversión de prospectos a clientes en el mes.</td></tr>
+      </tbody>
+    </table></div>
+    <dl class="valores">
+      <div><dt>fuente</dt><dd>CAMPANA, REFERIDO, EVENTO</dd></div>
+      <div><dt>rol</dt><dd>COMPRAS, PAGOS, ASISTENCIA</dd></div>
+      <div><dt>medio</dt><dd>FORMULARIO, CORREO, TELEFONO, PRESENCIAL</dd></div>
+      <div><dt>tipo</dt><dd>LLAMADA, CORREO, VISITA</dd></div>
+      <div><dt>estatus (prospecto)</dt><dd>NUEVO, CONTACTADO, CALIFICADO, CONVERTIDO, PERDIDO</dd></div>
+      <div><dt>estatus (cliente)</dt><dd>ACTIVO, SUSPENDIDO, BAJA</dd></div>
+    </dl>
+
+    <h4>Crear un prospecto</h4>
+    <pre><code>POST /clientes-ms/v1/prospectos
+{
+  "nombre": "Distribuidora del Norte",
+  "correo": "compras@norte.mx",
+  "rfc": "ABC850101XY1",
+  "fuente": "REFERIDO"
+}</code></pre>
+
+    <h4>Cambiar el estatus de un prospecto</h4>
+    <pre><code>PATCH /clientes-ms/v1/prospectos/{id}/estatus
+{
+  "estatus": "CONTACTADO"
+}</code></pre>
+
+    <h4>Convertir un prospecto en cliente</h4>
+    <pre><code>POST /clientes-ms/v1/prospectos/{id}/conversion
+{
+  "razonSocial": "Distribuidora del Norte SA de CV",
+  "rfc": "ABC850101XY1",
+  "contactoPrincipal": {
+    "nombre": "Ana López",
+    "correo": "ana.lopez@norte.mx",
+    "rol": "COMPRAS"
+  }
+}</code></pre>
+
+    <h4>Crear un cliente</h4>
+    <pre><code>POST /clientes-ms/v1/clientes
+{
+  "razonSocial": "Distribuidora del Norte SA de CV",
+  "rfc": "ABC850101XY1",
+  "contactoPrincipal": {
+    "nombre": "Ana López",
+    "correo": "ana.lopez@norte.mx",
+    "rol": "COMPRAS"
+  }
+}</code></pre>
+
+    <h4>Agregar un contacto</h4>
+    <pre><code>POST /clientes-ms/v1/clientes/{id}/contactos
+{
+  "nombre": "Luis Pérez",
+  "correo": "luis.perez@norte.mx",
+  "rol": "PAGOS",
+  "principal": false
+}</code></pre>
+
+    <h4>Registrar un consentimiento</h4>
+    <pre><code>POST /clientes-ms/v1/contactos/{contactoId}/consentimientos
+{
+  "finalidad": "Envío de promociones",
+  "fechaOtorgado": "2026-10-29T10:00:00Z",
+  "medio": "FORMULARIO",
+  "vigencia": "2027-10-29"
+}</code></pre>
+
+    <h4>Registrar una interacción</h4>
+    <pre><code>POST /clientes-ms/v1/clientes/{clienteId}/interacciones
+{
+  "tipo": "LLAMADA",
+  "fecha": "2026-10-29T16:30:00Z",
+  "resumen": "Confirmó interés en el catálogo 2027."
+}</code></pre>
+  </section>
+
+  <section class="servicio acceso" id="ep-usuarios">
+    <h3>Usuarios y accesos · <code>/usuarios-accesos-ms</code></h3>
+    <figure class="diagrama"><img src="img/usuarios-accesos-ms.png" alt="Diagrama de arquitectura de usuarios-accesos-ms" loading="lazy"><figcaption>Arquitectura de usuarios-accesos-ms.</figcaption></figure>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td class="num">POST</td><td class="num">/v1/auth/login</td><td>Obtiene el token JWT. Es la única ruta sin token.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/usuarios</td><td>Crea un usuario con sus roles.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/usuarios/{id}</td><td>Consulta un usuario. Los datos personales salen enmascarados.</td></tr>
+        <tr><td class="num">PUT</td><td class="num">/v1/usuarios/{id}/roles</td><td>Cambia los roles del usuario. Pide un motivo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/usuarios/{id}/baja</td><td>Da de baja al usuario. No lleva cuerpo.</td></tr>
+      </tbody>
+    </table></div>
+    <dl class="valores">
+      <div><dt>roles</dt><dd>ADMIN, FINANZAS, CONTADOR, VENTAS, COMPRAS, ALMACEN, OPERACIONES, CALIDAD, DIRECCION, LEGAL</dd></div>
+    </dl>
+
+    <h4>Crear un usuario</h4>
+    <pre><code>POST /usuarios-accesos-ms/v1/usuarios
+{
+  "correo": "marta.ruiz@empresa.mx",
+  "nombreCompleto": "Marta Ruiz Vega",
+  "password": "&lt;contraseña-segura&gt;",
+  "roles": ["CONTADOR", "FINANZAS"]
+}</code></pre>
+
+    <h4>Cambiar roles</h4>
+    <pre><code>PUT /usuarios-accesos-ms/v1/usuarios/{id}/roles
+{
+  "roles": ["VENTAS", "DIRECCION"],
+  "motivo": "Cambio de área"
+}</code></pre>
+  </section>
+
+  <section class="servicio finanzas" id="ep-facturacion">
+    <h3>Facturación y pagos · <code>/facturacion-pagos-ms</code></h3>
+    <figure class="diagrama"><img src="img/facturacion-pagos-ms.png" alt="Diagrama de arquitectura de facturacion-pagos-ms" loading="lazy"><figcaption>Arquitectura de facturacion-pagos-ms.</figcaption></figure>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td class="num">POST</td><td class="num">/v1/comprobantes</td><td>Crea un comprobante en borrador para una orden.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/comprobantes/{id}</td><td>Consulta un comprobante.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/comprobantes/{id}/emision</td><td>Emite el comprobante. No lleva cuerpo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/comprobantes/{id}/cancelacion</td><td>Cancela el comprobante con un motivo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/comprobantes/{id}/pagos</td><td>Registra un pago contra el comprobante.</td></tr>
+      </tbody>
+    </table></div>
+    <dl class="valores">
+      <div><dt>tasaIva</dt><dd>Decimal entre 0 y 1: 0.16 para IVA general, 0.08 para fronterizo, 0 para exento</dd></div>
+    </dl>
+
+    <h4>Crear un comprobante</h4>
+    <pre><code>POST /facturacion-pagos-ms/v1/comprobantes
+{
+  "ordenId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "moneda": "MXN",
+  "subtotal": 1500.00,
+  "tasaIva": 0.16
+}</code></pre>
+
+    <h4>Registrar un pago</h4>
+    <pre><code>POST /facturacion-pagos-ms/v1/comprobantes/{id}/pagos
+{
+  "monto": 500.00,
+  "fechaPago": "2026-10-29",
+  "referencia": "SPEI-998877"
+}</code></pre>
+
+    <h4>Cancelar un comprobante</h4>
+    <pre><code>POST /facturacion-pagos-ms/v1/comprobantes/{id}/cancelacion
+{
+  "motivo": "Error en el importe"
+}</code></pre>
+  </section>
+
+  <section class="servicio finanzas" id="ep-contabilidad">
+    <h3>Contabilidad · <code>/contabilidad-ms</code></h3>
+    <figure class="diagrama"><img src="img/contabilidad-ms.png" alt="Diagrama de arquitectura de contabilidad-ms" loading="lazy"><figcaption>Arquitectura de contabilidad-ms.</figcaption></figure>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td class="num">POST</td><td class="num">/v1/cuentas</td><td>Crea una cuenta del catálogo contable.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/polizas</td><td>Registra una póliza con al menos dos movimientos.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/polizas/{id}</td><td>Consulta una póliza.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/polizas/{id}/reversa</td><td>Reversa una póliza. No lleva cuerpo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/periodos/{anioMes}/cierre</td><td>Cierra el periodo, por ejemplo <code>2026-10</code>.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/estados-financieros?periodo=2026-10</td><td>Balanza del periodo.</td></tr>
+      </tbody>
+    </table></div>
+    <dl class="valores">
+      <div><dt>naturaleza</dt><dd>DEUDORA, ACREEDORA</dd></div>
+      <div><dt>tipo (póliza)</dt><dd>INGRESO, EGRESO, DIARIO</dd></div>
+      <div><dt>cargo / abono</dt><dd>Cada movimiento usa uno de los dos</dd></div>
+      <div><dt>cuentaId</dt><dd>El id que devolvió la creación de la cuenta</dd></div>
+    </dl>
+
+    <h4>Crear una cuenta</h4>
+    <pre><code>POST /contabilidad-ms/v1/cuentas
+{
+  "codigo": "1010-001",
+  "nombre": "Bancos moneda nacional",
+  "naturaleza": "DEUDORA"
+}</code></pre>
+
+    <h4>Registrar una póliza de ingreso</h4>
+    <pre><code>POST /contabilidad-ms/v1/polizas
+{
+  "tipo": "INGRESO",
+  "fecha": "2026-10-29",
+  "movimientos": [
+    { "cuentaId": "3fa85f64-5717-4562-b3fc-2c963f66afa6", "cargo": 1160.00 },
+    { "cuentaId": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "abono": 1160.00 }
+  ]
+}</code></pre>
+  </section>
+
+  <section class="servicio operaciones" id="ep-inventario">
+    <h3>Inventario · <code>/inventario-operaciones-ms</code></h3>
+    <figure class="diagrama"><img src="img/inventario-operaciones-ms.png" alt="Diagrama de arquitectura de inventario-operaciones-ms" loading="lazy"><figcaption>Arquitectura de inventario-operaciones-ms.</figcaption></figure>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td class="num">POST</td><td class="num">/v1/articulos</td><td>Da de alta un artículo con su SKU.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/almacenes</td><td>Da de alta un almacén.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/movimientos</td><td>Registra una entrada, salida, ajuste o reserva.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/existencias?articulo={id}</td><td>Existencias de un artículo por almacén.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/ordenes-operacion</td><td>Abre una orden de producción o de servicio.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/ordenes-operacion/{id}/cierre</td><td>Cierra la orden con la cantidad real producida.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/lotes/{lote}/trazabilidad</td><td>Movimientos de un lote, de principio a fin.</td></tr>
+      </tbody>
+    </table></div>
+    <dl class="valores">
+      <div><dt>tipo (movimiento)</dt><dd>ENTRADA, SALIDA, AJUSTE, RESERVA</dd></div>
+      <div><dt>tipo (orden)</dt><dd>PRODUCCION, SERVICIO</dd></div>
+      <div><dt>cantidad</dt><dd>Admite tres decimales</dd></div>
+    </dl>
+
+    <h4>Crear un artículo</h4>
+    <pre><code>POST /inventario-operaciones-ms/v1/articulos
+{
+  "sku": "TOR-M8-50",
+  "nombre": "Tornillo M8 x 50 mm",
+  "unidad": "PZA",
+  "loteObligatorio": true,
+  "minimo": 100
+}</code></pre>
+
+    <h4>Registrar una entrada con lote</h4>
+    <pre><code>POST /inventario-operaciones-ms/v1/movimientos
+{
+  "articuloId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "almacenId": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+  "tipo": "ENTRADA",
+  "cantidad": 250.000,
+  "lote": "L-2026-10A",
+  "referencia": "OC-000123"
+}</code></pre>
+
+    <h4>Abrir y cerrar una orden de producción</h4>
+    <pre><code>POST /inventario-operaciones-ms/v1/ordenes-operacion
+{
+  "tipo": "PRODUCCION",
+  "cantidadObjetivo": 500.000
+}
+
+POST /inventario-operaciones-ms/v1/ordenes-operacion/{id}/cierre
+{
+  "cantidadReal": 487.500
+}</code></pre>
+  </section>
+
+  <section class="servicio operaciones" id="ep-compras">
+    <h3>Compras y proveedores · <code>/compras-proveedores-ms</code></h3>
+    <figure class="diagrama"><img src="img/compras-proveedores-ms.png" alt="Diagrama de arquitectura de compras-proveedores-ms" loading="lazy"><figcaption>Arquitectura de compras-proveedores-ms.</figcaption></figure>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td class="num">POST</td><td class="num">/v1/proveedores</td><td>Da de alta un proveedor.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/proveedores/{id}</td><td>Consulta un proveedor. El RFC sale enmascarado.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/ordenes-compra</td><td>Crea una orden de compra con sus líneas.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/ordenes-compra/{id}</td><td>Consulta una orden de compra.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/ordenes-compra/{id}/aprobacion</td><td>Aprueba la orden. No lleva cuerpo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/ordenes-compra/{id}/recepciones</td><td>Registra la mercancía recibida.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/ordenes-compra/{id}/cancelacion</td><td>Cancela la orden con un motivo.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>Crear un proveedor</h4>
+    <pre><code>POST /compras-proveedores-ms/v1/proveedores
+{
+  "razonSocial": "Aceros del Bajío SA de CV",
+  "rfc": "ABC850101XY1",
+  "correo": "ventas@acerosbajio.mx"
+}</code></pre>
+
+    <h4>Crear una orden de compra</h4>
+    <pre><code>POST /compras-proveedores-ms/v1/ordenes-compra
+{
+  "proveedorId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "moneda": "MXN",
+  "lineas": [
+    { "articuloSku": "TOR-M8-50", "cantidad": 500, "precioUnitario": 2.50 }
+  ]
+}</code></pre>
+
+    <h4>Registrar una recepción</h4>
+    <pre><code>POST /compras-proveedores-ms/v1/ordenes-compra/{id}/recepciones
+{
+  "lineas": [
+    { "articuloSku": "TOR-M8-50", "cantidad": 480 }
+  ]
+}</code></pre>
+
+    <h4>Cancelar una orden</h4>
+    <pre><code>POST /compras-proveedores-ms/v1/ordenes-compra/{id}/cancelacion
+{
+  "motivo": "Proveedor sin existencias"
+}</code></pre>
+  </section>
+
+  <section class="servicio ventas" id="ep-pedidos">
+    <h3>Pedidos y ventas · <code>/pedidos-ventas-ms</code></h3>
+    <figure class="diagrama"><img src="img/pedidos-ventas-ms.png" alt="Diagrama de arquitectura de pedidos-ventas-ms" loading="lazy"><figcaption>Arquitectura de pedidos-ventas-ms.</figcaption></figure>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td class="num">POST</td><td class="num">/v1/cotizaciones</td><td>Crea una cotización con sus líneas.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/cotizaciones/{id}</td><td>Consulta una cotización.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/cotizaciones/{id}/envio</td><td>Marca la cotización como enviada. No lleva cuerpo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/cotizaciones/{id}/aceptacion</td><td>Acepta la cotización. Si ya venció responde 410.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/cotizaciones/{id}/pedido</td><td>Convierte una cotización aceptada en pedido. No lleva cuerpo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/pedidos</td><td>Crea un pedido directamente.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/pedidos?clienteId=&amp;estatus=&amp;canal=</td><td>Busca pedidos. Todos los filtros son opcionales.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/pedidos/{id}</td><td>Consulta un pedido.</td></tr>
+        <tr><td class="num">PUT</td><td class="num">/v1/pedidos/{id}/lineas</td><td>Reemplaza las líneas del pedido en borrador.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/pedidos/{id}/confirmacion</td><td>Confirma el pedido. No lleva cuerpo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/pedidos/{id}/entrega</td><td>Marca el pedido como entregado. No lleva cuerpo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/pedidos/{id}/cancelacion</td><td>Cancela el pedido con un motivo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/pedidos/{id}/devolucion</td><td>Registra la devolución del pedido. No lleva cuerpo.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/metricas/ventas?mes=2026-10</td><td>Ventas netas del mes por moneda.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/catalogos/tasas-iva</td><td>Tasas de IVA disponibles.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/catalogos/monedas</td><td>Monedas disponibles.</td></tr>
+      </tbody>
+    </table></div>
+    <dl class="valores">
+      <div><dt>canal</dt><dd>WEB, TIENDA, TELEFONO</dd></div>
+      <div><dt>tasaIva</dt><dd>IVA_GENERAL, IVA_FRONTERIZO, IVA_EXENTO</dd></div>
+      <div><dt>motivo (cancelación)</dt><dd>CANCELACION_CLIENTE, ERROR_CAPTURA, DEVOLUCION_TOTAL</dd></div>
+    </dl>
+
+    <h4>Crear una cotización</h4>
+    <pre><code>POST /pedidos-ventas-ms/v1/cotizaciones
+{
+  "clienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "canal": "WEB",
+  "moneda": "MXN",
+  "tasaIva": "IVA_GENERAL",
+  "vigenteHasta": "2026-11-30",
+  "lineas": [
+    { "productoId": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "descripcion": "Licencia anual", "cantidad": 2, "precioUnitario": 1200.00 }
+  ]
+}</code></pre>
+
+    <h4>Crear un pedido</h4>
+    <pre><code>POST /pedidos-ventas-ms/v1/pedidos
+{
+  "clienteId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "canal": "TELEFONO",
+  "moneda": "MXN",
+  "tasaIva": "IVA_FRONTERIZO",
+  "lineas": [
+    { "productoId": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "cantidad": 3, "precioUnitario": 1200.00 }
+  ]
+}</code></pre>
+
+    <h4>Reemplazar las líneas de un pedido</h4>
+    <pre><code>PUT /pedidos-ventas-ms/v1/pedidos/{id}/lineas
+{
+  "lineas": [
+    { "productoId": "7c9e6679-7425-40de-944b-e07fc1f90ae7", "cantidad": 4, "precioUnitario": 1200.00 }
+  ]
+}</code></pre>
+
+    <h4>Cancelar un pedido</h4>
+    <pre><code>POST /pedidos-ventas-ms/v1/pedidos/{id}/cancelacion
+{
+  "motivo": "CANCELACION_CLIENTE"
+}</code></pre>
+  </section>
+
+  <section class="servicio legal" id="ep-documentos">
+    <h3>Documentos de cumplimiento · <code>/documentos-cumplimiento-ms</code></h3>
+    <figure class="diagrama"><img src="img/documentos-cumplimiento-ms.png" alt="Diagrama de arquitectura de documentos-cumplimiento-ms" loading="lazy"><figcaption>Arquitectura de documentos-cumplimiento-ms.</figcaption></figure>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td class="num">POST</td><td class="num">/v1/documentos</td><td>Sube un documento nuevo. Es <code>multipart/form-data</code> con dos partes: <code>datos</code> (JSON) y <code>archivo</code>.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/documentos/{id}/versiones</td><td>Agrega una versión. Es <code>multipart/form-data</code> con la parte <code>archivo</code>.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/documentos/{id}</td><td>Consulta el documento y sus versiones. Nunca muestra la ruta de almacenamiento.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/documentos/{id}/versiones/{n}/descarga</td><td>Descarga la versión <code>n</code>.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/documentos/por-vencer?dias=30</td><td>Documentos que vencen en los próximos días.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/documentos/{id}/eliminacion</td><td>Marca el documento para eliminación con un motivo.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/catalogos/tipos-documento</td><td>Tipos de documento y su retención en años.</td></tr>
+      </tbody>
+    </table></div>
+    <dl class="valores">
+      <div><dt>tipo</dt><dd>CONTRATO, PERMISO, REGISTRO_LEGAL</dd></div>
+    </dl>
+    <p>Las versiones no se pueden modificar.</p>
+
+    <h4>Subir un documento (curl)</h4>
+    <pre><code>curl -X POST http://localhost:8080/documentos-cumplimiento-ms/v1/documentos \
+  -H "Authorization: Bearer $TOKEN" \
+  -F 'datos={"tipo":"CONTRATO","titulo":"Contrato marco de servicios 2026","area":"Administración y legal","venceEn":"2027-12-31"};type=application/json' \
+  -F "archivo=@/ruta/al/contrato.pdf"</code></pre>
+
+    <h4>Agregar una versión (curl)</h4>
+    <pre><code>curl -X POST http://localhost:8080/documentos-cumplimiento-ms/v1/documentos/{id}/versiones \
+  -H "Authorization: Bearer $TOKEN" \
+  -F "archivo=@/ruta/al/contrato-v2.pdf"</code></pre>
+
+    <h4>Solicitar eliminación</h4>
+    <pre><code>POST /documentos-cumplimiento-ms/v1/documentos/{id}/eliminacion
+{
+  "motivo": "Reemplazado por una versión nueva"
+}</code></pre>
+  </section>
+
+  <section class="servicio direccion" id="ep-reportes">
+    <h3>Reportes ejecutivos · <code>/reportes-ejecutivos-ms</code></h3>
+    <figure class="diagrama"><img src="img/reportes-ejecutivos-ms.png" alt="Diagrama de arquitectura de reportes-ejecutivos-ms" loading="lazy"><figcaption>Arquitectura de reportes-ejecutivos-ms.</figcaption></figure>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td class="num">POST</td><td class="num">/v1/indicadores</td><td>Registra un indicador de un área. Las áreas también pueden enviarlo por Kafka en el tópico <code>indicadores-areas</code>.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/indicadores?periodo=2026-10&amp;area=</td><td>Consulta indicadores por periodo. El filtro <code>area</code> es opcional.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/reportes/{periodo}</td><td>Consulta el reporte consolidado del periodo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/reportes/{periodo}/cierre</td><td>Cierra el reporte. Guarda una foto que ya no cambia. No lleva cuerpo.</td></tr>
+        <tr><td class="num">GET</td><td class="num">/v1/reportes/{id}/exportacion?formato=CSV</td><td>Descarga el reporte en CSV, PDF o XLSX.</td></tr>
+      </tbody>
+    </table></div>
+    <dl class="valores">
+      <div><dt>area</dt><dd>VENTAS_ATENCION_CLIENTES, FINANZAS_CONTABILIDAD, OPERACIONES, COMPRAS_PROVEEDORES, ADMINISTRACION_LEGAL, DIRECCION_GENERAL</dd></div>
+      <div><dt>formato</dt><dd>CSV, PDF, XLSX</dd></div>
+    </dl>
+
+    <h4>Registrar un indicador</h4>
+    <pre><code>POST /reportes-ejecutivos-ms/v1/indicadores
+{
+  "area": "OPERACIONES",
+  "nombre": "Órdenes cerradas",
+  "periodo": "2026-10",
+  "valor": 12.5,
+  "fuenteActualizadaUtc": "2026-10-29T10:00:00Z"
+}</code></pre>
+
+    <h4>Descargar el reporte en PDF (curl)</h4>
+    <pre><code>curl -o reporte.pdf "http://localhost:8080/reportes-ejecutivos-ms/v1/reportes/{id}/exportacion?formato=PDF" \
+  -H "Authorization: Bearer $TOKEN"</code></pre>
+  </section>
+  <section class="servicio infra" id="ep-infra">
+    <h3>Registro (discovery-ms) y gateway-ms</h3>
+    <p>Eureka recibe el anuncio de cada servicio al arrancar, y el gateway usa ese registro para encontrar a dónde reenviar cada solicitud.</p>
+    <figure class="diagrama"><img src="img/discovery-ms.png" alt="Diagrama de arquitectura de discovery-ms" loading="lazy"><figcaption>Arquitectura de discovery-ms (Eureka).</figcaption></figure>
+    <figure class="diagrama"><img src="img/gateway-ms.png" alt="Diagrama de arquitectura de gateway-ms" loading="lazy"><figcaption>Arquitectura de gateway-ms.</figcaption></figure>
+  </section>
+</main>

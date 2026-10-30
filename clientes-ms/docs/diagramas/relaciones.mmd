@@ -1,0 +1,54 @@
+erDiagram
+  PROSPECTO |o--o| CLIENTE : "se convierte en"
+  CLIENTE ||--|{ CONTACTO : "tiene"
+  CLIENTE ||--o{ INTERACCION : "registra"
+  CONTACTO ||--o{ CONSENTIMIENTO : "otorga"
+
+  PROSPECTO {
+    uuid id PK
+    text nombre_cifrado
+    varchar nombre_hash
+    text correo_cifrado
+    varchar correo_hash
+    text rfc_cifrado
+    varchar rfc_hash
+    varchar fuente
+    varchar estatus
+    date fecha_registro
+    timestamptz fecha_conversion
+  }
+  CLIENTE {
+    uuid id PK
+    varchar razon_social
+    text rfc_cifrado
+    varchar rfc_hash
+    varchar estatus
+    uuid prospecto_id FK
+    date fecha_alta
+  }
+  CONTACTO {
+    uuid id PK
+    uuid cliente_id FK
+    text nombre_cifrado
+    text correo_cifrado
+    varchar correo_hash
+    varchar rol
+    boolean principal
+  }
+  INTERACCION {
+    uuid id PK
+    uuid cliente_id FK
+    varchar tipo
+    timestamptz fecha
+    uuid responsable_id
+    text resumen_cifrado
+  }
+  CONSENTIMIENTO {
+    uuid id PK
+    uuid contacto_id FK
+    varchar finalidad
+    timestamptz fecha_otorgado
+    varchar medio
+    date vigencia
+    timestamptz revocado_at
+  }

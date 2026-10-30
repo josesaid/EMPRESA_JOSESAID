@@ -1,0 +1,18 @@
+# Trazabilidad: Jaeger recibe las trazas de cada request (por OTLP) y las muestra.
+# Interfaz: http://localhost:16686
+# Los servicios envían a http://jaeger:4318 por la red empresa-net.
+
+services:
+  jaeger:
+    image: jaegertracing/jaeger:2.11.0
+    ports:
+      # Interfaz web de Jaeger en tu Mac
+      - "16686:16686"
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+networks:
+  empresa-net:
+    external: true
+    name: empresa-net

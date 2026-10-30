@@ -1,0 +1,10 @@
+# Artefactos de compilación
+target/
+# Secretos locales: nunca se versionan
+.env
+# Logs y archivos de IDE
+*.log
+.idea/
+*.iml
+.vscode/
+.DS_Store

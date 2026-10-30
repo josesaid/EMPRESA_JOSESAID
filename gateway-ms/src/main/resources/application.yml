@@ -1,0 +1,43 @@
+# Configuración de gateway-ms. Sin credenciales: los tokens JWT pasan al servicio destino.
+spring:
+  application:
+    name: gateway-ms
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              # Cada servicio registrado queda en /{nombre-del-servicio}/** sin configurar rutas
+              enabled: true
+              lower-case-service-id: true
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://discovery-ms:8761/eureka/}
+
+management:
+  tracing:
+    sampling:
+      # 100% de las solicitudes para ver todo en la práctica; bajar en producción
+      probability: 1.0
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          # Jaeger recibe OTLP en la red empresa-net
+          endpoint: ${TRAZAS_OTLP_ENDPOINT:http://jaeger:4318/v1/traces}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+logging:
+  structured:
+    format:
+      # Logs JSON en formato ECS
+      file: ecs

@@ -1,0 +1,41 @@
+# Configuración de discovery-ms. Sin credenciales: solo red interna de Docker.
+spring:
+  application:
+    name: discovery-ms
+
+server:
+  port: 8761
+
+eureka:
+  instance:
+    # Nombre con el que los demás contenedores lo alcanzan en empresa-net
+    hostname: ${EUREKA_INSTANCIA_HOST:discovery-ms}
+  client:
+    # El propio servidor no se registra ni descarga el registro de sí mismo
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    # En desarrollo conviene que desaparezcan los servicios caídos. En producción evaluar activarlo.
+    enable-self-preservation: false
+
+management:
+  tracing:
+    sampling:
+      # 100% de las solicitudes para ver todo en la práctica; bajar en producción
+      probability: 1.0
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          # Jaeger recibe OTLP en la red empresa-net
+          endpoint: ${TRAZAS_OTLP_ENDPOINT:http://jaeger:4318/v1/traces}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+logging:
+  structured:
+    format:
+      # Logs JSON en formato ECS
+      file: ecs

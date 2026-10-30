@@ -1,0 +1,32 @@
+# Microservicio pedidos-ventas-ms (puerto 8107 en tu Mac).
+# Requiere antes: postgres y kafka de la raíz (docker compose up -d desde la raíz).
+# Variables que se leen del .env de esta carpeta o del .env de la raíz:
+#   PEDIDOS_DB_PASSWORD  contraseña del usuario pedidos
+#   USUARIOS_JWT_SECRET      mismo secreto que usuarios-accesos-ms, para validar sus tokens
+
+services:
+  pedidos-ventas-ms:
+    build: .
+    image: pedidos-ventas-ms:0.1.0
+    environment:
+      # Base de datos propia creada por infra/postgres/init-databases.sh
+      DB_URL: jdbc:postgresql://postgres:5432/pedidos
+      DB_USER: pedidos
+      DB_PASSWORD: ${PEDIDOS_DB_PASSWORD:?Defina PEDIDOS_DB_PASSWORD en .env}
+      # Broker interno de Kafka (listener INTERNAL definido en la raíz)
+      KAFKA_BOOTSTRAP: kafka:29092
+      # Secreto compartido con usuarios-accesos-ms: sin él no se validan los tokens
+      JWT_SECRET: ${USUARIOS_JWT_SECRET:?Defina USUARIOS_JWT_SECRET en .env}
+    ports:
+      # Puerto de tu Mac 8107 -> puerto 8081 dentro del contenedor
+      - "8107:8081"
+    # No hay depends_on: Compose rechaza depender de servicios de otro archivo.
+    # El orden de arranque está documentado en el README de la raíz y en el de este servicio.
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+networks:
+  empresa-net:
+    external: true
+    name: empresa-net

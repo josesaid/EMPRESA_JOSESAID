@@ -1,0 +1,60 @@
+# Prometheus recolecta /actuator/prometheus de cada servicio por la red empresa-net.
+# Un servicio apagado aparece como DOWN; no detiene a los demás.
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'clientes-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['clientes-ms:8080']
+
+  - job_name: 'usuarios-accesos-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['usuarios-accesos-ms:8081']
+
+  - job_name: 'facturacion-pagos-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['facturacion-pagos-ms:8081']
+
+  - job_name: 'contabilidad-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['contabilidad-ms:8081']
+
+  - job_name: 'inventario-operaciones-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['inventario-operaciones-ms:8081']
+
+  - job_name: 'compras-proveedores-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['compras-proveedores-ms:8081']
+
+  - job_name: 'pedidos-ventas-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['pedidos-ventas-ms:8081']
+
+  - job_name: 'documentos-cumplimiento-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['documentos-cumplimiento-ms:8081']
+
+  - job_name: 'reportes-ejecutivos-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['reportes-ejecutivos-ms:8081']
+
+  - job_name: 'gateway-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['gateway-ms:8080']
+
+  - job_name: 'discovery-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['discovery-ms:8761']

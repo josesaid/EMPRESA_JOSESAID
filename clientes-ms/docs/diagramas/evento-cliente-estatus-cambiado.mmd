@@ -1,0 +1,11 @@
+flowchart TD
+  T["<b>Disparador</b><br/>Cambio de estatus de cliente con valor distinto al anterior"]:::actor --> O["<b>Outbox</b><br/>Fila en outbox_evento, misma transacción"]:::datos
+  O --> P["<b>Publicador programado</b><br/>Cada 1 segundo, lotes de 100"]:::gateway
+  P --> K["<b>Kafka</b><br/>Tópico clientes.eventos.v1, clave = clienteId"]:::gateway
+  K --> C["<b>Consumidores</b><br/>Pedidos y Facturación"]:::actor
+  P -. "payload" .-> J["<b>Payload JSON</b><br/>eventoId, tipoEvento = ClienteEstatusCambiado<br/>ocurridoEn, clienteId<br/>estatusAnterior, estatusNuevo"]:::pendiente
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef gateway fill:#EEEDFE,stroke:#7F77DD,color:#26215C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

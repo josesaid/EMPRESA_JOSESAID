@@ -1,0 +1,21 @@
+# Microservicio gateway-ms (API gateway; puerto 8080 en tu Mac).
+# Arranca antes que los servicios de área para que se registren en Eureka.
+
+services:
+  gateway-ms:
+    build: .
+    image: gateway-ms:0.1.0
+    ports:
+      # Puerto de tu Mac 8080 -> puerto 8080 dentro del contenedor
+      - "8080:8080"
+    environment:
+      # Dirección del servidor de registro en la red interna
+      EUREKA_URL: ${EUREKA_URL:-http://discovery-ms:8761/eureka/}
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+networks:
+  empresa-net:
+    external: true
+    name: empresa-net

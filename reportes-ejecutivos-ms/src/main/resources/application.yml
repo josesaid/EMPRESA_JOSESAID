@@ -1,0 +1,69 @@
+# Configuración de reportes-ejecutivos-ms.
+# Las credenciales se leen de variables de entorno; nunca se escriben valores reales aquí.
+spring:
+  application:
+    name: reportes-ejecutivos-ms
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/reportes}
+    username: ${DB_USER:reportes}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # El esquema lo controla Flyway; Hibernate solo valida que coincida
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      # Al arrancar por primera vez, lee desde el inicio del tópico de indicadores
+      auto-offset-reset: earliest
+
+server:
+  port: ${SERVER_PORT:8081}
+
+management:
+  tracing:
+    sampling:
+      # 100% de las solicitudes para ver todo en la práctica; bajar en producción
+      probability: 1.0
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          # Jaeger recibe OTLP en la red empresa-net
+          endpoint: ${TRAZAS_OTLP_ENDPOINT:http://jaeger:4318/v1/traces}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+logging:
+  structured:
+    format:
+      # Logs JSON en formato ECS
+      file: ecs
+
+reportes:
+  jwt:
+    # Clave HMAC de al menos 32 caracteres. Sin ella el servicio no arranca.
+    secreto: ${JWT_SECRET:}
+    duracion: ${JWT_DURACION:PT15M}
+    emisor: ${JWT_EMISOR:reportes-ejecutivos-ms}
+  outbox:
+    intervalo-ms: ${OUTBOX_INTERVALO_MS:5000}
+  frescura-dias: ${REPORTES_FRESCURA_DIAS:7}
+  indicadores:
+    # Tópico por el que las áreas publican sus indicadores
+    topico: ${REPORTES_TOPICO_INDICADORES:indicadores-areas}
+
+# Descubrimiento de servicios: se registra al arrancar en discovery-ms.
+# Si discovery-ms no responde, el servicio arranca igual y se registra cuando el registro esté arriba.
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://discovery-ms:8761/eureka/}
+  instance:
+    hostname: ${EUREKA_INSTANCIA_HOST:${spring.application.name}}
+    prefer-ip-address: false

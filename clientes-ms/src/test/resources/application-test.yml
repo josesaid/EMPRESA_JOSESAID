@@ -1,0 +1,5 @@
+# Configuración exclusiva de pruebas. Las claves son de prueba y no se usan en ningún entorno real.
+app:
+  crypto:
+    clave-cifrado: 2JtBbi5qiamVfNIvzndmGAdTcF1ZcT+hH5YFM1bk5MQ=
+    clave-indice: a2N3TNPb3mkgz33eGSqOiA1qnHsLgAkB8/aBcVXBK5M=

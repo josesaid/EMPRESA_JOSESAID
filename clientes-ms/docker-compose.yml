@@ -1,0 +1,26 @@
+# Servicio clientes-ms. Se usa solo o incluido desde la raíz de EMPRESA_JOSESAID.
+# Requiere la red externa empresa-net y la infraestructura compartida (PostgreSQL y Kafka).
+services:
+  clientes-ms:
+    build: .
+    image: clientes-ms:0.1.0
+    env_file:
+      # Opcional: si no existe, Compose usa solo 'environment'
+      - path: .env
+        required: false
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/clientes
+      DB_USUARIO: clientes
+      DB_PASSWORD: ${CLIENTES_DB_PASSWORD:?Defina CLIENTES_DB_PASSWORD en el archivo .env}
+      KAFKA_BOOTSTRAP: kafka:29092
+      EVENTOS_TOPICO: clientes.eventos.v1
+    ports:
+      - "8101:8080"
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+networks:
+  empresa-net:
+    external: true
+    name: empresa-net

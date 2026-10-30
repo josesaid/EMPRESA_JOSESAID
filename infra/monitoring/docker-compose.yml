@@ -1,0 +1,44 @@
+# Monitoreo: Prometheus recolecta métricas y Grafana las muestra.
+# Prometheus: http://localhost:9090   Grafana: http://localhost:3000
+# Variables que se leen del .env de la raíz:
+#   GRAFANA_ADMIN_PASSWORD   contraseña del usuario admin de Grafana
+
+services:
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+    volumes:
+      # Configuración de los objetivos a recolectar
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-datos:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:12.0.0
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Defina GRAFANA_ADMIN_PASSWORD en .env}
+    volumes:
+      # Fuente de datos Prometheus preconfigurada
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-datos:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+volumes:
+  prometheus-datos:
+  grafana-datos:
+
+networks:
+  empresa-net:
+    external: true
+    name: empresa-net

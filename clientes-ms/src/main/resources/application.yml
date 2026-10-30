@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: clientes-ms
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/clientes}
+    username: ${DB_USUARIO:clientes}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI:http://localhost:9000}
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 100
+
+app:
+  zona-presentacion: America/Mexico_City
+  eventos:
+    topico: ${EVENTOS_TOPICO:clientes.eventos.v1}
+    intervalo-publicacion-ms: 1000
+  seguridad:
+    claim-roles: roles
+  crypto:
+    # Clave AES-256 en Base64 (32 bytes). Se inyecta desde el entorno o un gestor de secretos.
+    clave-cifrado: ${CRYPTO_CLAVE_CIFRADO:}
+    # Clave HMAC-SHA256 en Base64 (32 bytes) para índices de búsqueda y duplicados.
+    clave-indice: ${CRYPTO_CLAVE_INDICE:}
+
+server:
+  port: 8080
+
+management:
+  tracing:
+    sampling:
+      # 100% de las solicitudes para ver todo en la práctica; bajar en producción
+      probability: 1.0
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          # Jaeger recibe OTLP en la red empresa-net
+          endpoint: ${TRAZAS_OTLP_ENDPOINT:http://jaeger:4318/v1/traces}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  structured:
+    format:
+      console: ecs
+
+# Descubrimiento de servicios: se registra al arrancar en discovery-ms.
+# Si discovery-ms no responde, el servicio arranca igual y se registra cuando el registro esté arriba.
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://discovery-ms:8761/eureka/}
+  instance:
+    hostname: ${EUREKA_INSTANCIA_HOST:${spring.application.name}}
+    prefer-ip-address: false

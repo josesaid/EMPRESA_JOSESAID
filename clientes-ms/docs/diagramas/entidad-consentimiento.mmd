@@ -1,0 +1,7 @@
+flowchart TD
+  O["<b>Consentimiento</b><br/>id: UUID<br/>contacto_id: UUID<br/>finalidad: VARCHAR 100<br/>fecha_otorgado: TIMESTAMPTZ<br/>medio: FORMULARIO, CORREO, TELEFONO o PRESENCIAL<br/>vigencia: DATE opcional<br/>revocado_at: TIMESTAMPTZ opcional<br/>created_at: TIMESTAMPTZ"]:::servicio
+  K["<b>Contacto</b><br/>Titular del consentimiento"]:::datos
+  O -- "pertenece a N a 1" --> K
+
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53

@@ -1,0 +1,43 @@
+# Microservicio documentos-cumplimiento-ms (puerto 8108 en tu Mac).
+# Requiere antes: postgres y kafka de la raíz (docker compose up -d desde la raíz).
+# Variables que se leen del .env de la raíz:
+#   DOCUMENTOS_DB_PASSWORD      contraseña del usuario documentos
+#   DOCUMENTOS_CIFRADO_CLAVE    clave AES-256 en base64 para cifrar los archivos
+#   USUARIOS_JWT_SECRET         mismo secreto que usuarios-accesos-ms
+
+services:
+  documentos-cumplimiento-ms:
+    build: .
+    image: documentos-cumplimiento-ms:0.1.0
+    environment:
+      # Base de datos propia creada por infra/postgres/init-databases.sh
+      DB_URL: jdbc:postgresql://postgres:5432/documentos
+      DB_USER: documentos
+      DB_PASSWORD: ${DOCUMENTOS_DB_PASSWORD:?Defina DOCUMENTOS_DB_PASSWORD en .env}
+      # Broker interno de Kafka (listener INTERNAL definido en la raíz)
+      KAFKA_BOOTSTRAP: kafka:29092
+      # Secreto compartido con usuarios-accesos-ms: sin él no se validan los tokens
+      JWT_SECRET: ${USUARIOS_JWT_SECRET:?Defina USUARIOS_JWT_SECRET en .env}
+      # Clave de cifrado en reposo. Respáldela: sin ella no se pueden leer los archivos
+      DOCUMENTOS_CIFRADO_CLAVE: ${DOCUMENTOS_CIFRADO_CLAVE:?Defina DOCUMENTOS_CIFRADO_CLAVE en .env}
+      # Carpeta del contenedor donde viven los archivos cifrados
+      DOCUMENTOS_ALMACEN_DIR: /data/documentos
+    ports:
+      # Puerto de tu Mac 8108 -> puerto 8081 dentro del contenedor
+      - "8108:8081"
+    volumes:
+      # Volumen propio para los archivos: sobrevive a la recreación del contenedor
+      - documentos-archivos:/data/documentos
+    # No hay depends_on: Compose rechaza depender de servicios de otro archivo.
+    # El orden de arranque está documentado en el README de la raíz y en el de este servicio.
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+volumes:
+  documentos-archivos:
+
+networks:
+  empresa-net:
+    external: true
+    name: empresa-net
