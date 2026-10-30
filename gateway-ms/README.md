@@ -121,3 +121,13 @@ Detenga el contenedor y regrese a la imagen anterior. No hay datos que revertir.
 Cuando un servicio se recrea con `docker compose up -d --build`, el gateway puede seguir enrutando a la IP anterior durante un rato. Síntomas: el login responde 404 o 401 sin cuerpo, y la cabecera `WWW-Authenticate` trae solo `error` y `error_description`, que es la respuesta de un servicio de área y no del gateway.
 
 Solución: `docker compose restart gateway-ms` y esperar a que quede `healthy`.
+
+### Tiempos de descubrimiento (desarrollo)
+
+Para que el gateway vea enseguida los cambios de instancias, los tiempos están bajos en desarrollo y se pueden sobrescribir con variables de entorno:
+
+- Servicios de área: `EUREKA_RENOVACION_SEG` (5 s) y `EUREKA_EXPIRACION_SEG` (15 s).
+- Gateway: `EUREKA_FETCH_SEG` (5 s) para el registro y `LB_CACHE_TTL` (5 s) para la caché de balanceo.
+- discovery-ms: `EUREKA_EVICCION_MS` (5 000 ms) para retirar instancias caídas.
+
+En producción conviene subirlos para no saturar el registro con renovaciones.

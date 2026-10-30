@@ -9,6 +9,9 @@ spring:
           # Clave pública de usuarios-accesos-ms (JWKS)
           jwk-set-uri: ${JWT_JWKS_URI:http://usuarios-accesos-ms:8081/.well-known/jwks.json}
   cloud:
+    loadbalancer:
+      cache:
+        ttl: ${LB_CACHE_TTL:5s}
     gateway:
       server:
         webflux:
@@ -25,6 +28,7 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL:http://discovery-ms:8761/eureka/}
+    registry-fetch-interval-seconds: ${EUREKA_FETCH_SEG:5}
 
 management:
   tracing:

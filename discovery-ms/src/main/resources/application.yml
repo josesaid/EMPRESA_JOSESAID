@@ -21,6 +21,7 @@ eureka:
   server:
     # En desarrollo conviene que desaparezcan los servicios caídos. En producción evaluar activarlo.
     enable-self-preservation: false
+    eviction-interval-timer-in-ms: ${EUREKA_EVICCION_MS:5000}
 
 management:
   tracing:
