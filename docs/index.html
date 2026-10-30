@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EMPRESA_JOSESAID · Plataforma de microservicios</title>
+<meta name="description" content="Once microservicios con Spring Boot 4 y Java 21 para ventas, compras, inventario, facturación, contabilidad, cumplimiento y reportes, con seguridad JWT RS256, registro con Eureka y un solo API gateway.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f2e9;
+    --ink: #2a2b38;
+    --pink: #ff4fa3;
+    --teal: #0f8c8c;
+    --dots: rgba(42, 43, 56, .10);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image: radial-gradient(var(--dots) 1px, transparent 1.2px);
+    background-size: 9px 9px;
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+  a { color: var(--teal); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px; }
+
+  header.hero {
+    position: relative;
+    padding: 72px 0 60px;
+    text-align: left;
+  }
+  header.hero::before {
+    content: "";
+    position: absolute;
+    right: 6%; top: 40px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: var(--pink);
+    mix-blend-mode: multiply;
+    opacity: .9;
+  }
+  header.hero::after {
+    content: "";
+    position: absolute;
+    right: 14%; top: 90px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: var(--teal);
+    mix-blend-mode: multiply;
+    opacity: .85;
+  }
+  header.hero .wrap { position: relative; z-index: 1; }
+  .eyebrow {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 13px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  h1 {
+    font-weight: 700;
+    font-size: clamp(40px, 7vw, 76px);
+    line-height: .98;
+    letter-spacing: -.03em;
+    margin: 14px 0 16px;
+    max-width: 640px;
+  }
+  .lead { max-width: 560px; font-size: 19px; color: var(--ink); margin: 0; }
+  .frame {
+    display: inline-block;
+    font-family: "Space Mono", monospace;
+    font-size: 13px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 5px 12px;
+    margin-top: 20px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 0; padding: 0; list-style: none; max-width: 640px; }
+  .chips li {
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    padding: 4px 10px;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+  }
+  .chips li:nth-child(3n+1) { background: rgba(255, 79, 163, .25); }
+  .chips li:nth-child(3n+2) { background: rgba(15, 140, 140, .22); }
+  .buttons { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .btn {
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 11px 22px;
+    border-radius: 999px;
+    background: var(--pink);
+    color: var(--ink);
+    mix-blend-mode: multiply;
+  }
+  .btn:nth-child(2) { background: var(--teal); color: #ffffff; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--ink); mix-blend-mode: normal; }
+
+  section { padding: 56px 0; }
+  h2 {
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: -.02em;
+    margin: 0 0 24px;
+    display: inline-block;
+    background: linear-gradient(transparent 58%, rgba(255, 79, 163, .55) 58%);
+    padding: 0 4px;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 6px 6px 0 var(--teal);
+  }
+  .card:nth-child(odd) { transform: rotate(-.6deg); }
+  .card:nth-child(even) { transform: rotate(.5deg); }
+  .card h3 { margin: 0 0 8px; font-weight: 700; font-size: 18px; }
+  .card p { margin: 0; font-size: 15px; opacity: .85; }
+
+  .table-wrap { overflow-x: auto; border: 2px solid var(--ink); border-radius: 14px; background: var(--paper); }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid rgba(42,43,56,.25); vertical-align: top; }
+  th { font-family: "Space Mono", monospace; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--teal); }
+  tr:last-child td { border-bottom: 0; }
+  code {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--pink);
+    font-weight: 700;
+  }
+
+  figure { margin: 0; border: 2px solid var(--ink); border-radius: 14px; background: var(--paper); padding: 14px; box-shadow: 8px 8px 0 var(--pink); }
+  figure img { width: 100%; height: auto; display: block; border-radius: 6px; }
+  figcaption { font-size: 14px; opacity: .8; margin-top: 10px; text-align: center; }
+
+  .docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+  .docs a {
+    display: block;
+    text-decoration: none;
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    background: var(--paper);
+    padding: 18px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .docs a span { display: block; font-weight: 400; font-size: 14px; opacity: .8; margin-top: 4px; }
+  .docs a:hover { background: rgba(15, 140, 140, .15); }
+
+  pre {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 14px;
+    padding: 18px;
+    overflow-x: auto;
+    font-size: 14px;
+    box-shadow: 6px 6px 0 var(--pink);
+  }
+  pre code { color: var(--paper); }
+
+  footer { padding: 28px 0 44px; text-align: center; font-size: 14px; opacity: .8; }
+
+  @media (max-width: 600px) {
+    header.hero { padding: 48px 0 44px; }
+    header.hero::before, header.hero::after { width: 200px; height: 200px; }
+    h2 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Portafolio · Java · Microservicios</div>
+    <h1>EMPRESA_JOSESAID</h1>
+    <p class="lead">Un ecosistema de once microservicios Spring Boot para las operaciones centrales de una empresa: ventas, compras, inventario, facturación, contabilidad, cumplimiento y reportes ejecutivos.</p>
+    <span class="frame">Spring Boot 4 · Java 21 · Docker Compose</span>
+    <ul class="chips" aria-label="Stack tecnológico">
+      <li>Java 21</li>
+      <li>Spring Boot 4.1</li>
+      <li>Spring Cloud Gateway</li>
+      <li>Eureka</li>
+      <li>Spring Security</li>
+      <li>JWT RS256 / JWKS</li>
+      <li>Spring Data JPA</li>
+      <li>Flyway</li>
+      <li>PostgreSQL 17</li>
+      <li>Apache Kafka 4.0</li>
+      <li>Prometheus · Grafana</li>
+      <li>Jaeger · OpenTelemetry</li>
+      <li>Testcontainers</li>
+      <li>Docker Compose</li>
+    </ul>
+    <div class="buttons">
+      <a class="btn" href="#arquitectura">Arquitectura</a>
+      <a class="btn ghost" href="files/manual.html">Manual técnico</a>
+      <a class="btn ghost" href="https://github.com/josesaid/EMPRESA_JOSESAID">Ver en GitHub</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Qué hace</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Once servicios</h3>
+        <p>Nueve servicios de negocio, más un registro de servicios (Eureka) y un solo API gateway. Cada servicio de negocio tiene su propia base de datos y usuario en PostgreSQL.</p>
+      </div>
+      <div class="card">
+        <h3>Seguridad desde el diseño</h3>
+        <p>Los tokens de acceso se firman con RS256. Los servicios los validan con la clave pública de un endpoint JWKS, así que no comparten ningún secreto. Los endpoints internos no son visibles desde fuera del gateway.</p>
+      </div>
+      <div class="card">
+        <h3>Escrituras idempotentes</h3>
+        <p>Encabezado opcional <code>Idempotency-Key</code> en pedidos, pagos, pólizas, movimientos de inventario y órdenes de compra. Una petición repetida devuelve la respuesta original; las claves son válidas por 24 horas.</p>
+      </div>
+      <div class="card">
+        <h3>Datos sensibles cifrados</h3>
+        <p>Cifrado AES-256 para los datos fiscales de proveedores y los documentos legales, con un índice HMAC para seguir encontrando registros sin exponer los valores originales.</p>
+      </div>
+      <div class="card">
+        <h3>Observable</h3>
+        <p>Métricas con Prometheus, tableros en Grafana, trazas entre servicios con Jaeger e interfaz de Kafka para revisar topics y mensajes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Servicios</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Servicio</th><th>Responsabilidad</th><th>Acceso</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>clientes-ms</code></td><td>API de gestión de clientes</td><td>Por el gateway</td></tr>
+          <tr><td><code>usuarios-accesos-ms</code></td><td>Usuarios, roles, emisión de tokens RS256 y JWKS</td><td>Solo interno</td></tr>
+          <tr><td><code>facturacion-pagos-ms</code></td><td>Comprobantes, pagos y cancelaciones</td><td>Por el gateway</td></tr>
+          <tr><td><code>contabilidad-ms</code></td><td>Libro contable, pólizas, cierre de periodos y balanza de comprobación</td><td>Por el gateway</td></tr>
+          <tr><td><code>inventario-operaciones-ms</code></td><td>Existencias, reservas, lotes y órdenes de operación</td><td>Por el gateway</td></tr>
+          <tr><td><code>compras-proveedores-ms</code></td><td>Proveedores con datos fiscales cifrados, órdenes de compra y recepciones</td><td>Por el gateway</td></tr>
+          <tr><td><code>pedidos-ventas-ms</code></td><td>Cotizaciones, pedidos de venta, devoluciones y métricas de ventas</td><td>Por el gateway</td></tr>
+          <tr><td><code>documentos-cumplimiento-ms</code></td><td>Documentos legales con versiones, cifrado, vencimientos y retención</td><td>Por el gateway</td></tr>
+          <tr><td><code>reportes-ejecutivos-ms</code></td><td>KPI por periodo, cierre de reportes y exportación</td><td>Por el gateway</td></tr>
+          <tr><td><code>discovery-ms</code></td><td>Registro de servicios Eureka</td><td>Puerto 8761</td></tr>
+          <tr><td><code>gateway-ms</code></td><td>Punto de entrada único que enruta a los servicios registrados</td><td>Puerto 8080</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="arquitectura">
+  <div class="wrap">
+    <h2>Arquitectura</h2>
+    <figure>
+      <img src="diagramas/arquitectura-general.png" alt="Arquitectura general de la plataforma EMPRESA_JOSESAID">
+      <figcaption>Arquitectura general de la plataforma</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Documentos</h2>
+    <div class="docs">
+      <a href="files/manual.html">Manual técnico<span>Manual completo con diagramas de cada servicio</span></a>
+      <a href="files/arquitectura-actual-v1.pdf">Arquitectura actual<span>PDF · arquitectura v1</span></a>
+      <a href="files/presentacion-tecnica.pdf">Presentación técnica<span>PDF</span></a>
+      <a href="files/nexus-diseno-asistente-ia.pdf">Diseño del asistente IA (Nexus)<span>PDF · capa de Spring AI planeada</span></a>
+      <a href="files/nexus-fases-implementacion.pptx">Fases de implementación de Nexus<span>PowerPoint</span></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Ejecutarlo localmente</h2>
+    <p style="color: var(--muted);">Requisitos: Docker 24+ y Docker Compose 2.20+. Puertos libres: 5432, 8080 y 9092.</p>
+<pre><code>docker network create empresa-net          # red externa compartida, una sola vez
+cp .env.example .env                       # completa las contraseñas y claves
+cp clientes-ms/.env.example clientes-ms/.env
+docker compose up -d --build</code></pre>
+    <p style="color: var(--muted);">Genera contraseñas con <code>openssl rand -base64 24</code> y claves de cifrado con <code>openssl rand -base64 32</code>. La lista completa de variables de entorno está en el <a href="https://github.com/josesaid/EMPRESA_JOSESAID#4-variables-de-env-de-la-ra%C3%ADz">README</a>.</p>
+
+    <div class="table-wrap" style="margin-top: 16px;">
+      <table>
+        <thead><tr><th>Herramienta</th><th>Puerto</th></tr></thead>
+        <tbody>
+          <tr><td>Gateway (punto de entrada)</td><td>8080</td></tr>
+          <tr><td>Panel de Eureka</td><td>8761</td></tr>
+          <tr><td>Grafana</td><td>3000</td></tr>
+          <tr><td>Prometheus</td><td>9090</td></tr>
+          <tr><td>Jaeger</td><td>16686</td></tr>
+          <tr><td>Kafka UI</td><td>8090</td></tr>
+          <tr><td>PostgreSQL 17</td><td>5432</td></tr>
+          <tr><td>Kafka 4.0 (acceso desde el host)</td><td>9092</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Creado por <a href="https://josesaid.github.io/">Said Olano</a> · <a href="https://github.com/josesaid/EMPRESA_JOSESAID">Código en GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
