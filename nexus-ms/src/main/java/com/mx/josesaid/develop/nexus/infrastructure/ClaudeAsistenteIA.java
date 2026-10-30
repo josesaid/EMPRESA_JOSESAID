@@ -22,8 +22,11 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
     static final String PROMPT = "asistente-base";
 
     private final ChatClient cliente;
+    private final HerramientasReportes reportes;
 
-    public ClaudeAsistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts) {
+    public ClaudeAsistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts,
+                             HerramientasReportes reportes) {
+        this.reportes = reportes;
         PromptVersionado prompt = prompts.obtener(PROMPT);
         this.cliente = ChatClient.builder(modelo)
                 .defaultSystem(prompt.texto())
@@ -35,13 +38,15 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
 
     @Override
     public RespuestaAsistente consultar(PreguntaAsistente pregunta) {
-        String texto = cliente.prompt()
+        var solicitud = cliente.prompt()
                 .user(pregunta.texto())
                 .advisors(a -> a
                         .param(RegistroTokensAdvisor.CLAVE_SERVICIO, SERVICIO)
-                        .param(RegistroTokensAdvisor.CLAVE_USUARIO, pregunta.usuario()))
-                .call()
-                .content();
+                        .param(RegistroTokensAdvisor.CLAVE_USUARIO, pregunta.usuario()));
+        if (AlcanceHerramientas.puedeConsultarReportes()) {
+            solicitud = solicitud.tools(reportes);
+        }
+        String texto = solicitud.call().content();
         return new RespuestaAsistente(texto);
     }
 }
