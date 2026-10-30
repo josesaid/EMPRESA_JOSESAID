@@ -40,3 +40,11 @@ JWT RS256 con la clave pública de usuarios-accesos-ms (JWKS). Toda la API es de
 ## Fuera de alcance
 
 Tableros interactivos, alertas por umbral, captura de datos de áreas y cálculos contables.
+
+## Lectura por área (JEFE_AREA)
+
+Un jefe de área consulta indicadores de su área y nada más. La autorización combina dos señales: el rol (`ROLE_JEFE_AREA`) y el claim `area` del token, que emite usuarios-accesos-ms.
+
+Decisión: el área del jefe viene del token, no de un parámetro que el cliente pueda cambiar. Si el parámetro `area` no coincide con la del claim, la respuesta es 403.
+
+`GET /reportes/{periodo}` también filtra por el área del token para JEFE_AREA.

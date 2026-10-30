@@ -28,13 +28,16 @@ public class EmisorTokens {
 
     public String emitir(Usuario usuario) {
         Instant ahora = Instant.now(reloj);
-        JwtClaimsSet claims = JwtClaimsSet.builder()
+        JwtClaimsSet.Builder reclamaciones = JwtClaimsSet.builder()
                 .issuer(propiedades.emisor())
                 .subject(usuario.getId().toString())
                 .issuedAt(ahora)
                 .expiresAt(ahora.plus(propiedades.duracion()))
-                .claim("roles", usuario.getRoles().stream().map(Enum::name).toList())
-                .build();
+                .claim("roles", usuario.getRoles().stream().map(Enum::name).toList());
+        if (usuario.getArea() != null) {
+            reclamaciones.claim("area", usuario.getArea());
+        }
+        JwtClaimsSet claims = reclamaciones.build();
         JwsHeader cabecera = JwsHeader.with(SignatureAlgorithm.RS256).keyId(ClavesJwt.KID).build();
         return encoder.encode(JwtEncoderParameters.from(cabecera, claims)).getTokenValue();
     }

@@ -101,7 +101,7 @@ Flyway ejecuta `V1__esquema_inicial.sql` al arrancar. Hibernate solo valida. Los
 
 **Eliminación.** Solo después de que venza la `retencion_hasta` y con motivo (409 dentro de retención, 400 sin motivo). La eliminación es lógica: el registro queda marcado con motivo y fecha.
 
-**Retención.** Se calcula al crear: CONTRATO 10 años, PERMISO 5 años, REGISTRO_LEGAL 10 años. **Pendiente de confirmación legal.**
+**Retención.** Se calcula al crear: CONTRATO, PERMISO y REGISTRO_LEGAL, 5 años cada uno. Definido por la dirección; **pendiente de confirmación legal.**
 
 **Alertas.** La tarea diaria emite `permiso-por-vencer` una sola vez por permiso, cuando su vencimiento cae dentro del umbral. La retención vencida se marca para revisión.
 
@@ -195,7 +195,7 @@ Imagen `documentos-cumplimiento-ms:0.1.0`. Requiere red `empresa-net`, base `doc
 
 ## 20. Decisiones y pendientes
 
-- **Periodos de retención:** propuesta (10/5/10 años). Pendiente de confirmación legal.
+- **Periodos de retención:** 5 años para todos los tipos, definido por la dirección. Pendiente de confirmación legal.
 - **Eliminación lógica:** el archivo se conserva. La purga física requiere política de Legal y queda pendiente.
 - **Firma electrónica:** pendiente.
 - **Almacenamiento en la nube:** hoy es un volumen local cifrado. El proveedor está por definir.

@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,12 @@ public class UsuarioController {
         return UsuarioRespuesta.de(servicio.asignarRoles(id, solicitud.roles(), solicitud.motivo()));
     }
 
+    @PutMapping("/{id}/area")
+    public UsuarioRespuesta asignarArea(@PathVariable UUID id,
+                                        @Valid @RequestBody AsignarAreaSolicitud solicitud) {
+        return UsuarioRespuesta.de(servicio.asignarArea(id, solicitud.area(), solicitud.motivo()));
+    }
+
     @PostMapping("/{id}/baja")
     public UsuarioRespuesta darDeBaja(@PathVariable UUID id) {
         return UsuarioRespuesta.de(servicio.darDeBaja(id));
@@ -62,6 +69,11 @@ public class UsuarioController {
             @NotBlank String nombreCompleto,
             @NotBlank String password,
             @NotEmpty Set<Rol> roles) {
+    }
+
+    public record AsignarAreaSolicitud(
+            @NotBlank @Size(max = 40) String area,
+            @NotBlank String motivo) {
     }
 
     public record AsignarRolesSolicitud(

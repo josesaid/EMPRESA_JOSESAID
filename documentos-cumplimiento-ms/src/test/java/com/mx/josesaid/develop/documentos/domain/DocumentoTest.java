@@ -30,7 +30,7 @@ class DocumentoTest {
     void creaVersionUnoYRetencionSegunTipo() {
         Documento d = contrato();
         assertEquals(1, d.getVersionActual());
-        assertEquals(LocalDate.of(2036, 1, 1), d.getRetencionHasta());
+        assertEquals(LocalDate.of(2031, 1, 1), d.getRetencionHasta());
     }
 
     @Test

@@ -26,6 +26,7 @@ public class UsuarioRepositorioJpa implements UsuarioRepositorio {
         entidad.setEstatus(usuario.getEstatus());
         entidad.setIntentosFallidos(usuario.getIntentosFallidos());
         entidad.setBloqueadoHasta(usuario.getBloqueadoHasta());
+        entidad.setArea(usuario.getArea());
         entidad.getRoles().clear();
         entidad.getRoles().addAll(usuario.getRoles());
         return toDominio(jpa.save(entidad));
@@ -55,6 +56,6 @@ public class UsuarioRepositorioJpa implements UsuarioRepositorio {
                 e.getRoles(),
                 e.getEstatus(),
                 e.getIntentosFallidos(),
-                e.getBloqueadoHasta());
+                e.getBloqueadoHasta()).conArea(e.getArea());
     }
 }

@@ -104,4 +104,32 @@ class UsuarioTest {
         assertThatThrownBy(() -> u.asignarRoles(List.of(Rol.ADMIN), "motivo"))
                 .isInstanceOf(ReglaDeNegocioException.class);
     }
+
+    @Test
+    void jefeDeAreaRequiereAreaAsignada() {
+        Usuario u = nuevo();
+        assertThatThrownBy(() -> u.asignarRoles(List.of(Rol.JEFE_AREA), "motivo"))
+                .isInstanceOf(ReglaDeNegocioException.class)
+                .hasMessageContaining("área");
+    }
+
+    @Test
+    void jefeDeAreaConAreaAsignadaSeAsignaSinError() {
+        Usuario u = nuevo();
+        u.asignarArea("VENTAS_ATENCION_CLIENTES", "Alta en el área");
+        u.asignarRoles(List.of(Rol.JEFE_AREA), "Nuevo jefe");
+        assertThat(u.getRoles()).containsExactly(Rol.JEFE_AREA);
+        assertThat(u.getArea()).isEqualTo("VENTAS_ATENCION_CLIENTES");
+    }
+
+    @Test
+    void asignarAreaRequiereMotivoYArea() {
+        Usuario u = nuevo();
+        assertThatThrownBy(() -> u.asignarArea("VENTAS_ATENCION_CLIENTES", " "))
+                .isInstanceOf(ReglaDeNegocioException.class)
+                .hasMessageContaining("motivo");
+        assertThatThrownBy(() -> u.asignarArea(" ", "motivo"))
+                .isInstanceOf(ReglaDeNegocioException.class)
+                .hasMessageContaining("área");
+    }
 }

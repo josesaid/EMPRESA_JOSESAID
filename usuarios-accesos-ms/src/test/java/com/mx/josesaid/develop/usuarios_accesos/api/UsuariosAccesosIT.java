@@ -1,6 +1,7 @@
 package com.mx.josesaid.develop.usuarios_accesos.api;
 
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -72,5 +73,71 @@ class UsuariosAccesosIT {
 
         mvc.perform(get("/v1/usuarios/00000000-0000-0000-0000-000000000000"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void refrescoRotaYElReusoRevocaLaSesion() throws Exception {
+        String correo = "sesion-" + java.util.UUID.randomUUID() + "@prueba.mx";
+        servicio.crear(correo, "Usuario de Sesión", "clave-sesion-123", Set.of(Rol.VENTAS));
+        String r1 = campo(iniciarSesion(correo), "refreshToken");
+
+        String refrescado = mvc.perform(post("/v1/auth/refresh").contentType("application/json")
+                        .content("{\"refreshToken\":\"" + r1 + "\"}"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String r2 = campo(refrescado, "refreshToken");
+        assertNotEquals(r1, r2);
+
+        // Reusar el token ya rotado revoca la sesión completa, incluido el token nuevo
+        mvc.perform(post("/v1/auth/refresh").contentType("application/json")
+                        .content("{\"refreshToken\":\"" + r1 + "\"}"))
+                .andExpect(status().isUnauthorized());
+        mvc.perform(post("/v1/auth/refresh").contentType("application/json")
+                        .content("{\"refreshToken\":\"" + r2 + "\"}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void logoutCierraLaSesionYLogoutTodasCierraTodas() throws Exception {
+        String correo = "logout-" + java.util.UUID.randomUUID() + "@prueba.mx";
+        servicio.crear(correo, "Usuario de Logout", "clave-logout-123", Set.of(Rol.VENTAS));
+        String sesion1 = iniciarSesion(correo);
+        String r1 = campo(sesion1, "refreshToken");
+
+        mvc.perform(post("/v1/auth/logout").contentType("application/json")
+                        .content("{\"refreshToken\":\"" + r1 + "\"}"))
+                .andExpect(status().isNoContent());
+        mvc.perform(post("/v1/auth/refresh").contentType("application/json")
+                        .content("{\"refreshToken\":\"" + r1 + "\"}"))
+                .andExpect(status().isUnauthorized());
+
+        String sesion2 = iniciarSesion(correo);
+        String r2 = campo(sesion2, "refreshToken");
+        String acceso = campo(sesion2, "accessToken");
+        mvc.perform(post("/v1/auth/logout-todas").header("Authorization", "Bearer " + acceso))
+                .andExpect(status().isNoContent());
+        mvc.perform(post("/v1/auth/refresh").contentType("application/json")
+                        .content("{\"refreshToken\":\"" + r2 + "\"}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    private String iniciarSesion(String correo) throws Exception {
+        return mvc.perform(post("/v1/auth/login").contentType("application/json")
+                        .content("{\"correo\":\"" + correo + "\",\"password\":\"" + clave(correo) + "\"}"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    private static String clave(String correo) {
+        return correo.startsWith("logout-") ? "clave-logout-123" : "clave-sesion-123";
+    }
+
+    private static String campo(String json, String nombre) {
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("\"" + nombre + "\":\"([^\"]+)\"").matcher(json);
+        if (!m.find()) {
+            throw new IllegalStateException("No se encontró " + nombre);
+        }
+        return m.group(1);
     }
 }

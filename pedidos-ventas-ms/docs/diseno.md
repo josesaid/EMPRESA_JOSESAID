@@ -55,3 +55,19 @@ Cobro, emisión de CFDI, descuentos por volumen y promociones.
 - **Decisión:** es una foto del periodo, no un evento. No usa el outbox; un envío fallido se corrige en el siguiente ciclo.
 - **Consumo:** `reportes-ejecutivos-ms` lo guarda con upsert por área, nombre y periodo.
 - **Prueba:** `PublicadorIndicadores*IT` con PostgreSQL y Kafka reales (Testcontainers).
+
+
+## Validación de cliente
+
+Antes de crear una cotización o un pedido, el servicio consulta `GET /v1/clientes/{id}` en clientes-ms, con el mismo token del usuario.
+
+| Caso | Respuesta |
+|---|---|
+| Cliente inexistente | 422 `regla-de-negocio`: "El cliente no existe" |
+| Cliente SUSPENDIDO o BAJA | 422 `regla-de-negocio`: "El cliente no está activo" |
+| clientes-ms caído o con error | 503 `servicio-no-disponible`: reintentar |
+| Cliente ACTIVO | La operación continúa |
+
+- **Configuración:** `CLIENTES_URL`, por omisión `http://clientes-ms:8080`.
+- **Decisión:** consulta síncrona, aprobada. Si clientes-ms no responde, pedidos tampoco crea nada: prefiere rechazar a guardar un cliente no verificado.
+- **Pruebas:** `ClientesRestValidadorTest` con servidor REST simulado; `PedidosIT` sustituye el validador con `@MockitoBean`.

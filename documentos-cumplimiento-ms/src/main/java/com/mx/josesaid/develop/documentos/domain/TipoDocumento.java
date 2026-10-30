@@ -2,9 +2,9 @@ package com.mx.josesaid.develop.documentos.domain;
 
 /** Tipos de documento. Los años de retención son propuesta pendiente de confirmación legal. */
 public enum TipoDocumento {
-    CONTRATO(10),
+    CONTRATO(5),
     PERMISO(5),
-    REGISTRO_LEGAL(10);
+    REGISTRO_LEGAL(5);
 
     private final int retencionAnios;
 

@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.usuarios_accesos.api;
 
+import com.mx.josesaid.develop.usuarios_accesos.application.SesionService;
 import com.mx.josesaid.develop.usuarios_accesos.application.UsuarioService;
 import com.mx.josesaid.develop.usuarios_accesos.config.PropiedadesJwt;
 import com.mx.josesaid.develop.usuarios_accesos.domain.Usuario;
@@ -7,7 +8,12 @@ import com.mx.josesaid.develop.usuarios_accesos.infrastructure.security.EmisorTo
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import java.util.UUID;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,22 +26,52 @@ public class AuthController {
     private final UsuarioService servicio;
     private final EmisorTokens emisor;
     private final PropiedadesJwt propiedades;
+    private final SesionService sesiones;
 
-    public AuthController(UsuarioService servicio, EmisorTokens emisor, PropiedadesJwt propiedades) {
+    public AuthController(UsuarioService servicio, EmisorTokens emisor, PropiedadesJwt propiedades,
+                          SesionService sesiones) {
         this.servicio = servicio;
         this.emisor = emisor;
         this.propiedades = propiedades;
+        this.sesiones = sesiones;
     }
 
     @PostMapping("/login")
     public TokenRespuesta login(@Valid @RequestBody LoginSolicitud solicitud) {
         Usuario usuario = servicio.autenticar(solicitud.correo(), solicitud.password());
-        return new TokenRespuesta(emisor.emitir(usuario), "Bearer", propiedades.duracion().toSeconds());
+        return respuesta(sesiones.iniciar(usuario));
+    }
+
+    /** Rota el refresh token y devuelve un access token y un refresh token nuevos. */
+    @PostMapping("/refresh")
+    public TokenRespuesta refrescar(@Valid @RequestBody RefrescoSolicitud solicitud) {
+        return respuesta(sesiones.refrescar(solicitud.refreshToken()));
+    }
+
+    /** Cierra la sesión del refresh token dado. Público: basta con tener el token. */
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cerrar(@Valid @RequestBody RefrescoSolicitud solicitud) {
+        sesiones.cerrar(solicitud.refreshToken());
+    }
+
+    /** Cierra todas las sesiones del usuario autenticado. */
+    @PostMapping("/logout-todas")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cerrarTodas(@AuthenticationPrincipal Jwt jwt) {
+        sesiones.cerrarTodas(UUID.fromString(jwt.getSubject()));
+    }
+
+    private TokenRespuesta respuesta(SesionService.Par par) {
+        return new TokenRespuesta(par.accessToken(), "Bearer", propiedades.duracion().toSeconds(), par.refreshToken());
     }
 
     public record LoginSolicitud(@NotBlank @Email String correo, @NotBlank String password) {
     }
 
-    public record TokenRespuesta(String accessToken, String tokenType, long expiresIn) {
+    public record RefrescoSolicitud(@NotBlank String refreshToken) {
+    }
+
+    public record TokenRespuesta(String accessToken, String tokenType, long expiresIn, String refreshToken) {
     }
 }

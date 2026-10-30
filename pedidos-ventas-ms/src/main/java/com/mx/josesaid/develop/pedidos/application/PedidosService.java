@@ -34,13 +34,16 @@ public class PedidosService {
     private final PedidoRepositorio pedidos;
     private final PublicadorEventos eventos;
     private final Clock reloj;
+    private final ValidadorCliente clientes;
 
     public PedidosService(CotizacionRepositorio cotizaciones, PedidoRepositorio pedidos,
-                          PublicadorEventos eventos, Clock reloj) {
+                          PublicadorEventos eventos, Clock reloj,
+                          ValidadorCliente clientes) {
         this.cotizaciones = cotizaciones;
         this.pedidos = pedidos;
         this.eventos = eventos;
         this.reloj = reloj;
+        this.clientes = clientes;
     }
 
     /** Línea tal como llega de la API, antes de validarse en el dominio. */
@@ -54,6 +57,7 @@ public class PedidosService {
     @Transactional
     public Cotizacion crearCotizacion(UUID clienteId, Canal canal, String moneda, TasaIva tasa,
                                       LocalDate vigenteHasta, List<LineaComando> lineas) {
+        clientes.exigirActivo(clienteId);
         return cotizaciones.guardar(Cotizacion.crear(clienteId, canal, moneda, tasa, vigenteHasta, aLineas(lineas)));
     }
 
@@ -90,6 +94,7 @@ public class PedidosService {
 
     @Transactional
     public Pedido crearPedido(UUID clienteId, Canal canal, String moneda, TasaIva tasa, List<LineaComando> lineas) {
+        clientes.exigirActivo(clienteId);
         return pedidos.guardar(Pedido.crear(clienteId, canal, moneda, tasa, aLineas(lineas)));
     }
 

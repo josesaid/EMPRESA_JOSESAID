@@ -47,6 +47,9 @@ public class UsuarioEntity {
     @Column(name = "bloqueado_hasta")
     private Instant bloqueadoHasta;
 
+    @Column(length = 40)
+    private String area;
+
     /** Control de concurrencia optimista. Lo gestiona JPA. */
     @Version
     private Long version;
@@ -93,6 +96,8 @@ public class UsuarioEntity {
     public void setIntentosFallidos(int intentosFallidos) { this.intentosFallidos = intentosFallidos; }
     public Instant getBloqueadoHasta() { return bloqueadoHasta; }
     public void setBloqueadoHasta(Instant bloqueadoHasta) { this.bloqueadoHasta = bloqueadoHasta; }
+    public String getArea() { return area; }
+    public void setArea(String area) { this.area = area; }
     public Long getVersion() { return version; }
     public Set<Rol> getRoles() { return roles; }
 }

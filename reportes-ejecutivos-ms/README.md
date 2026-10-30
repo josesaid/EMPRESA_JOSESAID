@@ -99,7 +99,7 @@ Flyway ejecuta `V1__esquema_inicial.sql`. Hibernate solo valida. Los cambios fut
 ## 10. Seguridad
 
 - API sin estado con JWT RS256. Solo `/actuator/health` es público.
-- Toda la API es de rol DIRECCION (lectura completa, carga manual y cierre).
+- Toda la API es de rol DIRECCION (lectura completa, carga manual y cierre), salvo `GET /indicadores`, que también acepta JEFE_AREA (ver abajo).
 - Cada área solo ve sus indicadores en el consolidado: **propuesta, pendiente**.
 
 ## 11. API
@@ -109,7 +109,7 @@ Base `/v1`.
 | Método | Ruta | Descripción | Éxito |
 |---|---|---|---|
 | POST | /indicadores | Carga o corrige un indicador (manual) | 201 |
-| GET | /indicadores?area=&periodo= | Indicadores del periodo, con marca de desactualizado | 200 |
+| GET | /indicadores?area=&periodo= | Indicadores del periodo, con marca de desactualizado. JEFE_AREA solo recibe su área y recibe 403 si pide otra | 200 |
 | GET | /reportes/{periodo} | Reporte del periodo (BORRADOR en vivo o CERRADO con foto) | 200 |
 | POST | /reportes/{periodo}/cierre | Cierra el reporte | 200 |
 | GET | /reportes/{id}/exportacion?formato=CSV\|PDF\|XLSX | Descarga el reporte en el formato indicado (CSV por omisión) | 200 |
@@ -212,3 +212,12 @@ Imagen `reportes-ejecutivos-ms:0.1.0`. Requiere red `empresa-net`, base `reporte
 - **Orden de arranque:** `discovery-ms` primero. Si este servicio arranca antes, se registra solo cuando el registro esté disponible.
 - Métricas Prometheus en `/actuator/prometheus`, sin token, solo lectura.
 - Variables `EUREKA_USUARIO` y `EUREKA_PASSWORD`: obligatorias en Docker; el Compose arma la URL de registro `http://USUARIO:CLAVE@discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://USUARIO:CLAVE@localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.
+
+## Lectura por área (JEFE_AREA)
+
+- `GET /v1/indicadores` acepta DIRECCION y JEFE_AREA.
+- DIRECCION consulta cualquier área, o todas si no envía `area`.
+- JEFE_AREA consulta solo el área del claim `area` de su token. Si no envía `area`, recibe la suya; si pide otra, recibe 403. Un token sin claim `area` válido recibe 403.
+- `GET /reportes/{periodo}` también acepta JEFE_AREA y solo incluye los indicadores de su área.
+- Carga, cierre y exportación siguen solo para DIRECCION.
+

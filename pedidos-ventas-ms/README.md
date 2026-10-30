@@ -265,3 +265,19 @@ Publica un indicador mensual al tópico `indicadores-areas`, que consume `report
 - **Configuración:** `INDICADORES_TOPICO`, `INDICADORES_INTERVALO_MS`, `INDICADORES_INICIO_MS`.
 - **Entrega:** no pasa por el outbox. Es una foto del periodo; si un envío falla, el siguiente ciclo lo corrige.
 - **Clase:** `PublicadorIndicadoresVentas`. Prueba: `mvn verify -Dit.test='PublicadorIndicadores*IT'`.
+
+
+## Validación de cliente
+
+Antes de crear una cotización o un pedido, el servicio consulta `GET /v1/clientes/{id}` en clientes-ms, con el mismo token del usuario.
+
+| Caso | Respuesta |
+|---|---|
+| Cliente inexistente | 422 `regla-de-negocio`: "El cliente no existe" |
+| Cliente SUSPENDIDO o BAJA | 422 `regla-de-negocio`: "El cliente no está activo" |
+| clientes-ms caído o con error | 503 `servicio-no-disponible`: reintentar |
+| Cliente ACTIVO | La operación continúa |
+
+- **Configuración:** `CLIENTES_URL`, por omisión `http://clientes-ms:8080`.
+- **Decisión:** consulta síncrona, aprobada. Si clientes-ms no responde, pedidos tampoco crea nada: prefiere rechazar a guardar un cliente no verificado.
+- **Pruebas:** `ClientesRestValidadorTest` con servidor REST simulado; `PedidosIT` sustituye el validador con `@MockitoBean`.

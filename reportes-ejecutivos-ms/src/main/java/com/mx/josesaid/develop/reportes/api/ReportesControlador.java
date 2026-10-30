@@ -19,6 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * API de reportes. Toda la API es de DIRECCION. La carga principal de indicadores es por Kafka;
+ * API de reportes. Casi toda la API es de DIRECCION; la consulta también acepta JEFE_AREA, limitada a su área. La carga principal de indicadores es por Kafka;
  * POST /indicadores existe para cargas manuales y correcciones.
  */
 @RestController
@@ -49,20 +52,49 @@ public class ReportesControlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(IndicadorRespuesta.de(i, false));
     }
 
+    /** DIRECCION consulta cualquier área. JEFE_AREA solo la suya, según el claim {@code area} del token. */
     @GetMapping("/indicadores")
-    @PreAuthorize("hasRole('DIRECCION')")
+    @PreAuthorize("hasAnyRole('DIRECCION','JEFE_AREA')")
     public List<IndicadorRespuesta> consultarIndicadores(@RequestParam(required = false) Area area,
-                                                         @RequestParam String periodo) {
-        return servicio.consultarIndicadores(area, Periodo.de(periodo)).stream()
+                                                         @RequestParam String periodo,
+                                                         Authentication autenticacion) {
+        return servicio.consultarIndicadores(alcance(area, autenticacion), Periodo.de(periodo)).stream()
                 .map(v -> IndicadorRespuesta.de(v.indicador(), v.desactualizado()))
                 .toList();
     }
 
+    private static Area alcance(Area solicitada, Authentication autenticacion) {
+        boolean direccion = autenticacion.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_DIRECCION".equals(a.getAuthority()));
+        if (direccion) {
+            return solicitada;
+        }
+        String claim = autenticacion instanceof JwtAuthenticationToken jwt
+                ? jwt.getToken().getClaimAsString("area") : null;
+        Area propia;
+        try {
+            propia = claim == null ? null : Area.valueOf(claim);
+        } catch (IllegalArgumentException e) {
+            propia = null;
+        }
+        if (propia == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "El usuario no tiene un área válida asignada");
+        }
+        if (solicitada != null && solicitada != propia) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo puede consultar indicadores de su área");
+        }
+        return propia;
+    }
+
+    /** DIRECCION ve el reporte completo. JEFE_AREA ve solo los indicadores de su área. */
     @GetMapping("/reportes/{periodo}")
-    @PreAuthorize("hasRole('DIRECCION')")
-    public ReporteRespuesta consultarReporte(@PathVariable String periodo) {
+    @PreAuthorize("hasAnyRole('DIRECCION','JEFE_AREA')")
+    public ReporteRespuesta consultarReporte(@PathVariable String periodo, Authentication autenticacion) {
         ReportesService.ReporteVista v = servicio.consultarReporte(Periodo.de(periodo));
-        return ReporteRespuesta.de(v.reporte(), v.indicadores());
+        Area alcance = alcance(null, autenticacion);
+        List<IndicadorConsolidado> indicadores = alcance == null ? v.indicadores()
+                : v.indicadores().stream().filter(i -> i.area() == alcance).toList();
+        return ReporteRespuesta.de(v.reporte(), indicadores);
     }
 
     @PostMapping("/reportes/{periodo}/cierre")

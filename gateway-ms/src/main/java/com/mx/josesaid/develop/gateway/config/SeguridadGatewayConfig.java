@@ -20,7 +20,7 @@ public class SeguridadGatewayConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(auth -> auth
-                        .pathMatchers("/*/v1/auth/login").permitAll()
+                        .pathMatchers("/*/v1/auth/login", "/*/v1/auth/refresh", "/*/v1/auth/logout").permitAll()
                         .anyExchange().authenticated())
                 .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
                 .build();

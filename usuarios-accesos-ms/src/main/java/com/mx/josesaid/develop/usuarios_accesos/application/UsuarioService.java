@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.usuarios_accesos.application;
 
+import com.mx.josesaid.develop.usuarios_accesos.domain.ReglaDeNegocioException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.CredencialesInvalidasException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.ConflictoException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.RecursoNoEncontradoException;
@@ -49,6 +50,9 @@ public class UsuarioService {
         if (repositorio.existePorCorreo(correoNormalizado)) {
             throw new ConflictoException("Ya existe un usuario con ese correo");
         }
+        if (roles != null && roles.contains(Rol.JEFE_AREA)) {
+            throw new ReglaDeNegocioException("Cree el usuario, asígnele un área y después el rol JEFE_AREA");
+        }
         String hash = passwordEncoder.encode(passwordPlano == null ? "" : passwordPlano);
         return repositorio.guardar(Usuario.crear(correoNormalizado, nombreCompleto, hash, roles));
     }
@@ -97,6 +101,13 @@ public class UsuarioService {
                        "rolesNuevos", nombres(guardado.getRoles()),
                        "motivo", motivo)));
         return guardado;
+    }
+
+    @Transactional
+    public Usuario asignarArea(UUID id, String area, String motivo) {
+        Usuario usuario = obtener(id);
+        usuario.asignarArea(area, motivo);
+        return repositorio.guardar(usuario);
     }
 
     @Transactional

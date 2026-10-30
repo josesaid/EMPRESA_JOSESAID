@@ -13,7 +13,7 @@ Diagrama de cada servicio: `<servicio>/docs/diagramas/arquitectura.png`.
 | PostgreSQL 17 | 5432 | Una base de datos y un usuario por microservicio |
 | Kafka 4.0 | 9092 | Para acceso desde el host. Los contenedores usan `kafka:29092` |
 | clientes-ms | 8101 | API de clientes. Ver [clientes-ms/README.md](clientes-ms/README.md) |
-| usuarios-accesos-ms | 8102 | Usuarios, roles y emisión de JWT. Ver [usuarios-accesos-ms/README.md](usuarios-accesos-ms/README.md) |
+| usuarios-accesos-ms | interno (sin puerto en el host) | Usuarios, roles y emisión de JWT. Ver [usuarios-accesos-ms/README.md](usuarios-accesos-ms/README.md) |
 | facturacion-pagos-ms | 8103 | Comprobantes, pagos y cancelaciones. Ver [facturacion-pagos-ms/README.md](facturacion-pagos-ms/README.md) |
 | contabilidad-ms | 8104 | Libro contable, pólizas, cierres y balanza. Ver [contabilidad-ms/README.md](contabilidad-ms/README.md) |
 | inventario-operaciones-ms | 8105 | Existencias, reservas, lotes y órdenes de operación. Ver [inventario-operaciones-ms/README.md](inventario-operaciones-ms/README.md) |
