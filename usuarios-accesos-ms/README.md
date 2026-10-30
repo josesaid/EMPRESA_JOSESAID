@@ -13,7 +13,7 @@ Servicio de identidad de EMPRESA_JOSESAID. Autentica usuarios, emite tokens JWT,
 | Base de datos | PostgreSQL 17 (esquema `usuarios_accesos`) |
 | Mensajería | Kafka, tópico `usuarios-accesos.eventos` |
 | Seguridad | OAuth2 resource server, JWT RS256 |
-| Puerto | 8081 interno, 8102 en el host |
+| Puerto | 8081 interno. No se publica en el host; se accede por el gateway (8080) |
 
 ## 2. Propósito y alcance
 - **Hace:** login, emisión de JWT, alta de usuarios, asignación de roles, baja, bloqueo por intentos fallidos.
@@ -84,7 +84,8 @@ mvn spring-boot:run
 
 **Verificar salud:**
 ```bash
-curl -s http://localhost:8102/actuator/health
+# El gateway bloquea /actuator (404). Desde dentro de empresa-net:
+curl -s http://usuarios-accesos-ms:8081/actuator/health
 ```
 
 ## 7. Modelo de datos
@@ -152,14 +153,14 @@ Documentación completa de endpoints en `docs/diseno.md`.
 
 **Ejemplo de login:**
 ```bash
-curl -s -X POST http://localhost:8102/v1/auth/login \
+curl -s -X POST http://localhost:8080/usuarios-accesos-ms/v1/auth/login \
   -H 'Content-Type: application/json' \
   -d '{"correo":"admin@empresa.mx","password":"tu-clave"}'
 ```
 
 **Ejemplo de alta (requiere token de ADMIN):**
 ```bash
-curl -s -X POST http://localhost:8102/v1/usuarios \
+curl -s -X POST http://localhost:8080/usuarios-accesos-ms/v1/usuarios \
   -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
   -d '{"correo":"ana@empresa.mx","nombreCompleto":"Ana Ruiz","password":"clave-nueva-1","roles":["VENTAS"]}'
 ```

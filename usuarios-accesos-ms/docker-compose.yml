@@ -21,9 +21,9 @@ services:
       # Administrador inicial opcional: se crea al arrancar si el correo no existe
       ADMIN_INICIAL_CORREO: ${USUARIOS_ADMIN_INICIAL_CORREO:-}
       ADMIN_INICIAL_PASSWORD: ${USUARIOS_ADMIN_INICIAL_PASSWORD:-}
-    ports:
-      # Puerto del host 8102 -> puerto 8081 del contenedor (clientes-ms usa 8101)
-      - "8102:8081"
+    # Sin 'ports': el servicio no se publica en el host. Prometheus y el gateway lo alcanzan
+    # por la red empresa-net (usuarios-accesos-ms:8081). Así /actuator/prometheus no queda
+    # expuesto fuera de Docker. Para pruebas directas, usar el gateway (puerto 8080).
     # Orden de arranque: PostgreSQL y Kafka deben estar arriba antes que este servicio.
     # Compose no permite depends_on hacia servicios de la raíz cuando este archivo se incluye,
     # así que se documenta aquí y en el README. Si la base aún no responde, el servicio falla
