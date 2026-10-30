@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.inventario.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -125,5 +126,32 @@ class InventarioIT {
 
     private static RequestPostProcessor rol(String rol) {
         return jwt().authorities(new SimpleGrantedAuthority("ROLE_" + rol));
+    }
+
+    @Test
+    void mismaIdempotencyKeyNoDuplicaElMovimiento() throws Exception {
+        String sufijo = String.valueOf(new java.util.Random().nextInt(100000));
+        MvcResult art = mvc.perform(post("/v1/articulos").with(rol("OPERACIONES"))
+                        .contentType("application/json")
+                        .content("{\"sku\":\"SKU-REPLAY-" + sufijo + "\",\"nombre\":\"Resina\",\"unidad\":\"KG\","
+                                + "\"loteObligatorio\":false,\"minimo\":10}"))
+                .andExpect(status().isCreated()).andReturn();
+        String articulo = JsonPath.read(art.getResponse().getContentAsString(), "$.id");
+        MvcResult alm = mvc.perform(post("/v1/almacenes").with(rol("ALMACEN"))
+                        .contentType("application/json")
+                        .content("{\"nombre\":\"Replay-" + sufijo + "\",\"ubicacion\":\"Planta 9\"}"))
+                .andExpect(status().isCreated()).andReturn();
+        String almacen = JsonPath.read(alm.getResponse().getContentAsString(), "$.id");
+
+        String cuerpo = movimiento(articulo, almacen, "ENTRADA", "20", null);
+        String clave = "prueba-" + java.util.UUID.randomUUID();
+        MvcResult primero = mvc.perform(post("/v1/movimientos").with(rol("ALMACEN")).header("Idempotency-Key", clave)
+                        .contentType("application/json").content(cuerpo))
+                .andExpect(status().isCreated()).andReturn();
+        MvcResult reintento = mvc.perform(post("/v1/movimientos").with(rol("ALMACEN")).header("Idempotency-Key", clave)
+                        .contentType("application/json").content(cuerpo))
+                .andExpect(status().isCreated()).andReturn();
+        assertEquals((String) JsonPath.read(primero.getResponse().getContentAsString(), "$.id"),
+                (String) JsonPath.read(reintento.getResponse().getContentAsString(), "$.id"));
     }
 }

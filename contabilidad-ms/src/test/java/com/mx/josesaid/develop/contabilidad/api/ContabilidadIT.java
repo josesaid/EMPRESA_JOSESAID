@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.contabilidad.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -103,5 +104,24 @@ class ContabilidadIT {
 
     private static RequestPostProcessor rol(String rol) {
         return jwt().authorities(new SimpleGrantedAuthority("ROLE_" + rol));
+    }
+
+    @Test
+    void mismaIdempotencyKeyNoDuplicaLaPoliza() throws Exception {
+        int sufijo = new java.util.Random().nextInt(900) + 100;
+        String caja = crearCuenta("1201-" + sufijo, "Caja replay", "DEUDORA");
+        String ventas = crearCuenta("4201-" + sufijo, "Ventas replay", "ACREEDORA");
+        String cuerpo = "{\"tipo\":\"DIARIO\",\"fecha\":\"2026-09-15\",\"movimientos\":["
+                + "{\"cuentaId\":\"" + caja + "\",\"cargo\":50},"
+                + "{\"cuentaId\":\"" + ventas + "\",\"abono\":50}]}";
+        String clave = "prueba-" + java.util.UUID.randomUUID();
+        MvcResult primero = mvc.perform(post("/v1/polizas").with(rol("CONTADOR")).header("Idempotency-Key", clave)
+                        .contentType("application/json").content(cuerpo))
+                .andExpect(status().isCreated()).andReturn();
+        MvcResult reintento = mvc.perform(post("/v1/polizas").with(rol("CONTADOR")).header("Idempotency-Key", clave)
+                        .contentType("application/json").content(cuerpo))
+                .andExpect(status().isCreated()).andReturn();
+        assertEquals((String) JsonPath.read(primero.getResponse().getContentAsString(), "$.id"),
+                (String) JsonPath.read(reintento.getResponse().getContentAsString(), "$.id"));
     }
 }

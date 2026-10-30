@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.compras.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -113,5 +114,24 @@ class ComprasIT {
 
     private static RequestPostProcessor rol(String rol) {
         return jwt().authorities(new SimpleGrantedAuthority("ROLE_" + rol));
+    }
+
+    @Test
+    void mismaIdempotencyKeyNoDuplicaLaOrden() throws Exception {
+        MvcResult prov = mvc.perform(post("/v1/proveedores").with(rol("COMPRAS"))
+                        .contentType("application/json")
+                        .content("{\"razonSocial\":\"Replay SA\",\"rfc\":\"BBN010101AB3\",\"correo\":\"replay@aceros.mx\"}"))
+                .andExpect(status().isCreated()).andReturn();
+        String proveedor = JsonPath.read(prov.getResponse().getContentAsString(), "$.id");
+
+        String clave = "prueba-" + java.util.UUID.randomUUID();
+        MvcResult primero = mvc.perform(post("/v1/ordenes-compra").with(rol("COMPRAS")).header("Idempotency-Key", clave)
+                        .contentType("application/json").content(ordenJson(proveedor)))
+                .andExpect(status().isCreated()).andReturn();
+        MvcResult reintento = mvc.perform(post("/v1/ordenes-compra").with(rol("COMPRAS")).header("Idempotency-Key", clave)
+                        .contentType("application/json").content(ordenJson(proveedor)))
+                .andExpect(status().isCreated()).andReturn();
+        assertEquals((String) JsonPath.read(primero.getResponse().getContentAsString(), "$.id"),
+                (String) JsonPath.read(reintento.getResponse().getContentAsString(), "$.id"));
     }
 }

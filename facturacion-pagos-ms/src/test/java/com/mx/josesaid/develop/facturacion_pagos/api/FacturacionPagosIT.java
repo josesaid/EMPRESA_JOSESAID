@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.facturacion_pagos.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -87,5 +88,25 @@ class FacturacionPagosIT {
 
     private static org.springframework.test.web.servlet.request.RequestPostProcessor finanzas() {
         return jwt().authorities(new SimpleGrantedAuthority("ROLE_FINANZAS"));
+    }
+
+    @Test
+    void mismaIdempotencyKeyNoDuplicaElPago() throws Exception {
+        MvcResult creado = mvc.perform(post("/v1/comprobantes").with(finanzas())
+                        .contentType("application/json")
+                        .content("{\"ordenId\":\"00000000-0000-0000-0000-000000000003\",\"moneda\":\"MXN\",\"subtotal\":500,\"tasaIva\":0.16}"))
+                .andExpect(status().isCreated()).andReturn();
+        String id = JsonPath.read(creado.getResponse().getContentAsString(), "$.id");
+        mvc.perform(post("/v1/comprobantes/" + id + "/emision").with(finanzas())).andExpect(status().isOk());
+
+        String cuerpo = "{\"monto\":500,\"referencia\":\"SPEI-IDEM\"}";
+        String clave = "prueba-" + java.util.UUID.randomUUID();
+        MvcResult primero = mvc.perform(post("/v1/comprobantes/" + id + "/pagos").with(finanzas())
+                        .header("Idempotency-Key", clave).contentType("application/json").content(cuerpo))
+                .andExpect(status().isCreated()).andReturn();
+        MvcResult reintento = mvc.perform(post("/v1/comprobantes/" + id + "/pagos").with(finanzas())
+                        .header("Idempotency-Key", clave).contentType("application/json").content(cuerpo))
+                .andExpect(status().isCreated()).andReturn();
+        assertEquals(primero.getResponse().getContentAsString(), reintento.getResponse().getContentAsString());
     }
 }
