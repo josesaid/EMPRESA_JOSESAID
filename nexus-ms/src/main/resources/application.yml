@@ -9,6 +9,18 @@ spring:
         jwt:
           # Llave pública de usuarios-accesos-ms (JWKS). Se configura por entorno.
           jwk-set-uri: ${JWT_JWKS_URI:http://localhost:8081/.well-known/jwks.json}
+  datasource:
+    # Base de datos y usuario propios de nexus-ms, creados por infra/postgres/init-databases.sh
+    url: ${NEXUS_DB_URL:jdbc:postgresql://localhost:5432/nexus}
+    username: ${NEXUS_DB_USER:nexus}
+    password: ${NEXUS_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # El esquema lo controla Flyway; Hibernate solo valida que coincida
+      ddl-auto: validate
+  flyway:
+    enabled: true
   ai:
     anthropic:
       api-key: ${ANTHROPIC_API_KEY:}

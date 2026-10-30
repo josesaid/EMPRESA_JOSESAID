@@ -9,8 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
+
 import com.mx.josesaid.develop.nexus.application.AsistenteIA;
+import com.mx.josesaid.develop.nexus.application.AuditoriaConsultas;
 import com.mx.josesaid.develop.nexus.application.PreguntaAsistente;
+import com.mx.josesaid.develop.nexus.application.RegistroConsulta;
+import com.mx.josesaid.develop.nexus.comun.filtro.FiltroDatosSensibles;
 
 @RestController
 @RequestMapping("/nexus")
@@ -18,16 +23,29 @@ import com.mx.josesaid.develop.nexus.application.PreguntaAsistente;
 public class NexusControlador {
 
     private final AsistenteIA asistente;
+    private final AuditoriaConsultas auditoria;
 
-    public NexusControlador(AsistenteIA asistente) {
+    public NexusControlador(AsistenteIA asistente, AuditoriaConsultas auditoria) {
         this.asistente = asistente;
+        this.auditoria = auditoria;
     }
 
     @PostMapping("/consultas")
     @PreAuthorize("hasAnyRole('DIRECCION','JEFE_AREA','VENTAS','ADMIN')")
     public ConsultaResponse consultar(@RequestBody ConsultaRequest solicitud,
                                       @AuthenticationPrincipal Jwt jwt) {
-        var respuesta = asistente.consultar(new PreguntaAsistente(jwt.getSubject(), solicitud.pregunta()));
-        return new ConsultaResponse(respuesta.texto());
+        String usuario = jwt.getSubject();
+        var respuesta = asistente.consultar(new PreguntaAsistente(usuario, solicitud.pregunta()));
+        String texto = respuesta.texto() == null ? "" : respuesta.texto();
+        String resumen = FiltroDatosSensibles.redactar(texto.length() > 500 ? texto.substring(0, 500) : texto).texto();
+        auditoria.registrar(new RegistroConsulta(
+                usuario,
+                FiltroDatosSensibles.redactar(solicitud.pregunta()).texto(),
+                resumen,
+                null,
+                null,
+                null,
+                Instant.now()));
+        return new ConsultaResponse(texto);
     }
 }
