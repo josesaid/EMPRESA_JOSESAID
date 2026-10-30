@@ -1,0 +1,20 @@
+# Configuración de nexus-ms.
+# Los secretos se leen de variables de entorno; nunca se escriben valores reales aquí.
+spring:
+  application:
+    name: nexus-ms
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Llave pública de usuarios-accesos-ms (JWKS). Se configura por entorno.
+          jwk-set-uri: ${JWT_JWKS_URI:http://localhost:8081/.well-known/jwks.json}
+
+server:
+  port: ${SERVER_PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
