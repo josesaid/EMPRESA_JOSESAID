@@ -85,4 +85,4 @@ Contenedor propio detrás de gateway-ms. Rollback por contenedor.
 
 ## Roles en el área
 - **DIRECCION:** consulta indicadores y clientes.
-- **COMERCIAL:** consulta clientes.
+- **VENTAS:** consulta clientes.
