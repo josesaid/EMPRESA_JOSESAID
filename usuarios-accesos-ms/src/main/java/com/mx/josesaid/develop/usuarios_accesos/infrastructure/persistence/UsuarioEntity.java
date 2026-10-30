@@ -50,6 +50,9 @@ public class UsuarioEntity {
     @Column(length = 40)
     private String area;
 
+    @Column(name = "debe_cambiar_password", nullable = false)
+    private boolean debeCambiarPassword;
+
     /** Control de concurrencia optimista. Lo gestiona JPA. */
     @Version
     private Long version;
@@ -98,6 +101,8 @@ public class UsuarioEntity {
     public void setBloqueadoHasta(Instant bloqueadoHasta) { this.bloqueadoHasta = bloqueadoHasta; }
     public String getArea() { return area; }
     public void setArea(String area) { this.area = area; }
+    public boolean isDebeCambiarPassword() { return debeCambiarPassword; }
+    public void setDebeCambiarPassword(boolean valor) { this.debeCambiarPassword = valor; }
     public Long getVersion() { return version; }
     public Set<Rol> getRoles() { return roles; }
 }

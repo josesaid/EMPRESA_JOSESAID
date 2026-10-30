@@ -35,7 +35,7 @@ public class SeguridadConfig {
             .csrf(csrf -> csrf.disable()) // API sin cookies de sesión: no aplica CSRF
             .sessionManagement(sesion -> sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/v1/auth/login", "/v1/auth/refresh", "/v1/auth/logout", "/actuator/health", "/actuator/health/**", "/actuator/prometheus", "/.well-known/jwks.json").permitAll()
+                .requestMatchers("/v1/auth/login", "/v1/auth/refresh", "/v1/auth/logout", "/v1/auth/cambiar-password-inicial", "/actuator/health", "/actuator/health/**", "/actuator/prometheus", "/.well-known/jwks.json").permitAll()
                 .anyRequest().authenticated())
             .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(convertidorJwt())));
         return http.build();

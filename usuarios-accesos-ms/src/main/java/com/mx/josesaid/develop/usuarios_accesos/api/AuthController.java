@@ -8,6 +8,7 @@ import com.mx.josesaid.develop.usuarios_accesos.infrastructure.security.EmisorTo
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,6 +49,13 @@ public class AuthController {
         return respuesta(sesiones.refrescar(solicitud.refreshToken()));
     }
 
+    /** Sustituye la contraseña temporal. Público: el usuario aún no tiene token. */
+    @PostMapping("/cambiar-password-inicial")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cambiarPasswordInicial(@Valid @RequestBody CambioPasswordSolicitud solicitud) {
+        servicio.cambiarPasswordTemporal(solicitud.correo(), solicitud.passwordActual(), solicitud.passwordNueva());
+    }
+
     /** Cierra la sesión del refresh token dado. Público: basta con tener el token. */
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -70,6 +78,12 @@ public class AuthController {
     }
 
     public record RefrescoSolicitud(@NotBlank String refreshToken) {
+    }
+
+    public record CambioPasswordSolicitud(
+            @NotBlank @Email String correo,
+            @NotBlank String passwordActual,
+            @NotBlank @Size(min = 12, max = 100) String passwordNueva) {
     }
 
     public record TokenRespuesta(String accessToken, String tokenType, long expiresIn, String refreshToken) {

@@ -132,4 +132,31 @@ class UsuarioTest {
                 .isInstanceOf(ReglaDeNegocioException.class)
                 .hasMessageContaining("área");
     }
+
+    @Test
+    void asignarAreaRechazaUnAreaQueNoExiste() {
+        Usuario u = nuevo();
+        assertThatThrownBy(() -> u.asignarArea("VENTAS_ATENCION", "motivo"))
+                .isInstanceOf(ReglaDeNegocioException.class)
+                .hasMessageContaining("Área no válida");
+        assertThat(u.getArea()).isNull();
+    }
+
+    @Test
+    void passwordTemporalSeQuitaAlCambiarla() {
+        Usuario usuario = nuevo();
+        usuario.marcarPasswordTemporal();
+        assertThat(usuario.debeCambiarPassword()).isTrue();
+
+        usuario.cambiarPasswordTemporal("nuevo-hash");
+
+        assertThat(usuario.debeCambiarPassword()).isFalse();
+        assertThat(usuario.getPasswordHash()).isEqualTo("nuevo-hash");
+    }
+
+    @Test
+    void cambiarPasswordSinSerTemporalFalla() {
+        assertThatThrownBy(() -> nuevo().cambiarPasswordTemporal("otro-hash"))
+                .isInstanceOf(ReglaDeNegocioException.class);
+    }
 }

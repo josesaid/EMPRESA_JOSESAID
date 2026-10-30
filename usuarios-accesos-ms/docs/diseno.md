@@ -100,6 +100,9 @@ Cada usuario puede tener un área (`area`, texto de hasta 40 caracteres, por eje
 - Un usuario que ya tenía sesión abierta antes de este cambio no trae el claim hasta volver a iniciar sesión.
 - El valor de `area` debe coincidir con los nombres del enum `Area` de reportes-ejecutivos-ms. Este servicio no lo valida; si no coincide, reportes responde 403.
 - Migración `V2__area_jefe.sql`: agrega la columna `area` y amplía la restricción de roles con `JEFE_AREA`.
+- `GET /v1/usuarios/{id}` devuelve el área del usuario.
+- El valor de `area` se valida contra la lista de áreas de reportes; un valor desconocido responde 422.
+- Cada cambio de área publica el evento `area-asignada` (área anterior, área nueva y motivo), igual que el cambio de roles.
 
 ## Sesiones: refresh token y cierre de sesión
 
@@ -109,6 +112,7 @@ El login devuelve `accessToken` (15 minutos) y `refreshToken` (opaco, 7 días de
 - Reusar un refresh token ya rotado revoca toda la sesión: el token nuevo también deja de servir. Es la señal de que el token se copió.
 - `POST /v1/auth/logout` con `{"refreshToken": "..."}` cierra esa sesión. Es público porque basta con tener el token. Responde 204.
 - `POST /v1/auth/logout-todas` requiere access token y cierra todas las sesiones del usuario. Responde 204.
+- `POST /v1/auth/cambiar-password-inicial` con `{"correo", "passwordActual", "passwordNueva"}` cambia la contraseña temporal por una definitiva (mínimo 12 caracteres). Es público y responde 204. Mientras la contraseña sea temporal, el login responde 403 `cambio-password-requerido`.
 - Solo se guarda el hash SHA-256 del refresh token, en la tabla `refresh_tokens` (migración `V3__refresh_tokens.sql`).
 - Bloqueo o baja: el refresh falla porque se vuelve a verificar la cuenta. El access token ya emitido sigue válido hasta 15 minutos.
 - Al cerrar sesión, el access token que ya existe no se revoca: sigue válido hasta vencer. Si eso no es aceptable, falta una lista de revocación de access tokens.

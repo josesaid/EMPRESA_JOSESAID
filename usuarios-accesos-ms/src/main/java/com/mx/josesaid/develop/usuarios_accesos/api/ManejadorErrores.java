@@ -1,6 +1,7 @@
 package com.mx.josesaid.develop.usuarios_accesos.api;
 
 import com.mx.josesaid.develop.usuarios_accesos.domain.BloqueoException;
+import com.mx.josesaid.develop.usuarios_accesos.domain.CambioPasswordRequeridoException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.ConflictoException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.CredencialesInvalidasException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.RecursoNoEncontradoException;
@@ -26,6 +27,11 @@ public class ManejadorErrores {
     @ExceptionHandler(CredencialesInvalidasException.class)
     ProblemDetail credenciales(CredencialesInvalidasException ex) {
         return problema(HttpStatus.UNAUTHORIZED, "credenciales-invalidas", ex.getMessage());
+    }
+
+    @ExceptionHandler(CambioPasswordRequeridoException.class)
+    ProblemDetail cambioRequerido(CambioPasswordRequeridoException ex) {
+        return problema(HttpStatus.FORBIDDEN, "cambio-password-requerido", ex.getMessage());
     }
 
     @ExceptionHandler(BloqueoException.class)

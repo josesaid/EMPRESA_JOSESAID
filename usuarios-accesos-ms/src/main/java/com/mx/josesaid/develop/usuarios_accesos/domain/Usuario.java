@@ -18,6 +18,11 @@ public class Usuario {
     /** Intentos fallidos consecutivos antes de bloquear la cuenta (propuesta, por validar). */
     public static final int MAX_INTENTOS_FALLIDOS = 5;
 
+    /** Debe coincidir con los valores del enum Area de reportes-ejecutivos-ms. */
+    public static final java.util.Set<String> AREAS_VALIDAS = java.util.Set.of(
+            "VENTAS_ATENCION_CLIENTES", "FINANZAS_CONTABILIDAD", "OPERACIONES",
+            "COMPRAS_PROVEEDORES", "ADMINISTRACION_LEGAL", "DIRECCION_GENERAL");
+
     /** Duración del bloqueo temporal (propuesta, por validar). */
     public static final Duration DURACION_BLOQUEO = Duration.ofMinutes(15);
 
@@ -30,6 +35,7 @@ public class Usuario {
     private int intentosFallidos;
     private Instant bloqueadoHasta;
     private String area;
+    private boolean debeCambiarPassword;
 
     private Usuario(UUID id, String correo, String nombreCompleto, String passwordHash,
                     Set<Rol> roles, EstatusUsuario estatus, int intentosFallidos, Instant bloqueadoHasta) {
@@ -139,8 +145,12 @@ public class Usuario {
         if (estatus == EstatusUsuario.BAJA) {
             throw new ReglaDeNegocioException("No se puede asignar área a un usuario dado de baja");
         }
-        area = requerido(nuevaArea, "El área es obligatoria");
+        String validada = requerido(nuevaArea, "El área es obligatoria");
+        if (!AREAS_VALIDAS.contains(validada)) {
+            throw new ReglaDeNegocioException("Área no válida: " + validada);
+        }
         requerido(motivo, "El motivo del cambio de área es obligatorio");
+        area = validada;
     }
 
     /** Fija el área al reconstruir desde persistencia. */
@@ -150,6 +160,30 @@ public class Usuario {
     }
 
     /** Da de baja al usuario. Es definitivo: no se puede reactivar; se debe crear uno nuevo. */
+    /** Marca la contraseña como temporal: la cuenta no podrá iniciar sesión hasta cambiarla. */
+    public void marcarPasswordTemporal() {
+        this.debeCambiarPassword = true;
+    }
+
+    /** Reconstruye el indicador desde la persistencia. */
+    public Usuario conDebeCambiarPassword(boolean valor) {
+        this.debeCambiarPassword = valor;
+        return this;
+    }
+
+    public boolean debeCambiarPassword() {
+        return debeCambiarPassword;
+    }
+
+    /** Sustituye la contraseña temporal por una definitiva y quita el indicador. */
+    public void cambiarPasswordTemporal(String nuevoHash) {
+        if (!debeCambiarPassword) {
+            throw new ReglaDeNegocioException("La contraseña no está pendiente de cambio");
+        }
+        this.passwordHash = requerido(nuevoHash, "La contraseña es obligatoria");
+        this.debeCambiarPassword = false;
+    }
+
     public void darDeBaja() {
         if (estatus == EstatusUsuario.BAJA) {
             throw new ReglaDeNegocioException("El usuario ya está dado de baja");

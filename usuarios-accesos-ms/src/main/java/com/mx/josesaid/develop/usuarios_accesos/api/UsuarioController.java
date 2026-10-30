@@ -37,7 +37,7 @@ public class UsuarioController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioRespuesta crear(@Valid @RequestBody CrearUsuarioSolicitud solicitud) {
-        Usuario usuario = servicio.crear(solicitud.correo(), solicitud.nombreCompleto(),
+        Usuario usuario = servicio.crearConPasswordTemporal(solicitud.correo(), solicitud.nombreCompleto(),
                 solicitud.password(), solicitud.roles());
         return UsuarioRespuesta.de(usuario);
     }
@@ -82,10 +82,12 @@ public class UsuarioController {
     }
 
     /** Respuesta con datos personales enmascarados. */
-    public record UsuarioRespuesta(UUID id, String correo, String nombreCompleto, String estatus, Set<Rol> roles) {
+    public record UsuarioRespuesta(UUID id, String correo, String nombreCompleto, String estatus, Set<Rol> roles,
+                                   String area) {
         static UsuarioRespuesta de(Usuario u) {
             return new UsuarioRespuesta(u.getId(), Enmascarado.correo(u.getCorreo()),
-                    Enmascarado.nombre(u.getNombreCompleto()), u.getEstatus().name(), u.getRoles());
+                    Enmascarado.nombre(u.getNombreCompleto()), u.getEstatus().name(), u.getRoles(),
+                    u.getArea());
         }
     }
 }

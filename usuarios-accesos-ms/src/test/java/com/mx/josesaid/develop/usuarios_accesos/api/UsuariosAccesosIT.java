@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
@@ -119,6 +120,27 @@ class UsuariosAccesosIT {
         mvc.perform(post("/v1/auth/refresh").contentType("application/json")
                         .content("{\"refreshToken\":\"" + r2 + "\"}"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void passwordTemporalBloqueaElLoginHastaCambiarla() throws Exception {
+        String correo = "temporal-" + java.util.UUID.randomUUID() + "@prueba.mx";
+        String temporal = "Temporal-inicial-123";
+        String nueva = "Nueva-clave-segura-456";
+        servicio.crearConPasswordTemporal(correo, "Usuario Temporal", temporal, Set.of(Rol.VENTAS));
+
+        mvc.perform(post("/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"correo\":\"" + correo + "\",\"password\":\"" + temporal + "\"}"))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(post("/v1/auth/cambiar-password-inicial").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"correo\":\"" + correo + "\",\"passwordActual\":\"" + temporal
+                                + "\",\"passwordNueva\":\"" + nueva + "\"}"))
+                .andExpect(status().isNoContent());
+
+        mvc.perform(post("/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"correo\":\"" + correo + "\",\"password\":\"" + nueva + "\"}"))
+                .andExpect(status().isOk());
     }
 
     private String iniciarSesion(String correo) throws Exception {
