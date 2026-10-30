@@ -182,7 +182,7 @@ a { color: var(--acceso); }
       <tbody>
         <tr><td>gateway-ms</td><td class="num">8080</td><td>Entrada única a todos los servicios</td></tr>
         <tr><td>clientes-ms</td><td class="num">8101</td><td>Clientes</td></tr>
-        <tr><td>usuarios-accesos-ms</td><td class="num">8102</td><td>Usuarios, login y roles</td></tr>
+        <tr><td>usuarios-accesos-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Usuarios, login y roles</td></tr>
         <tr><td>facturacion-pagos-ms</td><td class="num">8103</td><td>Facturas y pagos</td></tr>
         <tr><td>contabilidad-ms</td><td class="num">8104</td><td>Pólizas contables</td></tr>
         <tr><td>inventario-operaciones-ms</td><td class="num">8105</td><td>Inventario</td></tr>
@@ -288,9 +288,9 @@ a { color: var(--acceso); }
   <h3>Acceso</h3>
   <div class="grupo">
     <article class="tarjeta acceso">
-      <span class="puerto">usuarios-accesos-ms · 8102</span>
+      <span class="puerto">usuarios-accesos-ms · vía gateway</span>
       <h3>Usuarios y accesos</h3>
-      <p>Emite los tokens JWT que usan todos los servicios para saber quién hace cada solicitud y qué rol tiene. Los roles son ADMIN, FINANZAS, CONTADOR, VENTAS, COMPRAS, ALMACEN, OPERACIONES, CALIDAD, DIRECCION y LEGAL.</p>
+      <p>Emite los tokens JWT que usan todos los servicios para saber quién hace cada solicitud y qué rol tiene. Los roles son ADMIN, FINANZAS, CONTADOR, VENTAS, COMPRAS, ALMACEN, OPERACIONES, CALIDAD, DIRECCION, LEGAL y JEFE_AREA (lee los indicadores de su área).</p>
       <p class="nota">Firma los tokens con RS256 usando la clave privada <code>USUARIOS_JWT_CLAVE_PRIVADA</code>. Publica la clave pública en <code>/.well-known/jwks.json</code>; los demás servicios sólo verifican, no firman.</p>
     </article>
   </div>
@@ -385,10 +385,10 @@ a { color: var(--acceso); }
   <h2 id="pendientes">8. Lo que falta por decidir</h2>
   <ul>
     <li>Calendario de rotación de la clave RS256 (el procedimiento ya está documentado en usuarios-accesos-ms/README.md); sin periodo de traslape todavía.</li>
-    <li>Asignar área a los jefes de área actuales (el acceso por área ya está implementado).</li>
+    <li>Cambio de la contraseña temporal de los diez jefes de área: cada uno debe cambiarla antes de iniciar sesión.</li>
     <li>Revocar también el access token al cerrar sesión; hoy vence en 15 minutos.</li>
     <li>Métricas: usuarios-accesos ya no publica su puerto y el gateway bloquea /actuator; decidir si los demás servicios también dejan de publicar puertos.</li>
-    <li>Retención documental (años por tipo) y purga física al vencer, pendientes de confirmación legal.</li>
+    <li>Retención documental de 5 años para todos los tipos. Falta la confirmación legal y la purga física al vencer.</li>
     <li>IVA fronterizo del 8 % pendiente de validar con Contabilidad.</li>
     <li>Órdenes de compra anteriores a V3: reciben en V4 la fecha de aplicación de la migración, por lo que cuentan en ese mes. Confirmar si el criterio es aceptable.</li>
   </ul>
@@ -507,15 +507,16 @@ a { color: var(--acceso); }
     <div class="tabla-wrap"><table>
       <thead><tr><th>Método</th><th>Ruta</th><th>Para qué</th></tr></thead>
       <tbody>
-        <tr><td class="num">POST</td><td class="num">/v1/auth/login</td><td>Obtiene el token JWT. Es la única ruta sin token.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/auth/login</td><td>Obtiene el token JWT. Es pública. Si la contraseña es temporal, responde 403 hasta que se cambie.</td></tr>
         <tr><td class="num">POST</td><td class="num">/v1/usuarios</td><td>Crea un usuario con sus roles.</td></tr>
         <tr><td class="num">GET</td><td class="num">/v1/usuarios/{id}</td><td>Consulta un usuario. Los datos personales salen enmascarados.</td></tr>
         <tr><td class="num">PUT</td><td class="num">/v1/usuarios/{id}/roles</td><td>Cambia los roles del usuario. Pide un motivo.</td></tr>
         <tr><td class="num">POST</td><td class="num">/v1/usuarios/{id}/baja</td><td>Da de baja al usuario. No lleva cuerpo.</td></tr>
+        <tr><td class="num">POST</td><td class="num">/v1/auth/cambiar-password-inicial</td><td>Cambia la contraseña temporal por una definitiva. Pide la temporal actual y responde 204.</td></tr>
       </tbody>
     </table></div>
     <dl class="valores">
-      <div><dt>roles</dt><dd>ADMIN, FINANZAS, CONTADOR, VENTAS, COMPRAS, ALMACEN, OPERACIONES, CALIDAD, DIRECCION, LEGAL</dd></div>
+      <div><dt>roles</dt><dd>ADMIN, FINANZAS, CONTADOR, VENTAS, COMPRAS, ALMACEN, OPERACIONES, CALIDAD, DIRECCION, LEGAL, JEFE_AREA</dd></div>
     </dl>
 
     <h4>Crear un usuario</h4>
@@ -532,6 +533,15 @@ a { color: var(--acceso); }
 {
   "roles": ["VENTAS", "DIRECCION"],
   "motivo": "Cambio de área"
+}</code></pre>
+
+    <h4>Cambiar la contraseña temporal</h4>
+    <p>Las cuentas dadas de alta por la API tienen contraseña temporal. Mientras no la cambien, el login responde 403. Cada usuario la cambia una vez, sin token:</p>
+    <pre><code>POST /usuarios-accesos-ms/v1/auth/cambiar-password-inicial
+{
+  "correo": "jefe.ventas1@empresa.mx",
+  "passwordActual": "&lt;contraseña-temporal&gt;",
+  "passwordNueva": "&lt;contraseña-definitiva-de-12-o-mas&gt;"
 }</code></pre>
   </section>
 

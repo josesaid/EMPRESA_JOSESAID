@@ -83,7 +83,7 @@ Salud y métricas Prometheus en `/actuator/health` y `/actuator/prometheus` dent
 ```bash
 mvn -B test   # prueba de arranque del contexto (sin Eureka)
 ```
-Rutas públicas (sin token): `/*/v1/auth/login`, `/*/v1/auth/refresh`, `/*/v1/auth/logout` y `/*/v1/auth/cambiar-password-inicial`. `/*/v1/auth/logout-todas` exige token. Todo `/actuator` responde 404.
+Rutas públicas (sin token): `/*/v1/auth/login`, `/*/v1/auth/refresh`, `/*/v1/auth/logout` y `/*/v1/auth/cambiar-password-inicial` y la clave pública `/*/.well-known/jwks.json`. `/*/v1/auth/logout-todas` exige token. Todo `/actuator` responde 404.
 
 La prueba con servicios reales se hace desde la raíz: `curl` a `http://localhost:8080/usuarios-accesos-ms/v1/auth/login`.
 

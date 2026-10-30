@@ -82,7 +82,7 @@ Sin Docker, con Maven:
 
 ```bash
 export DB_URL=jdbc:postgresql://localhost:5432/pedidos DB_USER=pedidos DB_PASSWORD=...
-export JWT_JWKS_URI=http://localhost:8102/.well-known/jwks.json
+export JWT_JWKS_URI=http://localhost:8080/usuarios-accesos-ms/.well-known/jwks.json
 mvn spring-boot:run
 ```
 

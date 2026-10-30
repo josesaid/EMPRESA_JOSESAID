@@ -59,7 +59,6 @@ El evento se guarda en `outbox_eventos` en la misma transacción que el cambio. 
 Canary con criterio del anexo de la empresa. Rollback por contenedor. Las migraciones de Flyway son compatibles hacia atrás.
 
 ## Pendientes en esta versión
-- Refresh de token y cierre de sesión (`/v1/auth/refresh`, `/v1/auth/logout`).
 - Cifrado de columna AES-256-GCM y HMAC para búsquedas de correo.
 - Idempotency-Key en escrituras.
 - Argon2 para contraseñas (hoy BCrypt).
