@@ -272,6 +272,8 @@ Respuestas: token ausente o inválido → `401`. Rol insuficiente → `403`.
 | `ADMIN` | Dar de alta y actualizar clientes, cambiar su estatus, agregar contactos, convertir prospectos, buscar y consultar clientes |
 | `LEGAL` | Otorgar y revocar consentimientos |
 
+Decisión vigente: el gerente de ventas usa el rol `VENTAS`; las métricas de conversión las consulta todo el equipo de ventas. Separar un rol de gerente sólo si el negocio lo pide.
+
 ### 8.3 Datos personales
 
 | Dato | En la base | En respuestas | En logs y eventos |
