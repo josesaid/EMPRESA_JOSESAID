@@ -43,7 +43,7 @@ class ClaudeAsistenteIATest {
         var registro = new RegistroTokens(new SimpleMeterRegistry(), PreciosTokens.SIN_PRECIO);
         asistente = new ClaudeAsistenteIA(modelo, registro, new RepositorioPrompts(),
                 new HerramientasReportes(sinRed), new HerramientasClientes(sinRed),
-                new HerramientasVentas(sinRed));
+                new HerramientasVentas(sinRed), new HerramientasCompras(sinRed));
     }
 
     @AfterEach
