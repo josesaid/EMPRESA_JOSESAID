@@ -9,6 +9,7 @@ import com.mx.josesaid.develop.compras.domain.ProveedorRepositorio;
 import com.mx.josesaid.develop.compras.domain.Recepcion;
 import com.mx.josesaid.develop.compras.domain.RecepcionRepositorio;
 import com.mx.josesaid.develop.compras.domain.RecursoNoEncontradoException;
+import com.mx.josesaid.develop.compras.domain.SolicitudInvalidaException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -45,6 +46,14 @@ public class ComprasService {
     }
 
     @Transactional(readOnly = true)
+    public List<Proveedor> buscarProveedores(String texto) {
+        String termino = texto == null ? "" : texto.trim();
+        if (termino.length() < 3) {
+            throw new SolicitudInvalidaException("La búsqueda requiere al menos 3 caracteres");
+        }
+        return proveedores.buscarPorRazonSocial(termino);
+    }
+
     public Proveedor obtenerProveedor(UUID id) {
         return proveedores.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Proveedor no encontrado: " + id));
