@@ -37,6 +37,9 @@ public class EmisorTokens {
                 .expiresAt(ahora.plus(propiedades.duracion()))
                 .claim("roles", usuario.getRoles().stream().map(Enum::name).toList())
                 .claim("sid", sesion.toString());
+        if (usuario.getCorreo() != null) {
+            reclamaciones.claim("correo", usuario.getCorreo());
+        }
         if (usuario.getArea() != null) {
             reclamaciones.claim("area", usuario.getArea());
         }

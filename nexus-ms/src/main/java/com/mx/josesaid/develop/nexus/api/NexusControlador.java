@@ -36,6 +36,10 @@ public class NexusControlador {
     public ConsultaResponse consultar(@RequestBody @Valid ConsultaRequest solicitud,
                                       @AuthenticationPrincipal Jwt jwt) {
         String usuario = jwt.getSubject();
+        String usuarioAuditoria = jwt.getClaimAsString("correo");
+        if (usuarioAuditoria == null || usuarioAuditoria.isBlank()) {
+            usuarioAuditoria = usuario;
+        }
         var respuesta = asistente.consultar(new PreguntaAsistente(usuario, solicitud.pregunta()));
         String texto = respuesta.texto() == null ? "" : respuesta.texto();
         String resumen = FiltroDatosSensibles.redactar(texto.length() > 500 ? texto.substring(0, 500) : texto).texto();
@@ -44,7 +48,7 @@ public class NexusControlador {
             herramientas = herramientas.substring(0, 500);
         }
         auditoria.registrar(new RegistroConsulta(
-                usuario,
+                usuarioAuditoria,
                 FiltroDatosSensibles.redactar(solicitud.pregunta()).texto(),
                 resumen,
                 herramientas.isEmpty() ? null : herramientas,
