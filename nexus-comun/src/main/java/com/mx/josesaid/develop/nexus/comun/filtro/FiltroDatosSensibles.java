@@ -1,7 +1,9 @@
 package com.mx.josesaid.develop.nexus.comun.filtro;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,17 +50,22 @@ public final class FiltroDatosSensibles {
     }
 
     public static Resultado redactar(String texto) {
+        return redactar(texto, EnumSet.noneOf(Tipo.class));
+    }
+
+    /** Igual que {@link #redactar(String)}, pero deja intactos los tipos indicados en {@code omitir}. */
+    public static Resultado redactar(String texto, Set<Tipo> omitir) {
         Map<Tipo, Integer> conteo = new EnumMap<>(Tipo.class);
         if (texto == null || texto.isEmpty()) {
             return new Resultado(texto, conteo);
         }
         String salida = texto;
         // Orden: primero los más específicos para que no se mezclen entre sí.
-        salida = reemplazar(salida, CLABE, Tipo.CLABE, conteo);
-        salida = reemplazar(salida, TARJETA, Tipo.TARJETA, conteo);
-        salida = reemplazar(salida, CORREO, Tipo.CORREO, conteo);
-        salida = reemplazar(salida, RFC, Tipo.RFC, conteo);
-        salida = reemplazar(salida, TELEFONO, Tipo.TELEFONO, conteo);
+        if (!omitir.contains(Tipo.CLABE)) salida = reemplazar(salida, CLABE, Tipo.CLABE, conteo);
+        if (!omitir.contains(Tipo.TARJETA)) salida = reemplazar(salida, TARJETA, Tipo.TARJETA, conteo);
+        if (!omitir.contains(Tipo.CORREO)) salida = reemplazar(salida, CORREO, Tipo.CORREO, conteo);
+        if (!omitir.contains(Tipo.RFC)) salida = reemplazar(salida, RFC, Tipo.RFC, conteo);
+        if (!omitir.contains(Tipo.TELEFONO)) salida = reemplazar(salida, TELEFONO, Tipo.TELEFONO, conteo);
         return new Resultado(salida, conteo);
     }
 

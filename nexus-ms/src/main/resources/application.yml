@@ -1,0 +1,54 @@
+# Configuración de nexus-ms.
+# Los secretos se leen de variables de entorno; nunca se escriben valores reales aquí.
+spring:
+  application:
+    name: nexus-ms
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Llave pública de usuarios-accesos-ms (JWKS). Se configura por entorno.
+          jwk-set-uri: ${JWT_JWKS_URI:http://localhost:8081/.well-known/jwks.json}
+  datasource:
+    # Base de datos y usuario propios de nexus-ms, creados por infra/postgres/init-databases.sh
+    url: ${NEXUS_DB_URL:jdbc:postgresql://localhost:5432/nexus}
+    username: ${NEXUS_DB_USER:nexus}
+    password: ${NEXUS_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # El esquema lo controla Flyway; Hibernate solo valida que coincida
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  ai:
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
+      # Tiempo máximo por llamada al modelo y reintentos. Acotan costo y latencia.
+      timeout: ${NEXUS_MODELO_TIMEOUT:20s}
+      max-retries: ${NEXUS_MODELO_REINTENTOS:1}
+      chat:
+        options:
+          model: ${NEXUS_MODELO:claude-sonnet-5-5}
+  tools:
+    limits:
+      # Máximo de herramientas que el modelo puede invocar en una misma pregunta.
+      max-total-tool-calls: ${NEXUS_MAX_HERRAMIENTAS:4}
+
+nexus:
+  gateway:
+    url: ${GATEWAY_URL:http://gateway-ms:8080}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+
+server:
+  port: ${SERVER_PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
