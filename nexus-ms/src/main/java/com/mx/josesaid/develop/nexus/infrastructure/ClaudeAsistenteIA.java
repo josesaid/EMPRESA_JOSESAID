@@ -1,11 +1,12 @@
 package com.mx.josesaid.develop.nexus.infrastructure;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.support.ToolCallbacks;
 
 import com.mx.josesaid.develop.nexus.application.AsistenteIA;
 import com.mx.josesaid.develop.nexus.application.PreguntaAsistente;
@@ -35,6 +36,7 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
     private final HerramientasInventario inventario;
     private final HerramientasDocumentos documentos;
     private final HerramientasUsuarios usuarios;
+    private final ToolCallback[] herramientas;
 
     public ClaudeAsistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts,
                              HerramientasReportes reportes, HerramientasClientes clientes,
@@ -51,6 +53,8 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
         this.inventario = inventario;
         this.documentos = documentos;
         this.usuarios = usuarios;
+        this.herramientas = ToolCallbacks.from(reportes, clientes, ventas, compras, finanzas, contabilidad,
+                inventario, documentos, usuarios);
         PromptVersionado prompt = prompts.obtener(PROMPT);
         this.cliente = ChatClient.builder(modelo)
                 .defaultSystem(prompt.texto())
@@ -67,36 +71,11 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
                 .advisors(a -> a
                         .param(RegistroTokensAdvisor.CLAVE_SERVICIO, SERVICIO)
                         .param(RegistroTokensAdvisor.CLAVE_USUARIO, pregunta.usuario()));
-        List<Object> permitidas = new ArrayList<>();
-        if (AlcanceHerramientas.puedeConsultarReportes()) {
-            permitidas.add(reportes);
-        }
-        if (AlcanceHerramientas.puedeConsultarClientes()) {
-            permitidas.add(clientes);
-        }
-        if (AlcanceHerramientas.puedeConsultarPedidos()) {
-            permitidas.add(ventas);
-        }
-        if (AlcanceHerramientas.puedeConsultarProveedores() || AlcanceHerramientas.puedeConsultarOrdenesCompra()) {
-            permitidas.add(compras);
-        }
-        if (AlcanceHerramientas.puedeConsultarComprobantes()) {
-            permitidas.add(finanzas);
-        }
-        if (AlcanceHerramientas.puedeConsultarContabilidad()) {
-            permitidas.add(contabilidad);
-        }
-        if (AlcanceHerramientas.puedeConsultarInventario()) {
-            permitidas.add(inventario);
-        }
-        if (AlcanceHerramientas.puedeConsultarDocumentos()) {
-            permitidas.add(documentos);
-        }
-        if (AlcanceHerramientas.puedeConsultarUsuarios()) {
-            permitidas.add(usuarios);
-        }
-        if (!permitidas.isEmpty()) {
-            solicitud = solicitud.tools(permitidas.toArray());
+        ToolCallback[] permitidas = Arrays.stream(herramientas)
+                .filter(h -> AlcanceHerramientas.puedeUsar(h.getToolDefinition().name()))
+                .toArray(ToolCallback[]::new);
+        if (permitidas.length > 0) {
+            solicitud = solicitud.toolCallbacks(permitidas);
         }
 
         RegistroHerramientasUsadas.iniciar();

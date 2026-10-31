@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.nexus.infrastructure;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_CLIENTES = Set.of("ROLE_VENTAS", "ROLE_ADMIN");
     private static final Set<String> ROLES_PEDIDOS = Set.of("ROLE_VENTAS", "ROLE_DIRECCION");
     private static final Set<String> ROLES_USUARIOS = Set.of("ROLE_ADMIN");
+    private static final Set<String> ROLES_RESUMEN_VENTAS = Set.of("ROLE_DIRECCION");
     private static final Set<String> ROLES_DOCUMENTOS = Set.of("ROLE_LEGAL", "ROLE_DIRECCION");
     private static final Set<String> ROLES_EXISTENCIAS = Set.of("ROLE_ALMACEN", "ROLE_COMPRAS", "ROLE_VENTAS");
     private static final Set<String> ROLES_TRAZABILIDAD = Set.of("ROLE_OPERACIONES", "ROLE_CALIDAD");
@@ -24,7 +26,37 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_PROVEEDORES = Set.of("ROLE_COMPRAS", "ROLE_FINANZAS");
     private static final Set<String> ROLES_ORDENES_COMPRA = Set.of("ROLE_COMPRAS", "ROLE_ALMACEN", "ROLE_DIRECCION");
 
+    /** Rol(es) que pueden usar cada herramienta. Lo que no aparece aquí se niega. */
+    private static final Map<String, Set<String>> ROLES_POR_HERRAMIENTA = Map.ofEntries(
+            Map.entry("buscar_clientes", ROLES_CLIENTES),
+            Map.entry("obtener_cliente", ROLES_CLIENTES),
+            Map.entry("consultar_indicadores", ROLES_REPORTES),
+            Map.entry("consultar_reporte", ROLES_REPORTES),
+            Map.entry("consultar_pedidos", ROLES_PEDIDOS),
+            Map.entry("resumen_ventas", ROLES_RESUMEN_VENTAS),
+            Map.entry("consultar_proveedor", ROLES_PROVEEDORES),
+            Map.entry("consultar_orden_compra", ROLES_ORDENES_COMPRA),
+            Map.entry("consultar_comprobante", ROLES_COMPROBANTES),
+            Map.entry("consultar_poliza", ROLES_CONTABILIDAD),
+            Map.entry("consultar_estados_financieros", ROLES_CONTABILIDAD),
+            Map.entry("consultar_existencias", ROLES_EXISTENCIAS),
+            Map.entry("consultar_trazabilidad_lote", ROLES_TRAZABILIDAD),
+            Map.entry("consultar_documento", ROLES_DOCUMENTOS),
+            Map.entry("consultar_documentos_por_vencer", ROLES_DOCUMENTOS),
+            Map.entry("consultar_usuario", ROLES_USUARIOS));
+
     private AlcanceHerramientas() {
+    }
+
+    /** Indica si la herramienta existe en el mapa de roles. */
+    static boolean conoce(String herramienta) {
+        return ROLES_POR_HERRAMIENTA.containsKey(herramienta);
+    }
+
+    /** Indica si el usuario actual tiene un rol que permite usar la herramienta. */
+    static boolean puedeUsar(String herramienta) {
+        Set<String> roles = ROLES_POR_HERRAMIENTA.get(herramienta);
+        return roles != null && tieneAlgunRol(roles);
     }
 
     static boolean puedeConsultarReportes() {
