@@ -84,6 +84,11 @@ public class ContabilidadService {
     }
 
     @Transactional(readOnly = true)
+    public List<Poliza> listarPolizas(YearMonth anioMes) {
+        return polizas.buscarPorPeriodo(anioMes);
+    }
+
+    @Transactional(readOnly = true)
     public Poliza obtenerPoliza(UUID id) {
         return polizas.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Póliza no encontrada: " + id));
