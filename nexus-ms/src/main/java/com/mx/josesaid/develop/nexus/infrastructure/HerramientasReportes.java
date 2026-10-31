@@ -25,7 +25,7 @@ public final class HerramientasReportes {
           description = "Devuelve los indicadores consolidados de un periodo. El periodo es AAAA-MM, AAAA-Qn o AAAA.")
     public String consultarIndicadores(
             @ToolParam(description = "Periodo: AAAA-MM, AAAA-Q1..Q4 o AAAA", required = true) String periodo,
-            @ToolParam(description = "Área opcional, por ejemplo OPERACIONES o FINANZAS_CONTABILIDAD. Vacío para todas.",
+            @ToolParam(description = "Área opcional. Valores válidos: VENTAS_ATENCION_CLIENTES, FINANZAS_CONTABILIDAD, OPERACIONES, COMPRAS_PROVEEDORES, ADMINISTRACION_LEGAL, DIRECCION_GENERAL. Vacío para todas.",
                        required = false) String area) {
         RegistroHerramientasUsadas.registrar("consultar_indicadores");
         String cuerpo = gateway.get()
