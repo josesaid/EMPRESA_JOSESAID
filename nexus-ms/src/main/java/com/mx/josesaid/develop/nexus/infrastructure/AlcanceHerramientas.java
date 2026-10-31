@@ -14,6 +14,7 @@ final class AlcanceHerramientas {
 
     private static final Set<String> ROLES_REPORTES = Set.of("ROLE_DIRECCION");
     private static final Set<String> ROLES_CLIENTES = Set.of("ROLE_VENTAS", "ROLE_ADMIN");
+    private static final Set<String> ROLES_PEDIDOS = Set.of("ROLE_VENTAS", "ROLE_DIRECCION");
 
     private AlcanceHerramientas() {
     }
@@ -24,6 +25,10 @@ final class AlcanceHerramientas {
 
     static boolean puedeConsultarClientes() {
         return tieneAlgunRol(ROLES_CLIENTES);
+    }
+
+    static boolean puedeConsultarPedidos() {
+        return tieneAlgunRol(ROLES_PEDIDOS);
     }
 
     private static boolean tieneAlgunRol(Set<String> roles) {

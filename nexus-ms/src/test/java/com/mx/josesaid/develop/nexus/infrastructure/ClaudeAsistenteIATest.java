@@ -42,7 +42,8 @@ class ClaudeAsistenteIATest {
         RestClient sinRed = RestClient.create("http://no-usado");
         var registro = new RegistroTokens(new SimpleMeterRegistry(), PreciosTokens.SIN_PRECIO);
         asistente = new ClaudeAsistenteIA(modelo, registro, new RepositorioPrompts(),
-                new HerramientasReportes(sinRed), new HerramientasClientes(sinRed));
+                new HerramientasReportes(sinRed), new HerramientasClientes(sinRed),
+                new HerramientasVentas(sinRed));
     }
 
     @AfterEach
