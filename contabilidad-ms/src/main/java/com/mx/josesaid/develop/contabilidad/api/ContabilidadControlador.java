@@ -73,6 +73,12 @@ public class ContabilidadControlador {
         return PolizaRespuesta.de(servicio.reversarPoliza(id));
     }
 
+    @GetMapping("/polizas")
+    @PreAuthorize("hasAnyRole('CONTADOR','DIRECCION')")
+    public List<PolizaRespuesta> listarPolizas(@RequestParam String periodo) {
+        return servicio.listarPolizas(YearMonth.parse(periodo)).stream().map(PolizaRespuesta::de).toList();
+    }
+
     @GetMapping("/polizas/{id}")
     @PreAuthorize("hasAnyRole('CONTADOR','DIRECCION')")
     public PolizaRespuesta obtenerPoliza(@PathVariable UUID id) {

@@ -40,6 +40,23 @@ class ContabilidadIT {
     private MockMvc mvc;
 
     @Test
+    void listaLasPolizasDelPeriodo() throws Exception {
+        String caja = crearCuenta("1102", "Bancos", "DEUDORA");
+        String ventas = crearCuenta("4102", "Ingresos", "ACREEDORA");
+        mvc.perform(post("/v1/polizas").with(rol("CONTADOR"))
+                        .contentType("application/json")
+                        .content(poliza(caja, ventas, "250", "250")))
+                .andExpect(status().isCreated());
+
+        mvc.perform(get("/v1/polizas?periodo=2026-10").with(rol("DIRECCION")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].periodo").value("2026-10"));
+
+        mvc.perform(get("/v1/polizas?periodo=2026-10").with(rol("VENTAS")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void flujoContableConRolesYCierre() throws Exception {
         mvc.perform(get("/v1/estados-financieros?periodo=2026-10"))
                 .andExpect(status().isUnauthorized());
