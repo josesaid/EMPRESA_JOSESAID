@@ -26,4 +26,17 @@ class HerramientasFinanzasTest {
         assertThat(texto).contains("F-001").contains("EMITIDO").doesNotContain("a@b.com");
         servidor.verify();
     }
+
+    @Test
+    void buscarComprobantePorFolioPasaElFolio() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/facturacion-pagos-ms/v1/comprobantes?folio=F-001"))
+                .andRespond(withSuccess("{\"folio\":\"F-001\",\"estatus\":\"EMITIDO\"}", MediaType.APPLICATION_JSON));
+
+        String texto = new HerramientasFinanzas(builder.build()).buscarComprobantePorFolio("F-001");
+
+        assertThat(texto).contains("F-001");
+        servidor.verify();
+    }
 }

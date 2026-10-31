@@ -45,4 +45,18 @@ public final class HerramientasCompras {
                 .body(String.class);
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
+
+    @Tool(name = "buscar_proveedores",
+          description = "Busca proveedores por parte de la razón social (mínimo 3 caracteres). Devuelve hasta 20 resultados con RFC y correo enmascarados.")
+    public String buscarProveedores(
+            @ToolParam(description = "Texto de la razón social, mínimo 3 caracteres", required = true) String razonSocial) {
+        RegistroHerramientasUsadas.registrar("buscar_proveedores");
+        String cuerpo = gateway.get()
+                .uri(constructor -> constructor.path(RUTA_BASE + "/proveedores")
+                        .queryParam("razonSocial", razonSocial.trim())
+                        .build())
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }

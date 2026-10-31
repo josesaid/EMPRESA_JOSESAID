@@ -39,4 +39,17 @@ class HerramientasContabilidadTest {
         assertThat(texto).contains("2026-09");
         servidor.verify();
     }
+
+    @Test
+    void listarPolizasPasaElPeriodo() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/contabilidad-ms/v1/polizas?periodo=2026-09"))
+                .andRespond(withSuccess("[{\"periodo\":\"2026-09\",\"estatus\":\"APLICADA\"}]", MediaType.APPLICATION_JSON));
+
+        String texto = new HerramientasContabilidad(builder.build()).listarPolizas("2026-09");
+
+        assertThat(texto).contains("APLICADA");
+        servidor.verify();
+    }
 }
