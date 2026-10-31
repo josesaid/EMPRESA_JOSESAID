@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -72,6 +73,7 @@ class NexusIT {
 
     @Test
     void consultaValidaRespondeYQuedaAuditada() throws Exception {
+        when(modelo.getOptions()).thenReturn(AnthropicChatOptions.builder().build());
         when(modelo.call(any(Prompt.class))).thenReturn(respuesta("Hay 2 contratos por vencer."));
         Integer antes = jdbc.queryForObject("select count(*) from nexus_consultas", Integer.class);
 
