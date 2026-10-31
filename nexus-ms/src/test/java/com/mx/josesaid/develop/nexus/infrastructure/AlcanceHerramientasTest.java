@@ -66,6 +66,13 @@ class AlcanceHerramientasTest {
     }
 
     @Test
+    void finanzas_puedeResumenDeVentas() {
+        comoRol("ROLE_FINANZAS");
+
+        assertThat(AlcanceHerramientas.puedeUsar("resumen_ventas")).isTrue();
+    }
+
+    @Test
     void herramientaDesconocidaSeNiega() {
         comoRol("ROLE_ADMIN");
 
