@@ -49,6 +49,18 @@ class NexusControladorIdentidadTest {
         assertEquals(SUBJECT, captor.getValue().usuario());
     }
 
+    @Test
+    void enmascaraElRfcEnLaRespuestaFinal() {
+        AsistenteIA asistente = mock(AsistenteIA.class);
+        AuditoriaConsultas auditoria = mock(AuditoriaConsultas.class);
+        when(asistente.consultar(any())).thenReturn(new RespuestaAsistente("Cliente PRU000101XAB"));
+        NexusControlador controlador = new NexusControlador(asistente, auditoria);
+
+        var respuesta = controlador.consultar(new ConsultaRequest("Busca el RFC"), jwt(SUBJECT, "admin@empresa.mx"));
+
+        assertEquals("Cliente [RFC]", respuesta.respuesta());
+    }
+
     private static Jwt jwt(String subject, String correo) {
         Instant ahora = Instant.now();
         Jwt.Builder builder = Jwt.withTokenValue("token-de-prueba")

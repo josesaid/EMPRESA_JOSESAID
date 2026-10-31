@@ -55,6 +55,6 @@ public class NexusControlador {
                 respuesta.tokensEntrada(),
                 respuesta.tokensSalida(),
                 Instant.now()));
-        return new ConsultaResponse(texto);
+        return new ConsultaResponse(FiltroDatosSensibles.redactar(texto).texto());
     }
 }

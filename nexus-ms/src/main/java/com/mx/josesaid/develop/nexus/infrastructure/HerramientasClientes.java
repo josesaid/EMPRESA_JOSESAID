@@ -5,6 +5,7 @@ import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.web.client.RestClient;
 
 import com.mx.josesaid.develop.nexus.comun.filtro.FiltroDatosSensibles;
+import java.util.EnumSet;
 
 /**
  * Herramientas de solo lectura sobre clientes-ms, por gateway-ms con el token del usuario.
@@ -23,7 +24,7 @@ public final class HerramientasClientes {
     @Tool(name = "buscar_clientes",
           description = "Busca clientes por RFC o por nombre. Devuelve hasta 10 resultados con su última interacción.")
     public String buscarClientes(
-            @ToolParam(description = "RFC completo o parcial. Vacío si se busca por nombre.", required = false) String rfc,
+            @ToolParam(description = "RFC completo y exacto (no admite búsqueda parcial). Vacío si se busca por nombre.", required = false) String rfc,
             @ToolParam(description = "Nombre o razón social. Vacío si se busca por RFC.", required = false) String nombre) {
         RegistroHerramientasUsadas.registrar("buscar_clientes");
         String cuerpo = gateway.get()
@@ -39,7 +40,7 @@ public final class HerramientasClientes {
                 })
                 .retrieve()
                 .body(String.class);
-        return FiltroDatosSensibles.redactar(cuerpo).texto();
+        return FiltroDatosSensibles.redactar(cuerpo, EnumSet.of(FiltroDatosSensibles.Tipo.RFC)).texto();
     }
 
     @Tool(name = "obtener_cliente",
@@ -51,6 +52,6 @@ public final class HerramientasClientes {
                 .uri(RUTA_BASE + "/{id}", id)
                 .retrieve()
                 .body(String.class);
-        return FiltroDatosSensibles.redactar(cuerpo).texto();
+        return FiltroDatosSensibles.redactar(cuerpo, EnumSet.of(FiltroDatosSensibles.Tipo.RFC)).texto();
     }
 }

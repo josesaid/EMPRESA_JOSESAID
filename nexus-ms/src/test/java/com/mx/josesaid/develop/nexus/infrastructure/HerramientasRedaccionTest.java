@@ -26,7 +26,7 @@ class HerramientasRedaccionTest {
     }
 
     @Test
-    void clientesRedactaLaRespuestaAntesDeVolverAlModelo() {
+    void clientesDejanElRfcAlModeloYOcultanElTelefono() {
         RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
         MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
         servidor.expect(requestTo("http://gateway/clientes-ms/v1/clientes/7c9e6679-7425-40de-944b-e07fc1f90ae7"))
@@ -36,7 +36,7 @@ class HerramientasRedaccionTest {
         String texto = new HerramientasClientes(builder.build())
                 .obtenerCliente("7c9e6679-7425-40de-944b-e07fc1f90ae7");
 
-        assertThat(texto).doesNotContain("MOGJ850315AB3", "3312345678").contains("[RFC]", "[TELEFONO]");
+        assertThat(texto).contains("MOGJ850315AB3").doesNotContain("3312345678").contains("[TELEFONO]");
         servidor.verify();
     }
 }

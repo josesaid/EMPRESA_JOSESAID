@@ -58,12 +58,12 @@ class ClaudeAsistenteIATest {
     }
 
     @Test
-    void redactaDatosSensiblesAntesDeLlamarAlModelo() {
+    void dejaElRfcAlModeloYRedactaElCorreo() {
         asistente.consultar(new PreguntaAsistente("u1", "Revisa el RFC XAXX010101000 y escribe a a@b.com"));
 
         String enviado = enviados.get(0).getUserMessage().getText();
-        assertThat(enviado).doesNotContain("XAXX010101000", "a@b.com");
-        assertThat(enviado).contains("[RFC]", "[CORREO]");
+        assertThat(enviado).contains("XAXX010101000").doesNotContain("a@b.com");
+        assertThat(enviado).contains("[CORREO]");
     }
 
     @Test

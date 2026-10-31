@@ -1,6 +1,7 @@
 package com.mx.josesaid.develop.nexus.comun.filtro;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClientRequest;
@@ -38,7 +39,7 @@ public final class FiltroDatosSensiblesAdvisor implements CallAdvisor {
         List<Message> nuevos = new ArrayList<>();
         for (Message mensaje : original.getInstructions()) {
             if (mensaje instanceof UserMessage usuario) {
-                String redactado = FiltroDatosSensibles.redactar(usuario.getText()).texto();
+                String redactado = FiltroDatosSensibles.redactar(usuario.getText(), EnumSet.of(FiltroDatosSensibles.Tipo.RFC)).texto();
                 nuevos.add(new UserMessage(redactado));
             } else {
                 nuevos.add(mensaje);
