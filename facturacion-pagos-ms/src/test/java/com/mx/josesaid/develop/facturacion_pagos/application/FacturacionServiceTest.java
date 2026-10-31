@@ -40,6 +40,11 @@ class FacturacionServiceTest {
             public Optional<Comprobante> buscarPorId(UUID id) {
                 return Optional.ofNullable(almacen.get(id));
             }
+
+            @Override
+            public Optional<Comprobante> buscarPorFolio(String folio) {
+                return almacen.values().stream().filter(c -> folio.equals(c.getFolio())).findFirst();
+            }
         };
         Clock reloj = Clock.fixed(Instant.parse("2026-01-15T10:00:00Z"), ZoneOffset.UTC);
         servicio = new FacturacionService(repo, eventos::add, reloj);

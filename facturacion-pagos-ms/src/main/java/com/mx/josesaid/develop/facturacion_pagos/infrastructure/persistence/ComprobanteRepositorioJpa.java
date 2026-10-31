@@ -31,6 +31,11 @@ class ComprobanteRepositorioJpa implements ComprobanteRepositorio {
         return jpa.findById(id).map(this::aDominio);
     }
 
+    @Override
+    public Optional<Comprobante> buscarPorFolio(String folio) {
+        return jpa.findByFolio(folio).map(this::aDominio);
+    }
+
     private Comprobante aDominio(ComprobanteEntity e) {
         List<Pago> pagos = e.getPagos().stream()
                 .map(p -> new Pago(p.getId(), p.getMonto(), p.getFechaPago(), p.getReferencia()))
