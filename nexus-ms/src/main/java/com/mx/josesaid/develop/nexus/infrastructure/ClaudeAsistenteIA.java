@@ -31,16 +31,18 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
     private final HerramientasVentas ventas;
     private final HerramientasCompras compras;
     private final HerramientasFinanzas finanzas;
+    private final HerramientasContabilidad contabilidad;
 
     public ClaudeAsistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts,
                              HerramientasReportes reportes, HerramientasClientes clientes,
                              HerramientasVentas ventas, HerramientasCompras compras,
-                             HerramientasFinanzas finanzas) {
+                             HerramientasFinanzas finanzas, HerramientasContabilidad contabilidad) {
         this.reportes = reportes;
         this.clientes = clientes;
         this.ventas = ventas;
         this.compras = compras;
         this.finanzas = finanzas;
+        this.contabilidad = contabilidad;
         PromptVersionado prompt = prompts.obtener(PROMPT);
         this.cliente = ChatClient.builder(modelo)
                 .defaultSystem(prompt.texto())
@@ -72,6 +74,9 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
         }
         if (AlcanceHerramientas.puedeConsultarComprobantes()) {
             permitidas.add(finanzas);
+        }
+        if (AlcanceHerramientas.puedeConsultarContabilidad()) {
+            permitidas.add(contabilidad);
         }
         if (!permitidas.isEmpty()) {
             solicitud = solicitud.tools(permitidas.toArray());
