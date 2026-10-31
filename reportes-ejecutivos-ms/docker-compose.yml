@@ -13,6 +13,7 @@ services:
       EUREKA_URL: http://${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}:${EUREKA_PASSWORD:?Defina EUREKA_PASSWORD en .env}@discovery-ms:8761/eureka/
       # Base de datos propia creada por infra/postgres/init-databases.sh
       DB_URL: jdbc:postgresql://postgres:5432/reportes
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "5"
       DB_USER: reportes
       DB_PASSWORD: ${REPORTES_DB_PASSWORD:?Defina REPORTES_DB_PASSWORD en .env}
       # Broker interno de Kafka (listener INTERNAL definido en la raíz)

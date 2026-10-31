@@ -12,6 +12,7 @@ services:
       # Registro en Eureka con credenciales (definidas en .env)
       EUREKA_URL: http://${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}:${EUREKA_PASSWORD:?Defina EUREKA_PASSWORD en .env}@discovery-ms:8761/eureka/
       DB_URL: jdbc:postgresql://postgres:5432/clientes
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "5"
       DB_USUARIO: clientes
       DB_PASSWORD: ${CLIENTES_DB_PASSWORD:?Defina CLIENTES_DB_PASSWORD en el archivo .env}
       KAFKA_BOOTSTRAP: kafka:29092

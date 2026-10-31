@@ -5,6 +5,7 @@ name: empresa
 services:
   postgres:
     image: postgres:17-alpine
+    command: postgres -c max_connections=200
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD en .env}

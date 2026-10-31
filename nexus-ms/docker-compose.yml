@@ -15,6 +15,7 @@ services:
       # Registro en Eureka con credenciales (definidas en .env)
       EUREKA_URL: http://${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}:${EUREKA_PASSWORD:?Defina EUREKA_PASSWORD en .env}@discovery-ms:8761/eureka/
       NEXUS_DB_URL: jdbc:postgresql://postgres:5432/nexus
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "5"
       NEXUS_DB_USER: nexus
       NEXUS_DB_PASSWORD: ${NEXUS_DB_PASSWORD:?Defina NEXUS_DB_PASSWORD en el archivo .env}
       JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
