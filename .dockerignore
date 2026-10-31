@@ -1,0 +1,7 @@
+# Contexto de build de nexus-ms (raíz del repo): excluir artefactos, Git y secretos
+**/target
+.git
+**/.git
+**/*.bak
+**/.zshrc
+.env

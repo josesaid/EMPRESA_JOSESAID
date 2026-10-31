@@ -2,7 +2,9 @@
 # Requiere la red externa empresa-net, la infraestructura compartida y el servicio de Eureka.
 services:
   nexus-ms:
-    build: .
+    build:
+      context: ..
+      dockerfile: nexus-ms/Dockerfile
     image: nexus-ms:0.1.0
     env_file:
       # Opcional: si no existe, Compose usa solo 'environment'
