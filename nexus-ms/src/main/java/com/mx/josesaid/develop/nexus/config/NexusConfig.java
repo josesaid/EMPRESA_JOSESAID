@@ -15,6 +15,7 @@ import com.mx.josesaid.develop.nexus.infrastructure.HerramientasCompras;
 import com.mx.josesaid.develop.nexus.infrastructure.HerramientasFinanzas;
 import com.mx.josesaid.develop.nexus.infrastructure.HerramientasContabilidad;
 import com.mx.josesaid.develop.nexus.infrastructure.HerramientasInventario;
+import com.mx.josesaid.develop.nexus.infrastructure.HerramientasDocumentos;
 import com.mx.josesaid.develop.nexus.infrastructure.HerramientasVentas;
 import com.mx.josesaid.develop.nexus.infrastructure.HerramientasReportes;
 
@@ -70,12 +71,17 @@ public class NexusConfig {
     }
 
     @Bean
+    HerramientasDocumentos herramientasDocumentos(RestClient gatewayClient) {
+        return new HerramientasDocumentos(gatewayClient);
+    }
+
+    @Bean
     AsistenteIA asistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts,
                             HerramientasReportes reportes, HerramientasClientes clientes,
                             HerramientasVentas ventas, HerramientasCompras compras,
                             HerramientasFinanzas finanzas, HerramientasContabilidad contabilidad,
-                            HerramientasInventario inventario) {
+                            HerramientasInventario inventario, HerramientasDocumentos documentos) {
         return new ClaudeAsistenteIA(modelo, registro, prompts, reportes, clientes, ventas, compras, finanzas,
-                contabilidad, inventario);
+                contabilidad, inventario, documentos);
     }
 }
