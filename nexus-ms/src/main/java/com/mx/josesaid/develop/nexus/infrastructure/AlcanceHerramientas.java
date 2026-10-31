@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 final class AlcanceHerramientas {
 
-    private static final Set<String> ROLES_REPORTES = Set.of("ROLE_DIRECCION", "ROLE_JEFE_AREA");
+    private static final Set<String> ROLES_REPORTES = Set.of("ROLE_DIRECCION");
     private static final Set<String> ROLES_CLIENTES = Set.of("ROLE_VENTAS", "ROLE_ADMIN");
 
     private AlcanceHerramientas() {

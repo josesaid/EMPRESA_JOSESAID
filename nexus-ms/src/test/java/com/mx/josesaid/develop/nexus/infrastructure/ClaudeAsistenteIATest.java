@@ -101,4 +101,13 @@ class ClaudeAsistenteIATest {
         assertThat(AlcanceHerramientas.puedeConsultarClientes()).isTrue();
         assertThat(AlcanceHerramientas.puedeConsultarReportes()).isFalse();
     }
+
+    @Test
+    void jefeDeAreaNoPuedeConsultarReportesNiClientesDesdeNexus() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new TestingAuthenticationToken("u3", null, "ROLE_JEFE_AREA"));
+
+        assertThat(AlcanceHerramientas.puedeConsultarReportes()).isFalse();
+        assertThat(AlcanceHerramientas.puedeConsultarClientes()).isFalse();
+    }
 }
