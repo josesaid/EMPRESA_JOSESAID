@@ -39,13 +39,17 @@ public class NexusControlador {
         var respuesta = asistente.consultar(new PreguntaAsistente(usuario, solicitud.pregunta()));
         String texto = respuesta.texto() == null ? "" : respuesta.texto();
         String resumen = FiltroDatosSensibles.redactar(texto.length() > 500 ? texto.substring(0, 500) : texto).texto();
+        String herramientas = String.join(",", respuesta.herramientas());
+        if (herramientas.length() > 500) {
+            herramientas = herramientas.substring(0, 500);
+        }
         auditoria.registrar(new RegistroConsulta(
                 usuario,
                 FiltroDatosSensibles.redactar(solicitud.pregunta()).texto(),
                 resumen,
-                null,
-                null,
-                null,
+                herramientas.isEmpty() ? null : herramientas,
+                respuesta.tokensEntrada(),
+                respuesta.tokensSalida(),
                 Instant.now()));
         return new ConsultaResponse(texto);
     }

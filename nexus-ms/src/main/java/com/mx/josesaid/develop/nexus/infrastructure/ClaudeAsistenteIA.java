@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
 
 import com.mx.josesaid.develop.nexus.application.AsistenteIA;
 import com.mx.josesaid.develop.nexus.application.PreguntaAsistente;
@@ -58,7 +59,18 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
         if (!permitidas.isEmpty()) {
             solicitud = solicitud.tools(permitidas.toArray());
         }
-        String texto = solicitud.call().content();
-        return new RespuestaAsistente(texto);
+
+        RegistroHerramientasUsadas.iniciar();
+        try {
+            ChatResponse respuesta = solicitud.call().chatResponse();
+            String texto = respuesta.getResult() == null ? "" : respuesta.getResult().getOutput().getText();
+            var metadatos = respuesta.getMetadata();
+            var uso = metadatos == null ? null : metadatos.getUsage();
+            Integer entrada = uso == null ? null : uso.getPromptTokens();
+            Integer salida = uso == null ? null : uso.getCompletionTokens();
+            return new RespuestaAsistente(texto, entrada, salida, RegistroHerramientasUsadas.terminar());
+        } finally {
+            RegistroHerramientasUsadas.terminar();
+        }
     }
 }

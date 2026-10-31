@@ -25,6 +25,7 @@ public final class HerramientasClientes {
     public String buscarClientes(
             @ToolParam(description = "RFC completo o parcial. Vacío si se busca por nombre.", required = false) String rfc,
             @ToolParam(description = "Nombre o razón social. Vacío si se busca por RFC.", required = false) String nombre) {
+        RegistroHerramientasUsadas.registrar("buscar_clientes");
         String cuerpo = gateway.get()
                 .uri(constructor -> {
                     var uri = constructor.path(RUTA_BASE).queryParam("size", 10);
@@ -45,6 +46,7 @@ public final class HerramientasClientes {
           description = "Devuelve el detalle de un cliente por su identificador (UUID).")
     public String obtenerCliente(
             @ToolParam(description = "Identificador UUID del cliente", required = true) String id) {
+        RegistroHerramientasUsadas.registrar("obtener_cliente");
         String cuerpo = gateway.get()
                 .uri(RUTA_BASE + "/{id}", id)
                 .retrieve()
