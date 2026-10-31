@@ -45,7 +45,8 @@ class ClaudeAsistenteIATest {
                 new HerramientasReportes(sinRed), new HerramientasClientes(sinRed),
                 new HerramientasVentas(sinRed), new HerramientasCompras(sinRed),
                 new HerramientasFinanzas(sinRed), new HerramientasContabilidad(sinRed),
-                new HerramientasInventario(sinRed), new HerramientasDocumentos(sinRed));
+                new HerramientasInventario(sinRed), new HerramientasDocumentos(sinRed),
+                new HerramientasUsuarios(sinRed));
     }
 
     @AfterEach
