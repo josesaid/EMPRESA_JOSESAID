@@ -39,4 +39,18 @@ class HerramientasComprasTest {
         assertThat(texto).contains("APROBADA");
         servidor.verify();
     }
+
+    @Test
+    void buscarProveedoresPasaElTexto() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/compras-proveedores-ms/v1/proveedores?razonSocial=Acme"))
+                .andRespond(withSuccess("[{\"razonSocial\":\"Acme SA\",\"correo\":\"a@b.com\"}]",
+                        MediaType.APPLICATION_JSON));
+
+        String texto = new HerramientasCompras(builder.build()).buscarProveedores("Acme");
+
+        assertThat(texto).contains("Acme SA").doesNotContain("a@b.com");
+        servidor.verify();
+    }
 }

@@ -48,4 +48,18 @@ public final class HerramientasContabilidad {
                 .body(String.class);
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
+
+    @Tool(name = "listar_polizas",
+          description = "Lista las pólizas contables de un periodo: identificador, tipo, fecha, estatus y movimientos.")
+    public String listarPolizas(
+            @ToolParam(description = "Periodo contable en formato AAAA-MM, por ejemplo 2026-09", required = true) String periodo) {
+        RegistroHerramientasUsadas.registrar("listar_polizas");
+        String cuerpo = gateway.get()
+                .uri(constructor -> constructor.path(RUTA_BASE + "/polizas")
+                        .queryParam("periodo", periodo.trim())
+                        .build())
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }

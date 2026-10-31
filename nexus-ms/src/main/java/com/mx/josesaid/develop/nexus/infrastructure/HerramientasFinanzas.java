@@ -35,4 +35,18 @@ public final class HerramientasFinanzas {
                 .body(String.class);
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
+
+    @Tool(name = "buscar_comprobante_por_folio",
+          description = "Devuelve un comprobante por su folio exacto (por ejemplo, el folio asignado al emitir).")
+    public String buscarComprobantePorFolio(
+            @ToolParam(description = "Folio exacto del comprobante", required = true) String folio) {
+        RegistroHerramientasUsadas.registrar("buscar_comprobante_por_folio");
+        String cuerpo = gateway.get()
+                .uri(constructor -> constructor.path(RUTA_BASE + "/comprobantes")
+                        .queryParam("folio", folio.trim())
+                        .build())
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }
