@@ -3,6 +3,7 @@ package com.mx.josesaid.develop.compras.infrastructure.persistence;
 import com.mx.josesaid.develop.compras.domain.Proveedor;
 import com.mx.josesaid.develop.compras.domain.ProveedorRepositorio;
 import com.mx.josesaid.develop.compras.infrastructure.seguridad.ProtectorDatos;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -43,5 +44,13 @@ class ProveedorRepositorioJpa implements ProveedorRepositorio {
     @Override
     public boolean existePorRfc(String rfc) {
         return jpa.existsByRfcIndice(protector.indice(rfc));
+    }
+
+    @Override
+    public List<Proveedor> buscarPorRazonSocial(String texto) {
+        return jpa.findTop20ByRazonSocialContainingIgnoreCaseOrderByRazonSocialAsc(texto).stream()
+                .map(e -> Proveedor.reconstruir(e.id, e.razonSocial,
+                        protector.descifrar(e.rfcCifrado), protector.descifrar(e.correoCifrado), e.estatus))
+                .toList();
     }
 }

@@ -2,6 +2,7 @@ package com.mx.josesaid.develop.compras.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -114,6 +115,22 @@ class ComprasIT {
 
     private static RequestPostProcessor rol(String rol) {
         return jwt().authorities(new SimpleGrantedAuthority("ROLE_" + rol));
+    }
+
+    @Test
+    void buscaProveedoresPorNombreSinExponerRfcNiCorreoEnClaro() throws Exception {
+        mvc.perform(post("/v1/proveedores").with(rol("COMPRAS"))
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                        .content("{\"razonSocial\":\"Busqueda Prueba SA\",\"rfc\":\"PBU010101AB1\",\"correo\":\"ventas@busqueda.mx\"}"))
+                .andExpect(status().isCreated());
+
+        mvc.perform(get("/v1/proveedores").param("razonSocial", "busqueda prue").with(rol("FINANZAS")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].razonSocial").value("Busqueda Prueba SA"))
+                .andExpect(jsonPath("$[0].correo").value("v***@busqueda.mx"));
+
+        mvc.perform(get("/v1/proveedores").param("razonSocial", "bu").with(rol("COMPRAS")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
