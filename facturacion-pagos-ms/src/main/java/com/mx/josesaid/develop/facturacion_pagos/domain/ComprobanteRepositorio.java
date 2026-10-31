@@ -9,4 +9,6 @@ public interface ComprobanteRepositorio {
     Comprobante guardar(Comprobante comprobante);
 
     Optional<Comprobante> buscarPorId(UUID id);
+
+    Optional<Comprobante> buscarPorFolio(String folio);
 }

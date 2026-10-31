@@ -75,6 +75,12 @@ public class FacturacionService {
     }
 
     @Transactional(readOnly = true)
+    public Comprobante buscarPorFolio(String folio) {
+        return repositorio.buscarPorFolio(folio.trim())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Comprobante no encontrado con folio: " + folio));
+    }
+
+    @Transactional(readOnly = true)
     public Comprobante obtener(UUID id) {
         return repositorio.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Comprobante no encontrado: " + id));

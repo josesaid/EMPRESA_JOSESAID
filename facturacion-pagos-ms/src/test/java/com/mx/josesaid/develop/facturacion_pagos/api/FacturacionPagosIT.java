@@ -44,6 +44,27 @@ class FacturacionPagosIT {
     private MockMvc mvc;
 
     @Test
+    void buscaComprobantePorFolioExacto() throws Exception {
+        MvcResult creado = mvc.perform(post("/v1/comprobantes").with(finanzas())
+                        .contentType("application/json")
+                        .content("{\"ordenId\":\"" + ORDEN + "\",\"moneda\":\"MXN\",\"subtotal\":1000,\"tasaIva\":0.16}"))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String id = JsonPath.read(creado.getResponse().getContentAsString(), "$.id");
+        MvcResult emitido = mvc.perform(post("/v1/comprobantes/" + id + "/emision").with(finanzas()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String folio = JsonPath.read(emitido.getResponse().getContentAsString(), "$.folio");
+
+        mvc.perform(get("/v1/comprobantes").param("folio", folio).with(finanzas()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id));
+
+        mvc.perform(get("/v1/comprobantes").param("folio", "NO-EXISTE").with(finanzas()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void flujoDeComprobanteConRolesYReglas() throws Exception {
         // Sin token: no autenticado
         mvc.perform(get("/v1/comprobantes/00000000-0000-0000-0000-000000000000"))
