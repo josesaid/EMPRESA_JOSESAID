@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
 import com.mx.josesaid.develop.nexus.application.AsistenteIA;
 import com.mx.josesaid.develop.nexus.application.AuditoriaConsultas;
 import com.mx.josesaid.develop.nexus.application.RegistroConsulta;
@@ -26,7 +27,7 @@ class NexusControladorIdentidadTest {
         AsistenteIA asistente = mock(AsistenteIA.class);
         AuditoriaConsultas auditoria = mock(AuditoriaConsultas.class);
         when(asistente.consultar(any())).thenReturn(new RespuestaAsistente("respuesta"));
-        NexusControlador controlador = new NexusControlador(asistente, auditoria);
+        NexusControlador controlador = new NexusControlador(asistente, auditoria, mock(AccionesPendientes.class));
 
         controlador.consultar(new ConsultaRequest("Dame clientes"), jwt(SUBJECT, "admin@empresa.mx"));
 
@@ -40,7 +41,7 @@ class NexusControladorIdentidadTest {
         AsistenteIA asistente = mock(AsistenteIA.class);
         AuditoriaConsultas auditoria = mock(AuditoriaConsultas.class);
         when(asistente.consultar(any())).thenReturn(new RespuestaAsistente("respuesta"));
-        NexusControlador controlador = new NexusControlador(asistente, auditoria);
+        NexusControlador controlador = new NexusControlador(asistente, auditoria, mock(AccionesPendientes.class));
 
         controlador.consultar(new ConsultaRequest("Dame clientes"), jwt(SUBJECT, null));
 
@@ -54,7 +55,7 @@ class NexusControladorIdentidadTest {
         AsistenteIA asistente = mock(AsistenteIA.class);
         AuditoriaConsultas auditoria = mock(AuditoriaConsultas.class);
         when(asistente.consultar(any())).thenReturn(new RespuestaAsistente("Cliente PRU000101XAB"));
-        NexusControlador controlador = new NexusControlador(asistente, auditoria);
+        NexusControlador controlador = new NexusControlador(asistente, auditoria, mock(AccionesPendientes.class));
 
         var respuesta = controlador.consultar(new ConsultaRequest("Busca el RFC"), jwt(SUBJECT, "admin@empresa.mx"));
 

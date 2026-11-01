@@ -1,5 +1,9 @@
 package com.mx.josesaid.develop.nexus.config;
 
+import java.time.Clock;
+import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
+import com.mx.josesaid.develop.nexus.application.AlmacenAcciones;
+import com.mx.josesaid.develop.nexus.infrastructure.EjecutorAccionesGateway;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,8 +51,13 @@ public class NexusConfig {
     }
 
     @Bean
-    HerramientasVentas herramientasVentas(RestClient gatewayClient) {
-        return new HerramientasVentas(gatewayClient);
+    AccionesPendientes accionesPendientes(AlmacenAcciones almacen, RestClient gatewayClient) {
+        return new AccionesPendientes(almacen, new EjecutorAccionesGateway(gatewayClient), Clock.systemUTC());
+    }
+
+    @Bean
+    HerramientasVentas herramientasVentas(RestClient gatewayClient, AccionesPendientes acciones) {
+        return new HerramientasVentas(gatewayClient, acciones);
     }
 
     @Bean
