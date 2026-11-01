@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.compras.api;
 
+import com.mx.josesaid.develop.compras.domain.AprobacionNoPermitidaException;
 import com.mx.josesaid.develop.compras.domain.ConflictoException;
 import com.mx.josesaid.develop.compras.domain.RecursoNoEncontradoException;
 import com.mx.josesaid.develop.compras.domain.ReglaDeNegocioException;
@@ -22,6 +23,11 @@ public class ManejadorErrores {
     @ExceptionHandler(RecursoNoEncontradoException.class)
     ProblemDetail noEncontrado(RecursoNoEncontradoException ex) {
         return problema(HttpStatus.NOT_FOUND, "no-encontrado", ex.getMessage());
+    }
+
+    @ExceptionHandler(AprobacionNoPermitidaException.class)
+    ProblemDetail aprobacionNoPermitida(AprobacionNoPermitidaException ex) {
+        return problema(HttpStatus.FORBIDDEN, "aprobacion-no-permitida", ex.getMessage());
     }
 
     @ExceptionHandler(ConflictoException.class)
