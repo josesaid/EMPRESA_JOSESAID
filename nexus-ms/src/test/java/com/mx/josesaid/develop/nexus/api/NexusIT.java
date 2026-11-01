@@ -2,13 +2,18 @@ package com.mx.josesaid.develop.nexus.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.mx.josesaid.develop.nexus.application.AccionNoPendienteException;
+import com.mx.josesaid.develop.nexus.application.AccionPendiente;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -141,6 +146,45 @@ class NexusIT {
         when(acciones.confirmar(java.util.UUID.fromString(ACCION_ID), "u-ventas"))
                 .thenThrow(new com.mx.josesaid.develop.nexus.application.AccionNoPendienteException("La acción ya está confirmada"));
         mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void consultarAccionPropiaMuestraResumenSinPayload() throws Exception {
+        java.util.UUID id = java.util.UUID.fromString(ACCION_ID);
+        when(acciones.consultar(id, "u-ventas")).thenReturn(new AccionPendiente(id, "u-ventas",
+                "PEDIDO_BORRADOR", "{\"clienteId\":\"c1\"}", "Pedido para c1", "PENDIENTE",
+                Instant.now(), Instant.now().plusSeconds(600)));
+        mvc.perform(get("/nexus/acciones/" + ACCION_ID)
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resumen").value("Pedido para c1"))
+                .andExpect(jsonPath("$.estatus").value("PENDIENTE"))
+                .andExpect(jsonPath("$.payload").doesNotExist());
+    }
+
+    @Test
+    void consultarAccionAjenaResponde404() throws Exception {
+        when(acciones.consultar(java.util.UUID.fromString(ACCION_ID), "u-otro"))
+                .thenThrow(new com.mx.josesaid.develop.nexus.application.AccionNoEncontradaException("Acción no encontrada"));
+        mvc.perform(get("/nexus/acciones/" + ACCION_ID)
+                        .with(jwt().jwt(j -> j.subject("u-otro")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void cancelarPropiaAccionResponde204() throws Exception {
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/cancelacion")
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void cancelarAccionYaConfirmadaResponde409() throws Exception {
+        doThrow(new AccionNoPendienteException("La acción ya está confirmada"))
+                .when(acciones).cancelar(java.util.UUID.fromString(ACCION_ID), "u-ventas");
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/cancelacion")
                         .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
                 .andExpect(status().isConflict());
     }
