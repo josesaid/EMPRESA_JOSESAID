@@ -5,21 +5,21 @@ Nexus expone sus herramientas por MCP en `/mcp`. Cada llamada usa el mismo JWT q
 ## 1. Obtener el token
 
 ```bash
-curl -s -X POST http://<host>/v1/auth/login \
+curl -s -X POST http://<host>/usuarios-accesos-ms/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"correo":"tu.correo@empresa.com","password":"<tu contraseña>"}'
 ```
 
-La respuesta trae `access_token` y `refresh_token`. El access token dura **15 minutos**.
+La respuesta trae `accessToken` y `refreshToken`. El access token dura **15 minutos**.
 
 ## 2. Renovar el token
 
 Cuando el access token venza, rota el refresh token:
 
 ```bash
-curl -s -X POST http://<host>/v1/auth/refresh \
+curl -s -X POST http://<host>/usuarios-accesos-ms/v1/auth/refresh \
   -H "Content-Type: application/json" \
-  -d '{"refreshToken":"<refresh_token>"}'
+  -d '{"refreshToken":"<refreshToken>"}'
 ```
 
 Cada renovación devuelve un refresh token nuevo; guarda el último.
@@ -27,7 +27,7 @@ Cada renovación devuelve un refresh token nuevo; guarda el último.
 ## 3. Configurar el cliente MCP
 
 - URL del servidor: `http://<host>/mcp`
-- Encabezado: `Authorization: Bearer <access_token>`
+- Encabezado: `Authorization: Bearer <accessToken>`
 
 Cualquier cliente que acepte un servidor MCP remoto con encabezados personalizados sirve. Revisa la documentación de tu cliente para ese campo.
 
