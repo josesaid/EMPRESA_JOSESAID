@@ -11,6 +11,7 @@ import com.mx.josesaid.develop.nexus.application.Embedder;
 import com.mx.josesaid.develop.nexus.application.IngestaPoliticas;
 import com.mx.josesaid.develop.nexus.application.RecuperadorPoliticas;
 import com.mx.josesaid.develop.nexus.infrastructure.EjecutorAccionesGateway;
+import com.mx.josesaid.develop.nexus.infrastructure.HerramientasPoliticas;
 import com.mx.josesaid.develop.nexus.infrastructure.PoliticasClasspath;
 import com.mx.josesaid.develop.nexus.infrastructure.VoyageEmbedder;
 import com.mx.josesaid.develop.nexus.infrastructure.persistence.AlmacenFragmentosJdbc;
@@ -170,8 +171,13 @@ public class NexusConfig {
                             HerramientasVentas ventas, HerramientasCompras compras,
                             HerramientasFinanzas finanzas, HerramientasContabilidad contabilidad,
                             HerramientasInventario inventario, HerramientasDocumentos documentos,
-                            HerramientasUsuarios usuarios) {
+                            HerramientasUsuarios usuarios, HerramientasPoliticas politicas) {
         return new ClaudeAsistenteIA(modelo, registro, prompts, reportes, clientes, ventas, compras, finanzas,
-                contabilidad, inventario, documentos, usuarios);
+                contabilidad, inventario, documentos, usuarios, politicas);
+    }
+
+    @Bean
+    HerramientasPoliticas herramientasPoliticas(RecuperadorPoliticas recuperador) {
+        return new HerramientasPoliticas(recuperador);
     }
 }

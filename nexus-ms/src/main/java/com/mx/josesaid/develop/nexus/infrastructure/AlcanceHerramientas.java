@@ -1,9 +1,12 @@
 package com.mx.josesaid.develop.nexus.infrastructure;
 
+import static java.util.stream.Collectors.toUnmodifiableSet;
+
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -27,6 +30,8 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_COMPROBANTES = Set.of("ROLE_FINANZAS", "ROLE_VENTAS");
     private static final Set<String> ROLES_PROVEEDORES = Set.of("ROLE_COMPRAS", "ROLE_FINANZAS");
     private static final Set<String> ROLES_ORDENES_COMPRA = Set.of("ROLE_COMPRAS", "ROLE_ALMACEN", "ROLE_DIRECCION");
+    // Roles que aparecen en alguna política. Un rol nuevo debe agregarse aquí y en la política correspondiente.
+    private static final Set<String> ROLES_POLITICAS = Set.of("ROLE_COMPRAS", "ROLE_DIRECCION");
 
     /** Rol(es) que pueden usar cada herramienta. Lo que no aparece aquí se niega. */
     private static final Map<String, Set<String>> ROLES_POR_HERRAMIENTA = Map.ofEntries(
@@ -61,6 +66,7 @@ final class AlcanceHerramientas {
             Map.entry("registrar_devolucion_pedido", ROLES_ACCIONES_VENTAS),
             Map.entry("cambiar_estatus_prospecto", ROLES_ACCIONES_VENTAS),
             Map.entry("convertir_prospecto_en_cliente", ROLES_ACCIONES_VENTAS),
+            Map.entry("consultar_politicas", ROLES_POLITICAS),
             Map.entry("registrar_interaccion_cliente", ROLES_ACCIONES_VENTAS));
 
     private AlcanceHerramientas() {
@@ -115,6 +121,19 @@ final class AlcanceHerramientas {
 
     static boolean puedeConsultarOrdenesCompra() {
         return tieneAlgunRol(ROLES_ORDENES_COMPRA);
+    }
+
+    /** Roles del usuario actual sin el prefijo ROLE_, como los guarda la política. */
+    static Set<String> rolesDelUsuario() {
+        Authentication autenticacion = SecurityContextHolder.getContext().getAuthentication();
+        if (autenticacion == null) {
+            return Set.of();
+        }
+        return autenticacion.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(r -> r.startsWith("ROLE_"))
+                .map(r -> r.substring("ROLE_".length()))
+                .collect(toUnmodifiableSet());
     }
 
     private static boolean tieneAlgunRol(Set<String> roles) {
