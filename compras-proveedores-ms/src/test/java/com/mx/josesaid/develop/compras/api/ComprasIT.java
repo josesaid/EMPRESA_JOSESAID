@@ -58,7 +58,7 @@ class ComprasIT {
                         .content("{\"razonSocial\":\"Otro\",\"rfc\":\"aan010101ab3\",\"correo\":\"x@y.mx\"}"))
                 .andExpect(status().isConflict());
 
-        MvcResult orden = mvc.perform(post("/v1/ordenes-compra").with(rol("COMPRAS"))
+        MvcResult orden = mvc.perform(post("/v1/ordenes-compra").with(usuario("compras-1", "COMPRAS"))
                         .contentType("application/json")
                         .content(ordenJson(proveedor)))
                 .andExpect(status().isCreated())
@@ -67,10 +67,11 @@ class ComprasIT {
                 .andReturn();
         String ordenId = JsonPath.read(orden.getResponse().getContentAsString(), "$.id");
 
-        // Solo DIRECCION aprueba
-        mvc.perform(post("/v1/ordenes-compra/" + ordenId + "/aprobacion").with(rol("COMPRAS")))
+        // El creador no aprueba su propia orden, aunque sea COMPRAS
+        mvc.perform(post("/v1/ordenes-compra/" + ordenId + "/aprobacion").with(usuario("compras-1", "COMPRAS")))
                 .andExpect(status().isForbidden());
-        mvc.perform(post("/v1/ordenes-compra/" + ordenId + "/aprobacion").with(rol("DIRECCION")))
+        // DIRECCION aprueba una orden que creó otro usuario
+        mvc.perform(post("/v1/ordenes-compra/" + ordenId + "/aprobacion").with(usuario("direccion-1", "DIRECCION")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.estatus").value("APROBADA"));
 
@@ -115,6 +116,10 @@ class ComprasIT {
 
     private static RequestPostProcessor rol(String rol) {
         return jwt().authorities(new SimpleGrantedAuthority("ROLE_" + rol));
+    }
+
+    private static RequestPostProcessor usuario(String sub, String rol) {
+        return jwt().jwt(j -> j.subject(sub)).authorities(new SimpleGrantedAuthority("ROLE_" + rol));
     }
 
     @Test

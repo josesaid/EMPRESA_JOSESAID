@@ -27,6 +27,7 @@ class OrdenCompraRepositorioJpa implements OrdenCompraRepositorio {
             e.id = o.getId();
             e.proveedorId = o.getProveedorId();
             e.moneda = o.getMoneda();
+            e.creadaPor = o.getCreadaPor();
             for (LineaOrden l : o.getLineas()) {
                 LineaOrdenEntity le = new LineaOrdenEntity();
                 le.id = UUID.randomUUID();
@@ -59,7 +60,8 @@ class OrdenCompraRepositorioJpa implements OrdenCompraRepositorio {
                     .map(le -> LineaOrden.reconstruir(le.articuloSku, le.cantidadOrdenada, le.cantidadRecibida,
                             le.precioUnitario))
                     .toList();
-            return OrdenCompra.reconstruir(e.id, e.proveedorId, e.moneda, e.estatus, e.motivoCancelacion, lineas);
+            return OrdenCompra.reconstruir(e.id, e.proveedorId, e.moneda, e.estatus, e.motivoCancelacion, lineas,
+                    e.creadaPor);
         });
     }
 }

@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 class OrdenCompraTest {
 
+    private static final BigDecimal TIPO_CAMBIO = new BigDecimal("18");
+
     private static Proveedor activo() {
         return Proveedor.crear("Aceros del Norte SA", "AAN010101AB3", "ventas@aceros.mx");
     }
@@ -19,7 +21,7 @@ class OrdenCompraTest {
 
     @Test
     void calculaTotalDeLasLineas() {
-        OrdenCompra o = OrdenCompra.crear(activo(), "MXN", lineas());
+        OrdenCompra o = OrdenCompra.crear(activo(), "MXN", lineas(), "u-compras");
         assertThat(o.total()).isEqualByComparingTo("1000.00");
         assertThat(o.getEstatus()).isEqualTo(EstatusOrdenCompra.BORRADOR);
     }
@@ -28,14 +30,14 @@ class OrdenCompraTest {
     void proveedorInactivoNoRecibeOrdenes() {
         Proveedor bloqueado = Proveedor.reconstruir(java.util.UUID.randomUUID(), "X", "AAN010101AB3",
                 "a@b.mx", EstatusProveedor.BLOQUEADO);
-        assertThatThrownBy(() -> OrdenCompra.crear(bloqueado, "MXN", lineas()))
+        assertThatThrownBy(() -> OrdenCompra.crear(bloqueado, "MXN", lineas(), "u-compras"))
                 .isInstanceOf(ReglaDeNegocioException.class);
     }
 
     @Test
     void recepcionNoPuedeExcederLoOrdenado() {
-        OrdenCompra o = OrdenCompra.crear(activo(), "MXN", lineas());
-        o.aprobar();
+        OrdenCompra o = OrdenCompra.crear(activo(), "MXN", lineas(), "u-compras");
+        o.aprobar("u-direccion", true, TIPO_CAMBIO);
         o.recibir("TORN-1", new BigDecimal("6"));
         assertThat(o.getEstatus()).isEqualTo(EstatusOrdenCompra.RECIBIDA_PARCIAL);
         assertThatThrownBy(() -> o.recibir("TORN-1", new BigDecimal("5")))
@@ -46,10 +48,10 @@ class OrdenCompraTest {
 
     @Test
     void aprobadaSoloSeCancelaConMotivo() {
-        OrdenCompra o = OrdenCompra.crear(activo(), "MXN", lineas());
-        o.aprobar();
+        OrdenCompra o = OrdenCompra.crear(activo(), "MXN", lineas(), "u-compras");
+        o.aprobar("u-direccion", true, TIPO_CAMBIO);
         assertThatThrownBy(() -> o.cancelar(" ")).isInstanceOf(SolicitudInvalidaException.class);
-        assertThatThrownBy(() -> o.aprobar()).isInstanceOf(ConflictoException.class);
+        assertThatThrownBy(() -> o.aprobar("u-direccion", true, TIPO_CAMBIO)).isInstanceOf(ConflictoException.class);
         o.cancelar("Proveedor sin stock");
         assertThat(o.getEstatus()).isEqualTo(EstatusOrdenCompra.CANCELADA);
     }

@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,12 +73,13 @@ public class ComprasControlador {
     @PostMapping("/ordenes-compra")
     @PreAuthorize("hasRole('COMPRAS')")
     public ResponseEntity<?> crearOrden(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
-                                        @Valid @RequestBody CrearOrdenSolicitud s) {
+                                        @Valid @RequestBody CrearOrdenSolicitud s,
+                                        @AuthenticationPrincipal Jwt jwt) {
         return idempotencia.ejecutar(clave, "POST /v1/ordenes-compra", s, HttpStatus.CREATED, () -> {
             List<LineaOrden> lineas = s.lineas().stream()
                     .map(l -> LineaOrden.nueva(l.articuloSku(), l.cantidad(), l.precioUnitario()))
                     .toList();
-            return OrdenRespuesta.de(servicio.crearOrden(s.proveedorId(), s.moneda(), lineas));
+            return OrdenRespuesta.de(servicio.crearOrden(s.proveedorId(), s.moneda(), lineas, jwt.getSubject()));
         });
     }
 
@@ -86,9 +90,12 @@ public class ComprasControlador {
     }
 
     @PostMapping("/ordenes-compra/{id}/aprobacion")
-    @PreAuthorize("hasRole('DIRECCION')")
-    public OrdenRespuesta aprobarOrden(@PathVariable UUID id) {
-        return OrdenRespuesta.de(servicio.aprobarOrden(id));
+    @PreAuthorize("hasAnyRole('COMPRAS','DIRECCION')")
+    public OrdenRespuesta aprobarOrden(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt,
+                                       Authentication autenticacion) {
+        boolean esDireccion = autenticacion.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_DIRECCION".equals(a.getAuthority()));
+        return OrdenRespuesta.de(servicio.aprobarOrden(id, jwt.getSubject(), esDireccion));
     }
 
     @PostMapping("/ordenes-compra/{id}/recepciones")

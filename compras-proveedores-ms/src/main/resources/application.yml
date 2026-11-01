@@ -70,3 +70,7 @@ eureka:
     prefer-ip-address: false
     lease-renewal-interval-in-seconds: ${EUREKA_RENOVACION_SEG:5}
     lease-expiration-duration-in-seconds: ${EUREKA_EXPIRACION_SEG:15}
+
+compras:
+  # Tipo de cambio para comparar órdenes en MXN contra el límite de aprobación en USD.
+  tipo-cambio-mxn-por-usd: ${COMPRAS_TIPO_CAMBIO_MXN_USD:18}

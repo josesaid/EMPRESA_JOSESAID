@@ -10,9 +10,11 @@ import com.mx.josesaid.develop.compras.domain.Recepcion;
 import com.mx.josesaid.develop.compras.domain.RecepcionRepositorio;
 import com.mx.josesaid.develop.compras.domain.RecursoNoEncontradoException;
 import com.mx.josesaid.develop.compras.domain.SolicitudInvalidaException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +29,16 @@ public class ComprasService {
     private final OrdenCompraRepositorio ordenes;
     private final RecepcionRepositorio recepciones;
     private final PublicadorEventos eventos;
+    private final BigDecimal tipoCambioMxnPorUsd;
 
     public ComprasService(ProveedorRepositorio proveedores, OrdenCompraRepositorio ordenes,
-                          RecepcionRepositorio recepciones, PublicadorEventos eventos) {
+                          RecepcionRepositorio recepciones, PublicadorEventos eventos,
+                          @Value("${compras.tipo-cambio-mxn-por-usd:18}") BigDecimal tipoCambioMxnPorUsd) {
         this.proveedores = proveedores;
         this.ordenes = ordenes;
         this.recepciones = recepciones;
         this.eventos = eventos;
+        this.tipoCambioMxnPorUsd = tipoCambioMxnPorUsd;
     }
 
     @Transactional
@@ -60,9 +65,9 @@ public class ComprasService {
     }
 
     @Transactional
-    public OrdenCompra crearOrden(UUID proveedorId, String moneda, List<LineaOrden> lineas) {
+    public OrdenCompra crearOrden(UUID proveedorId, String moneda, List<LineaOrden> lineas, String creadaPor) {
         Proveedor proveedor = obtenerProveedor(proveedorId);
-        return ordenes.guardar(OrdenCompra.crear(proveedor, moneda, lineas));
+        return ordenes.guardar(OrdenCompra.crear(proveedor, moneda, lineas, creadaPor));
     }
 
     @Transactional(readOnly = true)
@@ -72,9 +77,9 @@ public class ComprasService {
     }
 
     @Transactional
-    public OrdenCompra aprobarOrden(UUID id) {
+    public OrdenCompra aprobarOrden(UUID id, String usuario, boolean esDireccion) {
         OrdenCompra orden = obtenerOrden(id);
-        orden.aprobar();
+        orden.aprobar(usuario, esDireccion, tipoCambioMxnPorUsd);
         OrdenCompra guardada = ordenes.guardar(orden);
         eventos.publicar(new EventoDominio(EVENTO_ORDEN_APROBADA, id.toString(), Map.of(
                 "id", id.toString(),
