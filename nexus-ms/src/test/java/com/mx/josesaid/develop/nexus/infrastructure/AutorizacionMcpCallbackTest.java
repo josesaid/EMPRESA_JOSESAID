@@ -1,6 +1,7 @@
 package com.mx.josesaid.develop.nexus.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -64,9 +65,9 @@ class AutorizacionMcpCallbackTest {
     void sinIdentidadLaHerramientaNoSeEjecuta() {
         ToolCallback delegado = herramienta("consultar_politicas");
 
-        String respuesta = new AutorizacionMcpCallback(delegado).call("{}", new ToolContext(Map.of()));
-
-        assertThat(respuesta).isEqualTo(AutorizacionMcpCallback.DENEGADO);
+        assertThatThrownBy(() -> new AutorizacionMcpCallback(delegado).call("{}", new ToolContext(Map.of())))
+                .isInstanceOf(AutorizacionMcpCallback.SinPermisoMcpException.class)
+                .hasMessage(AutorizacionMcpCallback.DENEGADO);
         assertThat(vistoPorHerramienta.get()).isNull();
     }
 
@@ -74,9 +75,8 @@ class AutorizacionMcpCallbackTest {
     void conRolSinPermisoLaHerramientaSeNiegaSinEjecutarse() {
         ToolCallback delegado = herramienta("consultar_politicas");
 
-        String respuesta = new AutorizacionMcpCallback(delegado).call("{}", contextoCon(con("ROLE_VENTAS")));
-
-        assertThat(respuesta).isEqualTo(AutorizacionMcpCallback.DENEGADO);
+        assertThatThrownBy(() -> new AutorizacionMcpCallback(delegado).call("{}", contextoCon(con("ROLE_VENTAS"))))
+                .isInstanceOf(AutorizacionMcpCallback.SinPermisoMcpException.class);
         assertThat(vistoPorHerramienta.get()).isNull();
     }
 
@@ -98,9 +98,8 @@ class AutorizacionMcpCallbackTest {
     void unaHerramientaDesconocidaSeNiega() {
         ToolCallback delegado = herramienta("herramienta_inventada");
 
-        String respuesta = new AutorizacionMcpCallback(delegado).call("{}", contextoCon(con("ROLE_DIRECCION")));
-
-        assertThat(respuesta).isEqualTo(AutorizacionMcpCallback.DENEGADO);
+        assertThatThrownBy(() -> new AutorizacionMcpCallback(delegado).call("{}", contextoCon(con("ROLE_DIRECCION"))))
+                .isInstanceOf(AutorizacionMcpCallback.SinPermisoMcpException.class);
         assertThat(vistoPorHerramienta.get()).isNull();
     }
 }

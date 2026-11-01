@@ -48,7 +48,7 @@ public final class AutorizacionMcpCallback implements ToolCallback {
         String nombre = delegado.getToolDefinition().name();
         Optional<Authentication> autenticacion = identidad(toolContext);
         if (autenticacion.isEmpty()) {
-            return DENEGADO;
+            throw new SinPermisoMcpException(DENEGADO);
         }
         SecurityContext anterior = SecurityContextHolder.getContext();
         SecurityContext durante = SecurityContextHolder.createEmptyContext();
@@ -56,11 +56,18 @@ public final class AutorizacionMcpCallback implements ToolCallback {
         SecurityContextHolder.setContext(durante);
         try {
             if (!AlcanceHerramientas.puedeUsar(nombre)) {
-                return DENEGADO;
+                throw new SinPermisoMcpException(DENEGADO);
             }
             return toolContext == null ? delegado.call(toolInput) : delegado.call(toolInput, toolContext);
         } finally {
             SecurityContextHolder.setContext(anterior);
+        }
+    }
+
+    /** Lanzarla hace que la respuesta MCP llegue con isError=true, no como texto de éxito. */
+    public static final class SinPermisoMcpException extends RuntimeException {
+        SinPermisoMcpException(String mensaje) {
+            super(mensaje);
         }
     }
 

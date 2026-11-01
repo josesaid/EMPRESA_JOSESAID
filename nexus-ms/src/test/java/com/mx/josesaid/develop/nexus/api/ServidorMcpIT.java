@@ -140,6 +140,7 @@ class ServidorMcpIT {
                 "{\"name\":\"sugerir_poliza\",\"arguments\":{\"descripcion\":\"Venta de 1000\"}}",
                 "ROLE_COMPRAS", sesion);
 
+        assertThat(json(respuesta).get("result").get("isError").asBoolean()).isTrue();
         assertThat(textoDeHerramienta(respuesta)).contains("Sin permiso");
     }
 
