@@ -31,3 +31,5 @@ crear_servicio pedidos pedidos "${PEDIDOS_DB_PASSWORD:?Falta PEDIDOS_DB_PASSWORD
 crear_servicio documentos documentos "${DOCUMENTOS_DB_PASSWORD:?Falta DOCUMENTOS_DB_PASSWORD}"
 crear_servicio reportes reportes "${REPORTES_DB_PASSWORD:?Falta REPORTES_DB_PASSWORD}"
 crear_servicio nexus nexus "${NEXUS_DB_PASSWORD:?Falta NEXUS_DB_PASSWORD}"
+# pgvector: la extensión se crea como superusuario, porque el usuario nexus no lo es
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname nexus -c "CREATE EXTENSION IF NOT EXISTS vector;"
