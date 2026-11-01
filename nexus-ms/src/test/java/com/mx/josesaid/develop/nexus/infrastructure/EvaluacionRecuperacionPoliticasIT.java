@@ -23,7 +23,8 @@ import com.mx.josesaid.develop.nexus.application.ResultadoPolitica;
 
 /**
  * Evaluación de calidad con Voyage AI real: para cada pregunta, la regla correcta de la política
- * de compras debe quedar en primer lugar. Solo corre con VOYAGE_API_KEY definida.
+ * de compras debe estar entre los 3 primeros resultados (la herramienta entrega 5 fragmentos al modelo).
+ * Solo corre con VOYAGE_API_KEY definida.
  */
 @EnabledIfEnvironmentVariable(named = "VOYAGE_API_KEY", matches = ".+")
 class EvaluacionRecuperacionPoliticasIT {
@@ -37,7 +38,7 @@ class EvaluacionRecuperacionPoliticasIT {
             new Caso("¿Puedo aprobar una orden que yo mismo creé?", "él mismo creó"));
 
     @Test
-    void laReglaCorrectaQuedaPrimera() throws IOException {
+    void laReglaCorrectaEstaEntreLasTresPrimeras() throws IOException {
         Embedder embedder = new VoyageEmbedder(RestClient.builder().baseUrl("https://api.voyageai.com").build(),
                 System.getenv("VOYAGE_API_KEY"), "voyage-3");
         AlmacenEnMemoria almacen = new AlmacenEnMemoria();
@@ -45,9 +46,10 @@ class EvaluacionRecuperacionPoliticasIT {
         RecuperadorPoliticas recuperador = new RecuperadorPoliticas(embedder, almacen, Clock.systemUTC());
 
         for (Caso caso : CASOS) {
-            List<ResultadoPolitica> resultados = recuperador.buscar(caso.pregunta(), Set.of("COMPRAS"), 3);
-            assertThat(resultados).as(caso.pregunta()).isNotEmpty();
-            assertThat(resultados.get(0).texto()).as(caso.pregunta()).contains(caso.fragmentoEsperado());
+            List<String> textos = recuperador.buscar(caso.pregunta(), Set.of("COMPRAS"), 3).stream()
+                    .map(ResultadoPolitica::texto)
+                    .toList();
+            assertThat(textos).as(caso.pregunta()).anyMatch(t -> t.contains(caso.fragmentoEsperado()));
         }
     }
 

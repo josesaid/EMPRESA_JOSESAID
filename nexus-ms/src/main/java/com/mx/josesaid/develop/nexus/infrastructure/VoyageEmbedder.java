@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.nexus.infrastructure;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,23 +8,36 @@ import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import com.mx.josesaid.develop.nexus.application.Embedder;
 
-/** Genera embeddings con la API de Voyage AI. La clave viene de VOYAGE_API_KEY, nunca del código. */
+/**
+ * Genera embeddings con la API de Voyage AI. La clave viene de VOYAGE_API_KEY, nunca del código.
+ * Ante un 429 (límite de solicitudes por minuto) espera y reintenta.
+ */
 public final class VoyageEmbedder implements Embedder {
 
     static final String RUTA = "/v1/embeddings";
+    static final int MAX_INTENTOS = 4;
+    /** Con 3 solicitudes por minuto (cuenta sin método de pago), cada solicitud espera ~20 segundos. */
+    static final Duration ESPERA_429 = Duration.ofSeconds(21);
 
     private final RestClient cliente;
     private final String apiKey;
     private final String modelo;
+    private final Duration espera;
 
     public VoyageEmbedder(RestClient cliente, String apiKey, String modelo) {
+        this(cliente, apiKey, modelo, ESPERA_429);
+    }
+
+    VoyageEmbedder(RestClient cliente, String apiKey, String modelo, Duration espera) {
         this.cliente = cliente;
         this.apiKey = apiKey;
         this.modelo = modelo;
+        this.espera = espera;
     }
 
     @Override
@@ -34,16 +48,10 @@ public final class VoyageEmbedder implements Embedder {
         if (textos.isEmpty()) {
             return List.of();
         }
-        RespuestaEmbeddings respuesta = cliente.post()
-                .uri(RUTA)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of(
-                        "input", textos,
-                        "model", modelo,
-                        "input_type", tipo == TipoEntrada.CONSULTA ? "query" : "document"))
-                .retrieve()
-                .body(RespuestaEmbeddings.class);
+        RespuestaEmbeddings respuesta = pedir(Map.of(
+                "input", textos,
+                "model", modelo,
+                "input_type", tipo == TipoEntrada.CONSULTA ? "query" : "document"));
         if (respuesta == null || respuesta.data() == null || respuesta.data().size() != textos.size()) {
             throw new IllegalStateException("Respuesta de Voyage AI incompleta");
         }
@@ -55,6 +63,34 @@ public final class VoyageEmbedder implements Embedder {
             vectores[dato.index()] = aFloat(dato.embedding());
         }
         return new ArrayList<>(Arrays.asList(vectores));
+    }
+
+    private RespuestaEmbeddings pedir(Map<String, Object> cuerpo) {
+        for (int intento = 1; ; intento++) {
+            try {
+                return cliente.post()
+                        .uri(RUTA)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(cuerpo)
+                        .retrieve()
+                        .body(RespuestaEmbeddings.class);
+            } catch (HttpClientErrorException e) {
+                if (e.getStatusCode().value() != 429 || intento >= MAX_INTENTOS) {
+                    throw e;
+                }
+                esperar();
+            }
+        }
+    }
+
+    private void esperar() {
+        try {
+            Thread.sleep(espera.toMillis());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Interrumpido mientras esperaba el límite de Voyage AI", e);
+        }
     }
 
     private static float[] aFloat(List<Float> valores) {
