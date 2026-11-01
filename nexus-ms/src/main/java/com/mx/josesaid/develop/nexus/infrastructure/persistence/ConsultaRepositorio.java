@@ -12,4 +12,8 @@ public interface ConsultaRepositorio extends JpaRepository<ConsultaEntidad, UUID
     @Query("select coalesce(sum(coalesce(c.tokensEntrada, 0) + coalesce(c.tokensSalida, 0)), 0) "
             + "from ConsultaEntidad c where c.usuario = :usuario and c.creadoUtc >= :desde")
     long sumarTokens(@Param("usuario") String usuario, @Param("desde") Instant desde);
+
+    @Query("select coalesce(sum(coalesce(c.tokensEntrada, 0) + coalesce(c.tokensSalida, 0)), 0) "
+            + "from ConsultaEntidad c where c.creadoUtc >= :desde")
+    long sumarTokensServicio(@Param("desde") Instant desde);
 }

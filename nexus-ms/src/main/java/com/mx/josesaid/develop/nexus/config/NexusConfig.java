@@ -38,10 +38,11 @@ public class NexusConfig {
     }
 
     @Bean
-    PresupuestoTokens presupuestoTokens(ConsumoTokens consumo,
+    PresupuestoTokens presupuestoTokens(ConsumoTokens consumo, MeterRegistry registro,
                                         @Value("${nexus.presupuesto.tokens-mensuales:150000}") long mensuales,
-                                        @Value("${nexus.presupuesto.tokens-diarios:15000}") long diarios) {
-        return new PresupuestoTokens(consumo, mensuales, diarios, Clock.systemUTC());
+                                        @Value("${nexus.presupuesto.tokens-diarios:15000}") long diarios,
+                                        @Value("${nexus.presupuesto.tokens-servicio-mensuales:1000000}") long servicio) {
+        return new PresupuestoTokens(consumo, mensuales, diarios, servicio, Clock.systemUTC(), registro);
     }
 
     @Bean

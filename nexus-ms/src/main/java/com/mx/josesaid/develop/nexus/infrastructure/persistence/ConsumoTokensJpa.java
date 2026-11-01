@@ -19,4 +19,9 @@ public class ConsumoTokensJpa implements ConsumoTokens {
     public long desde(String usuario, Instant desde) {
         return repositorio.sumarTokens(usuario, desde);
     }
+
+    @Override
+    public long delServicio(Instant desde) {
+        return repositorio.sumarTokensServicio(desde);
+    }
 }

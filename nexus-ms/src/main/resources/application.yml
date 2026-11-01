@@ -42,6 +42,8 @@ nexus:
     # Tope de tokens por usuario: diario y mensual. Al alcanzarlo, Nexus no llama al modelo.
     tokens-diarios: ${NEXUS_PRESUPUESTO_DIARIO:15000}
     tokens-mensuales: ${NEXUS_PRESUPUESTO_MENSUAL:150000}
+    # Tope mensual de todo el servicio. Al alcanzarlo, Nexus deja de llamar al modelo para todos.
+    tokens-servicio-mensuales: ${NEXUS_PRESUPUESTO_SERVICIO_MENSUAL:1000000}
 
 eureka:
   client:

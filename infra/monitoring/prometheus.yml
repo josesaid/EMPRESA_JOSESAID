@@ -3,6 +3,9 @@
 global:
   scrape_interval: 15s
 
+rule_files:
+  - alertas-nexus.yml
+
 scrape_configs:
   - job_name: 'clientes-ms'
     metrics_path: /actuator/prometheus
@@ -58,3 +61,8 @@ scrape_configs:
     metrics_path: /actuator/prometheus
     static_configs:
       - targets: ['discovery-ms:8761']
+
+  - job_name: 'nexus-ms'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['nexus-ms:8081']

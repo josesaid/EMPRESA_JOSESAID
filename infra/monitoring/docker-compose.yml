@@ -12,6 +12,8 @@ services:
     volumes:
       # Configuración de los objetivos a recolectar
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      # Reglas de alarma (presupuesto de tokens de Nexus)
+      - ./alertas-nexus.yml:/etc/prometheus/alertas-nexus.yml:ro
       - prometheus-datos:/prometheus
     ports:
       - "9090:9090"
