@@ -50,7 +50,7 @@ public class NexusControlador {
 
     /** El usuario confirma una acción que Nexus preparó. Solo quien la preparó puede confirmarla. */
     @PostMapping("/acciones/{id}/confirmacion")
-    @PreAuthorize("hasRole('VENTAS')")
+    @PreAuthorize("hasAnyRole('VENTAS','CONTADOR')")
     public ResponseEntity<String> confirmarAccion(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
         String respuesta = acciones.confirmar(id, jwt.getSubject());
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -60,7 +60,7 @@ public class NexusControlador {
 
     /** Muestra al dueño la acción pendiente antes de confirmarla. */
     @GetMapping("/acciones/{id}")
-    @PreAuthorize("hasRole('VENTAS')")
+    @PreAuthorize("hasAnyRole('VENTAS','CONTADOR')")
     public AccionResumen consultarAccion(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
         var accion = acciones.consultar(id, jwt.getSubject());
         return new AccionResumen(accion.id(), accion.tipo(), accion.resumen(), accion.estatus(), accion.expiraUtc());
@@ -68,7 +68,7 @@ public class NexusControlador {
 
     /** El usuario descarta una acción pendiente sin ejecutarla. */
     @PostMapping("/acciones/{id}/cancelacion")
-    @PreAuthorize("hasRole('VENTAS')")
+    @PreAuthorize("hasAnyRole('VENTAS','CONTADOR')")
     public ResponseEntity<Void> cancelarAccion(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
         acciones.cancelar(id, jwt.getSubject());
         return ResponseEntity.noContent().build();

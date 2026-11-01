@@ -2,6 +2,7 @@ package com.mx.josesaid.develop.contabilidad.infrastructure.persistence;
 
 import com.mx.josesaid.develop.contabilidad.domain.CuentaContable;
 import com.mx.josesaid.develop.contabilidad.domain.CuentaRepositorio;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -35,5 +36,12 @@ class CuentaRepositorioJpa implements CuentaRepositorio {
     @Override
     public boolean existePorCodigo(String codigo) {
         return jpa.existsByCodigo(codigo);
+    }
+
+    @Override
+    public List<CuentaContable> listarActivas() {
+        return jpa.findByActivaTrueOrderByCodigoAsc().stream()
+                .map(e -> CuentaContable.reconstruir(e.id, e.codigo, e.nombre, e.naturaleza, e.activa))
+                .toList();
     }
 }

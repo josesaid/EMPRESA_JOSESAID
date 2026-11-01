@@ -7,9 +7,14 @@ import java.time.ZoneId;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
 import com.mx.josesaid.develop.nexus.application.AlmacenAcciones;
 import com.mx.josesaid.develop.nexus.application.AlmacenFragmentos;
+import com.mx.josesaid.develop.nexus.application.ContextoContable;
+import com.mx.josesaid.develop.nexus.application.ServicioPolizas;
+import com.mx.josesaid.develop.nexus.application.SugeridorPolizas;
 import com.mx.josesaid.develop.nexus.application.Embedder;
 import com.mx.josesaid.develop.nexus.application.IngestaPoliticas;
 import com.mx.josesaid.develop.nexus.application.RecuperadorPoliticas;
+import com.mx.josesaid.develop.nexus.infrastructure.ClaudeSugeridorPolizas;
+import com.mx.josesaid.develop.nexus.infrastructure.ContextoContableGateway;
 import com.mx.josesaid.develop.nexus.infrastructure.EjecutorAccionesGateway;
 import com.mx.josesaid.develop.nexus.infrastructure.HerramientasPoliticas;
 import com.mx.josesaid.develop.nexus.infrastructure.PoliticasClasspath;
@@ -179,5 +184,22 @@ public class NexusConfig {
     @Bean
     HerramientasPoliticas herramientasPoliticas(RecuperadorPoliticas recuperador) {
         return new HerramientasPoliticas(recuperador);
+    }
+
+    @Bean
+    ContextoContable contextoContable(RestClient gatewayClient) {
+        return new ContextoContableGateway(gatewayClient, ZoneId.of("America/Mexico_City"));
+    }
+
+    @Bean
+    SugeridorPolizas sugeridorPolizas(ChatModel modelo, RegistroTokens registro) {
+        return new ClaudeSugeridorPolizas(modelo, registro);
+    }
+
+    @Bean
+    ServicioPolizas servicioPolizas(ContextoContable contexto, SugeridorPolizas sugeridor,
+                                    AccionesPendientes acciones, PresupuestoTokens presupuesto) {
+        return new ServicioPolizas(contexto, sugeridor, acciones, presupuesto,
+                Clock.system(ZoneId.of("America/Mexico_City")));
     }
 }

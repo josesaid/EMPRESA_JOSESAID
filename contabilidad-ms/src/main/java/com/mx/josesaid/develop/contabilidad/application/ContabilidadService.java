@@ -53,6 +53,11 @@ public class ContabilidadService {
         return cuentas.guardar(CuentaContable.crear(codigo, nombre, naturaleza));
     }
 
+    @Transactional(readOnly = true)
+    public List<CuentaContable> listarCuentasActivas() {
+        return cuentas.listarActivas();
+    }
+
     /** Registra una póliza. Primero valida el cuadre (422), luego que el periodo esté abierto (409). */
     @Transactional
     public Poliza registrarPoliza(TipoPoliza tipo, LocalDate fecha, List<Movimiento> movimientos) {
