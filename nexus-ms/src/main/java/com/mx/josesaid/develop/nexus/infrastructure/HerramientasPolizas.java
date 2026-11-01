@@ -1,5 +1,7 @@
 package com.mx.josesaid.develop.nexus.infrastructure;
 
+import java.util.function.Supplier;
+
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,10 +13,11 @@ import com.mx.josesaid.develop.nexus.application.ServicioPolizas;
 /** Propone una póliza por MCP. Nunca la registra: devuelve el código que se necesita para confirmarla. */
 public final class HerramientasPolizas {
 
-    private final ServicioPolizas servicio;
+    /** Se resuelve al usarla: evita un ciclo de arranque con el modelo de chat, que también usa herramientas. */
+    private final Supplier<ServicioPolizas> servicio;
     private final CodigoConfirmacion codigos;
 
-    public HerramientasPolizas(ServicioPolizas servicio, CodigoConfirmacion codigos) {
+    public HerramientasPolizas(Supplier<ServicioPolizas> servicio, CodigoConfirmacion codigos) {
         this.servicio = servicio;
         this.codigos = codigos;
     }
@@ -26,7 +29,7 @@ public final class HerramientasPolizas {
     public String sugerirPoliza(
             @ToolParam(description = "Descripción de la operación contable, con montos y moneda", required = true) String descripcion) {
         RegistroHerramientasUsadas.registrar("sugerir_poliza");
-        AccionPendiente accion = servicio.preparar(usuarioActual(), descripcion);
+        AccionPendiente accion = servicio.get().preparar(usuarioActual(), descripcion);
         return "Acción " + accion.id() + " preparada, vence " + accion.expiraUtc() + ". "
                 + accion.resumen() + ". Código de confirmación: " + codigos.generar(accion.id(), accion.usuario())
                 + ". Nada se ha registrado todavía.";

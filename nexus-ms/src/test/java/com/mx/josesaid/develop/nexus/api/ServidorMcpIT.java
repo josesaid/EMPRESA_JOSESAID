@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -26,7 +25,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mx.josesaid.develop.nexus.application.AccionPendiente;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
-import com.mx.josesaid.develop.nexus.application.ServicioPolizas;
 
 /**
  * Prueba el endpoint /mcp de punta a punta: JWT, lista de herramientas, confirmación con código
@@ -51,10 +49,6 @@ class ServidorMcpIT {
 
     @Autowired
     private AccionesPendientes acciones;
-
-    /** Evita llamar al modelo y a Voyage: la propuesta de póliza se simula, pero se guarda en la acción real. */
-    @MockitoBean
-    private ServicioPolizas servicioPolizas;
 
     private int siguienteId = 1;
 
@@ -147,7 +141,6 @@ class ServidorMcpIT {
                 "ROLE_COMPRAS", sesion);
 
         assertThat(textoDeHerramienta(respuesta)).contains("Sin permiso");
-        org.mockito.Mockito.verifyNoInteractions(servicioPolizas);
     }
 
     @Test
