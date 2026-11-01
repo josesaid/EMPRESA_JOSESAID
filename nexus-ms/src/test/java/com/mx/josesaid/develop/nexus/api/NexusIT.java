@@ -63,12 +63,14 @@ class NexusIT {
     }
 
     @Test
-    void rolSinAccesoResponde403() throws Exception {
+    void usuarioAutenticadoSinRolDeAreaResponde200() throws Exception {
+        when(modelo.getOptions()).thenReturn(AnthropicChatOptions.builder().build());
+        when(modelo.call(any(Prompt.class))).thenReturn(respuesta("No tengo herramientas para tu rol."));
         mvc.perform(post("/nexus/consultas").contentType("application/json")
                         .content("{\"pregunta\":\"Hola\"}")
                         .with(jwt().jwt(j -> j.subject("u9")).authorities(
                                 new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_OTRO"))))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk());
     }
 
     @Test
