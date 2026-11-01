@@ -1,13 +1,29 @@
 package com.mx.josesaid.develop.nexus.config;
 
+import java.io.IOException;
 import java.time.Clock;
+import java.time.ZoneId;
+
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
 import com.mx.josesaid.develop.nexus.application.AlmacenAcciones;
+import com.mx.josesaid.develop.nexus.application.AlmacenFragmentos;
+import com.mx.josesaid.develop.nexus.application.Embedder;
+import com.mx.josesaid.develop.nexus.application.IngestaPoliticas;
+import com.mx.josesaid.develop.nexus.application.RecuperadorPoliticas;
 import com.mx.josesaid.develop.nexus.infrastructure.EjecutorAccionesGateway;
+import com.mx.josesaid.develop.nexus.infrastructure.PoliticasClasspath;
+import com.mx.josesaid.develop.nexus.infrastructure.VoyageEmbedder;
+import com.mx.josesaid.develop.nexus.infrastructure.persistence.AlmacenFragmentosJdbc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClient;
 
 import com.mx.josesaid.develop.nexus.application.AsistenteIA;
@@ -32,9 +48,56 @@ import io.micrometer.core.instrument.MeterRegistry;
 @Configuration
 public class NexusConfig {
 
+    private static final Logger log = LoggerFactory.getLogger(NexusConfig.class);
+
     @Bean
     RepositorioPrompts repositorioPrompts() {
         return new RepositorioPrompts();
+    }
+
+    @Bean
+    Embedder embedder(@Value("${nexus.rag.voyage.url:https://api.voyageai.com}") String url,
+                      @Value("${nexus.rag.voyage.api-key:}") String clave,
+                      @Value("${nexus.rag.voyage.modelo:voyage-3}") String modelo) {
+        return new VoyageEmbedder(RestClient.builder().baseUrl(url).build(), clave, modelo);
+    }
+
+    @Bean
+    AlmacenFragmentos almacenFragmentos(JdbcTemplate jdbc, PlatformTransactionManager transacciones) {
+        return new AlmacenFragmentosJdbc(jdbc, new TransactionTemplate(transacciones));
+    }
+
+    @Bean
+    IngestaPoliticas ingestaPoliticas(Embedder embedder, AlmacenFragmentos almacen) {
+        return new IngestaPoliticas(embedder, almacen);
+    }
+
+    @Bean
+    RecuperadorPoliticas recuperadorPoliticas(Embedder embedder, AlmacenFragmentos almacen) {
+        // Vigencia en hora de México: una política que entra en vigor el 1 de noviembre aplica desde esa fecha local
+        return new RecuperadorPoliticas(embedder, almacen, Clock.system(ZoneId.of("America/Mexico_City")));
+    }
+
+    /** Indexa las políticas al arrancar. Si falta la clave o Voyage falla, el servicio arranca igual y lo registra. */
+    @Bean
+    ApplicationRunner ingestaPoliticasAlArrancar(IngestaPoliticas ingesta,
+                                                 @Value("${nexus.rag.ingesta-al-arrancar:true}") boolean activa,
+                                                 @Value("${nexus.rag.voyage.api-key:}") String clave) {
+        return args -> {
+            if (!activa) {
+                return;
+            }
+            if (clave.isBlank()) {
+                log.warn("Ingesta de políticas omitida: falta VOYAGE_API_KEY");
+                return;
+            }
+            try {
+                int fragmentos = ingesta.ingerir(PoliticasClasspath.cargar());
+                log.info("Políticas indexadas: {} fragmentos", fragmentos);
+            } catch (IOException | RuntimeException e) {
+                log.error("Falló la ingesta de políticas; Nexus arranca sin RAG de políticas", e);
+            }
+        };
     }
 
     @Bean

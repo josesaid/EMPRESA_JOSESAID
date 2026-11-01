@@ -44,6 +44,13 @@ nexus:
     tokens-mensuales: ${NEXUS_PRESUPUESTO_MENSUAL:150000}
     # Tope mensual de todo el servicio. Al alcanzarlo, Nexus deja de llamar al modelo para todos.
     tokens-servicio-mensuales: ${NEXUS_PRESUPUESTO_SERVICIO_MENSUAL:1000000}
+  rag:
+    # Clave de Voyage AI. Se define en .env; nunca en este archivo.
+    ingesta-al-arrancar: ${NEXUS_RAG_INGESTA:true}
+    voyage:
+      url: ${VOYAGE_URL:https://api.voyageai.com}
+      api-key: ${VOYAGE_API_KEY:}
+      modelo: ${VOYAGE_MODELO:voyage-3}
 
 eureka:
   client:
