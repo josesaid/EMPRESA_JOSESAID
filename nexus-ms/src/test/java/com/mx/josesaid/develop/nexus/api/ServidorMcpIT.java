@@ -74,7 +74,7 @@ class ServidorMcpIT {
             peticion.header("Mcp-Session-Id", sesion);
         }
         MvcResult resultado = mvc.perform(peticion).andReturn();
-        return resultado.getResponse().getContentAsString();
+        return new String(resultado.getResponse().getContentAsByteArray(), java.nio.charset.StandardCharsets.UTF_8);
     }
 
     /** Extrae el JSON-RPC de la respuesta, sea JSON directo o un evento SSE. */
