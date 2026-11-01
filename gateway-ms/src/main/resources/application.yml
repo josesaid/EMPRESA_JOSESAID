@@ -21,6 +21,11 @@ spring:
               uri: lb://nexus-ms
               predicates:
                 - Path=/nexus/**
+            # Endpoint MCP de Nexus. El JWT se valida en el gateway y nexus-ms vuelve a validarlo.
+            - id: nexus-mcp
+              uri: lb://nexus-ms
+              predicates:
+                - Path=/mcp,/mcp/**
           discovery:
             locator:
               # Cada servicio registrado queda en /{nombre-del-servicio}/** sin configurar rutas
