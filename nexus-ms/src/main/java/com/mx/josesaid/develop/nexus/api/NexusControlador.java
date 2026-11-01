@@ -32,7 +32,7 @@ public class NexusControlador {
     }
 
     @PostMapping("/consultas")
-    @PreAuthorize("hasAnyRole('DIRECCION','JEFE_AREA','VENTAS','ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ConsultaResponse consultar(@RequestBody @Valid ConsultaRequest solicitud,
                                       @AuthenticationPrincipal Jwt jwt) {
         String usuario = jwt.getSubject();
