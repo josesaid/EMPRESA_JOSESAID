@@ -5,11 +5,14 @@ import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
 import com.mx.josesaid.develop.nexus.application.AlmacenAcciones;
 import com.mx.josesaid.develop.nexus.infrastructure.EjecutorAccionesGateway;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
 import com.mx.josesaid.develop.nexus.application.AsistenteIA;
+import com.mx.josesaid.develop.nexus.application.ConsumoTokens;
+import com.mx.josesaid.develop.nexus.application.PresupuestoTokens;
 import com.mx.josesaid.develop.nexus.comun.prompts.RepositorioPrompts;
 import com.mx.josesaid.develop.nexus.comun.tokens.PreciosTokens;
 import com.mx.josesaid.develop.nexus.comun.tokens.RegistroTokens;
@@ -32,6 +35,13 @@ public class NexusConfig {
     @Bean
     RepositorioPrompts repositorioPrompts() {
         return new RepositorioPrompts();
+    }
+
+    @Bean
+    PresupuestoTokens presupuestoTokens(ConsumoTokens consumo,
+                                        @Value("${nexus.presupuesto.tokens-mensuales:150000}") long mensuales,
+                                        @Value("${nexus.presupuesto.tokens-diarios:15000}") long diarios) {
+        return new PresupuestoTokens(consumo, mensuales, diarios, Clock.systemUTC());
     }
 
     @Bean

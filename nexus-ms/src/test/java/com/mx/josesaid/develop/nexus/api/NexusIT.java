@@ -3,6 +3,8 @@ package com.mx.josesaid.develop.nexus.api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,6 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.mx.josesaid.develop.nexus.application.AccionNoPendienteException;
 import com.mx.josesaid.develop.nexus.application.AccionPendiente;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
+import com.mx.josesaid.develop.nexus.application.PresupuestoAgotadoException;
+import com.mx.josesaid.develop.nexus.application.PresupuestoTokens;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
@@ -59,6 +63,9 @@ class NexusIT {
 
     @MockitoBean
     private AccionesPendientes acciones;
+
+    @MockitoBean
+    private PresupuestoTokens presupuesto;
 
     private static final String ACCION_ID = "7d3c1f2e-0000-4000-8000-000000000001";
 
@@ -196,5 +203,17 @@ class NexusIT {
                         .with(jwt().jwt(j -> j.subject("u1")).authorities(
                                 new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_VENTAS"))))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void presupuestoAgotadoResponde429SinLlamarAlModelo() throws Exception {
+        doThrow(new PresupuestoAgotadoException("Alcanzaste tu límite diario de tokens."))
+                .when(presupuesto).exigirDisponible("u-ventas");
+        mvc.perform(post("/nexus/consultas").contentType("application/json")
+                        .content("{\"pregunta\":\"Hola\"}")
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.detail").value("Alcanzaste tu límite diario de tokens."));
+        verify(modelo, never()).call(any(Prompt.class));
     }
 }

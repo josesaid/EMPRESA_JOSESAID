@@ -26,6 +26,7 @@ import java.time.Instant;
 import com.mx.josesaid.develop.nexus.application.AsistenteIA;
 import com.mx.josesaid.develop.nexus.application.AuditoriaConsultas;
 import com.mx.josesaid.develop.nexus.application.PreguntaAsistente;
+import com.mx.josesaid.develop.nexus.application.PresupuestoTokens;
 import com.mx.josesaid.develop.nexus.application.RegistroConsulta;
 import com.mx.josesaid.develop.nexus.comun.filtro.FiltroDatosSensibles;
 
@@ -37,11 +38,14 @@ public class NexusControlador {
     private final AsistenteIA asistente;
     private final AuditoriaConsultas auditoria;
     private final AccionesPendientes acciones;
+    private final PresupuestoTokens presupuesto;
 
-    public NexusControlador(AsistenteIA asistente, AuditoriaConsultas auditoria, AccionesPendientes acciones) {
+    public NexusControlador(AsistenteIA asistente, AuditoriaConsultas auditoria, AccionesPendientes acciones,
+                            PresupuestoTokens presupuesto) {
         this.asistente = asistente;
         this.auditoria = auditoria;
         this.acciones = acciones;
+        this.presupuesto = presupuesto;
     }
 
     /** El usuario confirma una acción que Nexus preparó. Solo quien la preparó puede confirmarla. */
@@ -89,6 +93,7 @@ public class NexusControlador {
         if (usuarioAuditoria == null || usuarioAuditoria.isBlank()) {
             usuarioAuditoria = usuario;
         }
+        presupuesto.exigirDisponible(usuarioAuditoria);
         var respuesta = asistente.consultar(new PreguntaAsistente(usuario, solicitud.pregunta()));
         String texto = respuesta.texto() == null ? "" : respuesta.texto();
         String resumen = FiltroDatosSensibles.redactar(texto.length() > 500 ? texto.substring(0, 500) : texto).texto();
