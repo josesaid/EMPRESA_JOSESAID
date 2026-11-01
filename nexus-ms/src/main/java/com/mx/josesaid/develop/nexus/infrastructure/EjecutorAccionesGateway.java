@@ -14,6 +14,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
 
     static final String RUTA_PEDIDOS = "/pedidos-ventas-ms/v1/pedidos";
     static final String RUTA_PROSPECTOS = "/clientes-ms/v1/prospectos";
+    static final String RUTA_COTIZACIONES = "/pedidos-ventas-ms/v1/cotizaciones";
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
@@ -45,8 +46,19 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
                         .retrieve()
                         .body(String.class);
             }
+            case AccionesPendientes.TIPO_COTIZACION_ENVIAR -> accionCotizacion(payload, "/envio");
+            case AccionesPendientes.TIPO_COTIZACION_ACEPTAR -> accionCotizacion(payload, "/aceptacion");
+            case AccionesPendientes.TIPO_COTIZACION_A_PEDIDO -> accionCotizacion(payload, "/pedido");
             default -> throw new IllegalArgumentException("Tipo de acción no soportado: " + tipo);
         };
+    }
+
+    private String accionCotizacion(String payload, String accion) {
+        String cotizacionId = leer(payload).get("cotizacionId").asText();
+        return gateway.post()
+                .uri(RUTA_COTIZACIONES + "/" + cotizacionId + accion)
+                .retrieve()
+                .body(String.class);
     }
 
     private String enviar(String ruta, String payload) {

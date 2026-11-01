@@ -15,6 +15,9 @@ public final class AccionesPendientes {
     public static final String TIPO_PROSPECTO_BORRADOR = "PROSPECTO_BORRADOR";
     public static final String TIPO_PEDIDO_CONFIRMAR = "PEDIDO_CONFIRMAR";
     public static final String TIPO_PEDIDO_CANCELAR = "PEDIDO_CANCELAR";
+    public static final String TIPO_COTIZACION_ENVIAR = "COTIZACION_ENVIAR";
+    public static final String TIPO_COTIZACION_ACEPTAR = "COTIZACION_ACEPTAR";
+    public static final String TIPO_COTIZACION_A_PEDIDO = "COTIZACION_A_PEDIDO";
     public static final Duration VIGENCIA = Duration.ofMinutes(10);
 
     private final AlmacenAcciones almacen;

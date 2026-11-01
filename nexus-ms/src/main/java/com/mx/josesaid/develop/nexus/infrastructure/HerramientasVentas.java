@@ -230,6 +230,75 @@ public final class HerramientasVentas {
                 .texto();
     }
 
+    @Tool(name = "enviar_cotizacion",
+          description = "Prepara el envío de una cotización en borrador. NO la envía: devuelve un resumen y un accion_id. "
+                  + "El usuario debe confirmarlo en la aplicación.")
+    public String enviarCotizacion(
+            @ToolParam(description = "Identificador UUID de la cotización en borrador", required = true) String cotizacionId) {
+        RegistroHerramientasUsadas.registrar("enviar_cotizacion");
+        return prepararAccionCotizacion(cotizacionId, "BORRADOR", AccionesPendientes.TIPO_COTIZACION_ENVIAR,
+                "Enviar cotización", "Envío preparado, no ejecutado.", "solo una cotización en borrador puede enviarse");
+    }
+
+    @Tool(name = "aceptar_cotizacion",
+          description = "Prepara la aceptación de una cotización enviada. NO la acepta: devuelve un resumen y un accion_id. "
+                  + "El usuario debe confirmarlo en la aplicación.")
+    public String aceptarCotizacion(
+            @ToolParam(description = "Identificador UUID de la cotización enviada", required = true) String cotizacionId) {
+        RegistroHerramientasUsadas.registrar("aceptar_cotizacion");
+        return prepararAccionCotizacion(cotizacionId, "ENVIADA", AccionesPendientes.TIPO_COTIZACION_ACEPTAR,
+                "Aceptar cotización", "Aceptación preparada, no ejecutada.", "solo una cotización enviada puede aceptarse");
+    }
+
+    @Tool(name = "convertir_cotizacion_en_pedido",
+          description = "Prepara la conversión de una cotización aceptada en pedido. NO crea el pedido: devuelve un resumen y un accion_id. "
+                  + "El usuario debe confirmarlo en la aplicación.")
+    public String convertirCotizacionEnPedido(
+            @ToolParam(description = "Identificador UUID de la cotización aceptada", required = true) String cotizacionId) {
+        RegistroHerramientasUsadas.registrar("convertir_cotizacion_en_pedido");
+        return prepararAccionCotizacion(cotizacionId, "ACEPTADA", AccionesPendientes.TIPO_COTIZACION_A_PEDIDO,
+                "Convertir cotización en pedido", "Conversión preparada, no ejecutada.",
+                "solo una cotización aceptada puede convertirse en pedido");
+    }
+
+    private String prepararAccionCotizacion(String cotizacionId, String estatusRequerido, String tipo,
+                                            String etiqueta, String encabezado, String motivoRechazo) {
+        if (acciones == null) {
+            return NO_DISPONIBLE;
+        }
+        UUID id = identificador(cotizacionId);
+        if (id == null) {
+            return "El identificador de la cotización no es válido.";
+        }
+        JsonNode cotizacion = cotizacion(id);
+        if (cotizacion == null) {
+            return "No encontré esa cotización.";
+        }
+        String estatus = cotizacion.path("estatus").asText();
+        if (!estatusRequerido.equals(estatus)) {
+            return "La cotización está en estatus " + estatus + "; " + motivoRechazo + ".";
+        }
+        Map<String, Object> cuerpo = new LinkedHashMap<>();
+        cuerpo.put("cotizacionId", id.toString());
+        String resumen = etiqueta + " " + id + " (estatus actual " + estatus + ")";
+        return guardarAccion(tipo, aJson(cuerpo), resumen, encabezado);
+    }
+
+    /** Consulta la cotización con el token del usuario. Devuelve null si no existe o no es visible para él. */
+    private JsonNode cotizacion(UUID id) {
+        try {
+            String cuerpo = gateway.get()
+                    .uri(RUTA_BASE + "/cotizaciones/" + id)
+                    .retrieve()
+                    .body(String.class);
+            return JSON.readTree(cuerpo);
+        } catch (HttpClientErrorException.NotFound e) {
+            return null;
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Respuesta de cotizaciones no válida", e);
+        }
+    }
+
     /** Consulta el pedido con el token del usuario. Devuelve null si no existe o no es visible para él. */
     private JsonNode pedido(UUID id) {
         try {

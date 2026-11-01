@@ -35,6 +35,7 @@ class HerramientasAccionesVentasTest {
 
     private static final String ID = "7d3c1f2e-0000-4000-8000-000000000002";
     private static final String URL_PEDIDO = "http://gateway/pedidos-ventas-ms/v1/pedidos/" + ID;
+    private static final String URL_COTIZACION = "http://gateway/pedidos-ventas-ms/v1/cotizaciones/" + ID;
 
     private final Map<UUID, AccionPendiente> almacen = new HashMap<>();
     private AccionesPendientes acciones;
@@ -153,6 +154,44 @@ class HerramientasAccionesVentasTest {
             assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_PEDIDO_CANCELAR);
             assertThat(a.payload()).contains("\"motivo\":\"ERROR_CAPTURA\"");
         });
+        servidor.verify();
+    }
+
+    @Test
+    void enviarCotizacionSePreparaSiEstaEnBorrador() {
+        servidor.expect(requestTo(URL_COTIZACION))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"BORRADOR\"}", MediaType.APPLICATION_JSON));
+
+        String texto = herramientas().enviarCotizacion(ID);
+
+        assertThat(texto).contains("no ejecutado").contains("accion_id");
+        assertThat(almacen.values()).singleElement()
+                .satisfies(a -> assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_COTIZACION_ENVIAR));
+        servidor.verify();
+    }
+
+    @Test
+    void aceptarCotizacionRechazaUnaCotizacionEnBorrador() {
+        servidor.expect(requestTo(URL_COTIZACION))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"BORRADOR\"}", MediaType.APPLICATION_JSON));
+
+        String texto = herramientas().aceptarCotizacion(ID);
+
+        assertThat(texto).contains("solo una cotización enviada puede aceptarse");
+        assertThat(almacen).isEmpty();
+        servidor.verify();
+    }
+
+    @Test
+    void convertirCotizacionAceptadaSePreparaComoPedido() {
+        servidor.expect(requestTo(URL_COTIZACION))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"ACEPTADA\"}", MediaType.APPLICATION_JSON));
+
+        String texto = herramientas().convertirCotizacionEnPedido(ID);
+
+        assertThat(texto).contains("accion_id");
+        assertThat(almacen.values()).singleElement()
+                .satisfies(a -> assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_COTIZACION_A_PEDIDO));
         servidor.verify();
     }
 }

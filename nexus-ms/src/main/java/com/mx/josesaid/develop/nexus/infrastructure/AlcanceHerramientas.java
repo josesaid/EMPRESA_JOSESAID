@@ -52,7 +52,10 @@ final class AlcanceHerramientas {
             Map.entry("preparar_pedido_borrador", ROLES_PREPARAR_PEDIDO),
             Map.entry("crear_prospecto_borrador", ROLES_ACCIONES_VENTAS),
             Map.entry("confirmar_pedido", ROLES_ACCIONES_VENTAS),
-            Map.entry("cancelar_pedido", ROLES_ACCIONES_VENTAS));
+            Map.entry("cancelar_pedido", ROLES_ACCIONES_VENTAS),
+            Map.entry("enviar_cotizacion", ROLES_ACCIONES_VENTAS),
+            Map.entry("aceptar_cotizacion", ROLES_ACCIONES_VENTAS),
+            Map.entry("convertir_cotizacion_en_pedido", ROLES_ACCIONES_VENTAS));
 
     private AlcanceHerramientas() {
     }
