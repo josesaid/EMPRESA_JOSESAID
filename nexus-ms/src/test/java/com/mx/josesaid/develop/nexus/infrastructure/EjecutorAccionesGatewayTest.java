@@ -74,4 +74,25 @@ class EjecutorAccionesGatewayTest {
                 .isInstanceOf(IllegalArgumentException.class);
         servidor.verify();
     }
+
+    @Test
+    void accionesDeCotizacionLlamanASuEndpoint() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        String base = "http://gateway/pedidos-ventas-ms/v1/cotizaciones/" + ID;
+        servidor.expect(requestTo(base + "/envio")).andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+        servidor.expect(requestTo(base + "/aceptacion")).andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+        servidor.expect(requestTo(base + "/pedido")).andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+        EjecutorAccionesGateway ejecutor = new EjecutorAccionesGateway(builder.build());
+        String payload = "{\"cotizacionId\":\"" + ID + "\"}";
+
+        ejecutor.ejecutar(AccionesPendientes.TIPO_COTIZACION_ENVIAR, payload);
+        ejecutor.ejecutar(AccionesPendientes.TIPO_COTIZACION_ACEPTAR, payload);
+        ejecutor.ejecutar(AccionesPendientes.TIPO_COTIZACION_A_PEDIDO, payload);
+
+        servidor.verify();
+    }
 }
