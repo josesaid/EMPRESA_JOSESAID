@@ -30,6 +30,6 @@
 
 | Fecha | Escenario | Resultado | Notas |
 |---|---|---|---|
-|  |  |  |  |
+| 31-oct-2026 | 6 (permiso negado) | Cumplido: `isError: true` con "Sin permiso" para una cuenta ADMIN sin rol CONTADOR. | Prueba con la cuenta admin. Escenarios 1 a 5 pendientes de usuarios reales. |
 
 Anotar: pólizas sugeridas, confirmadas, canceladas; códigos incorrectos; respuestas incorrectas o con datos que no debían mostrarse; negaciones por rol.
