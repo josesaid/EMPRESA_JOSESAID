@@ -12,6 +12,9 @@ import java.util.UUID;
 public final class AccionesPendientes {
 
     public static final String TIPO_PEDIDO_BORRADOR = "PEDIDO_BORRADOR";
+    public static final String TIPO_PROSPECTO_BORRADOR = "PROSPECTO_BORRADOR";
+    public static final String TIPO_PEDIDO_CONFIRMAR = "PEDIDO_CONFIRMAR";
+    public static final String TIPO_PEDIDO_CANCELAR = "PEDIDO_CANCELAR";
     public static final Duration VIGENCIA = Duration.ofMinutes(10);
 
     private final AlmacenAcciones almacen;
