@@ -30,6 +30,13 @@ spring:
       chat:
         options:
           model: ${NEXUS_MODELO:claude-sonnet-5-5}
+    mcp:
+      server:
+        name: nexus-mcp
+        version: 1.0.0
+        protocol: streamable
+        streamable-http:
+          mcp-endpoint: /mcp
   tools:
     limits:
       # Máximo de herramientas que el modelo puede invocar en una misma pregunta.
@@ -44,6 +51,9 @@ nexus:
     tokens-mensuales: ${NEXUS_PRESUPUESTO_MENSUAL:150000}
     # Tope mensual de todo el servicio. Al alcanzarlo, Nexus deja de llamar al modelo para todos.
     tokens-servicio-mensuales: ${NEXUS_PRESUPUESTO_SERVICIO_MENSUAL:1000000}
+  mcp:
+    # Secreto para derivar los códigos de confirmación de MCP. Se define en .env, nunca aquí.
+    confirmacion-secreto: ${NEXUS_CONFIRMACION_SECRETO:}
   rag:
     # Clave de Voyage AI. Se define en .env; nunca en este archivo.
     ingesta-al-arrancar: ${NEXUS_RAG_INGESTA:true}
