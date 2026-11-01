@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
 import com.mx.josesaid.develop.nexus.application.AccionNoEncontradaException;
@@ -51,6 +52,22 @@ public class NexusControlador {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(respuesta);
+    }
+
+    /** Muestra al dueño la acción pendiente antes de confirmarla. */
+    @GetMapping("/acciones/{id}")
+    @PreAuthorize("hasRole('VENTAS')")
+    public AccionResumen consultarAccion(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
+        var accion = acciones.consultar(id, jwt.getSubject());
+        return new AccionResumen(accion.id(), accion.tipo(), accion.resumen(), accion.estatus(), accion.expiraUtc());
+    }
+
+    /** El usuario descarta una acción pendiente sin ejecutarla. */
+    @PostMapping("/acciones/{id}/cancelacion")
+    @PreAuthorize("hasRole('VENTAS')")
+    public ResponseEntity<Void> cancelarAccion(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
+        acciones.cancelar(id, jwt.getSubject());
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(AccionNoEncontradaException.class)

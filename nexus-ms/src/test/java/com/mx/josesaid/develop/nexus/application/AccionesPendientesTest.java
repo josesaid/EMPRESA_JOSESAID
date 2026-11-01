@@ -119,4 +119,44 @@ class AccionesPendientesTest {
         servicio.confirmar(accion.id(), "u-ventas");
         assertThat(ejecuciones).hasSize(1);
     }
+
+    @Test
+    void consultarNoRevelaAccionesAjenas() {
+        AccionPendiente accion = servicio.preparar("u-ventas", AccionesPendientes.TIPO_PEDIDO_BORRADOR, "{}", "r");
+
+        assertThatThrownBy(() -> servicio.consultar(accion.id(), "u-otro"))
+                .isInstanceOf(AccionNoEncontradaException.class);
+    }
+
+    @Test
+    void consultarMarcaComoExpiradaUnaAccionVencida() {
+        AccionPendiente accion = servicio.preparar("u-ventas", AccionesPendientes.TIPO_PEDIDO_BORRADOR, "{}", "r");
+        ahora = ahora.plus(AccionesPendientes.VIGENCIA).plusSeconds(1);
+
+        AccionPendiente consultada = servicio.consultar(accion.id(), "u-ventas");
+
+        assertThat(consultada.estatus()).isEqualTo(AccionPendiente.EXPIRADA);
+        assertThat(almacen.get(accion.id()).estatus()).isEqualTo(AccionPendiente.EXPIRADA);
+    }
+
+    @Test
+    void cancelarImpideConfirmarDespues() {
+        AccionPendiente accion = servicio.preparar("u-ventas", AccionesPendientes.TIPO_PEDIDO_BORRADOR, "{}", "r");
+
+        servicio.cancelar(accion.id(), "u-ventas");
+
+        assertThat(almacen.get(accion.id()).estatus()).isEqualTo(AccionPendiente.CANCELADA);
+        assertThatThrownBy(() -> servicio.confirmar(accion.id(), "u-ventas"))
+                .isInstanceOf(AccionNoPendienteException.class);
+        assertThat(ejecuciones).isEmpty();
+    }
+
+    @Test
+    void noSePuedeCancelarUnaAccionYaConfirmada() {
+        AccionPendiente accion = servicio.preparar("u-ventas", AccionesPendientes.TIPO_PEDIDO_BORRADOR, "{}", "r");
+        servicio.confirmar(accion.id(), "u-ventas");
+
+        assertThatThrownBy(() -> servicio.cancelar(accion.id(), "u-ventas"))
+                .isInstanceOf(AccionNoPendienteException.class);
+    }
 }

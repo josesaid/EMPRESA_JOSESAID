@@ -2,12 +2,18 @@ package com.mx.josesaid.develop.nexus.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.mx.josesaid.develop.nexus.application.AccionNoPendienteException;
+import com.mx.josesaid.develop.nexus.application.AccionPendiente;
+import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -51,6 +57,15 @@ class NexusIT {
     @MockitoBean
     private ChatModel modelo;
 
+    @MockitoBean
+    private AccionesPendientes acciones;
+
+    private static final String ACCION_ID = "7d3c1f2e-0000-4000-8000-000000000001";
+
+    private static org.springframework.security.core.authority.SimpleGrantedAuthority rol(String nombre) {
+        return new org.springframework.security.core.authority.SimpleGrantedAuthority(nombre);
+    }
+
     private static ChatResponse respuesta(String texto) {
         return new ChatResponse(java.util.List.of(new Generation(new AssistantMessage(texto))));
     }
@@ -92,6 +107,86 @@ class NexusIT {
                 "select pregunta_redactada from nexus_consultas where usuario = 'u-ventas' order by creado_utc desc limit 1",
                 String.class);
         assertThat(preguntaAuditada).doesNotContain("a@b.com").contains("[CORREO]");
+    }
+
+    @Test
+    void confirmarSinTokenResponde401() throws Exception {
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void confirmarSinRolVentasResponde403() throws Exception {
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .with(jwt().jwt(j -> j.subject("u-compras")).authorities(rol("ROLE_COMPRAS"))))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void confirmarPropiaAccionResponde201() throws Exception {
+        when(acciones.confirmar(java.util.UUID.fromString(ACCION_ID), "u-ventas"))
+                .thenReturn("{\"id\":\"ped-1\"}");
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value("ped-1"));
+    }
+
+    @Test
+    void confirmarAccionAjenaResponde404() throws Exception {
+        when(acciones.confirmar(java.util.UUID.fromString(ACCION_ID), "u-otro"))
+                .thenThrow(new com.mx.josesaid.develop.nexus.application.AccionNoEncontradaException("Acción no encontrada"));
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .with(jwt().jwt(j -> j.subject("u-otro")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void confirmarAccionYaConfirmadaResponde409() throws Exception {
+        when(acciones.confirmar(java.util.UUID.fromString(ACCION_ID), "u-ventas"))
+                .thenThrow(new com.mx.josesaid.develop.nexus.application.AccionNoPendienteException("La acción ya está confirmada"));
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void consultarAccionPropiaMuestraResumenSinPayload() throws Exception {
+        java.util.UUID id = java.util.UUID.fromString(ACCION_ID);
+        when(acciones.consultar(id, "u-ventas")).thenReturn(new AccionPendiente(id, "u-ventas",
+                "PEDIDO_BORRADOR", "{\"clienteId\":\"c1\"}", "Pedido para c1", "PENDIENTE",
+                Instant.now(), Instant.now().plusSeconds(600)));
+        mvc.perform(get("/nexus/acciones/" + ACCION_ID)
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resumen").value("Pedido para c1"))
+                .andExpect(jsonPath("$.estatus").value("PENDIENTE"))
+                .andExpect(jsonPath("$.payload").doesNotExist());
+    }
+
+    @Test
+    void consultarAccionAjenaResponde404() throws Exception {
+        when(acciones.consultar(java.util.UUID.fromString(ACCION_ID), "u-otro"))
+                .thenThrow(new com.mx.josesaid.develop.nexus.application.AccionNoEncontradaException("Acción no encontrada"));
+        mvc.perform(get("/nexus/acciones/" + ACCION_ID)
+                        .with(jwt().jwt(j -> j.subject("u-otro")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void cancelarPropiaAccionResponde204() throws Exception {
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/cancelacion")
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void cancelarAccionYaConfirmadaResponde409() throws Exception {
+        doThrow(new AccionNoPendienteException("La acción ya está confirmada"))
+                .when(acciones).cancelar(java.util.UUID.fromString(ACCION_ID), "u-ventas");
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/cancelacion")
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isConflict());
     }
 
     @Test

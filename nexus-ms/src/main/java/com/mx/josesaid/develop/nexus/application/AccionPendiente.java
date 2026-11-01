@@ -10,6 +10,7 @@ public record AccionPendiente(UUID id, String usuario, String tipo, String paylo
     public static final String PENDIENTE = "PENDIENTE";
     public static final String CONFIRMADA = "CONFIRMADA";
     public static final String EXPIRADA = "EXPIRADA";
+    public static final String CANCELADA = "CANCELADA";
 
     public AccionPendiente conEstatus(String nuevoEstatus) {
         return new AccionPendiente(id, usuario, tipo, payload, resumen, nuevoEstatus, creadaUtc, expiraUtc);

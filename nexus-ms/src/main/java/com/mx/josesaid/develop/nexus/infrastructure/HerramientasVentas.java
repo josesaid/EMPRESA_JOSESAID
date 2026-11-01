@@ -3,14 +3,18 @@ package com.mx.josesaid.develop.nexus.infrastructure;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mx.josesaid.develop.nexus.application.AccionPendiente;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
@@ -23,6 +27,10 @@ import com.mx.josesaid.develop.nexus.comun.filtro.FiltroDatosSensibles;
 public final class HerramientasVentas {
 
     static final String RUTA_BASE = "/pedidos-ventas-ms/v1";
+
+    private static final String NO_DISPONIBLE = "La preparación de acciones no está disponible en este momento.";
+    private static final Set<String> FUENTES_PROSPECTO = Set.of("CAMPANA", "REFERIDO", "EVENTO");
+    private static final Set<String> MOTIVOS_CANCELACION = Set.of("CANCELACION_CLIENTE", "ERROR_CAPTURA");
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
@@ -120,6 +128,129 @@ public final class HerramientasVentas {
         return FiltroDatosSensibles.redactar("Pedido preparado, no guardado. " + resumen
                 + ". accion_id: " + accion.id() + ". Vence en 10 minutos; el usuario debe confirmarlo en la aplicación.")
                 .texto();
+    }
+
+    @Tool(name = "crear_prospecto_borrador",
+          description = "Prepara un prospecto nuevo. NO lo guarda: devuelve un resumen y un accion_id. "
+                  + "El usuario debe confirmarlo en la aplicación. Úsala solo cuando el usuario pida registrar un prospecto.")
+    public String crearProspectoBorrador(
+            @ToolParam(description = "Nombre del prospecto", required = true) String nombre,
+            @ToolParam(description = "Correo electrónico del prospecto", required = true) String correo,
+            @ToolParam(description = "RFC del prospecto. Vacío si no se conoce.", required = false) String rfc,
+            @ToolParam(description = "Fuente del prospecto: CAMPANA, REFERIDO o EVENTO", required = true) String fuente) {
+        RegistroHerramientasUsadas.registrar("crear_prospecto_borrador");
+        if (acciones == null) {
+            return NO_DISPONIBLE;
+        }
+        String fuenteNormalizada = fuente == null ? "" : fuente.trim().toUpperCase();
+        if (!FUENTES_PROSPECTO.contains(fuenteNormalizada)) {
+            return "La fuente debe ser CAMPANA, REFERIDO o EVENTO.";
+        }
+        if (nombre == null || nombre.isBlank() || correo == null || !correo.contains("@")) {
+            return "Indica el nombre y un correo válido del prospecto.";
+        }
+        Map<String, Object> cuerpo = new LinkedHashMap<>();
+        cuerpo.put("nombre", nombre.trim());
+        cuerpo.put("correo", correo.trim());
+        if (rfc != null && !rfc.isBlank()) {
+            cuerpo.put("rfc", rfc.trim().toUpperCase());
+        }
+        cuerpo.put("fuente", fuenteNormalizada);
+        String resumen = "Prospecto nuevo: " + nombre.trim() + " (" + correo.trim() + "), fuente " + fuenteNormalizada;
+        return guardarAccion(AccionesPendientes.TIPO_PROSPECTO_BORRADOR, aJson(cuerpo), resumen,
+                "Prospecto preparado, no guardado.");
+    }
+
+    @Tool(name = "confirmar_pedido",
+          description = "Prepara la confirmación de un pedido en borrador. NO lo confirma: devuelve un resumen y un accion_id. "
+                  + "El usuario debe confirmarlo en la aplicación.")
+    public String confirmarPedido(
+            @ToolParam(description = "Identificador UUID del pedido en borrador", required = true) String pedidoId) {
+        RegistroHerramientasUsadas.registrar("confirmar_pedido");
+        if (acciones == null) {
+            return NO_DISPONIBLE;
+        }
+        UUID id = identificador(pedidoId);
+        if (id == null) {
+            return "El identificador del pedido no es válido.";
+        }
+        JsonNode pedido = pedido(id);
+        if (pedido == null) {
+            return "No encontré ese pedido.";
+        }
+        String estatus = pedido.path("estatus").asText();
+        if (!"BORRADOR".equals(estatus)) {
+            return "El pedido está en estatus " + estatus + "; solo un pedido en borrador puede confirmarse.";
+        }
+        Map<String, Object> cuerpo = new LinkedHashMap<>();
+        cuerpo.put("pedidoId", id.toString());
+        String resumen = "Confirmar pedido " + id + " (estatus actual BORRADOR)";
+        return guardarAccion(AccionesPendientes.TIPO_PEDIDO_CONFIRMAR, aJson(cuerpo), resumen,
+                "Confirmación preparada, no ejecutada.");
+    }
+
+    @Tool(name = "cancelar_pedido",
+          description = "Prepara la cancelación de un pedido en borrador o confirmado. NO lo cancela: devuelve un resumen y un accion_id. "
+                  + "El usuario debe confirmarlo en la aplicación. Los motivos válidos son CANCELACION_CLIENTE o ERROR_CAPTURA.")
+    public String cancelarPedido(
+            @ToolParam(description = "Identificador UUID del pedido", required = true) String pedidoId,
+            @ToolParam(description = "Motivo: CANCELACION_CLIENTE o ERROR_CAPTURA", required = true) String motivo) {
+        RegistroHerramientasUsadas.registrar("cancelar_pedido");
+        if (acciones == null) {
+            return NO_DISPONIBLE;
+        }
+        UUID id = identificador(pedidoId);
+        if (id == null) {
+            return "El identificador del pedido no es válido.";
+        }
+        String motivoNormalizado = motivo == null ? "" : motivo.trim().toUpperCase();
+        if (!MOTIVOS_CANCELACION.contains(motivoNormalizado)) {
+            return "El motivo debe ser CANCELACION_CLIENTE o ERROR_CAPTURA.";
+        }
+        JsonNode pedido = pedido(id);
+        if (pedido == null) {
+            return "No encontré ese pedido.";
+        }
+        String estatus = pedido.path("estatus").asText();
+        if (!"BORRADOR".equals(estatus) && !"CONFIRMADO".equals(estatus)) {
+            return "El pedido está en estatus " + estatus + "; solo un pedido en borrador o confirmado puede cancelarse.";
+        }
+        Map<String, Object> cuerpo = new LinkedHashMap<>();
+        cuerpo.put("pedidoId", id.toString());
+        cuerpo.put("motivo", motivoNormalizado);
+        String resumen = "Cancelar pedido " + id + " por " + motivoNormalizado + " (estatus actual " + estatus + ")";
+        return guardarAccion(AccionesPendientes.TIPO_PEDIDO_CANCELAR, aJson(cuerpo), resumen,
+                "Cancelación preparada, no ejecutada.");
+    }
+
+    private String guardarAccion(String tipo, String payload, String resumen, String encabezado) {
+        AccionPendiente accion = acciones.preparar(usuarioActual(), tipo, payload, resumen);
+        return FiltroDatosSensibles.redactar(encabezado + " " + resumen
+                + ". accion_id: " + accion.id() + ". Vence en 10 minutos; el usuario debe confirmarlo en la aplicación.")
+                .texto();
+    }
+
+    /** Consulta el pedido con el token del usuario. Devuelve null si no existe o no es visible para él. */
+    private JsonNode pedido(UUID id) {
+        try {
+            String cuerpo = gateway.get()
+                    .uri(RUTA_BASE + "/pedidos/" + id)
+                    .retrieve()
+                    .body(String.class);
+            return JSON.readTree(cuerpo);
+        } catch (HttpClientErrorException.NotFound e) {
+            return null;
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Respuesta de pedidos no válida", e);
+        }
+    }
+
+    private static UUID identificador(String valor) {
+        try {
+            return valor == null ? null : UUID.fromString(valor.trim());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     private static String usuarioActual() {
