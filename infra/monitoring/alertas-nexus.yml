@@ -1,0 +1,28 @@
+# Alarmas del presupuesto de tokens de nexus-ms. Las métricas las publica el servicio en /actuator/prometheus.
+groups:
+  - name: nexus-presupuesto
+    rules:
+      - alert: NexusBloqueoPorPresupuestoDelServicio
+        expr: increase(nexus_presupuesto_bloqueos_total{ambito="servicio"}[5m]) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nexus bloqueó consultas por el presupuesto mensual del servicio"
+          description: "El tope mensual de tokens de nexus-ms se alcanzó. Nadie puede usar Nexus hasta el día 1 o hasta que se suba el tope."
+
+      - alert: NexusConsumoAltoDelPresupuestoDelServicio
+        expr: nexus_presupuesto_servicio_consumo / nexus_presupuesto_servicio_limite > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Nexus superó el 80% de su presupuesto mensual de tokens"
+          description: "Revisa el consumo antes de que se alcance el tope del servicio."
+
+      - alert: NexusUsuarioAlcanzaSuLimite
+        expr: increase(nexus_presupuesto_bloqueos_total{ambito=~"usuario.*"}[15m]) > 3
+        labels:
+          severity: warning
+        annotations:
+          summary: "Un usuario de Nexus choca con su tope de tokens"
+          description: "Más de 3 consultas bloqueadas en 15 minutos por tope de usuario. Revisa si el uso es legítimo."
