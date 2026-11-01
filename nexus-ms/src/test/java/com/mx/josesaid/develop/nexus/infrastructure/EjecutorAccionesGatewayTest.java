@@ -2,6 +2,8 @@ package com.mx.josesaid.develop.nexus.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -92,6 +94,98 @@ class EjecutorAccionesGatewayTest {
         ejecutor.ejecutar(AccionesPendientes.TIPO_COTIZACION_ENVIAR, payload);
         ejecutor.ejecutar(AccionesPendientes.TIPO_COTIZACION_ACEPTAR, payload);
         ejecutor.ejecutar(AccionesPendientes.TIPO_COTIZACION_A_PEDIDO, payload);
+
+        servidor.verify();
+    }
+
+    @Test
+    void reemplazarLineasEnviaElPutSinElIdentificadorEnElCuerpo() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/pedidos-ventas-ms/v1/pedidos/" + ID + "/lineas"))
+                .andExpect(method(HttpMethod.PUT))
+                .andExpect(content().json("{\"lineas\":[{\"cantidad\":3}]}"))
+                .andExpect(content().string(not(containsString("pedidoId"))))
+                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build()).ejecutar(AccionesPendientes.TIPO_PEDIDO_REEMPLAZAR_LINEAS,
+                "{\"pedidoId\":\"" + ID + "\",\"lineas\":[{\"cantidad\":3}]}");
+
+        servidor.verify();
+    }
+
+    @Test
+    void devolucionLlamaAlEndpointDeDevolucion() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/pedidos-ventas-ms/v1/pedidos/" + ID + "/devolucion"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build())
+                .ejecutar(AccionesPendientes.TIPO_PEDIDO_DEVOLVER, "{\"pedidoId\":\"" + ID + "\"}");
+
+        servidor.verify();
+    }
+
+    @Test
+    void cambioDeEstatusDeProspectoUsaPatch() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/clientes-ms/v1/prospectos/" + ID + "/estatus"))
+                .andExpect(method(HttpMethod.PATCH))
+                .andExpect(content().json("{\"estatus\":\"CALIFICADO\"}"))
+                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build()).ejecutar(AccionesPendientes.TIPO_PROSPECTO_ESTATUS,
+                "{\"prospectoId\":\"" + ID + "\",\"estatus\":\"CALIFICADO\"}");
+
+        servidor.verify();
+    }
+
+    @Test
+    void conversionDeProspectoLlamaAlEndpointConElContacto() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/clientes-ms/v1/prospectos/" + ID + "/conversion"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"razonSocial\":\"Acme\",\"contactoPrincipal\":{\"rol\":\"PAGOS\"}}"))
+                .andExpect(content().string(not(containsString("prospectoId"))))
+                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build()).ejecutar(AccionesPendientes.TIPO_PROSPECTO_CONVERTIR,
+                "{\"prospectoId\":\"" + ID + "\",\"razonSocial\":\"Acme\",\"rfc\":\"ACM010101AB1\","
+                        + "\"contactoPrincipal\":{\"nombre\":\"Ana\",\"correo\":\"ana@acme.mx\",\"rol\":\"PAGOS\"}}");
+
+        servidor.verify();
+    }
+
+    @Test
+    void interaccionLlamaAlEndpointDelCliente() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/clientes-ms/v1/clientes/" + ID + "/interacciones"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"tipo\":\"VISITA\",\"resumen\":\"Demo\"}"))
+                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build()).ejecutar(AccionesPendientes.TIPO_INTERACCION_REGISTRAR,
+                "{\"clienteId\":\"" + ID + "\",\"tipo\":\"VISITA\",\"resumen\":\"Demo\"}");
+
+        servidor.verify();
+    }
+
+    @Test
+    void cotizacionNuevaSeEnviaComoCuerpoAVentas() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/pedidos-ventas-ms/v1/cotizaciones"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"canal\":\"WEB\",\"moneda\":\"MXN\"}"))
+                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build()).ejecutar(AccionesPendientes.TIPO_COTIZACION_CREAR,
+                "{\"clienteId\":\"" + ID + "\",\"canal\":\"WEB\",\"moneda\":\"MXN\"}");
 
         servidor.verify();
     }

@@ -36,6 +36,8 @@ class HerramientasAccionesVentasTest {
     private static final String ID = "7d3c1f2e-0000-4000-8000-000000000002";
     private static final String URL_PEDIDO = "http://gateway/pedidos-ventas-ms/v1/pedidos/" + ID;
     private static final String URL_COTIZACION = "http://gateway/pedidos-ventas-ms/v1/cotizaciones/" + ID;
+    private static final String URL_CLIENTE = "http://gateway/clientes-ms/v1/clientes/" + ID;
+    private static final String URL_PROSPECTO = "http://gateway/clientes-ms/v1/prospectos/" + ID;
 
     private final Map<UUID, AccionPendiente> almacen = new HashMap<>();
     private AccionesPendientes acciones;
@@ -192,6 +194,184 @@ class HerramientasAccionesVentasTest {
         assertThat(texto).contains("accion_id");
         assertThat(almacen.values()).singleElement()
                 .satisfies(a -> assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_COTIZACION_A_PEDIDO));
+        servidor.verify();
+    }
+
+    @Test
+    void crearCotizacionSePreparaSiElClienteExiste() {
+        servidor.expect(requestTo(URL_CLIENTE))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\"}", MediaType.APPLICATION_JSON));
+
+        String texto = herramientas().crearCotizacionBorrador(ID, "web", "mxn", "iva_general", "2026-12-31",
+                "prod-1", "", 2, "100.00");
+
+        assertThat(texto).contains("no guardada").contains("accion_id");
+        assertThat(almacen.values()).singleElement().satisfies(a -> {
+            assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_COTIZACION_CREAR);
+            assertThat(a.payload()).contains("\"vigenteHasta\":\"2026-12-31\"")
+                    .contains("\"tasaIva\":\"IVA_GENERAL\"").contains("\"canal\":\"WEB\"");
+        });
+        servidor.verify();
+    }
+
+    @Test
+    void crearCotizacionRechazaUnaVigenciaInvalidaSinConsultarNada() {
+        String texto = herramientas().crearCotizacionBorrador(ID, "WEB", "MXN", "IVA_GENERAL", "31/12/2026",
+                "prod-1", "", 2, "100.00");
+
+        assertThat(texto).contains("formato AAAA-MM-DD");
+        assertThat(almacen).isEmpty();
+        servidor.verify();
+    }
+
+    @Test
+    void crearCotizacionRechazaUnClienteInexistente() {
+        servidor.expect(requestTo(URL_CLIENTE)).andRespond(withStatus(HttpStatus.NOT_FOUND));
+
+        String texto = herramientas().crearCotizacionBorrador(ID, "WEB", "MXN", "IVA_GENERAL", "2026-12-31",
+                "prod-1", "", 2, "100.00");
+
+        assertThat(texto).contains("No encontré ese cliente.");
+        assertThat(almacen).isEmpty();
+        servidor.verify();
+    }
+
+    @Test
+    void reemplazarLineasSoloSePreparaEnBorrador() {
+        servidor.expect(requestTo(URL_PEDIDO))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"CONFIRMADO\"}", MediaType.APPLICATION_JSON));
+
+        String texto = herramientas().reemplazarLineasPedido(ID, "prod-1", "", 3, "50");
+
+        assertThat(texto).contains("solo un pedido en borrador admite cambios en sus líneas");
+        assertThat(almacen).isEmpty();
+        servidor.verify();
+    }
+
+    @Test
+    void reemplazarLineasPreparaLaAccionEnBorrador() {
+        servidor.expect(requestTo(URL_PEDIDO))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"BORRADOR\"}", MediaType.APPLICATION_JSON));
+
+        herramientas().reemplazarLineasPedido(ID, "prod-1", "Tornillo", 3, "50");
+
+        assertThat(almacen.values()).singleElement().satisfies(a -> {
+            assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_PEDIDO_REEMPLAZAR_LINEAS);
+            assertThat(a.payload()).contains("\"pedidoId\":\"" + ID + "\"").contains("\"cantidad\":3");
+        });
+        servidor.verify();
+    }
+
+    @Test
+    void devolucionSoloDePedidoEntregado() {
+        servidor.expect(requestTo(URL_PEDIDO))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"CONFIRMADO\"}", MediaType.APPLICATION_JSON));
+
+        String texto = herramientas().registrarDevolucionPedido(ID);
+
+        assertThat(texto).contains("solo un pedido entregado puede devolverse");
+        assertThat(almacen).isEmpty();
+        servidor.verify();
+    }
+
+    @Test
+    void devolucionDePedidoEntregadoSePreparaComoAccion() {
+        servidor.expect(requestTo(URL_PEDIDO))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"ENTREGADO\"}", MediaType.APPLICATION_JSON));
+
+        String texto = herramientas().registrarDevolucionPedido(ID);
+
+        assertThat(texto).contains("no registrada").contains("accion_id");
+        assertThat(almacen.values()).singleElement()
+                .satisfies(a -> assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_PEDIDO_DEVOLVER));
+        servidor.verify();
+    }
+
+    @Test
+    void cambiarEstatusNoAceptaConvertidoNiConsultaNada() {
+        String texto = herramientas().cambiarEstatusProspecto(ID, "CONVERTIDO");
+
+        assertThat(texto).contains("convertir_prospecto_en_cliente");
+        assertThat(almacen).isEmpty();
+        servidor.verify();
+    }
+
+    @Test
+    void cambiarEstatusRespetaLasTransiciones() {
+        servidor.expect(requestTo(URL_PROSPECTO))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"NUEVO\"}", MediaType.APPLICATION_JSON));
+
+        String texto = herramientas().cambiarEstatusProspecto(ID, "CALIFICADO");
+
+        assertThat(texto).contains("No se puede pasar el prospecto de NUEVO a CALIFICADO.");
+        assertThat(almacen).isEmpty();
+        servidor.verify();
+    }
+
+    @Test
+    void cambiarEstatusValidoSePreparaComoAccion() {
+        servidor.expect(requestTo(URL_PROSPECTO))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"CONTACTADO\"}", MediaType.APPLICATION_JSON));
+
+        herramientas().cambiarEstatusProspecto(ID, "calificado");
+
+        assertThat(almacen.values()).singleElement().satisfies(a -> {
+            assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_PROSPECTO_ESTATUS);
+            assertThat(a.payload()).contains("\"estatus\":\"CALIFICADO\"");
+        });
+        servidor.verify();
+    }
+
+    @Test
+    void convertirProspectoSoloSiEstaCalificado() {
+        servidor.expect(requestTo(URL_PROSPECTO))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"CONTACTADO\"}", MediaType.APPLICATION_JSON));
+
+        String texto = herramientas().convertirProspectoEnCliente(ID, "Acme SA", "ACM010101AB1", "Ana",
+                "ana@acme.mx", "COMPRAS");
+
+        assertThat(texto).contains("solo un prospecto calificado puede convertirse en cliente");
+        assertThat(almacen).isEmpty();
+        servidor.verify();
+    }
+
+    @Test
+    void convertirProspectoCalificadoSePreparaConSuContacto() {
+        servidor.expect(requestTo(URL_PROSPECTO))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\",\"estatus\":\"CALIFICADO\"}", MediaType.APPLICATION_JSON));
+
+        herramientas().convertirProspectoEnCliente(ID, "Acme SA", "ACM010101AB1", "Ana", "ana@acme.mx", "compras");
+
+        assertThat(almacen.values()).singleElement().satisfies(a -> {
+            assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_PROSPECTO_CONVERTIR);
+            assertThat(a.payload()).contains("\"contactoPrincipal\"").contains("\"rol\":\"COMPRAS\"");
+        });
+        servidor.verify();
+    }
+
+    @Test
+    void interaccionRechazaTipoYFechaInvalidosSinConsultarNada() {
+        HerramientasVentas herramientas = herramientas();
+
+        assertThat(herramientas.registrarInteraccionCliente(ID, "CHAT", "2026-11-01T10:00:00-06:00", "Hola"))
+                .contains("LLAMADA, CORREO o VISITA");
+        assertThat(herramientas.registrarInteraccionCliente(ID, "LLAMADA", "ayer", "Hola"))
+                .contains("formato ISO 8601");
+        assertThat(almacen).isEmpty();
+        servidor.verify();
+    }
+
+    @Test
+    void interaccionSePreparaConLaFechaEnInstante() {
+        servidor.expect(requestTo(URL_CLIENTE))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\"}", MediaType.APPLICATION_JSON));
+
+        herramientas().registrarInteraccionCliente(ID, "llamada", "2026-11-01T10:00:00-06:00", "Seguimiento");
+
+        assertThat(almacen.values()).singleElement().satisfies(a -> {
+            assertThat(a.tipo()).isEqualTo(AccionesPendientes.TIPO_INTERACCION_REGISTRAR);
+            assertThat(a.payload()).contains("\"fecha\":\"2026-11-01T16:00:00Z\"").contains("\"tipo\":\"LLAMADA\"");
+        });
         servidor.verify();
     }
 }

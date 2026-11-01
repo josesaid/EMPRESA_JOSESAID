@@ -18,6 +18,12 @@ public final class AccionesPendientes {
     public static final String TIPO_COTIZACION_ENVIAR = "COTIZACION_ENVIAR";
     public static final String TIPO_COTIZACION_ACEPTAR = "COTIZACION_ACEPTAR";
     public static final String TIPO_COTIZACION_A_PEDIDO = "COTIZACION_A_PEDIDO";
+    public static final String TIPO_COTIZACION_CREAR = "COTIZACION_CREAR";
+    public static final String TIPO_PEDIDO_REEMPLAZAR_LINEAS = "PEDIDO_REEMPLAZAR_LINEAS";
+    public static final String TIPO_PEDIDO_DEVOLVER = "PEDIDO_DEVOLVER";
+    public static final String TIPO_PROSPECTO_ESTATUS = "PROSPECTO_ESTATUS";
+    public static final String TIPO_PROSPECTO_CONVERTIR = "PROSPECTO_CONVERTIR";
+    public static final String TIPO_INTERACCION_REGISTRAR = "INTERACCION_REGISTRAR";
     public static final Duration VIGENCIA = Duration.ofMinutes(10);
 
     private final AlmacenAcciones almacen;

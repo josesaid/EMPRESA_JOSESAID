@@ -55,7 +55,13 @@ final class AlcanceHerramientas {
             Map.entry("cancelar_pedido", ROLES_ACCIONES_VENTAS),
             Map.entry("enviar_cotizacion", ROLES_ACCIONES_VENTAS),
             Map.entry("aceptar_cotizacion", ROLES_ACCIONES_VENTAS),
-            Map.entry("convertir_cotizacion_en_pedido", ROLES_ACCIONES_VENTAS));
+            Map.entry("convertir_cotizacion_en_pedido", ROLES_ACCIONES_VENTAS),
+            Map.entry("crear_cotizacion_borrador", ROLES_ACCIONES_VENTAS),
+            Map.entry("reemplazar_lineas_pedido", ROLES_ACCIONES_VENTAS),
+            Map.entry("registrar_devolucion_pedido", ROLES_ACCIONES_VENTAS),
+            Map.entry("cambiar_estatus_prospecto", ROLES_ACCIONES_VENTAS),
+            Map.entry("convertir_prospecto_en_cliente", ROLES_ACCIONES_VENTAS),
+            Map.entry("registrar_interaccion_cliente", ROLES_ACCIONES_VENTAS));
 
     private AlcanceHerramientas() {
     }
