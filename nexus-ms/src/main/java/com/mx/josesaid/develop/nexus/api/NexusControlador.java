@@ -100,11 +100,6 @@ public class NexusControlador {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    @ExceptionHandler(AccionNoPendienteException.class)
-    ResponseEntity<String> noPendiente(AccionNoPendienteException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    }
-
     @PostMapping("/consultas")
     @PreAuthorize("isAuthenticated()")
     public ConsultaResponse consultar(@RequestBody @Valid ConsultaRequest solicitud,
