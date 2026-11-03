@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
 import com.mx.josesaid.develop.nexus.application.AccionNoEncontradaException;
 import com.mx.josesaid.develop.nexus.application.AccionNoPendienteException;
+import com.mx.josesaid.develop.nexus.application.CodigoConfirmacionInvalidoException;
+import com.mx.josesaid.develop.nexus.application.ConfirmacionAcciones;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,20 +43,24 @@ public class NexusControlador {
     private final AuditoriaConsultas auditoria;
     private final AccionesPendientes acciones;
     private final PresupuestoTokens presupuesto;
+    private final ConfirmacionAcciones confirmacion;
 
     public NexusControlador(AsistenteIA asistente, AuditoriaConsultas auditoria, AccionesPendientes acciones,
-                            PresupuestoTokens presupuesto) {
+                            PresupuestoTokens presupuesto, ConfirmacionAcciones confirmacion) {
         this.asistente = asistente;
         this.auditoria = auditoria;
         this.acciones = acciones;
         this.presupuesto = presupuesto;
+        this.confirmacion = confirmacion;
     }
 
     /** El usuario confirma una acción que Nexus preparó. Solo quien la preparó puede confirmarla. */
     @PostMapping("/acciones/{id}/confirmacion")
     @PreAuthorize("hasAnyRole('VENTAS','CONTADOR')")
-    public ResponseEntity<String> confirmarAccion(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
-        String respuesta = acciones.confirmar(id, jwt.getSubject());
+    public ResponseEntity<String> confirmarAccion(@PathVariable UUID id,
+                                                  @RequestBody @Valid ConfirmacionSolicitud solicitud,
+                                                  @AuthenticationPrincipal Jwt jwt) {
+        String respuesta = confirmacion.confirmarConCodigo(id, jwt.getSubject(), solicitud.codigo());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(respuesta);
@@ -72,6 +80,19 @@ public class NexusControlador {
     public ResponseEntity<Void> cancelarAccion(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
         acciones.cancelar(id, jwt.getSubject());
         return ResponseEntity.noContent().build();
+    }
+
+    public record ConfirmacionSolicitud(@NotBlank @Pattern(regexp = "\\d{8}") String codigo) {
+    }
+
+    @ExceptionHandler(CodigoConfirmacionInvalidoException.class)
+    ResponseEntity<String> codigoInvalido(CodigoConfirmacionInvalidoException e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+    }
+
+    @ExceptionHandler(AccionNoPendienteException.class)
+    ResponseEntity<String> noPendiente(AccionNoPendienteException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
     @ExceptionHandler(AccionNoEncontradaException.class)
