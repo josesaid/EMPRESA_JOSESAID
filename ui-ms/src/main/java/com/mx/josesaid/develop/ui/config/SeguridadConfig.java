@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.ui.config;
 
+import com.mx.josesaid.develop.ui.seguridad.CambioPasswordRequeridoException;
 import com.mx.josesaid.develop.ui.seguridad.UsuariosAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,7 @@ public class SeguridadConfig {
     public SecurityFilterChain cadenaSeguridad(HttpSecurity http, UsuariosAuthenticationProvider proveedor) throws Exception {
         http.authenticationProvider(proveedor)
             .authorizeHttpRequests(a -> a
-                .requestMatchers("/login", "/css/**", "/actuator/health").permitAll()
+                .requestMatchers("/login", "/cuenta/**", "/css/**", "/actuator/health").permitAll()
                 .anyRequest().authenticated())
             .formLogin(f -> f
                 .loginPage("/login")
@@ -23,7 +24,8 @@ public class SeguridadConfig {
                 .usernameParameter("correo")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error"))
+                .failureHandler((peticion, respuesta, error) -> respuesta.sendRedirect(
+                        error instanceof CambioPasswordRequeridoException ? "/login?cambio" : "/login?error")))
             .logout(l -> l
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?salir"));

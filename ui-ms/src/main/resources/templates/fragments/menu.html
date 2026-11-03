@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="menu">
+    <a th:href="@{/}">Inicio</a> ·
+    <a th:href="@{/cuentas}">Cuentas contables</a> ·
+    <span th:text="${correo}">correo</span>
+    <form th:action="@{/logout}" method="post" style="display:inline">
+        <button type="submit">Cerrar sesión</button>
+    </form>
+</nav>
+</body>
+</html>

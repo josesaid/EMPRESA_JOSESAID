@@ -6,11 +6,8 @@
     <title>EMPRESA_JOSESAID · Inicio</title>
 </head>
 <body>
+    <div th:replace="~{fragments/menu :: menu}"></div>
     <h1>EMPRESA_JOSESAID · <span th:text="${titulo}">Inicio</span></h1>
-    <p>Sesión: <strong th:text="${correo}">correo</strong></p>
     <p>Roles: <span th:text="${roles}">[]</span></p>
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Cerrar sesión</button>
-    </form>
 </body>
 </html>

@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -40,7 +40,11 @@ public class UsuariosAuthenticationProvider implements AuthenticationProvider {
                     .retrieve()
                     .body(RespuestaLogin.class);
         } catch (RestClientResponseException e) {
-            if (e.getStatusCode().value() == 400 || e.getStatusCode().value() == 401) {
+            int estado = e.getStatusCode().value();
+            if (estado == 403) {
+                throw new CambioPasswordRequeridoException("Debe cambiar su contraseña temporal");
+            }
+            if (estado == 400 || estado == 401) {
                 throw new BadCredentialsException("Correo o contraseña incorrectos");
             }
             throw new AuthenticationServiceException("El servicio de acceso no está disponible", e);
