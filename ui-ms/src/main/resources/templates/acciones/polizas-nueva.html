@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EMPRESA_JOSESAID · Proponer póliza</title>
+</head>
+<body>
+    <div th:replace="~{fragments/menu :: menu}"></div>
+    <h1 th:text="${titulo}">Proponer póliza</h1>
+
+    <p th:if="${mensaje}" th:text="${mensaje}">Mensaje</p>
+    <p th:if="${error}" th:text="${error}">Error</p>
+
+    <section th:if="${puedeProponer and sugerencia == null}">
+        <form th:action="@{/polizas/nueva}" method="post">
+            <label>Describe la operación (montos, moneda y cuentas si las conoces)
+                <textarea name="descripcion" rows="4" maxlength="500" required th:text="${descripcion}"></textarea>
+            </label>
+            <button type="submit">Proponer póliza</button>
+        </form>
+    </section>
+
+    <section th:if="${sugerencia != null}">
+        <h2>Propuesta pendiente</h2>
+        <p th:text="${sugerencia.resumen}">Resumen</p>
+        <p>Tipo: <span th:text="${sugerencia.tipo}">INGRESO</span>
+           · Vence (UTC): <span th:text="${sugerencia.expiraUtc}">2026-11-02T19:30:00Z</span></p>
+        <p>Código de confirmación: <strong th:text="${sugerencia.codigoConfirmacion}">12345678</strong>
+           <small>(se muestra una sola vez; anótalo antes de confirmar)</small></p>
+
+        <form th:action="@{/acciones/{id}/confirmacion(id=${sugerencia.id})}" method="post">
+            <label>Código de 8 dígitos
+                <input type="text" name="codigo" pattern="\d{8}" maxlength="8" inputmode="numeric" autocomplete="off" required>
+            </label>
+            <button type="submit">Confirmar y registrar</button>
+        </form>
+
+        <form th:action="@{/acciones/{id}/cancelacion(id=${sugerencia.id})}" method="post">
+            <button type="submit">Cancelar propuesta</button>
+        </form>
+    </section>
+</body>
+</html>
