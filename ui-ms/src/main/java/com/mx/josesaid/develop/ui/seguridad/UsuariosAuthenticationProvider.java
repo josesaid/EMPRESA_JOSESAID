@@ -21,15 +21,20 @@ import org.springframework.web.client.RestClientResponseException;
 public class UsuariosAuthenticationProvider implements AuthenticationProvider {
 
     private final RestClient gateway;
+    private final BloqueoLogin bloqueos;
 
-    public UsuariosAuthenticationProvider(RestClient gatewayClient) {
+    public UsuariosAuthenticationProvider(RestClient gatewayClient, BloqueoLogin bloqueos) {
         this.gateway = gatewayClient;
+        this.bloqueos = bloqueos;
     }
 
     @Override
     public Authentication authenticate(Authentication intento) throws AuthenticationException {
         String correo = intento.getName();
         String password = String.valueOf(intento.getCredentials());
+        if (bloqueos.bloqueado(correo)) {
+            throw new BloqueoLoginException("Demasiados intentos. Intenta de nuevo en 15 minutos.");
+        }
 
         RespuestaLogin respuesta;
         try {
@@ -45,6 +50,7 @@ public class UsuariosAuthenticationProvider implements AuthenticationProvider {
                 throw new CambioPasswordRequeridoException("Debe cambiar su contraseña temporal");
             }
             if (estado == 400 || estado == 401) {
+                bloqueos.fallo(correo);
                 throw new BadCredentialsException("Correo o contraseña incorrectos");
             }
             throw new AuthenticationServiceException("El servicio de acceso no está disponible", e);
@@ -52,6 +58,7 @@ public class UsuariosAuthenticationProvider implements AuthenticationProvider {
         if (respuesta == null || respuesta.accessToken() == null) {
             throw new AuthenticationServiceException("Respuesta vacía del servicio de acceso");
         }
+        bloqueos.exito(correo);
 
         List<GrantedAuthority> permisos = RolesJwt.extraer(respuesta.accessToken()).stream()
                 .map(rol -> (GrantedAuthority) new SimpleGrantedAuthority("ROLE_" + rol))

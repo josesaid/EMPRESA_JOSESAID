@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.ui.config;
 
+import com.mx.josesaid.develop.ui.seguridad.BloqueoLoginException;
 import com.mx.josesaid.develop.ui.seguridad.CambioPasswordRequeridoException;
 import com.mx.josesaid.develop.ui.seguridad.UsuariosAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,8 @@ public class SeguridadConfig {
                 .passwordParameter("password")
                 .defaultSuccessUrl("/", true)
                 .failureHandler((peticion, respuesta, error) -> respuesta.sendRedirect(
-                        error instanceof CambioPasswordRequeridoException ? "/login?cambio" : "/login?error")))
+                        error instanceof BloqueoLoginException ? "/login?bloqueado"
+                                : error instanceof CambioPasswordRequeridoException ? "/login?cambio" : "/login?error")))
             .logout(l -> l
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?salir"));
