@@ -1,6 +1,8 @@
 package com.mx.josesaid.develop.nexus.api;
 
+import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mx.josesaid.develop.nexus.application.AccionPendiente;
+import com.mx.josesaid.develop.nexus.application.CodigoConfirmacion;
 import com.mx.josesaid.develop.nexus.application.ServicioPolizas;
 import com.mx.josesaid.develop.nexus.application.SugerenciaPolizaInvalidaException;
 
@@ -33,18 +36,21 @@ import jakarta.validation.constraints.Size;
 public class PolizasControlador {
 
     private final ServicioPolizas servicio;
+    private final CodigoConfirmacion codigos;
 
-    public PolizasControlador(ServicioPolizas servicio) {
+    public PolizasControlador(ServicioPolizas servicio, CodigoConfirmacion codigos) {
         this.servicio = servicio;
+        this.codigos = codigos;
     }
 
     @PostMapping("/sugerencias")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CONTADOR')")
-    public AccionResumen sugerir(@RequestBody @Valid SugerenciaPolizaSolicitud solicitud,
-                                 @AuthenticationPrincipal Jwt jwt) {
+    public SugerenciaRespuesta sugerir(@RequestBody @Valid SugerenciaPolizaSolicitud solicitud,
+                                       @AuthenticationPrincipal Jwt jwt) {
         AccionPendiente accion = servicio.preparar(jwt.getSubject(), solicitud.descripcion());
-        return new AccionResumen(accion.id(), accion.tipo(), accion.resumen(), accion.estatus(), accion.expiraUtc());
+        return new SugerenciaRespuesta(accion.id(), accion.tipo(), accion.resumen(), accion.estatus(),
+                accion.expiraUtc(), codigos.generar(accion.id(), accion.usuario()));
     }
 
     @ExceptionHandler(SugerenciaPolizaInvalidaException.class)
@@ -53,5 +59,13 @@ public class PolizasControlador {
     }
 
     public record SugerenciaPolizaSolicitud(@NotBlank @Size(max = 500) String descripcion) {
+    }
+
+    /**
+     * Respuesta de una sugerencia. Incluye el código de confirmación de una sola vez, que solo recibe
+     * quien pidió la sugerencia (CONTADOR). Sin el código la acción no puede confirmarse.
+     */
+    public record SugerenciaRespuesta(UUID id, String tipo, String resumen, String estatus,
+                                      Instant expiraUtc, String codigoConfirmacion) {
     }
 }
