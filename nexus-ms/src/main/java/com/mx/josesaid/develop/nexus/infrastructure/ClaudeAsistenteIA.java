@@ -36,6 +36,7 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
     private final HerramientasInventario inventario;
     private final HerramientasDocumentos documentos;
     private final HerramientasUsuarios usuarios;
+    private final HerramientasPoliticas politicas;
     private final ToolCallback[] herramientas;
 
     public ClaudeAsistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts,
@@ -43,7 +44,7 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
                              HerramientasVentas ventas, HerramientasCompras compras,
                              HerramientasFinanzas finanzas, HerramientasContabilidad contabilidad,
                              HerramientasInventario inventario, HerramientasDocumentos documentos,
-                             HerramientasUsuarios usuarios) {
+                             HerramientasUsuarios usuarios, HerramientasPoliticas politicas) {
         this.reportes = reportes;
         this.clientes = clientes;
         this.ventas = ventas;
@@ -53,8 +54,9 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
         this.inventario = inventario;
         this.documentos = documentos;
         this.usuarios = usuarios;
+        this.politicas = politicas;
         this.herramientas = ToolCallbacks.from(reportes, clientes, ventas, compras, finanzas, contabilidad,
-                inventario, documentos, usuarios);
+                inventario, documentos, usuarios, politicas);
         PromptVersionado prompt = prompts.obtener(PROMPT);
         this.cliente = ChatClient.builder(modelo)
                 .defaultSystem(prompt.texto())

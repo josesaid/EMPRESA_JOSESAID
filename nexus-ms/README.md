@@ -111,6 +111,16 @@ Nexus nunca ejecuta una escritura por sí solo. El flujo es:
 
 Solo quien la preparó puede consultarla, confirmarla o cancelarla. Para otros usuarios responde 404.
 
+### Acciones por MCP (con código de confirmación)
+
+Por MCP (`/mcp`) la confirmación exige un código de una sola vez de 8 dígitos además del JWT:
+
+1. `sugerir_poliza` prepara una póliza (rol CONTADOR). No la registra. Devuelve el `accion_id` y el código.
+2. `confirmar_accion` con `accion_id` y código la registra. Solo quien la preparó puede confirmarla, dentro de 10 minutos.
+3. `cancelar_accion` la cancela sin ejecutarla.
+
+Un código incorrecto cancela la acción. El código se deriva con HMAC-SHA256 del id de la acción y del usuario, con el secreto `NEXUS_CONFIRMACION_SECRETO`. Si el secreto no está definido, cada instancia usa uno aleatorio y los códigos dejan de valer al reiniciar.
+
 Acciones disponibles (solo rol VENTAS):
 
 | Herramienta | Qué hace al confirmar |
@@ -138,6 +148,7 @@ Las reglas de negocio se validan dos veces: en Nexus, para dar un mensaje claro 
 - `AlcanceHerramientas` decide qué herramientas se ofrecen al modelo según el rol. Lo que no está en el mapa se niega.
 - Las respuestas de los servicios y las preguntas pasan por `FiltroDatosSensibles` antes de volver al modelo o guardarse.
 - La API de consultas requiere autenticación. Las de acciones requieren rol VENTAS.
+- El endpoint MCP (`/mcp`) usa el mismo JWT. Cada llamada toma la identidad del cliente y aplica `AlcanceHerramientas`; una herramienta fuera del mapa de roles se niega aunque el cliente la pida. El gateway enruta `/mcp` a nexus-ms.
 
 ## 11. API
 
@@ -147,6 +158,8 @@ Las reglas de negocio se validan dos veces: en Nexus, para dar un mensaje claro 
 | GET | `/nexus/acciones/{id}` | VENTAS | Muestra una acción pendiente (sin payload). |
 | POST | `/nexus/acciones/{id}/confirmacion` | VENTAS | Confirma y ejecuta la acción. Responde 201. |
 | POST | `/nexus/acciones/{id}/cancelacion` | VENTAS | Cancela la acción. Responde 204. |
+| POST | `/nexus/polizas/sugerencias` | CONTADOR | Prepara una póliza sugerida. No la registra. Responde 201 y 422 si no cuadra. |
+| POST | `/mcp` | JWT | Endpoint MCP (streamable). Herramientas de lectura, `sugerir_poliza`, `confirmar_accion` y `cancelar_accion`. Ver `docs/conexion-mcp.md`. |
 
 Errores (RFC 9457): 404 si la acción no existe o no es del usuario, 409 si ya no está pendiente, 429 si se alcanzó un tope de tokens, 504 si el modelo o un servicio no responde a tiempo.
 
@@ -211,6 +224,9 @@ Revertir la imagen a la versión anterior. Las migraciones no se revierten: son 
 
 ## 18. Decisiones y pendientes
 
+- Fase 5: no se crean agentes por dominio. La decisión y sus motivos están en `docs/decisiones/fase-5-agentes.md`.
+- Fase 6: el piloto usa un cliente MCP conectado a `/mcp` con token manual. Guía en `docs/conexion-mcp.md`. Pendiente: OAuth para clientes MCP, porque hoy el token se pega a mano y vence en 15 minutos.
+- Pendiente: el código de confirmación aparece en la respuesta de `sugerir_poliza`. Quien tenga acceso a esa conversación lo ve; es una barrera suave.
 - Se reemplazan líneas de pedido de una en una. Varias líneas quedan para una iteración posterior.
 - El tope de servicio es de 1 000 000 tokens al mes. Se revisa con el consumo real del piloto.
 - Pendiente: decisión de proveedor de modelo y de datos redactados (fase 0).

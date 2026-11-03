@@ -21,6 +21,8 @@ services:
       JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
       GATEWAY_URL: http://gateway-ms:8080
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?Defina ANTHROPIC_API_KEY en el archivo .env}
+      # Opcional: sin esta clave, nexus-ms arranca pero no indexa las políticas (RAG)
+      VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
     ports:
       - "8097:8080"
     networks:

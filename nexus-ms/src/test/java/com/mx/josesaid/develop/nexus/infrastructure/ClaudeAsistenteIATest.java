@@ -2,8 +2,11 @@ package com.mx.josesaid.develop.nexus.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +20,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.web.client.RestClient;
 
+import com.mx.josesaid.develop.nexus.application.AlmacenFragmentos;
+import com.mx.josesaid.develop.nexus.application.FragmentoIndexado;
 import com.mx.josesaid.develop.nexus.application.PreguntaAsistente;
+import com.mx.josesaid.develop.nexus.application.RecuperadorPoliticas;
+import com.mx.josesaid.develop.nexus.application.ResultadoPolitica;
 import com.mx.josesaid.develop.nexus.comun.prompts.RepositorioPrompts;
 import com.mx.josesaid.develop.nexus.comun.tokens.PreciosTokens;
 import com.mx.josesaid.develop.nexus.comun.tokens.RegistroTokens;
@@ -46,12 +53,27 @@ class ClaudeAsistenteIATest {
                 new HerramientasVentas(sinRed), new HerramientasCompras(sinRed),
                 new HerramientasFinanzas(sinRed), new HerramientasContabilidad(sinRed),
                 new HerramientasInventario(sinRed), new HerramientasDocumentos(sinRed),
-                new HerramientasUsuarios(sinRed));
+                new HerramientasUsuarios(sinRed), new HerramientasPoliticas(recuperadorVacio()));
     }
 
     @AfterEach
     void limpiar() {
         SecurityContextHolder.clearContext();
+    }
+
+    /** Recuperador sin fragmentos: la herramienta de políticas se registra pero no se usa en estas pruebas. */
+    private static RecuperadorPoliticas recuperadorVacio() {
+        AlmacenFragmentos almacen = new AlmacenFragmentos() {
+            @Override
+            public void reemplazar(String politicaId, List<FragmentoIndexado> fragmentos) {
+            }
+
+            @Override
+            public List<ResultadoPolitica> buscar(Set<String> roles, float[] consulta, LocalDate hoy, int limite) {
+                return List.of();
+            }
+        };
+        return new RecuperadorPoliticas((textos, tipo) -> List.of(), almacen, Clock.systemUTC());
     }
 
     @Test

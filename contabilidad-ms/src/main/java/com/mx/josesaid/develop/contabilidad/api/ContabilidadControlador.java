@@ -54,6 +54,13 @@ public class ContabilidadControlador {
         return CuentaRespuesta.de(servicio.crearCuenta(solicitud.codigo(), solicitud.nombre(), solicitud.naturaleza()));
     }
 
+    /** Catálogo de cuentas activas. Solo lectura: lo usa Nexus para sugerir pólizas. */
+    @GetMapping("/cuentas")
+    @PreAuthorize("hasAnyRole('CONTADOR','DIRECCION')")
+    public List<CuentaRespuesta> listarCuentas() {
+        return servicio.listarCuentasActivas().stream().map(CuentaRespuesta::de).toList();
+    }
+
     @PostMapping("/polizas")
     @PreAuthorize("hasRole('CONTADOR')")
     public ResponseEntity<?> registrarPoliza(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,

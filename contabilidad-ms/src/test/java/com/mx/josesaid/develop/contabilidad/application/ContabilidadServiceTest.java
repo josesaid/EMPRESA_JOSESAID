@@ -45,6 +45,10 @@ class ContabilidadServiceTest {
             public boolean existePorCodigo(String codigo) {
                 return cuentas.values().stream().anyMatch(c -> c.getCodigo().equals(codigo));
             }
+            public List<CuentaContable> listarActivas() {
+                return cuentas.values().stream().filter(CuentaContable::isActiva)
+                        .sorted(java.util.Comparator.comparing(CuentaContable::getCodigo)).toList();
+            }
         };
         PeriodoRepositorio periodoRepo = new PeriodoRepositorio() {
             public Periodo guardar(Periodo p) { periodos.put(p.getAnioMes(), p); return p; }

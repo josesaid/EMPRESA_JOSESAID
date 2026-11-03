@@ -24,6 +24,7 @@ public final class AccionesPendientes {
     public static final String TIPO_PROSPECTO_ESTATUS = "PROSPECTO_ESTATUS";
     public static final String TIPO_PROSPECTO_CONVERTIR = "PROSPECTO_CONVERTIR";
     public static final String TIPO_INTERACCION_REGISTRAR = "INTERACCION_REGISTRAR";
+    public static final String TIPO_POLIZA_REGISTRAR = "POLIZA_REGISTRAR";
     public static final Duration VIGENCIA = Duration.ofMinutes(10);
 
     private final AlmacenAcciones almacen;
