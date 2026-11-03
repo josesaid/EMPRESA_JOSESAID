@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EMPRESA_JOSESAID · Pólizas</title>
+</head>
+<body>
+    <div th:replace="~{fragments/menu :: menu}"></div>
+    <h1 th:text="${titulo}">Pólizas</h1>
+    <form th:action="@{/polizas}" method="get">
+        <label>Periodo (AAAA-MM) <input type="text" name="periodo" th:value="${periodo}" pattern="\d{4}-\d{2}" required></label>
+        <button type="submit">Consultar</button>
+    </form>
+    <p th:if="${error}" th:text="${error}">Error</p>
+    <table th:unless="${error}">
+        <thead>
+            <tr><th>Fecha</th><th>Tipo</th><th>Estatus</th><th>Total</th><th></th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${polizas}">
+                <td th:text="${p.fecha}">2026-11-02</td>
+                <td th:text="${p.tipo}">INGRESO</td>
+                <td th:text="${p.estatus}">APLICADA</td>
+                <td th:text="${p.total}">1000.00</td>
+                <td><a th:href="@{/polizas/{id}(id=${p.id})}">Ver</a></td>
+            </tr>
+            <tr th:if="${polizas.isEmpty()}"><td colspan="5">Sin pólizas en este periodo.</td></tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EMPRESA_JOSESAID · Detalle de póliza</title>
+</head>
+<body>
+    <div th:replace="~{fragments/menu :: menu}"></div>
+    <h1 th:text="${titulo}">Detalle de póliza</h1>
+    <p th:if="${error}" th:text="${error}">Error</p>
+    <div th:unless="${error}">
+        <p>
+            <span th:text="${poliza.tipo}">INGRESO</span> ·
+            <span th:text="${poliza.fecha}">2026-11-02</span> ·
+            <span th:text="${poliza.estatus}">APLICADA</span> ·
+            Periodo <span th:text="${poliza.periodo}">2026-11</span>
+        </p>
+        <p th:if="${poliza.reversaDe != null}">Reversa de la póliza <span th:text="${poliza.reversaDe}">id</span></p>
+        <table>
+            <thead>
+                <tr><th>Código</th><th>Cuenta</th><th>Cargo</th><th>Abono</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="m : ${movimientos}">
+                    <td th:text="${m.codigo}">1102</td>
+                    <td th:text="${m.nombre}">Bancos</td>
+                    <td th:text="${m.cargo}">0.00</td>
+                    <td th:text="${m.abono}">0.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr><th colspan="2">Total</th><th th:text="${poliza.total}">1000.00</th><th th:text="${poliza.total}">1000.00</th></tr>
+            </tfoot>
+        </table>
+    </div>
+    <p><a th:href="@{/polizas}">Volver al listado</a></p>
+</body>
+</html>

@@ -4,6 +4,7 @@
 <nav th:fragment="menu">
     <a th:href="@{/}">Inicio</a> ·
     <a th:href="@{/cuentas}">Cuentas contables</a> ·
+    <a th:href="@{/polizas}">Pólizas</a> ·
     <span th:text="${correo}">correo</span>
     <form th:action="@{/logout}" method="post" style="display:inline">
         <button type="submit">Cerrar sesión</button>

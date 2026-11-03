@@ -1,6 +1,7 @@
 package com.mx.josesaid.develop.ui.contabilidad;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -29,5 +30,23 @@ public class ContabilidadCliente {
                 .body(new ParameterizedTypeReference<List<CuentaDto>>() {
                 });
         return cuentas == null ? List.of() : cuentas;
+    }
+
+    public List<PolizaDto> listarPolizas(String periodo) {
+        List<PolizaDto> polizas = gateway.get()
+                .uri(constructor -> constructor.path("/contabilidad-ms/v1/polizas").queryParam("periodo", periodo).build())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<PolizaDto>>() {
+                });
+        return polizas == null ? List.of() : polizas;
+    }
+
+    public PolizaDto obtenerPoliza(UUID id) {
+        return gateway.get()
+                .uri("/contabilidad-ms/v1/polizas/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .retrieve()
+                .body(PolizaDto.class);
     }
 }
