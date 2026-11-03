@@ -1,6 +1,14 @@
 spring:
   application:
     name: ui-ms
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  session:
+    store-type: redis
+    redis:
+      namespace: ui-ms
 
 server:
   port: ${SERVER_PORT:8080}
