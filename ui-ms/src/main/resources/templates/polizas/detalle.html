@@ -9,6 +9,8 @@
     <div th:replace="~{fragments/menu :: menu}"></div>
     <h1 th:text="${titulo}">Detalle de póliza</h1>
     <p th:if="${error}" th:text="${error}">Error</p>
+    <p th:if="${mensaje}" th:text="${mensaje}">Mensaje</p>
+    <p th:if="${errorReversa}" th:text="${errorReversa}">Error</p>
     <div th:unless="${error}">
         <p>
             <span th:text="${poliza.tipo}">INGRESO</span> ·
@@ -33,6 +35,9 @@
                 <tr><th colspan="2">Total</th><th th:text="${poliza.total}">1000.00</th><th th:text="${poliza.total}">1000.00</th></tr>
             </tfoot>
         </table>
+        <form th:if="${puedeRevertir and poliza.reversaDe == null and poliza.estatus == 'APLICADA'}" th:action="@{/polizas/{id}/reversa(id=${poliza.id})}" method="post">
+            <button type="submit">Revertir póliza</button>
+        </form>
     </div>
     <p><a th:href="@{/polizas}">Volver al listado</a></p>
 </body>

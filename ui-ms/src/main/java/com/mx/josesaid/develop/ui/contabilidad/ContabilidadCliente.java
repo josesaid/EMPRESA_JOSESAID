@@ -49,4 +49,12 @@ public class ContabilidadCliente {
                 .retrieve()
                 .body(PolizaDto.class);
     }
+
+    public void reversarPoliza(UUID id) {
+        gateway.post()
+                .uri("/contabilidad-ms/v1/polizas/{id}/reversa", id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .retrieve()
+                .toBodilessEntity();
+    }
 }
