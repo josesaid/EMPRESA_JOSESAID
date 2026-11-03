@@ -67,6 +67,15 @@ services:
       - empresa-net
     restart: unless-stopped
 
+  # Caché de sesiones de ui-ms
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
 include:
   # Descubrimiento primero: los demás se registran aquí al arrancar
   - discovery-ms/docker-compose.yml
