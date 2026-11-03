@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EMPRESA_JOSESAID · Cuentas</title>
+</head>
+<body>
+    <div th:replace="~{fragments/menu :: menu}"></div>
+    <h1 th:text="${titulo}">Cuentas contables</h1>
+    <p th:if="${error}" th:text="${error}">Error</p>
+    <table th:unless="${error}">
+        <thead>
+            <tr><th>Código</th><th>Nombre</th><th>Naturaleza</th><th>Activa</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="cuenta : ${cuentas}">
+                <td th:text="${cuenta.codigo}">1102</td>
+                <td th:text="${cuenta.nombre}">Bancos</td>
+                <td th:text="${cuenta.naturaleza}">DEUDORA</td>
+                <td th:text="${cuenta.activa} ? 'Sí' : 'No'">Sí</td>
+            </tr>
+            <tr th:if="${cuentas.isEmpty()}"><td colspan="4">Sin cuentas registradas.</td></tr>
+        </tbody>
+    </table>
+</body>
+</html>

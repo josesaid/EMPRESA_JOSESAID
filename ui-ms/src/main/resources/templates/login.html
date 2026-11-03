@@ -8,6 +8,8 @@
 <body>
     <h1>Acceso a EMPRESA_JOSESAID</h1>
     <p th:if="${param.error}">Correo o contraseña incorrectos.</p>
+    <p th:if="${param.cambio}">Tu contraseña es temporal. <a th:href="@{/cuenta/cambiar-password}">Cámbiala aquí</a>.</p>
+    <p th:if="${param.cambiada}">Contraseña actualizada. Ya puedes entrar.</p>
     <p th:if="${param.salir}">Sesión cerrada.</p>
     <form th:action="@{/login}" method="post">
         <label>Correo <input type="email" name="correo" required autofocus></label>
