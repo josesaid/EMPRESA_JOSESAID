@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.mx.josesaid.develop.nexus.application.AccionNoPendienteException;
 import com.mx.josesaid.develop.nexus.application.AccionPendiente;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
+import com.mx.josesaid.develop.nexus.application.ConfirmacionAcciones;
 import com.mx.josesaid.develop.nexus.application.PresupuestoAgotadoException;
 import com.mx.josesaid.develop.nexus.application.PresupuestoTokens;
 import java.time.Instant;
@@ -64,6 +65,9 @@ class NexusIT {
 
     @MockitoBean
     private AccionesPendientes acciones;
+
+    @MockitoBean
+    private ConfirmacionAcciones confirmacion;
 
     @MockitoBean
     private PresupuestoTokens presupuesto;
@@ -126,34 +130,46 @@ class NexusIT {
     @Test
     void confirmarSinRolVentasResponde403() throws Exception {
         mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content("{\"codigo\":\"12345678\"}")
                         .with(jwt().jwt(j -> j.subject("u-compras")).authorities(rol("ROLE_COMPRAS"))))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void confirmarPropiaAccionResponde201() throws Exception {
-        when(acciones.confirmar(java.util.UUID.fromString(ACCION_ID), "u-ventas"))
+        when(confirmacion.confirmarConCodigo(java.util.UUID.fromString(ACCION_ID), "u-ventas", "12345678"))
                 .thenReturn("{\"id\":\"ped-1\"}");
         mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content("{\"codigo\":\"12345678\"}")
                         .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("ped-1"));
     }
 
     @Test
+    void confirmarSinCodigoResponde400() throws Exception {
+        mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content("{}")
+                        .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void confirmarAccionAjenaResponde404() throws Exception {
-        when(acciones.confirmar(java.util.UUID.fromString(ACCION_ID), "u-otro"))
+        when(confirmacion.confirmarConCodigo(java.util.UUID.fromString(ACCION_ID), "u-otro", "12345678"))
                 .thenThrow(new com.mx.josesaid.develop.nexus.application.AccionNoEncontradaException("Acción no encontrada"));
         mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content("{\"codigo\":\"12345678\"}")
                         .with(jwt().jwt(j -> j.subject("u-otro")).authorities(rol("ROLE_VENTAS"))))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void confirmarAccionYaConfirmadaResponde409() throws Exception {
-        when(acciones.confirmar(java.util.UUID.fromString(ACCION_ID), "u-ventas"))
+        when(confirmacion.confirmarConCodigo(java.util.UUID.fromString(ACCION_ID), "u-ventas", "12345678"))
                 .thenThrow(new com.mx.josesaid.develop.nexus.application.AccionNoPendienteException("La acción ya está confirmada"));
         mvc.perform(post("/nexus/acciones/" + ACCION_ID + "/confirmacion")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content("{\"codigo\":\"12345678\"}")
                         .with(jwt().jwt(j -> j.subject("u-ventas")).authorities(rol("ROLE_VENTAS"))))
                 .andExpect(status().isConflict());
     }
