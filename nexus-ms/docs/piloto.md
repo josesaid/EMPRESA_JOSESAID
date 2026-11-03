@@ -33,3 +33,10 @@
 | 31-oct-2026 | 6 (permiso negado) | Cumplido: `isError: true` con "Sin permiso" para una cuenta ADMIN sin rol CONTADOR. | Prueba con la cuenta admin. Escenarios 1 a 5 pendientes de usuarios reales. |
 
 Anotar: pólizas sugeridas, confirmadas, canceladas; códigos incorrectos; respuestas incorrectas o con datos que no debían mostrarse; negaciones por rol.
+
+## Resultados 2-nov-2026
+- Escenario 1: pasó. Póliza 805567b8-e9b6-4a16-ad84-34fb4ede63ef APLICADA, cuadra (1000.00).
+- Escenario 2: pasó. consultar_poliza devuelve la póliza.
+- Escenario 3: pasó. Código incorrecto cancela la acción; después responde 'La acción ya está cancelada'.
+- Escenario 4: pasó. Acción 18a0f04c-2de3-454f-abef-e8547191a1e7 cancelada sin registrar.
+- Escenario 5: pasó. Dirección consulta políticas y estados financieros; compras bloqueado en estados (isError) y sí consulta políticas.
