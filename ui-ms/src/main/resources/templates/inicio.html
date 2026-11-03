@@ -7,6 +7,10 @@
 </head>
 <body>
     <h1>EMPRESA_JOSESAID · <span th:text="${titulo}">Inicio</span></h1>
-    <p>Esqueleto de la interfaz web. Las pantallas se agregan por módulo.</p>
+    <p>Sesión: <strong th:text="${correo}">correo</strong></p>
+    <p>Roles: <span th:text="${roles}">[]</span></p>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Cerrar sesión</button>
+    </form>
 </body>
 </html>
