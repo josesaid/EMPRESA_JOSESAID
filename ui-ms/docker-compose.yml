@@ -1,0 +1,19 @@
+# Servicio ui-ms. Se usa solo o incluido desde la raíz de EMPRESA_JOSESAID.
+services:
+  ui-ms:
+    build:
+      context: ..
+      dockerfile: ui-ms/Dockerfile
+    image: ui-ms:0.1.0
+    environment:
+      SERVER_PORT: 8080
+    ports:
+      - "8098:8080"
+    networks:
+      - empresa-net
+    restart: unless-stopped
+
+networks:
+  empresa-net:
+    external: true
+    name: empresa-net
