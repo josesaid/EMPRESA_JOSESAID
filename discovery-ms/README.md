@@ -55,7 +55,7 @@ No aplica.
 
 El panel y la API de Eureka piden usuario y contraseña (HTTP Basic), definidos con `EUREKA_USUARIO` y `EUREKA_PASSWORD`. Sin ellos, los servicios no se registran.
 
-Públicos sin credenciales: `/actuator/health`, `/actuator/info` y `/actuator/prometheus`. El gateway no reenvía `/actuator/**` ni `/discovery-ms/**`, así que solo son visibles dentro de `empresa-net` y en tu Mac.
+Públicos sin credenciales: `/actuator/health`, `/actuator/info` y `/actuator/prometheus`. El gateway no reenvía `/actuator/**` ni `/discovery-ms/**`, así que solo son visibles dentro de `empresa-net` y, desde tu Mac, en `127.0.0.1:8761`. El puerto no se publica en la red local.
 
 ## 11. API
 
