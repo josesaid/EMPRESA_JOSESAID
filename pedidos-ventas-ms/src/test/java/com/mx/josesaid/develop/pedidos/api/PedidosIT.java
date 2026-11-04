@@ -25,6 +25,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
+import static org.mockito.Mockito.doThrow;
+import com.mx.josesaid.develop.pedidos.domain.ReglaDeNegocioException;
 
 /** Integración con PostgreSQL y Kafka reales (Testcontainers). Requiere Docker; corre con 'mvn verify'. */
 @SpringBootTest(properties = "pedidos.jwt.jwks-uri=http://localhost:9/.well-known/jwks.json")
@@ -171,6 +173,30 @@ class PedidosIT {
         mvc.perform(post("/v1/pedidos").with(rol("VENTAS"))
                         .header("Idempotency-Key", clave).contentType("application/json")
                         .content(cuerpo.replace("\"WEB\"", "\"TIENDA\"")))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void clienteDesactivadoDespuesDeCotizarNoPuedeConvertirseEnPedido() throws Exception {
+        String cuerpo = """
+                {"clienteId":"%s","canal":"WEB","moneda":"MXN","tasaIva":"IVA_GENERAL",
+                 "vigenteHasta":"2030-12-31",
+                 "lineas":[{"productoId":"%s","descripcion":"Tuerca","cantidad":1,"precioUnitario":5.00}]}
+                """.formatted(CLIENTE, PRODUCTO);
+        MvcResult creada = mvc.perform(post("/v1/cotizaciones").with(rol("VENTAS"))
+                        .contentType("application/json").content(cuerpo))
+                .andExpect(status().isCreated()).andReturn();
+        String cot = JsonPath.read(creada.getResponse().getContentAsString(), "$.id");
+
+        mvc.perform(post("/v1/cotizaciones/" + cot + "/envio").with(rol("VENTAS")))
+                .andExpect(status().isOk());
+        mvc.perform(post("/v1/cotizaciones/" + cot + "/aceptacion").with(rol("VENTAS")))
+                .andExpect(status().isOk());
+
+        // El cliente se desactiva después de cotizar: la conversión debe rechazarse
+        doThrow(new ReglaDeNegocioException("El cliente no está activo"))
+                .when(validadorCliente).exigirActivo(UUID.fromString(CLIENTE));
+        mvc.perform(post("/v1/cotizaciones/" + cot + "/pedido").with(rol("VENTAS")))
                 .andExpect(status().isUnprocessableEntity());
     }
 }
