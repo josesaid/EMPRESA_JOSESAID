@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 class ServicioSesionTest {
@@ -82,5 +83,45 @@ class ServicioSesionTest {
     void sinSesionLanzaSesionExpirada() {
         assertThatThrownBy(() -> sesion.accessTokenVigente())
                 .isInstanceOf(SesionExpiradaException.class);
+    }
+
+    @Test
+    void unAfterRetryRenuevaUnaVezYRepiteLaLlamada() {
+        SesionTokens tokens = conectar(Instant.now().plusSeconds(600));
+        servidor.expect(requestTo(REFRESH))
+                .andRespond(withSuccess("""
+                        {"accessToken":"nuevo","tokenType":"Bearer","expiresIn":900,"refreshToken":"r2"}
+                        """, MediaType.APPLICATION_JSON));
+
+        String resultado = sesion.ejecutar(token -> {
+            if (token.equals("viejo")) {
+                throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
+            }
+            return token;
+        });
+
+        assertThat(resultado).isEqualTo("nuevo");
+        assertThat(tokens.getRefreshToken()).isEqualTo("r2");
+        servidor.verify();
+    }
+
+    @Test
+    void unRefreshRechazadoTrasUn401LanzaSesionExpirada() {
+        conectar(Instant.now().plusSeconds(600));
+        servidor.expect(requestTo(REFRESH)).andRespond(withStatus(HttpStatus.UNAUTHORIZED));
+
+        assertThatThrownBy(() -> sesion.ejecutar(token -> {
+            throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
+        })).isInstanceOf(SesionExpiradaException.class);
+    }
+
+    @Test
+    void otrosErroresNoRenuevanLaSesion() {
+        conectar(Instant.now().plusSeconds(600));
+
+        assertThatThrownBy(() -> sesion.ejecutar(token -> {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
+        })).isInstanceOf(HttpClientErrorException.class);
+        servidor.verify();
     }
 }
