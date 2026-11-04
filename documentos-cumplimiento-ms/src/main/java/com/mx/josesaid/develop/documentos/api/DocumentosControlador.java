@@ -91,6 +91,12 @@ public class DocumentosControlador {
         return DocumentoRespuesta.de(servicio.eliminar(id, p.motivo()));
     }
 
+    @PostMapping("/documentos/{id}/purga")
+    @PreAuthorize("hasRole('LEGAL')")
+    public DocumentoRespuesta purgarDocumento(@PathVariable UUID id, @Valid @RequestBody PurgaPeticion p) {
+        return DocumentoRespuesta.de(servicio.purgar(id, p.confirmacion()));
+    }
+
     @GetMapping("/catalogos/tipos-documento")
     @PreAuthorize("isAuthenticated()")
     public List<Map<String, Object>> tiposDocumento() {
@@ -119,6 +125,10 @@ public class DocumentosControlador {
     public record MotivoPeticion(@NotBlank @Size(max = 300) String motivo) {
     }
 
+    /** La confirmación debe ser el identificador del documento, tecleado por quien purga. */
+    public record PurgaPeticion(@NotBlank String confirmacion) {
+    }
+
     // ---- Respuestas: nunca se expone la referencia de almacenamiento ----
 
     public record VersionRespuesta(int numero, String hashSha256, Instant creadoUtc) {
@@ -129,10 +139,10 @@ public class DocumentosControlador {
 
     public record DocumentoRespuesta(UUID id, TipoDocumento tipo, String titulo, String area, LocalDate venceEn,
                                      LocalDate retencionHasta, int versionActual, boolean eliminado,
-                                     List<VersionRespuesta> versiones) {
+                                     boolean purgado, List<VersionRespuesta> versiones) {
         static DocumentoRespuesta de(Documento d) {
             return new DocumentoRespuesta(d.getId(), d.getTipo(), d.getTitulo(), d.getArea(), d.getVenceEn(),
-                    d.getRetencionHasta(), d.getVersionActual(), d.isEliminado(),
+                    d.getRetencionHasta(), d.getVersionActual(), d.isEliminado(), d.isPurgado(),
                     d.getVersiones().stream().map(VersionRespuesta::de).toList());
         }
     }

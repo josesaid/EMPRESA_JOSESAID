@@ -60,6 +60,12 @@ public class DocumentoEntity {
     @Column(name = "alerta_vencimiento_emitida", nullable = false)
     private boolean alertaVencimientoEmitida;
 
+    @Column(nullable = false)
+    private boolean purgado;
+
+    @Column(name = "purgado_utc")
+    private Instant purgadoUtc;
+
     @Version
     private Long version;
 
@@ -89,6 +95,8 @@ public class DocumentoEntity {
         this.eliminadoUtc = d.getEliminadoUtc();
         this.revisionRetencion = d.isRevisionRetencion();
         this.alertaVencimientoEmitida = d.isAlertaVencimientoEmitida();
+        this.purgado = d.isPurgado();
+        this.purgadoUtc = d.getPurgadoUtc();
         Set<UUID> existentes = versiones.stream().map(VersionEntity::getId).collect(Collectors.toSet());
         for (VersionDocumento v : d.getVersiones()) {
             if (!existentes.contains(v.id())) {
@@ -100,6 +108,7 @@ public class DocumentoEntity {
     Documento aDominio() {
         return Documento.reconstruir(id, tipo, titulo, area, venceEn, retencionHasta,
                 versiones.stream().map(VersionEntity::aDominio).toList(),
-                eliminado, motivoEliminacion, eliminadoUtc, revisionRetencion, alertaVencimientoEmitida);
+                eliminado, motivoEliminacion, eliminadoUtc, revisionRetencion, alertaVencimientoEmitida,
+                purgado, purgadoUtc);
     }
 }

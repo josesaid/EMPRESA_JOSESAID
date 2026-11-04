@@ -30,7 +30,7 @@ class DocumentoTest {
     void creaVersionUnoYRetencionSegunTipo() {
         Documento d = contrato();
         assertEquals(1, d.getVersionActual());
-        assertEquals(LocalDate.of(2031, 1, 1), d.getRetencionHasta());
+        assertEquals(LocalDate.of(2036, 1, 1), d.getRetencionHasta());
     }
 
     @Test
@@ -98,5 +98,31 @@ class DocumentoTest {
         assertTrue(d.necesitaRevisionRetencion(despues));
         d.marcarRevisionRetencion();
         assertFalse(d.necesitaRevisionRetencion(despues));
+    }
+
+    @Test
+    void purgarRequiereEliminacionPrevia() {
+        assertThrows(ConflictoException.class,
+                () -> contrato().purgar(ID.toString(), LocalDate.of(2037, 1, 1), AHORA));
+    }
+
+    @Test
+    void purgarExigeConfirmarConElIdentificador() {
+        Documento d = contrato();
+        d.eliminar("Fin de retención", LocalDate.of(2037, 1, 1), AHORA);
+        assertThrows(SolicitudInvalidaException.class,
+                () -> d.purgar("otro", LocalDate.of(2037, 1, 1), AHORA));
+        assertFalse(d.isPurgado());
+    }
+
+    @Test
+    void purgarMarcaElDocumentoYNoSeRepite() {
+        Documento d = contrato();
+        d.eliminar("Fin de retención", LocalDate.of(2037, 1, 1), AHORA);
+        d.purgar(ID.toString(), LocalDate.of(2037, 1, 1), AHORA);
+        assertTrue(d.isPurgado());
+        assertEquals(AHORA, d.getPurgadoUtc());
+        assertThrows(ConflictoException.class,
+                () -> d.purgar(ID.toString(), LocalDate.of(2037, 1, 1), AHORA));
     }
 }

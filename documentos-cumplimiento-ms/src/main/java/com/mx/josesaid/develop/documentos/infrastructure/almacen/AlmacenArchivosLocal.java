@@ -49,6 +49,15 @@ public class AlmacenArchivosLocal implements AlmacenDocumentos {
         }
     }
 
+    @Override
+    public void borrar(String referencia) {
+        try {
+            Files.deleteIfExists(resolver(referencia));
+        } catch (IOException e) {
+            throw new IllegalStateException("No se pudo borrar el archivo", e);
+        }
+    }
+
     private Path resolver(String referencia) {
         Path p = raiz.resolve(referencia).normalize();
         if (!p.startsWith(raiz)) {

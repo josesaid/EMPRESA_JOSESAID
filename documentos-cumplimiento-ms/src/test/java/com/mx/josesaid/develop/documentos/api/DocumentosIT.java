@@ -100,6 +100,25 @@ class DocumentosIT {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void purgaSinEliminacionPreviaEsConflictoYSoloLegalPuedePurgar() throws Exception {
+        String datos = "{\"tipo\":\"REGISTRO_LEGAL\",\"titulo\":\"Acta constitutiva\",\"area\":\"Legal\"}";
+        MvcResult creado = mvc.perform(multipart("/v1/documentos")
+                        .file(archivo("acta")).file(parteDatos(datos)).with(rol("LEGAL")))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String id = JsonPath.read(creado.getResponse().getContentAsString(), "$.id");
+        String cuerpo = "{\"confirmacion\":\"" + id + "\"}";
+
+        mvc.perform(post("/v1/documentos/" + id + "/purga").with(rol("DIRECCION"))
+                        .contentType("application/json").content(cuerpo))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(post("/v1/documentos/" + id + "/purga").with(rol("LEGAL"))
+                        .contentType("application/json").content(cuerpo))
+                .andExpect(status().isConflict());
+    }
+
     private static MockMultipartFile archivo(String contenido) {
         return new MockMultipartFile("archivo", "documento.pdf", "application/pdf",
                 contenido.getBytes(StandardCharsets.UTF_8));
