@@ -86,6 +86,7 @@ public class PedidosService {
     @Transactional
     public Pedido convertirEnPedido(UUID cotizacionId) {
         Cotizacion c = cargarCotizacion(cotizacionId);
+        clientes.exigirActivo(c.getClienteId());
         Pedido pedido = Pedido.desdeCotizacion(c);
         c.marcarConvertida(pedido.getId());
         cotizaciones.guardar(c);
