@@ -23,30 +23,30 @@ public class NexusCliente {
     }
 
     public SugerenciaDto sugerirPoliza(String descripcion) {
-        return gateway.post()
+        return sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/polizas/sugerencias")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("descripcion", descripcion))
                 .retrieve()
-                .body(SugerenciaDto.class);
+                .body(SugerenciaDto.class));
     }
 
     public void confirmar(UUID id, String codigo) {
-        gateway.post()
+        sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/acciones/{id}/confirmacion", id)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("codigo", codigo))
                 .retrieve()
-                .toBodilessEntity();
+                .toBodilessEntity());
     }
 
     public void cancelar(UUID id) {
-        gateway.post()
+        sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/acciones/{id}/cancelacion", id)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .toBodilessEntity();
+                .toBodilessEntity());
     }
 }

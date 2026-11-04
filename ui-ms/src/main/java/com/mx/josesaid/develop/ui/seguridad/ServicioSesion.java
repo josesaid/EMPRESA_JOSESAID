@@ -3,6 +3,7 @@ package com.mx.josesaid.develop.ui.seguridad;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -11,10 +12,11 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-/** Entrega un access token vigente para llamar a las APIs, renovándolo si está por expirar. */
+/** Entrega un access token vigente para llamar a las APIs, renovándolo si está por expirar o si el servicio lo rechaza. */
 @Service
 public class ServicioSesion {
 
@@ -32,6 +34,23 @@ public class ServicioSesion {
             renovar(sesion);
         }
         return sesion.getAccessToken();
+    }
+
+    /**
+     * Ejecuta una llamada con el token vigente. Si el servicio responde 401 (token revocado o firmado con una
+     * clave anterior), renueva la sesión una sola vez y repite la llamada. Si la renovación falla, la sesión expiró.
+     */
+    public <T> T ejecutar(Function<String, T> llamada) {
+        try {
+            return llamada.apply(accessTokenVigente());
+        } catch (RestClientResponseException e) {
+            if (e.getStatusCode().value() != 401) {
+                throw e;
+            }
+            SesionTokens sesion = sesionActual();
+            renovar(sesion);
+            return llamada.apply(sesion.getAccessToken());
+        }
     }
 
     private SesionTokens sesionActual() {

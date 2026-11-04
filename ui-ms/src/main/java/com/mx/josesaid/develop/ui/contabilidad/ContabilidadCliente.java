@@ -23,38 +23,38 @@ public class ContabilidadCliente {
     }
 
     public List<CuentaDto> listarCuentas() {
-        List<CuentaDto> cuentas = gateway.get()
+        List<CuentaDto> cuentas = sesion.ejecutar(token -> gateway.get()
                 .uri("/contabilidad-ms/v1/cuentas")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<CuentaDto>>() {
-                });
+                }));
         return cuentas == null ? List.of() : cuentas;
     }
 
     public List<PolizaDto> listarPolizas(String periodo) {
-        List<PolizaDto> polizas = gateway.get()
+        List<PolizaDto> polizas = sesion.ejecutar(token -> gateway.get()
                 .uri(constructor -> constructor.path("/contabilidad-ms/v1/polizas").queryParam("periodo", periodo).build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<PolizaDto>>() {
-                });
+                }));
         return polizas == null ? List.of() : polizas;
     }
 
     public PolizaDto obtenerPoliza(UUID id) {
-        return gateway.get()
+        return sesion.ejecutar(token -> gateway.get()
                 .uri("/contabilidad-ms/v1/polizas/{id}", id)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .body(PolizaDto.class);
+                .body(PolizaDto.class));
     }
 
     public void reversarPoliza(UUID id) {
-        gateway.post()
+        sesion.ejecutar(token -> gateway.post()
                 .uri("/contabilidad-ms/v1/polizas/{id}/reversa", id)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + sesion.accessTokenVigente())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .toBodilessEntity();
+                .toBodilessEntity());
     }
 }
