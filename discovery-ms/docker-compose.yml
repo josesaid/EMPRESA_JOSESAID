@@ -6,8 +6,8 @@ services:
     build: .
     image: discovery-ms:0.1.0
     ports:
-      # Puerto de tu Mac 8761 -> puerto 8761 dentro del contenedor
-      - "8761:8761"
+      # Solo en tu Mac (127.0.0.1), no en la red local. Prometheus raspa por empresa-net, no por este puerto.
+      - "127.0.0.1:8761:8761"
     environment:
       # Credenciales del panel y registro de Eureka; se definen en el .env de la raíz
       EUREKA_USUARIO: ${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}
