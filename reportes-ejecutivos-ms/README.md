@@ -193,7 +193,7 @@ Imagen `reportes-ejecutivos-ms:0.1.0`. Requiere red `empresa-net`, base `reporte
 
 ## 20. Decisiones y pendientes
 
-- **Permisos por área:** pendiente. Hoy toda la API es de DIRECCION.
+- **Permisos por área:** implementados. JEFE_AREA consulta solo su área según el claim `area` del token; carga, cierre y exportación siguen solo para DIRECCION.
 - **Alertas por umbral y tableros interactivos:** pendientes, según la especificación.
 - **Descarte de mensajes inválidos:** hoy se registran y se descartan. Falta una cola de mensajes fallidos.
 - **Tópico de indicadores:** `indicadores-areas`, confirmado.
