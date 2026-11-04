@@ -73,23 +73,13 @@ Canary con criterio del anexo de la empresa. Rollback por contenedor. Las migrac
 
 ## Rotación de la clave RS256
 
-usuarios-accesos-ms firma los tokens con una sola clave RS256. Su identificador (`kid`) es `empresa-usuarios-1`. La clave pública se publica en `/.well-known/jwks.json` y los servicios la cachean.
+Los tokens se firman con una clave RS256 identificada por `kid` (`JWT_KID`, por defecto `empresa-usuarios-1`). `/.well-known/jwks.json` publica la clave actual y, durante una rotación, también la anterior (`JWT_CLAVE_PUBLICA_ANTERIOR` y `JWT_KID_ANTERIOR`). Los servicios validan por `kid`, así que la rotación no requiere cambiar código ni reiniciar los demás servicios.
 
-**Procedimiento (corte en ventana de baja actividad):**
+**Procedimiento:** el paso a paso está en el README de usuarios-accesos-ms, sección «Rotación de la clave RS256». Resumen: publicar la clave anterior junto con la nueva (dos reinicios de usuarios-accesos-ms), esperar `JWT_DURACION` (15 minutos) y quitar la anterior.
 
-1. Generar la nueva clave privada en PKCS#8 DER en Base64:
-   `openssl genrsa 2048 | openssl pkcs8 -topk8 -nocrypt -outform DER | base64`
-2. Guardarla en el gestor de secretos de producción, nunca en el repositorio.
-3. Actualizar `USUARIOS_JWT_CLAVE_PRIVADA` en el `.env` de la raíz (se entrega al contenedor como `JWT_CLAVE_PRIVADA`). Cambiar también la constante `KID` en `ClavesJwt.java` (valor actual `empresa-usuarios-1`) a un valor nuevo; el `kid` es código, no configuración, así que requiere recompilar y desplegar.
-4. Desplegar usuarios-accesos-ms. El JWKS publica solo la clave nueva.
-5. Los servicios que validan tokens obtienen la nueva clave cuando su proveedor de JWKS la recarga. Revisar en la práctica cuánto tarda; no está medido.
+**Efecto:** durante el traslape se validan tokens anteriores y nuevos, así que las sesiones no se cortan. Los refresh tokens son opacos y no cambian con la rotación.
 
-**Efecto:** los tokens emitidos con la clave anterior dejan de validarse en cuanto los servicios refrescan el JWKS. Todas las sesiones deben iniciar sesión de nuevo; el costo es como máximo los 15 minutos de vida del token.
-
-**Limitación:** no hay periodo de traslape. Para rotar sin cortar sesiones, el JWKS debe publicar ambas claves durante al menos la duración del token y firmar solo con la nueva. Eso requiere cambiar `ClavesJwt` y `SeguridadConfig` para aceptar varias claves; hoy no está implementado.
-
-**Calendario:** por definir. Se recomienda rotar al menos una vez al año y de inmediato si la clave se expone.
-
+**Si la clave se expone:** rotar y quitar la anterior de inmediato, sin esperar a que expiren los tokens.
 ## Área por usuario y rol JEFE_AREA
 
 Cada usuario puede tener un área (`area`, texto de hasta 40 caracteres, por ejemplo `VENTAS_ATENCION_CLIENTES`). El área se asigna con `PUT /v1/usuarios/{id}/area`, body `{"area": "...", "motivo": "..."}`, solo con rol ADMIN. El motivo es obligatorio.
