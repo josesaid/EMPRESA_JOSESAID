@@ -11,6 +11,7 @@ import java.util.UUID;
 /**
  * Documento legal con versiones. Cada cambio de contenido crea una versión nueva; las publicadas no cambian.
  * Un documento vencido no recibe versiones: se registra uno nuevo. Eliminar exige retención vencida y motivo.
+ * Purgar borra el contenido físico de un documento eliminado; los metadatos y los hashes se conservan.
  */
 public class Documento {
 
@@ -26,11 +27,13 @@ public class Documento {
     private Instant eliminadoUtc;
     private boolean revisionRetencion;
     private boolean alertaVencimientoEmitida;
+    private boolean purgado;
+    private Instant purgadoUtc;
 
     private Documento(UUID id, TipoDocumento tipo, String titulo, String area, LocalDate venceEn,
                       LocalDate retencionHasta, List<VersionDocumento> versiones, boolean eliminado,
                       String motivoEliminacion, Instant eliminadoUtc, boolean revisionRetencion,
-                      boolean alertaVencimientoEmitida) {
+                      boolean alertaVencimientoEmitida, boolean purgado, Instant purgadoUtc) {
         this.id = id;
         this.tipo = tipo;
         this.titulo = titulo;
@@ -43,6 +46,8 @@ public class Documento {
         this.eliminadoUtc = eliminadoUtc;
         this.revisionRetencion = revisionRetencion;
         this.alertaVencimientoEmitida = alertaVencimientoEmitida;
+        this.purgado = purgado;
+        this.purgadoUtc = purgadoUtc;
     }
 
     /** Crea el documento con su versión 1. La retención se calcula desde hoy según el tipo. */
@@ -65,15 +70,15 @@ public class Documento {
         }
         List<VersionDocumento> primera = List.of(new VersionDocumento(UUID.randomUUID(), 1, hashSha256, ref, ahora));
         return new Documento(id, tipo, titulo.trim(), area.trim(), venceEn, hoy.plusYears(tipo.retencionAnios()),
-                primera, false, null, null, false, false);
+                primera, false, null, null, false, false, false, null);
     }
 
     public static Documento reconstruir(UUID id, TipoDocumento tipo, String titulo, String area, LocalDate venceEn,
                                         LocalDate retencionHasta, List<VersionDocumento> versiones, boolean eliminado,
                                         String motivoEliminacion, Instant eliminadoUtc, boolean revisionRetencion,
-                                        boolean alertaVencimientoEmitida) {
+                                        boolean alertaVencimientoEmitida, boolean purgado, Instant purgadoUtc) {
         return new Documento(id, tipo, titulo, area, venceEn, retencionHasta, versiones, eliminado,
-                motivoEliminacion, eliminadoUtc, revisionRetencion, alertaVencimientoEmitida);
+                motivoEliminacion, eliminadoUtc, revisionRetencion, alertaVencimientoEmitida, purgado, purgadoUtc);
     }
 
     /** Lanza error si la nueva versión no puede crearse. Se llama antes de guardar el archivo. */
@@ -109,6 +114,27 @@ public class Documento {
         this.eliminado = true;
         this.motivoEliminacion = motivo.trim();
         this.eliminadoUtc = ahora;
+    }
+
+    /**
+     * Purga física: marca el documento como purgado. El llamador borra después los archivos de cada versión.
+     * Exige eliminación previa, retención vencida y confirmación tecleada con el identificador del documento.
+     */
+    public void purgar(String confirmacion, LocalDate hoy, Instant ahora) {
+        if (!eliminado) {
+            throw new ConflictoException("Solo se purga un documento eliminado");
+        }
+        if (purgado) {
+            throw new ConflictoException("El documento ya fue purgado");
+        }
+        if (!hoy.isAfter(retencionHasta)) {
+            throw new ConflictoException("No se puede purgar dentro del periodo de retención (hasta " + retencionHasta + ")");
+        }
+        if (confirmacion == null || !confirmacion.trim().equals(id.toString())) {
+            throw new SolicitudInvalidaException("La confirmación debe ser el identificador del documento");
+        }
+        this.purgado = true;
+        this.purgadoUtc = ahora;
     }
 
     public boolean vencido(LocalDate hoy) {
@@ -156,4 +182,6 @@ public class Documento {
     public Instant getEliminadoUtc() { return eliminadoUtc; }
     public boolean isRevisionRetencion() { return revisionRetencion; }
     public boolean isAlertaVencimientoEmitida() { return alertaVencimientoEmitida; }
+    public boolean isPurgado() { return purgado; }
+    public Instant getPurgadoUtc() { return purgadoUtc; }
 }

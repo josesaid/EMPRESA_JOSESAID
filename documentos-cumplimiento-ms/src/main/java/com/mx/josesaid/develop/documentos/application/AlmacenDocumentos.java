@@ -7,4 +7,6 @@ public interface AlmacenDocumentos {
     String referencia(UUID documentoId, int numero);
     void guardar(String referencia, byte[] contenido);
     byte[] leer(String referencia);
+    /** Borra el archivo físico. Idempotente: un archivo que ya no existe no es error. */
+    void borrar(String referencia);
 }

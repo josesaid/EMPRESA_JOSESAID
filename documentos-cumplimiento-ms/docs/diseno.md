@@ -21,7 +21,7 @@ Administración y legal necesita guardar contratos, permisos y registros con his
 2. **Hash antes de guardar.** El hash SHA-256 se calcula sobre el contenido original. Cada descarga lo vuelve a calcular y lo compara.
 3. **Cifrado en reposo.** AES-256-GCM con IV aleatorio por archivo. La etiqueta de autenticación detecta cualquier alteración.
 4. **Validar antes de escribir.** El dominio valida la nueva versión antes de guardar el archivo, para no dejar archivos huérfanos por reglas de negocio.
-5. **Eliminación lógica.** El documento queda marcado con motivo y fecha. La purga física requiere política de Legal.
+5. **Eliminación lógica y purga física.** La eliminación marca el documento con motivo y fecha. La purga, manual y con confirmación, solo aplica a documentos eliminados y borra el contenido de sus versiones; metadatos y hashes se conservan.
 6. **Alertas una sola vez.** Un permiso emite `permiso-por-vencer` una vez. Una bandera en el documento evita repetirla.
 7. **Referencia oculta.** La API nunca expone la ruta del archivo en disco.
 
@@ -31,10 +31,8 @@ JWT RS256 con la clave pública de usuarios-accesos-ms (JWKS). Roles: LEGAL escr
 
 ## Riesgos y pendientes
 
-- Periodos de retención sin confirmación legal.
 - Firma electrónica pendiente.
 - Almacenamiento local; migración a nube pendiente.
-- Purga física tras retención pendiente de política.
 
 ## Fuera de alcance
 

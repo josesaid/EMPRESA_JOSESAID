@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/** Casos de uso documentales: carga, versiones, descarga auditada, eliminación con retención y alertas. */
+/** Casos de uso documentales: carga, versiones, descarga auditada, eliminación y purga con retención, y alertas. */
 @Service
 public class DocumentosService {
 
@@ -91,6 +91,9 @@ public class DocumentosService {
     @Transactional(readOnly = true)
     public DescargaVersion descargar(UUID id, int numero, String usuario) {
         Documento d = cargar(id);
+        if (d.isPurgado()) {
+            throw new ConflictoException("El contenido del documento fue purgado");
+        }
         VersionDocumento v = d.version(numero)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Versión no encontrada: " + numero));
         byte[] contenido = almacen.leer(v.almacenamientoRef());
@@ -106,6 +109,18 @@ public class DocumentosService {
         Documento d = cargar(id);
         d.eliminar(motivo, hoy(), Instant.now(reloj));
         log.info("AUDITORIA documento={} accion=ELIMINACION", id);
+        return documentos.guardar(d);
+    }
+
+    /** Purga física tras la eliminación: borra el contenido de todas las versiones; metadatos y hashes permanecen. */
+    @Transactional
+    public Documento purgar(UUID id, String confirmacion) {
+        Documento d = cargar(id);
+        d.purgar(confirmacion, hoy(), Instant.now(reloj));
+        for (VersionDocumento v : d.getVersiones()) {
+            almacen.borrar(v.almacenamientoRef());
+        }
+        log.info("AUDITORIA documento={} accion=PURGA", id);
         return documentos.guardar(d);
     }
 

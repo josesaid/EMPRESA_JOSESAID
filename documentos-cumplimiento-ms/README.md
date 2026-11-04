@@ -99,9 +99,9 @@ Flyway ejecuta `V1__esquema_inicial.sql` al arrancar. Hibernate solo valida. Los
 
 **Documento vencido.** Si `vence_en` ya pasó, no recibe versiones (409). Se registra un documento nuevo.
 
-**Eliminación.** Solo después de que venza la `retencion_hasta` y con motivo (409 dentro de retención, 400 sin motivo). La eliminación es lógica: el registro queda marcado con motivo y fecha.
+**Eliminación.** Solo después de que venza la `retencion_hasta` y con motivo (409 dentro de retención, 400 sin motivo). La eliminación es lógica: el registro queda marcado con motivo y fecha. La **purga física** (`POST /v1/documentos/{id}/purga`) solo aplica a un documento eliminado y exige como confirmación el identificador del documento; borra el contenido de todas sus versiones y conserva metadatos y hashes. Solo LEGAL. Después de la purga, la descarga responde 409.
 
-**Retención.** Se calcula al crear: CONTRATO, PERMISO y REGISTRO_LEGAL, 5 años cada uno. Definido por la dirección; **pendiente de confirmación legal.**
+**Retención.** Se calcula al crear: CONTRATO 10 años, PERMISO 5 años, REGISTRO_LEGAL 10 años. Confirmado.
 
 **Alertas.** La tarea diaria emite `permiso-por-vencer` una sola vez por permiso, cuando su vencimiento cae dentro del umbral. La retención vencida se marca para revisión.
 
@@ -115,7 +115,7 @@ Flyway ejecuta `V1__esquema_inicial.sql` al arrancar. Hibernate solo valida. Los
 
 | Operación | Roles |
 |---|---|
-| Crear documento, nueva versión, descargar, eliminar | LEGAL |
+| Crear documento, nueva versión, descargar, eliminar, purgar | LEGAL |
 | Consultar documento y vencimientos | LEGAL, DIRECCION |
 | Catálogo de tipos | Cualquier usuario autenticado |
 
@@ -131,6 +131,7 @@ Base `/v1`. Las cargas usan `multipart/form-data`: la parte `datos` es JSON y la
 | GET | /documentos/{id}/versiones/{n}/descarga | Descarga el archivo | 200 |
 | GET | /documentos/por-vencer?dias= | Documentos que vencen en N días (0–3650) | 200 |
 | POST | /documentos/{id}/eliminacion | Elimina con motivo, solo después de retención | 200 |
+| POST | /documentos/{id}/purga | Purga física con confirmación (identificador del documento); solo eliminados y fuera de retención | 200 |
 | GET | /catalogos/tipos-documento | Tipos y años de retención | 200 |
 
 Ejemplo de `datos`:
@@ -195,8 +196,8 @@ Imagen `documentos-cumplimiento-ms:0.1.0`. Requiere red `empresa-net`, base `doc
 
 ## 20. Decisiones y pendientes
 
-- **Periodos de retención:** 5 años para todos los tipos, definido por la dirección. Pendiente de confirmación legal.
-- **Eliminación lógica:** el archivo se conserva. La purga física requiere política de Legal y queda pendiente.
+- **Periodos de retención:** CONTRATO 10 años, PERMISO 5 años, REGISTRO_LEGAL 10 años. Confirmado.
+- **Eliminación y purga:** la eliminación es lógica y manual. La purga física también es manual y exige confirmación tecleada; borra los archivos y conserva metadatos y hashes.
 - **Firma electrónica:** pendiente.
 - **Almacenamiento en la nube:** hoy es un volumen local cifrado. El proveedor está por definir.
 - **Rol LEGAL:** existe en el catálogo de usuarios-accesos.
