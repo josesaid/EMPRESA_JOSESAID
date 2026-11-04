@@ -2,6 +2,7 @@ package com.mx.josesaid.develop.ui.config;
 
 import com.mx.josesaid.develop.ui.seguridad.BloqueoLoginException;
 import com.mx.josesaid.develop.ui.seguridad.CambioPasswordRequeridoException;
+import com.mx.josesaid.develop.ui.seguridad.CierreSesionRemoto;
 import com.mx.josesaid.develop.ui.seguridad.UsuariosAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SeguridadConfig {
 
     @Bean
-    public SecurityFilterChain cadenaSeguridad(HttpSecurity http, UsuariosAuthenticationProvider proveedor) throws Exception {
+    public SecurityFilterChain cadenaSeguridad(HttpSecurity http, UsuariosAuthenticationProvider proveedor,
+                                               CierreSesionRemoto cierreRemoto) throws Exception {
         http.authenticationProvider(proveedor)
             .authorizeHttpRequests(a -> a
                 .requestMatchers("/login", "/cuenta/**", "/css/**", "/actuator/health").permitAll()
@@ -30,6 +32,7 @@ public class SeguridadConfig {
                                 : error instanceof CambioPasswordRequeridoException ? "/login?cambio" : "/login?error")))
             .logout(l -> l
                 .logoutUrl("/logout")
+                .addLogoutHandler(cierreRemoto)
                 .logoutSuccessUrl("/login?salir"));
         return http.build();
     }
