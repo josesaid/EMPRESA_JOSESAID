@@ -12,7 +12,7 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
     ports:
       # Puerto de tu Mac 8090 -> puerto 8080 dentro del contenedor
-      - "8090:8080"
+      - "127.0.0.1:8090:8080"
     networks:
       - empresa-net
     restart: unless-stopped
