@@ -1,5 +1,7 @@
 package com.mx.josesaid.develop.usuarios_accesos.infrastructure.persistence;
 
+import com.mx.josesaid.develop.usuarios_accesos.infrastructure.crypto.IndiceCorreo;
+
 import com.mx.josesaid.develop.usuarios_accesos.domain.Usuario;
 import com.mx.josesaid.develop.usuarios_accesos.domain.UsuarioRepositorio;
 import java.util.Optional;
@@ -21,6 +23,7 @@ public class UsuarioRepositorioJpa implements UsuarioRepositorio {
         UsuarioEntity entidad = jpa.findById(usuario.getId()).orElseGet(UsuarioEntity::new);
         entidad.setId(usuario.getId());
         entidad.setCorreo(usuario.getCorreo());
+        entidad.setCorreoIndice(IndiceCorreo.de(usuario.getCorreo()));
         entidad.setNombreCompleto(usuario.getNombreCompleto());
         entidad.setPasswordHash(usuario.getPasswordHash());
         entidad.setEstatus(usuario.getEstatus());
@@ -40,12 +43,12 @@ public class UsuarioRepositorioJpa implements UsuarioRepositorio {
 
     @Override
     public Optional<Usuario> buscarPorCorreo(String correoNormalizado) {
-        return jpa.findByCorreo(correoNormalizado).map(UsuarioRepositorioJpa::toDominio);
+        return jpa.findByCorreoIndice(IndiceCorreo.de(correoNormalizado)).map(UsuarioRepositorioJpa::toDominio);
     }
 
     @Override
     public boolean existePorCorreo(String correoNormalizado) {
-        return jpa.existsByCorreo(correoNormalizado);
+        return jpa.existsByCorreoIndice(IndiceCorreo.de(correoNormalizado));
     }
 
     private static Usuario toDominio(UsuarioEntity e) {

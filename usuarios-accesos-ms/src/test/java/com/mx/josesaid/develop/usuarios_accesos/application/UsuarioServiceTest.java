@@ -55,7 +55,7 @@ class UsuarioServiceTest {
     @BeforeEach
     void preparar() {
         Clock reloj = Clock.fixed(Instant.parse("2026-10-29T15:00:00Z"), ZoneOffset.UTC);
-        servicio = new UsuarioService(repositorio, new BCryptPasswordEncoder(), eventos::add, reloj);
+        servicio = new UsuarioService(repositorio, new BCryptPasswordEncoder(), eventos::add, reloj, new io.micrometer.core.instrument.simple.SimpleMeterRegistry());
     }
 
     @Test

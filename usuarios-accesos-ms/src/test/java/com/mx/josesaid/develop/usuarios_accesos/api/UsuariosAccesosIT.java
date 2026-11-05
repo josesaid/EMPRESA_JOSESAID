@@ -59,6 +59,10 @@ class UsuariosAccesosIT {
         generador.initialize(2048);
         String pkcs8 = Base64.getEncoder().encodeToString(generador.generateKeyPair().getPrivate().getEncoded());
         registro.add("usuarios.jwt.clave-privada", () -> pkcs8);
+        registro.add("USUARIOS_CIFRADO_CLAVE", () -> Base64.getEncoder()
+                .encodeToString("0123456789abcdef0123456789abcdef".getBytes()));
+        registro.add("USUARIOS_INDICE_CLAVE", () -> Base64.getEncoder()
+                .encodeToString("fedcba9876543210fedcba9876543210".getBytes()));
     }
 
     @Test

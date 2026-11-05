@@ -27,6 +27,19 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 @Testcontainers
 class PublicadorIndicadoresUsuariosIT {
 
+    /** Claves de prueba: la clave RSA se genera en cada ejecución; las de cifrado son fijas solo para pruebas. */
+    @org.springframework.test.context.DynamicPropertySource
+    static void clavesDePrueba(org.springframework.test.context.DynamicPropertyRegistry registro) throws Exception {
+        java.security.KeyPairGenerator generador = java.security.KeyPairGenerator.getInstance("RSA");
+        generador.initialize(2048);
+        String pkcs8 = java.util.Base64.getEncoder().encodeToString(generador.generateKeyPair().getPrivate().getEncoded());
+        registro.add("usuarios.jwt.clave-privada", () -> pkcs8);
+        registro.add("USUARIOS_CIFRADO_CLAVE", () -> java.util.Base64.getEncoder()
+                .encodeToString("0123456789abcdef0123456789abcdef".getBytes()));
+        registro.add("USUARIOS_INDICE_CLAVE", () -> java.util.Base64.getEncoder()
+                .encodeToString("fedcba9876543210fedcba9876543210".getBytes()));
+    }
+
     @Container
     @ServiceConnection
     static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17-alpine");
