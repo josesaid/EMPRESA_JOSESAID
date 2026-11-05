@@ -52,7 +52,7 @@ class FacturacionServiceTest {
 
     @Test
     void flujoCompletoPublicaEventos() {
-        Comprobante c = servicio.crearBorrador(UUID.randomUUID(), "MXN", new BigDecimal("100"), new BigDecimal("0.16"));
+        Comprobante c = servicio.crearBorrador(UUID.randomUUID(), "MXN", new BigDecimal("100"));
         servicio.emitir(c.getId());
         servicio.registrarPago(c.getId(), new BigDecimal("50"), null, "REF-1");
         servicio.cancelar(c.getId(), "Duplicado");
@@ -66,7 +66,7 @@ class FacturacionServiceTest {
 
     @Test
     void pagoSinFechaUsaLaFechaDelReloj() {
-        Comprobante c = servicio.crearBorrador(UUID.randomUUID(), "USD", new BigDecimal("10"), BigDecimal.ZERO);
+        Comprobante c = servicio.crearBorrador(UUID.randomUUID(), "USD", new BigDecimal("10"));
         servicio.emitir(c.getId());
         Comprobante actualizado = servicio.registrarPago(c.getId(), BigDecimal.ONE, null, null);
         assertThat(actualizado.getPagos().get(0).getFechaPago()).isEqualTo(LocalDate.of(2026, 1, 15));

@@ -1,5 +1,15 @@
 package com.mx.josesaid.develop.facturacion_pagos.api;
 
+import com.mx.josesaid.develop.facturacion_pagos.domain.TasaIva;
+
+import java.time.ZoneId;
+
+import java.time.LocalDate;
+
+import java.math.RoundingMode;
+
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -47,7 +57,7 @@ class FacturacionPagosIT {
     void buscaComprobantePorFolioExacto() throws Exception {
         MvcResult creado = mvc.perform(post("/v1/comprobantes").with(finanzas())
                         .contentType("application/json")
-                        .content("{\"ordenId\":\"" + ORDEN + "\",\"moneda\":\"MXN\",\"subtotal\":1000,\"tasaIva\":0.16}"))
+                        .content("{\"ordenId\":\"" + ORDEN + "\",\"moneda\":\"MXN\",\"subtotal\":1000}"))
                 .andExpect(status().isCreated())
                 .andReturn();
         String id = JsonPath.read(creado.getResponse().getContentAsString(), "$.id");
@@ -73,15 +83,15 @@ class FacturacionPagosIT {
         // VENTAS no puede crear comprobantes
         mvc.perform(post("/v1/comprobantes").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_VENTAS")))
                         .contentType("application/json")
-                        .content("{\"ordenId\":\"" + ORDEN + "\",\"moneda\":\"MXN\",\"subtotal\":1000,\"tasaIva\":0.16}"))
+                        .content("{\"ordenId\":\"" + ORDEN + "\",\"moneda\":\"MXN\",\"subtotal\":1000}"))
                 .andExpect(status().isForbidden());
 
         // FINANZAS crea, emite y cobra
         MvcResult creado = mvc.perform(post("/v1/comprobantes").with(finanzas())
                         .contentType("application/json")
-                        .content("{\"ordenId\":\"" + ORDEN + "\",\"moneda\":\"MXN\",\"subtotal\":1000,\"tasaIva\":0.16}"))
+                        .content("{\"ordenId\":\"" + ORDEN + "\",\"moneda\":\"MXN\",\"subtotal\":1000}"))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.total").value(1160.00))
+                .andExpect(jsonPath("$.total").value(totalEsperadoMxn(1000)))
                 .andReturn();
         String id = JsonPath.read(creado.getResponse().getContentAsString(), "$.id");
 
@@ -97,7 +107,7 @@ class FacturacionPagosIT {
 
         mvc.perform(post("/v1/comprobantes/" + id + "/pagos").with(finanzas())
                         .contentType("application/json")
-                        .content("{\"monto\":1160,\"referencia\":\"SPEI-1\"}"))
+                        .content("{\"monto\":" + totalEsperadoMxn(1000) + ",\"referencia\":\"SPEI-1\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.estatusCobro").value("PAGADO"))
                 .andExpect(jsonPath("$.pagos.length()").value(1));
@@ -105,6 +115,12 @@ class FacturacionPagosIT {
         mvc.perform(get("/v1/comprobantes/" + id).with(jwt().authorities(new SimpleGrantedAuthority("ROLE_VENTAS"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.saldo").value(0));
+    }
+
+    private static double totalEsperadoMxn(double subtotal) {
+        BigDecimal base = BigDecimal.valueOf(subtotal);
+        BigDecimal tasa = TasaIva.paraFecha(LocalDate.now(ZoneId.of("America/Mexico_City")));
+        return base.add(base.multiply(tasa)).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
     private static org.springframework.test.web.servlet.request.RequestPostProcessor finanzas() {
@@ -115,7 +131,7 @@ class FacturacionPagosIT {
     void mismaIdempotencyKeyNoDuplicaElPago() throws Exception {
         MvcResult creado = mvc.perform(post("/v1/comprobantes").with(finanzas())
                         .contentType("application/json")
-                        .content("{\"ordenId\":\"00000000-0000-0000-0000-000000000003\",\"moneda\":\"MXN\",\"subtotal\":500,\"tasaIva\":0.16}"))
+                        .content("{\"ordenId\":\"00000000-0000-0000-0000-000000000003\",\"moneda\":\"MXN\",\"subtotal\":500}"))
                 .andExpect(status().isCreated()).andReturn();
         String id = JsonPath.read(creado.getResponse().getContentAsString(), "$.id");
         mvc.perform(post("/v1/comprobantes/" + id + "/emision").with(finanzas())).andExpect(status().isOk());

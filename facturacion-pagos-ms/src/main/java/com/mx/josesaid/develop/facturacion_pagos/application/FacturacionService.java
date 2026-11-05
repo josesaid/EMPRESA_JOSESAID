@@ -33,8 +33,8 @@ public class FacturacionService {
     }
 
     @Transactional
-    public Comprobante crearBorrador(UUID ordenId, String moneda, BigDecimal subtotal, BigDecimal tasaIva) {
-        return repositorio.guardar(Comprobante.crearBorrador(ordenId, moneda, subtotal, tasaIva));
+    public Comprobante crearBorrador(UUID ordenId, String moneda, BigDecimal subtotal) {
+        return repositorio.guardar(Comprobante.crearBorrador(ordenId, moneda, subtotal, LocalDate.now(reloj)));
     }
 
     @Transactional

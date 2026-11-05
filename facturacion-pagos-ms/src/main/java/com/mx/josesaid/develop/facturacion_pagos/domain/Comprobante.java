@@ -53,7 +53,7 @@ public class Comprobante {
     }
 
     /** Crea un comprobante en borrador. El IVA y el total se calculan con redondeo bancario. */
-    public static Comprobante crearBorrador(UUID ordenId, String moneda, BigDecimal subtotal, BigDecimal tasaIva) {
+    public static Comprobante crearBorrador(UUID ordenId, String moneda, BigDecimal subtotal, LocalDate fecha) {
         if (ordenId == null) {
             throw new ReglaDeNegocioException("La orden es obligatoria");
         }
@@ -63,9 +63,10 @@ public class Comprobante {
         if (subtotal == null || subtotal.signum() <= 0) {
             throw new ReglaDeNegocioException("El subtotal debe ser mayor a cero");
         }
-        if (tasaIva == null || tasaIva.signum() < 0 || tasaIva.compareTo(BigDecimal.ONE) > 0) {
-            throw new ReglaDeNegocioException("La tasa de IVA debe estar entre 0 y 1");
+        if (fecha == null) {
+            throw new ReglaDeNegocioException("La fecha es obligatoria");
         }
+        BigDecimal tasaIva = TasaIva.paraFecha(fecha);
         BigDecimal subtotalRedondeado = subtotal.setScale(2, HALF_EVEN);
         BigDecimal ivaCalculado = subtotalRedondeado.multiply(tasaIva).setScale(2, HALF_EVEN);
         BigDecimal totalCalculado = subtotalRedondeado.add(ivaCalculado);
