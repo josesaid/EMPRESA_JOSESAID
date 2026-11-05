@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /** Repositorio Spring Data. Solo lo usa el adaptador de persistencia. */
 public interface UsuarioJpaRepository extends JpaRepository<UsuarioEntity, UUID> {
 
-    Optional<UsuarioEntity> findByCorreo(String correo);
+    Optional<UsuarioEntity> findByCorreoIndice(String correoIndice);
 
-    boolean existsByCorreo(String correo);
+    boolean existsByCorreoIndice(String correoIndice);
 }

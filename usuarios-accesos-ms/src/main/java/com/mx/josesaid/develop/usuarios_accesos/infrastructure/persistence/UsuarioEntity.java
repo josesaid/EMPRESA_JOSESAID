@@ -1,8 +1,10 @@
 package com.mx.josesaid.develop.usuarios_accesos.infrastructure.persistence;
 
 import com.mx.josesaid.develop.usuarios_accesos.domain.EstatusUsuario;
+import com.mx.josesaid.develop.usuarios_accesos.infrastructure.crypto.CampoCifradoConverter;
 import com.mx.josesaid.develop.usuarios_accesos.domain.Rol;
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -28,10 +30,16 @@ public class UsuarioEntity {
     @Id
     private UUID id;
 
-    @Column(nullable = false, unique = true, length = 254)
+    /** Cifrado AES-256-GCM. La unicidad la garantiza {@code correo_indice}. */
+    @Convert(converter = CampoCifradoConverter.class)
+    @Column(nullable = false, length = 400)
     private String correo;
 
-    @Column(name = "nombre_completo", nullable = false, length = 200)
+    @Column(name = "correo_indice", length = 64)
+    private String correoIndice;
+
+    @Convert(converter = CampoCifradoConverter.class)
+    @Column(name = "nombre_completo", nullable = false, length = 400)
     private String nombreCompleto;
 
     @Column(name = "password_hash", nullable = false, length = 100)
@@ -88,6 +96,8 @@ public class UsuarioEntity {
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
     public String getCorreo() { return correo; }
+    public String getCorreoIndice() { return correoIndice; }
+    public void setCorreoIndice(String correoIndice) { this.correoIndice = correoIndice; }
     public void setCorreo(String correo) { this.correo = correo; }
     public String getNombreCompleto() { return nombreCompleto; }
     public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }

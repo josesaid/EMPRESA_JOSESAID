@@ -1,5 +1,7 @@
 package com.mx.josesaid.develop.usuarios_accesos.application;
 
+import io.micrometer.core.instrument.MeterRegistry;
+
 import com.mx.josesaid.develop.usuarios_accesos.domain.CambioPasswordRequeridoException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.ReglaDeNegocioException;
 import com.mx.josesaid.develop.usuarios_accesos.domain.CredencialesInvalidasException;
@@ -37,13 +39,19 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final PublicadorEventos publicador;
     private final Clock reloj;
+    private final MeterRegistry metricas;
 
     public UsuarioService(UsuarioRepositorio repositorio, PasswordEncoder passwordEncoder,
-                          PublicadorEventos publicador, Clock reloj) {
+                          PublicadorEventos publicador, Clock reloj, MeterRegistry metricas) {
         this.repositorio = repositorio;
         this.passwordEncoder = passwordEncoder;
         this.publicador = publicador;
         this.reloj = reloj;
+        this.metricas = metricas;
+    }
+
+    private void contar(String nombre) {
+        metricas.counter(nombre).increment();
     }
 
     @Transactional
@@ -56,7 +64,9 @@ public class UsuarioService {
             throw new ReglaDeNegocioException("Cree el usuario, asígnele un área y después el rol JEFE_AREA");
         }
         String hash = passwordEncoder.encode(passwordPlano == null ? "" : passwordPlano);
-        return repositorio.guardar(Usuario.crear(correoNormalizado, nombreCompleto, hash, roles));
+        Usuario nuevo = repositorio.guardar(Usuario.crear(correoNormalizado, nombreCompleto, hash, roles));
+        contar("usuarios.altas");
+        return nuevo;
     }
 
     /** Da de alta una cuenta con contraseña temporal: debe cambiarla antes de iniciar sesión. */
@@ -83,7 +93,9 @@ public class UsuarioService {
         if (!passwordEncoder.matches(passwordPlano == null ? "" : passwordPlano, usuario.getPasswordHash())) {
             boolean bloqueadoAhora = usuario.registrarIntentoFallido(ahora);
             repositorio.guardar(usuario);
+            contar("usuarios.login.fallidos");
             if (bloqueadoAhora) {
+                contar("usuarios.bloqueos");
                 publicador.publicar(new EventoDominio(
                         EVENTO_USUARIO_BLOQUEADO,
                         usuario.getId().toString(),
@@ -97,6 +109,7 @@ public class UsuarioService {
             throw new CambioPasswordRequeridoException();
         }
         usuario.registrarLoginExitoso();
+        contar("usuarios.login.exitosos");
         return repositorio.guardar(usuario);
     }
 
@@ -165,6 +178,7 @@ public class UsuarioService {
     public Usuario darDeBaja(UUID id) {
         Usuario usuario = obtener(id);
         usuario.darDeBaja();
+        contar("usuarios.bajas");
         return repositorio.guardar(usuario);
     }
 

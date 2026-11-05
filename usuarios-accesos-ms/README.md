@@ -107,7 +107,7 @@ curl -s http://usuarios-accesos-ms:8081/actuator/health
 
 Índice parcial `idx_outbox_pendientes` sobre eventos pendientes.
 
-**Columnas cifradas:** pendiente (ver sección 10).
+**Columnas cifradas:** `correo` y `nombre_completo` (ver sección 10). Al arrancar, `MigracionCifradoUsuarios` cifra los usuarios anteriores a la migración V5.
 
 ## 8. Migraciones
 - Flyway ejecuta los scripts de `src/main/resources/db/migration` al arrancar.
@@ -146,7 +146,7 @@ curl -s http://usuarios-accesos-ms:8081/actuator/health
 
 **Datos personales:** correo y nombre se enmascaran en las respuestas. Nunca se registran en logs.
 
-**Pendiente:** cifrado AES-256-GCM en columnas (ver `docs/diseno.md`).
+**Cifrado:** `correo` y `nombre_completo` se guardan con AES-256-GCM. El correo se busca por un índice HMAC-SHA256 en `correo_indice`. Claves: `USUARIOS_CIFRADO_CLAVE` y `USUARIOS_INDICE_CLAVE` (32 bytes en Base64).
 
 ## 11. API
 Documentación completa de endpoints en `docs/diseno.md`.
@@ -203,9 +203,9 @@ SELECT tipo, creado_utc, intentos FROM outbox_eventos WHERE publicado_utc IS NUL
 
 **Nunca se registra:** correo, nombre, contraseña, hash ni token.
 
-**Métricas:** las de Micrometer por defecto (HTTP, JVM, HikariCP) y las de Spring Kafka. Métricas de negocio: pendientes.
+**Métricas:** las de Micrometer por defecto (HTTP, JVM, HikariCP) y las de Spring Kafka. Métricas de negocio: `usuarios_altas_total`, `usuarios_bajas_total`, `usuarios_login_exitosos_total`, `usuarios_login_fallidos_total` y `usuarios_bloqueos_total`.
 
-**Trazas:** pendientes. Se integrarán con el servicio de trazas de la plataforma (ver pendientes generales).
+**Trazas:** OpenTelemetry exportado por OTLP a Jaeger (`TRAZAS_OTLP_ENDPOINT`), con muestreo al 100 %.
 
 ## 16. Pruebas
 | Comando | Qué ejecuta | Requiere Docker |
