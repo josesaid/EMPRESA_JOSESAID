@@ -37,7 +37,11 @@ Revisión al 2026-11-05.
 
 **Pendiente.**
 
-- [x] Decidir qué herramientas adoptar (decisión parcial: JaCoCo 60%; Sonar fuera de esta fase): PMD y Checkstyle para estilo y errores comunes, JaCoCo para cobertura, SpotBugs para errores de seguridad en el bytecode, SonarQube o SonarCloud para el panel, y OWASP Dependency-Check para vulnerabilidades en dependencias.
+- [x] Decidir qué herramientas adoptar (decisión parcial: JaCoCo 60%; Sonar fuera de esta fase):
+  - [x] JaCoCo 0.8.12 en modo reporte: umbral de 60% de líneas a nivel bundle, sin romper el build (`haltOnFailure=false`).
+  - [x] Checkstyle, PMD (con CPD) y SpotBugs en `verify`, en modo reporte (`failOnViolation=false`).
+  - [x] OWASP Dependency-Check en el perfil `seguridad-dependencias` (`mvn verify -Pseguridad-dependencias`), porque descarga la base NVD y tarda. Falla solo con CVSS 11 o superior, y en modo reporte no corta el build.
+  - [ ] Verificar el build con `mvn verify` en cada módulo. No se pudo correr en el entorno de trabajo. PMD y Checkstyle para estilo y errores comunes, JaCoCo para cobertura, SpotBugs para errores de seguridad en el bytecode, SonarQube o SonarCloud para el panel, y OWASP Dependency-Check para vulnerabilidades en dependencias.
 - [ ] Definir umbrales de cobertura y de hallazgos por servicio.
 - [ ] Revisar aspectos de seguridad en los microservicios:
   - [ ] Vulnerabilidades en dependencias y versiones de Spring Boot y de librerías.
