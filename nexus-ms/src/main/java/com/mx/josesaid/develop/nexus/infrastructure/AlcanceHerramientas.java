@@ -55,6 +55,7 @@ final class AlcanceHerramientas {
             Map.entry("consultar_documentos_por_vencer", ROLES_DOCUMENTOS),
             Map.entry("consultar_usuario", ROLES_USUARIOS),
             Map.entry("preparar_alta_usuario", ROLES_USUARIOS),
+            Map.entry("listar_usuarios", ROLES_USUARIOS),
             Map.entry("buscar_proveedores", ROLES_PROVEEDORES),
             Map.entry("buscar_comprobante_por_folio", ROLES_COMPROBANTES),
             Map.entry("listar_polizas", ROLES_CONTABILIDAD),

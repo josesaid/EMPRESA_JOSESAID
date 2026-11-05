@@ -51,6 +51,13 @@ public class UsuarioRepositorioJpa implements UsuarioRepositorio {
         return jpa.existsByCorreoIndice(IndiceCorreo.de(correoNormalizado));
     }
 
+    @Override
+    public java.util.List<Usuario> listarRecientes(int limite) {
+        return jpa.findAllByOrderByCreadoUtcDesc(org.springframework.data.domain.PageRequest.of(0, limite)).stream()
+                .map(UsuarioRepositorioJpa::toDominio)
+                .toList();
+    }
+
     private static Usuario toDominio(UsuarioEntity e) {
         return Usuario.reconstruir(
                 e.getId(),

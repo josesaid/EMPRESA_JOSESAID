@@ -103,4 +103,16 @@ public final class HerramientasUsuarios {
             throw new IllegalStateException("No se pudo serializar el alta", e);
         }
     }
+
+    @Tool(name = "listar_usuarios",
+          description = "Lista los últimos 15 usuarios, del más reciente al más antiguo: correo y nombre enmascarados, "
+                  + "estatus, roles y área. Solo para administradores.")
+    public String listarUsuarios() {
+        RegistroHerramientasUsadas.registrar("listar_usuarios");
+        String cuerpo = gateway.get()
+                .uri(RUTA_BASE + "/usuarios")
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }
