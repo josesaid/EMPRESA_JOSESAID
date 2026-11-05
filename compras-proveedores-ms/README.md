@@ -6,7 +6,7 @@ Microservicio del área **Compras y proveedores**. Administra proveedores con da
 
 - **Servicio:** compras-proveedores-ms · **Versión:** 0.1.0 · **Lenguaje:** Java 21 · **Framework:** Spring Boot 4.1.2
 - **Acceso:** vía gateway, sin puerto publicado (contenedor: contenedor: 8081) · **Base de datos:** `compras`
-- **Responsable:** pendiente de asignar · **Estado:** funcional; monto límite de aprobación pendiente de confirmar (sección 20)
+- **Responsable:** pendiente de asignar · **Estado:** funcional; monto límite de aprobación definido y configurable (sección 10)
 
 ## 2. Propósito y alcance
 
@@ -51,6 +51,8 @@ compras-proveedores-ms/
 | `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |
 | `COMPRAS_CIFRADO_CLAVE` | Sí (Compose) | Clave AES-256 en base64 (32 bytes). Si se pierde, los RFC cifrados no se recuperan. |
 | `COMPRAS_INDICE_CLAVE` | Sí (Compose) | Clave HMAC en base64 para buscar RFC. Si cambia, la búsqueda por RFC deja de encontrar proveedores existentes. |
+| `COMPRAS_LIMITE_APROBACION_USD` | No | Monto en USD (entero mayor a cero) desde el que solo DIRECCION aprueba una orden. Por defecto 1000000. |
+| `COMPRAS_TIPO_CAMBIO_MXN_USD` | No | Tipo de cambio para convertir órdenes en MXN a USD antes de compararlas con el límite. Por defecto 18. |
 
 Las claves de cifrado nunca se escriben en el código ni en el repositorio. Guárdalas en `.env` y respáldalas fuera de la máquina.
 
@@ -103,6 +105,13 @@ Una orden aprobada no se modifica. Una orden recibida o cancelada no admite más
 - **FINANZAS:** consulta proveedores.
 - **Datos sensibles:** RFC y correo se cifran con AES-256-GCM. En las respuestas el RFC se enmascara (`AAN*******B3`) y el correo muestra solo la primera letra y el dominio.
 
+### Reglas de aprobación
+
+- Nadie aprueba una orden que creó (403).
+- Una orden creada antes de registrar su creador solo la aprueba DIRECCION (403 para cualquier otro rol).
+- Por debajo del límite, COMPRAS aprueba. Desde el límite en adelante solo aprueba DIRECCION; COMPRAS recibe 403.
+- El límite por defecto es 1,000,000 USD. Las órdenes en MXN se convierten con `COMPRAS_TIPO_CAMBIO_MXN_USD` antes de compararse. `COMPRAS_LIMITE_APROBACION_USD` debe ser un entero mayor a cero; si no lo es, el servicio no arranca.
+
 ## 11. API
 
 Base: `/v1`
@@ -113,7 +122,7 @@ Base: `/v1`
 | GET | `/proveedores/{id}` | COMPRAS, FINANZAS | 200 | 404 |
 | POST | `/ordenes-compra` | COMPRAS | 201 | 400, 404, 422 (proveedor inactivo) |
 | GET | `/ordenes-compra/{id}` (añadido) | COMPRAS, ALMACEN, DIRECCION | 200 | 404 |
-| POST | `/ordenes-compra/{id}/aprobacion` | DIRECCION | 200 | 404, 409 |
+| POST | `/ordenes-compra/{id}/aprobacion` | COMPRAS, DIRECCION (reglas en sección 10) | 200 | 403, 404, 409 |
 | POST | `/ordenes-compra/{id}/recepciones` | ALMACEN | 201 | 400, 404, 409 (excede lo ordenado), 422 (SKU ajeno) |
 | POST | `/ordenes-compra/{id}/cancelacion` | COMPRAS | 200 | 400 (sin motivo), 404, 409 |
 
@@ -180,7 +189,8 @@ Las migraciones no revierten solas. Para volver atrás, despliega la imagen ante
 ## 20. Decisiones y pendientes
 
 - **Añadido:** `GET /ordenes-compra/{id}`, para consultar el estado de cada compra.
-- **Pendiente:** confirmar quién aprueba y el monto límite de aprobación. Hoy solo DIRECCION aprueba, sin límite.
+- **Decisión:** monto límite de aprobación de 1,000,000 USD, configurable con `COMPRAS_LIMITE_APROBACION_USD`. Por debajo aprueba COMPRAS; desde el límite, solo DIRECCION.
+- **Pendiente:** responsable del servicio.
 - **Pendiente:** endpoints para cambiar el estatus del proveedor (inactivar o bloquear). Hoy todos nacen `ACTIVO`.
 - **Pendiente:** rotación de claves de cifrado con re-cifrado de datos.
 - **Pendiente:** pago a proveedores desde facturacion-pagos-ms y portal de proveedores.
@@ -209,7 +219,7 @@ El alta de `POST /v1/ordenes-compra` acepta la cabecera opcional `Idempotency-Ke
 - **Misma clave mientras la primera petición sigue en proceso:** responde `409` (`conflicto-de-estado`).
 - **Sin la cabecera:** la petición se procesa como siempre.
 
-Las claves se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar.
+Las respuestas completadas se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar. Si la petición se interrumpe a medio camino y la clave queda en proceso, un nuevo intento con la misma clave la retoma pasados 2 minutos; antes de eso responde 409.
 
 
 ## Indicadores para reportes ejecutivos

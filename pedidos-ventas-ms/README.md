@@ -251,7 +251,7 @@ El alta de `POST /v1/pedidos` acepta la cabecera opcional `Idempotency-Key`. Ús
 - **Misma clave mientras la primera petición sigue en proceso:** responde `409` (`conflicto-de-estado`).
 - **Sin la cabecera:** la petición se procesa como siempre.
 
-Las claves se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar.
+Las respuestas completadas se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar. Si la petición se interrumpe a medio camino y la clave queda en proceso, un nuevo intento con la misma clave la retoma pasados 2 minutos; antes de eso responde 409.
 
 
 ## Indicadores para reportes ejecutivos

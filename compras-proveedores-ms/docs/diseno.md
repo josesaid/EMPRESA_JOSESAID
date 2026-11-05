@@ -48,11 +48,11 @@ JWT emitido por usuarios-accesos-ms. Cada rol hace solo lo suyo: COMPRAS crea, D
 |---|---|
 | Pérdida de la clave de cifrado | Respaldo fuera de la máquina y procedimiento de rotación pendiente. |
 | Cambio de la clave HMAC rompe búsquedas | La clave HMAC se trata como la clave de cifrado: se respalda y no se cambia sin migrar. |
-| Aprobación sin límite de monto | Pendiente de confirmar con Dirección. |
+| Aprobación sin límite de monto | Límite de 1,000,000 USD configurable (`COMPRAS_LIMITE_APROBACION_USD`); desde ese monto solo DIRECCION aprueba. |
 
 ## 9. Decisiones pendientes
 
-1. Quién aprueba y el monto límite.
+1. Responsable del servicio. El monto límite ya está definido (1,000,000 USD, configurable).
 2. Endpoints para inactivar o bloquear proveedores.
 3. Rotación de claves con re-cifrado.
 4. Pagos a proveedores desde facturación.

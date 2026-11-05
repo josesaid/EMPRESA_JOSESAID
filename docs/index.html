@@ -225,7 +225,7 @@
       </div>
       <div class="card">
         <h3>Escrituras idempotentes</h3>
-        <p>Encabezado opcional <code>Idempotency-Key</code> en pedidos, pagos, pólizas, movimientos de inventario y órdenes de compra. Una petición repetida devuelve la respuesta original; las claves son válidas por 24 horas.</p>
+        <p>Encabezado opcional <code>Idempotency-Key</code> en pedidos, pagos, pólizas, movimientos de inventario y órdenes de compra. Una petición repetida devuelve la respuesta original; las respuestas completadas se conservan 24 horas; una clave interrumpida se retoma pasados 2 minutos.</p>
       </div>
       <div class="card">
         <h3>Datos sensibles cifrados</h3>

@@ -206,6 +206,10 @@ Imagen multi-etapa (Maven para compilar, JRE 21 para ejecutar), usuario sin priv
 - Variables `EUREKA_USUARIO` y `EUREKA_PASSWORD`: obligatorias en Docker; el Compose arma la URL de registro `http://USUARIO:CLAVE@discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://USUARIO:CLAVE@localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.
 
 
+## Tasa de IVA
+
+El servidor fija la tasa según la fecha de creación del comprobante (en borrador): 16 % si es anterior al 1 de noviembre de 2026 y 8 % (tasa fronteriza) desde esa fecha, para todas las operaciones. El cliente no envía la tasa, y el comprobante conserva la tasa con la que se creó.
+
 ## Idempotencia de altas (`Idempotency-Key`)
 
 El alta de `POST /v1/comprobantes/{id}/pagos` acepta la cabecera opcional `Idempotency-Key`. Úsela cuando un reintento no debe crear el registro dos veces (por ejemplo, si se cortó la conexión y no sabe si la petición llegó).
@@ -215,7 +219,7 @@ El alta de `POST /v1/comprobantes/{id}/pagos` acepta la cabecera opcional `Idemp
 - **Misma clave mientras la primera petición sigue en proceso:** responde `409` (`conflicto-de-estado`).
 - **Sin la cabecera:** la petición se procesa como siempre.
 
-Las claves se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar.
+Las respuestas completadas se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar. Si la petición se interrumpe a medio camino y la clave queda en proceso, un nuevo intento con la misma clave la retoma pasados 2 minutos; antes de eso responde 409.
 
 
 ## Indicadores para reportes ejecutivos

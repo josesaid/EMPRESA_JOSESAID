@@ -116,7 +116,7 @@ curl -s http://usuarios-accesos-ms:8081/actuator/health
 
 ## 9. Máquinas de estado
 **Estatus del usuario:**
-- `ACTIVO → BLOQUEADO` al quinto intento fallido. Vuelve a `ACTIVO` cuando vence el bloqueo o tras un login correcto.
+- `ACTIVO → BLOQUEADO` al quinto intento fallido consecutivo. El bloqueo dura 15 minutos y luego la cuenta vuelve a `ACTIVO`. Un login correcto reinicia el contador de intentos fallidos.
 - `ACTIVO` o `BLOQUEADO → BAJA` con el endpoint de baja.
 - `BAJA` es final. Transiciones prohibidas: cualquier cambio desde `BAJA`.
 
@@ -139,6 +139,8 @@ curl -s http://usuarios-accesos-ms:8081/actuator/health
 |---|---|
 | ADMIN | Crear, consultar, asignar roles y dar de baja usuarios |
 | Otros roles | Sin acceso a los endpoints de administración; su token es válido en otros servicios |
+
+Roles retirados y su reemplazo: VENDEDOR y GERENTE_VENTAS pasaron a VENTAS; ADMIN_CLIENTES a ADMIN; RESPONSABLE_PROTECCION_DATOS a LEGAL.
 
 **Respuestas:**
 - 401: token ausente, inválido o credenciales incorrectas.
