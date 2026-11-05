@@ -30,15 +30,21 @@ public class ComprasService {
     private final RecepcionRepositorio recepciones;
     private final PublicadorEventos eventos;
     private final BigDecimal tipoCambioMxnPorUsd;
+    private final BigDecimal limiteAprobacionUsd;
 
     public ComprasService(ProveedorRepositorio proveedores, OrdenCompraRepositorio ordenes,
                           RecepcionRepositorio recepciones, PublicadorEventos eventos,
-                          @Value("${compras.tipo-cambio-mxn-por-usd:18}") BigDecimal tipoCambioMxnPorUsd) {
+                          @Value("${compras.tipo-cambio-mxn-por-usd:18}") BigDecimal tipoCambioMxnPorUsd,
+                          @Value("${compras.limite-aprobacion-usd:1000000}") BigDecimal limiteAprobacionUsd) {
+        if (limiteAprobacionUsd.signum() <= 0 || limiteAprobacionUsd.stripTrailingZeros().scale() > 0) {
+            throw new IllegalArgumentException("compras.limite-aprobacion-usd debe ser un monto entero mayor a cero en USD");
+        }
         this.proveedores = proveedores;
         this.ordenes = ordenes;
         this.recepciones = recepciones;
         this.eventos = eventos;
         this.tipoCambioMxnPorUsd = tipoCambioMxnPorUsd;
+        this.limiteAprobacionUsd = limiteAprobacionUsd;
     }
 
     @Transactional
@@ -79,7 +85,7 @@ public class ComprasService {
     @Transactional
     public OrdenCompra aprobarOrden(UUID id, String usuario, boolean esDireccion) {
         OrdenCompra orden = obtenerOrden(id);
-        orden.aprobar(usuario, esDireccion, tipoCambioMxnPorUsd);
+        orden.aprobar(usuario, esDireccion, tipoCambioMxnPorUsd, limiteAprobacionUsd);
         OrdenCompra guardada = ordenes.guardar(orden);
         eventos.publicar(new EventoDominio(EVENTO_ORDEN_APROBADA, id.toString(), Map.of(
                 "id", id.toString(),

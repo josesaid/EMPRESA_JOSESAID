@@ -74,3 +74,5 @@ eureka:
 compras:
   # Tipo de cambio para comparar órdenes en MXN contra el límite de aprobación en USD.
   tipo-cambio-mxn-por-usd: ${COMPRAS_TIPO_CAMBIO_MXN_USD:18}
+  # Órdenes en USD iguales o mayores a este monto (entero) solo las aprueba DIRECCION.
+  limite-aprobacion-usd: ${COMPRAS_LIMITE_APROBACION_USD:1000000}
