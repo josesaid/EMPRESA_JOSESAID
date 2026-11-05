@@ -23,8 +23,8 @@ public class Usuario {
             "VENTAS_ATENCION_CLIENTES", "FINANZAS_CONTABILIDAD", "OPERACIONES",
             "COMPRAS_PROVEEDORES", "ADMINISTRACION_LEGAL", "DIRECCION_GENERAL");
 
-    /** Duración del bloqueo temporal (propuesta, por validar). */
-    public static final Duration DURACION_BLOQUEO = Duration.ofMinutes(15);
+    /** Duración del bloqueo temporal (decisión de Said Olano, 2026-11-05). */
+    public static final Duration DURACION_BLOQUEO = Duration.ofMinutes(5);
 
     private final UUID id;
     private String correo;

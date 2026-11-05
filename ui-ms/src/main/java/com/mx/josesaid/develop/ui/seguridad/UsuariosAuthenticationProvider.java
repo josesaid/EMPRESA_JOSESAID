@@ -33,7 +33,7 @@ public class UsuariosAuthenticationProvider implements AuthenticationProvider {
         String correo = intento.getName();
         String password = String.valueOf(intento.getCredentials());
         if (bloqueos.bloqueado(correo)) {
-            throw new BloqueoLoginException("Demasiados intentos. Intenta de nuevo en 15 minutos.");
+            throw new BloqueoLoginException("Demasiados intentos. Intenta de nuevo en 5 minutos.");
         }
 
         RespuestaLogin respuesta;

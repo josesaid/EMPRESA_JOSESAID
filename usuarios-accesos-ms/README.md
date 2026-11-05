@@ -116,7 +116,7 @@ curl -s http://usuarios-accesos-ms:8081/actuator/health
 
 ## 9. Máquinas de estado
 **Estatus del usuario:**
-- `ACTIVO → BLOQUEADO` al quinto intento fallido consecutivo. El bloqueo dura 15 minutos y luego la cuenta vuelve a `ACTIVO`. Un login correcto reinicia el contador de intentos fallidos.
+- `ACTIVO → BLOQUEADO` al quinto intento fallido consecutivo. El bloqueo dura 5 minutos y luego la cuenta vuelve a `ACTIVO`. Un login correcto reinicia el contador de intentos fallidos.
 - `ACTIVO` o `BLOQUEADO → BAJA` con el endpoint de baja.
 - `BAJA` es final. Transiciones prohibidas: cualquier cambio desde `BAJA`.
 
@@ -237,7 +237,7 @@ Este servicio se despliega primero, porque emite los tokens que usan los demás.
 |---|---|---|
 | 401 en todas las rutas | No se puede leer `JWT_JWKS_URI` | Verifique que usuarios-accesos-ms esté arriba y que `/.well-known/jwks.json` responda |
 | 401 con contraseña correcta | Cuenta bloqueada o dada de baja | Revisar `estatus` y `bloqueado_hasta` en la tabla usuarios |
-| 423 Locked | Cinco intentos fallidos | Esperar 15 minutos o desbloquear desde la base de datos |
+| 423 Locked | Cinco intentos fallidos | Esperar 5 minutos o desbloquear desde la base de datos |
 | 403 en endpoints de usuarios | El token no tiene rol ADMIN | Iniciar sesión con un usuario ADMIN |
 | Flyway falla al arrancar | Migración con error o base de datos inconsistente | Revisar `flyway_schema_history` y la migración indicada en el log |
 | Eventos pendientes no salen | Kafka no responde | Revisar `KAFKA_BOOTSTRAP` y el estado de Kafka |
@@ -246,7 +246,7 @@ Este servicio se despliega primero, porque emite los tokens que usan los demás.
 ## 20. Decisiones y pendientes
 **Decisiones tomadas:**
 - BCrypt para contraseñas. Motivo: disponible en Spring Security sin dependencias extra. Argon2 queda pendiente.
-- Bloqueo de 15 minutos tras 5 intentos. Propuesta: pendiente de validación de seguridad.
+- Bloqueo de 5 minutos tras 5 intentos (decisión de Said Olano, 2026-11-05).
 - Administrador inicial por variables de entorno, para resolver el arranque en frío.
 
 **Pendientes (responsable: equipo de identidad):**

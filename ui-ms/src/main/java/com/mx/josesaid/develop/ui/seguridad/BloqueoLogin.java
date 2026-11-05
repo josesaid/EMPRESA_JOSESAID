@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class BloqueoLogin {
 
     static final int MAX_FALLOS = 5;
-    static final Duration DURACION = Duration.ofMinutes(15);
+    static final Duration DURACION = Duration.ofMinutes(5);
 
     private final Map<String, Estado> estados = new ConcurrentHashMap<>();
 

@@ -97,7 +97,7 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [ ] Rotación de la clave RS256
 - [ ] Área por usuario y rol JEFE_AREA
 - [ ] Contraseña temporal
-- [ ] Bloqueo de 15 minutos tras 5 intentos fallidos
+- [x] Bloqueo de 5 minutos tras 5 intentos fallidos (decisión de Said Olano, 2026-11-05)
 
 ### gateway-ms (1)
 - [ ] Validación de JWT y enrutamiento

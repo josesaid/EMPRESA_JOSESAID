@@ -15,7 +15,7 @@ El código se organiza en capas, y la regla de negocio no depende de la infraest
 Se separa el modelo de dominio (`Usuario`) del modelo de persistencia (`UsuarioEntity`) para que las reglas de bloqueo y baja no dependan del ORM.
 
 ## Reglas de negocio clave
-- Cinco contraseñas incorrectas bloquean la cuenta 15 minutos (propuesta, por validar).
+- Cinco contraseñas incorrectas bloquean la cuenta 5 minutos (decisión de Said Olano, 2026-11-05).
 - La baja es definitiva: no se reactiva; se crea un usuario nuevo.
 - Todo cambio de roles exige motivo y genera el evento `rol-asignado`.
 - Credenciales incorrectas, usuario inexistente o dado de baja devuelven el mismo mensaje, para no revelar qué usuarios existen.
