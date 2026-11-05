@@ -30,6 +30,15 @@ class MovimientoRepositorioJpa implements MovimientoRepositorio {
     }
 
     @Override
+    public List<MovimientoInventario> listarRecientesDeArticulo(java.util.UUID articuloId, int limite) {
+        return jpa.findByArticuloIdOrderByCreadoUtcDesc(articuloId,
+                        org.springframework.data.domain.PageRequest.of(0, limite)).stream()
+                .map(e -> MovimientoInventario.reconstruir(e.id, e.articuloId, e.almacenId, e.tipo, e.cantidad,
+                        e.lote, e.referencia, e.creadoUtc))
+                .toList();
+    }
+
+    @Override
     public List<MovimientoInventario> buscarPorLote(String lote) {
         return jpa.findByLoteOrderByCreadoUtcAsc(lote).stream()
                 .map(e -> MovimientoInventario.reconstruir(e.id, e.articuloId, e.almacenId, e.tipo, e.cantidad,

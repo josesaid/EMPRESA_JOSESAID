@@ -79,6 +79,13 @@ public class InventarioControlador {
         return servicio.listarBajoMinimo(15).stream().map(ArticuloBajoMinimoRespuesta::de).toList();
     }
 
+    /** Últimos 15 movimientos de un artículo, del más reciente al más antiguo. */
+    @GetMapping("/movimientos")
+    @PreAuthorize("hasAnyRole('ALMACEN','COMPRAS')")
+    public List<MovimientoRespuesta> movimientosDeArticulo(@RequestParam UUID articulo) {
+        return servicio.movimientosDeArticulo(articulo).stream().map(MovimientoRespuesta::de).toList();
+    }
+
     @GetMapping("/existencias")
     @PreAuthorize("hasAnyRole('ALMACEN','COMPRAS','VENTAS')")
     public List<ExistenciaRespuesta> existencias(@RequestParam UUID articulo) {

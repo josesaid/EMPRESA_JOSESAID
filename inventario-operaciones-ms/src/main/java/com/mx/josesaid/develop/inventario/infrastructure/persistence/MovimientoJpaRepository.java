@@ -6,4 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 interface MovimientoJpaRepository extends JpaRepository<MovimientoInventarioEntity, UUID> {
     List<MovimientoInventarioEntity> findByLoteOrderByCreadoUtcAsc(String lote);
+
+    List<MovimientoInventarioEntity> findByArticuloIdOrderByCreadoUtcDesc(UUID articuloId,
+                                                                          org.springframework.data.domain.Pageable pageable);
 }
