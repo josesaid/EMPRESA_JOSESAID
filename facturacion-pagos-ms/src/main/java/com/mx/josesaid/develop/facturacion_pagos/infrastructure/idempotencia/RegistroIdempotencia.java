@@ -9,11 +9,16 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-/** Guarda el estado de cada clave Idempotency-Key durante 24 horas. */
+/**
+ * Guarda el estado de cada clave Idempotency-Key. Una respuesta completada se conserva 24 horas.
+ * Una reserva que nunca se completó (la petición murió a medio camino) se puede retomar tras
+ * {@link #CONCESION_RESERVA}, para que la clave no quede bloqueada todo el día.
+ */
 @Repository
 class RegistroIdempotencia {
 
     static final Duration VIGENCIA = Duration.ofHours(24);
+    static final Duration CONCESION_RESERVA = Duration.ofMinutes(2);
 
     record Registro(String huella, int estatus, String cuerpo, boolean completada) {}
 
@@ -32,7 +37,10 @@ class RegistroIdempotencia {
                 clave, enTiempo(vencimiento())).stream().findFirst();
     }
 
-    /** Reserva la clave. Devuelve false si ya existe: otra petición la tiene o ya terminó. */
+    /**
+     * Reserva la clave. Devuelve false si otra petición la tiene en curso o ya terminó.
+     * Si la reserva existente nunca se completó y su concesión venció, la retoma.
+     */
     boolean reservar(String clave, String huella) {
         jdbc.update("DELETE FROM idempotencia WHERE creado_utc <= ?", enTiempo(vencimiento()));
         try {
@@ -40,8 +48,17 @@ class RegistroIdempotencia {
                     clave, huella, enTiempo(reloj.instant()));
             return true;
         } catch (DuplicateKeyException e) {
-            return false;
+            return retomarReservaVencida(clave, huella);
         }
+    }
+
+    /** Solo una petición gana la retoma: el UPDATE es condicional, así que es atómico. */
+    private boolean retomarReservaVencida(String clave, String huella) {
+        Instant ahora = reloj.instant();
+        int filas = jdbc.update(
+                "UPDATE idempotencia SET huella = ?, creado_utc = ? WHERE clave = ? AND completada = FALSE AND creado_utc <= ?",
+                huella, enTiempo(ahora), clave, enTiempo(ahora.minus(CONCESION_RESERVA)));
+        return filas == 1;
     }
 
     void completar(String clave, int estatus, String cuerpo) {
