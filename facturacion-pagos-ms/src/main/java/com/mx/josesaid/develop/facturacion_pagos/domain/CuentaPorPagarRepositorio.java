@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.facturacion_pagos.domain;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,4 +12,7 @@ public interface CuentaPorPagarRepositorio {
     Optional<CuentaPorPagar> buscarPorId(UUID id);
 
     Optional<CuentaPorPagar> buscarPorOrdenId(UUID ordenId);
+
+    /** Pagos más recientes primero, por fecha de pago y luego por registro. */
+    List<PagoResumen> listarPagosRecientes(int limite);
 }

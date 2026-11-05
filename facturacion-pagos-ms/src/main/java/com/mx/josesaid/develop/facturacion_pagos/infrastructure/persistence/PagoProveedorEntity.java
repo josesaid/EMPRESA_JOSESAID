@@ -52,4 +52,8 @@ public class PagoProveedorEntity {
     public BigDecimal getMonto() { return monto; }
     public LocalDate getFechaPago() { return fechaPago; }
     public String getReferencia() { return referencia; }
+
+    public CuentaPorPagarEntity getCuenta() {
+        return cuenta;
+    }
 }

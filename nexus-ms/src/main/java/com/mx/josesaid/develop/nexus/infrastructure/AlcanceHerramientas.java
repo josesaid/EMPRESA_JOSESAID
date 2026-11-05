@@ -29,6 +29,7 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_CONTABILIDAD = Set.of("ROLE_CONTADOR", "ROLE_DIRECCION");
     private static final Set<String> ROLES_COMPROBANTES = Set.of("ROLE_FINANZAS", "ROLE_VENTAS");
     private static final Set<String> ROLES_PROVEEDORES = Set.of("ROLE_COMPRAS", "ROLE_FINANZAS");
+    private static final Set<String> ROLES_PAGOS_PROVEEDOR = Set.of("ROLE_FINANZAS");
     private static final Set<String> ROLES_ORDENES_COMPRA = Set.of("ROLE_COMPRAS", "ROLE_ALMACEN", "ROLE_DIRECCION");
     // Roles que aparecen en alguna política. Un rol nuevo debe agregarse aquí y en la política correspondiente.
     private static final Set<String> ROLES_POLITICAS = Set.of("ROLE_COMPRAS", "ROLE_DIRECCION");
@@ -47,6 +48,7 @@ final class AlcanceHerramientas {
             Map.entry("consultar_orden_compra", ROLES_ORDENES_COMPRA),
             Map.entry("listar_ordenes_compra", ROLES_ORDENES_COMPRA),
             Map.entry("consultar_comprobante", ROLES_COMPROBANTES),
+            Map.entry("listar_pagos_proveedor", ROLES_PAGOS_PROVEEDOR),
             Map.entry("consultar_poliza", ROLES_CONTABILIDAD),
             Map.entry("consultar_estados_financieros", ROLES_CONTABILIDAD),
             Map.entry("consultar_existencias", ROLES_EXISTENCIAS),

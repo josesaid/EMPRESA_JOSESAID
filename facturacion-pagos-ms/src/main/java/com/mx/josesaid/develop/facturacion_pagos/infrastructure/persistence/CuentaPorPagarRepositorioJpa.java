@@ -3,9 +3,11 @@ package com.mx.josesaid.develop.facturacion_pagos.infrastructure.persistence;
 import com.mx.josesaid.develop.facturacion_pagos.domain.CuentaPorPagar;
 import com.mx.josesaid.develop.facturacion_pagos.domain.CuentaPorPagarRepositorio;
 import com.mx.josesaid.develop.facturacion_pagos.domain.PagoProveedor;
+import com.mx.josesaid.develop.facturacion_pagos.domain.PagoResumen;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 /** Adaptador que implementa el puerto de dominio con JPA. */
@@ -13,9 +15,19 @@ import org.springframework.stereotype.Component;
 class CuentaPorPagarRepositorioJpa implements CuentaPorPagarRepositorio {
 
     private final CuentaPorPagarJpaRepository jpa;
+    private final PagoProveedorJpaRepository pagos;
 
-    CuentaPorPagarRepositorioJpa(CuentaPorPagarJpaRepository jpa) {
+    CuentaPorPagarRepositorioJpa(CuentaPorPagarJpaRepository jpa, PagoProveedorJpaRepository pagos) {
         this.jpa = jpa;
+        this.pagos = pagos;
+    }
+
+    @Override
+    public List<PagoResumen> listarPagosRecientes(int limite) {
+        return pagos.findAllByOrderByFechaPagoDescCreadoUtcDesc(PageRequest.of(0, limite)).stream()
+                .map(p -> new PagoResumen(p.getId(), p.getCuenta().getId(), p.getMonto(), p.getFechaPago(),
+                        p.getReferencia()))
+                .toList();
     }
 
     @Override
