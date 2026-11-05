@@ -3,10 +3,12 @@ package com.mx.josesaid.develop.facturacion_pagos.application;
 import com.mx.josesaid.develop.facturacion_pagos.domain.CuentaPorPagar;
 import com.mx.josesaid.develop.facturacion_pagos.domain.CuentaPorPagarRepositorio;
 import com.mx.josesaid.develop.facturacion_pagos.domain.PagoProveedor;
+import com.mx.josesaid.develop.facturacion_pagos.domain.PagoResumen;
 import com.mx.josesaid.develop.facturacion_pagos.domain.RecursoNoEncontradoException;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CuentasPorPagarService {
 
     public static final String EVENTO_PAGO_PROVEEDOR_REGISTRADO = "pago-proveedor-registrado";
+    static final int LIMITE_LISTADO_PAGOS = 15;
 
     private final CuentaPorPagarRepositorio cuentas;
     private final PublicadorEventos eventos;
@@ -51,6 +54,12 @@ public class CuentasPorPagarService {
                 "monto", pago.getMonto().toPlainString(),
                 "saldo", guardada.saldo().toPlainString())));
         return guardada;
+    }
+
+    /** Últimos pagos registrados, para el listado de finanzas y el asistente. */
+    @Transactional(readOnly = true)
+    public List<PagoResumen> listarPagosRecientes() {
+        return cuentas.listarPagosRecientes(LIMITE_LISTADO_PAGOS);
     }
 
     @Transactional(readOnly = true)
