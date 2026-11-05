@@ -37,7 +37,7 @@ Revisión al 2026-11-05.
 
 **Pendiente.**
 
-- [ ] Decidir qué herramientas adoptar: PMD y Checkstyle para estilo y errores comunes, JaCoCo para cobertura, SpotBugs para errores de seguridad en el bytecode, SonarQube o SonarCloud para el panel, y OWASP Dependency-Check para vulnerabilidades en dependencias.
+- [x] Decidir qué herramientas adoptar (decisión parcial: JaCoCo 60%; Sonar fuera de esta fase): PMD y Checkstyle para estilo y errores comunes, JaCoCo para cobertura, SpotBugs para errores de seguridad en el bytecode, SonarQube o SonarCloud para el panel, y OWASP Dependency-Check para vulnerabilidades en dependencias.
 - [ ] Definir umbrales de cobertura y de hallazgos por servicio.
 - [ ] Revisar aspectos de seguridad en los microservicios:
   - [ ] Vulnerabilidades en dependencias y versiones de Spring Boot y de librerías.
@@ -49,5 +49,11 @@ Revisión al 2026-11-05.
   - [ ] Imágenes de contenedor: usuario no privilegiado, imagen base actualizada y escaneo de imágenes.
   - [ ] TLS entre servicios y fuera de la red de Docker.
   - [ ] Procedimiento de rotación y respaldo de claves, con su prueba.
+
+**Decisiones tomadas por Said Olano (2026-11-05):**
+
+- JaCoCo con mínimo de cobertura del 60%. Se empieza en modo de reporte antes de exigirlo en el build.
+- SonarQube/SonarCloud queda fuera de esta fase. Se conserva como herramienta opcional para revisar más adelante, sin decisión pendiente.
+- Bloqueo de cuenta de 5 minutos tras 5 intentos fallidos consecutivos (antes 15 minutos, propuesta no validada). Decisión cerrada; el equipo no volverá a decidir este punto. Aplica al backend (`usuarios-accesos-ms`) y a la UI (`ui-ms`). La vigencia del access token (15 minutos) no cambia.
 
 **Total: 7 decisiones de herramientas y 9 aspectos de seguridad por evaluar.**
