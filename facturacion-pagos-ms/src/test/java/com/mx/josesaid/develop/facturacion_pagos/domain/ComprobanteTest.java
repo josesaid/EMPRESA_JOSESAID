@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class ComprobanteTest {
 
     private static Comprobante borrador() {
-        return Comprobante.crearBorrador(UUID.randomUUID(), "MXN", new BigDecimal("1000"), new BigDecimal("0.16"));
+        return Comprobante.crearBorrador(UUID.randomUUID(), "MXN", new BigDecimal("1000"), LocalDate.of(2026, 1, 15));
     }
 
     @Test
@@ -25,7 +25,7 @@ class ComprobanteTest {
 
     @Test
     void rechazaMonedaNoPermitida() {
-        assertThatThrownBy(() -> Comprobante.crearBorrador(UUID.randomUUID(), "EUR", BigDecimal.TEN, BigDecimal.ZERO))
+        assertThatThrownBy(() -> Comprobante.crearBorrador(UUID.randomUUID(), "EUR", BigDecimal.TEN, LocalDate.of(2026, 1, 15)))
                 .isInstanceOf(ReglaDeNegocioException.class);
     }
 

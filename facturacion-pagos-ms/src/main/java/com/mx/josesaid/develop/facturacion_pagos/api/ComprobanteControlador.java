@@ -48,7 +48,7 @@ public class ComprobanteControlador {
     @PreAuthorize("hasRole('FINANZAS')")
     public ComprobanteRespuesta crear(@Valid @RequestBody CrearComprobanteSolicitud solicitud) {
         return ComprobanteRespuesta.de(servicio.crearBorrador(
-                solicitud.ordenId(), solicitud.moneda(), solicitud.subtotal(), solicitud.tasaIva()));
+                solicitud.ordenId(), solicitud.moneda(), solicitud.subtotal()));
     }
 
     @GetMapping(params = "folio")
@@ -88,8 +88,7 @@ public class ComprobanteControlador {
     public record CrearComprobanteSolicitud(
             @NotNull UUID ordenId,
             @NotBlank String moneda,
-            @NotNull @Positive BigDecimal subtotal,
-            @NotNull @DecimalMin("0") @DecimalMax("1") BigDecimal tasaIva) {
+            @NotNull @Positive BigDecimal subtotal) {
     }
 
     public record CancelarSolicitud(@NotBlank @Size(max = 200) String motivo) {
