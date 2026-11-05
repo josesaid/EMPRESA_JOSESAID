@@ -78,4 +78,22 @@ class AlcanceHerramientasTest {
 
         assertThat(AlcanceHerramientas.puedeUsar("herramienta_inexistente")).isFalse();
     }
+
+    @Test
+    void contador_puedeCatalogoDeCuentasPeroVentasNo() {
+        comoRol("ROLE_CONTADOR");
+        assertThat(AlcanceHerramientas.puedeUsar("consultar_catalogo_cuentas")).isTrue();
+
+        comoRol("ROLE_VENTAS");
+        assertThat(AlcanceHerramientas.puedeUsar("consultar_catalogo_cuentas")).isFalse();
+    }
+
+    @Test
+    void almacen_puedeListarOrdenesPeroVentasNo() {
+        comoRol("ROLE_ALMACEN");
+        assertThat(AlcanceHerramientas.puedeUsar("listar_ordenes_compra")).isTrue();
+
+        comoRol("ROLE_VENTAS");
+        assertThat(AlcanceHerramientas.puedeUsar("listar_ordenes_compra")).isFalse();
+    }
 }
