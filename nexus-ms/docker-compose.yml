@@ -23,8 +23,8 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?Defina ANTHROPIC_API_KEY en el archivo .env}
       # Opcional: sin esta clave, nexus-ms arranca pero no indexa las políticas (RAG)
       VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
-    ports:
-      - "8097:8080"
+    # Sin "ports": Prometheus raspa nexus-ms:8080 por empresa-net. Así /actuator/prometheus
+    # no queda expuesto en el host ni en la red local.
     networks:
       - empresa-net
     restart: unless-stopped
