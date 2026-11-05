@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="574" viewBox="0 0 680 574" role="img" aria-label="Alta de usuario">
+<style>
+.t{font:600 15px system-ui,-apple-system,Segoe UI,sans-serif;fill:#1b1f2a}
+.d{font:13px system-ui,-apple-system,Segoe UI,sans-serif;fill:#4a5263}
+.h{font:700 16px system-ui,-apple-system,Segoe UI,sans-serif;fill:#1b1f2a}
+.b{fill:#eef3ff;stroke:#3b5bdb;stroke-width:1.5}
+.n{fill:#3b5bdb}.nt{font:700 14px system-ui,sans-serif;fill:#fff}
+.ar{stroke:#3b5bdb;stroke-width:2;fill:none;marker-end:url(#f)}
+@media (prefers-color-scheme: dark){.b{fill:#1e2433;stroke:#8fa6ff}.t,.h{fill:#e6e9f2}.d{fill:#aab3c5}.ar{stroke:#8fa6ff}}
+</style>
+<defs><marker id="f" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#3b5bdb"/></marker></defs>
+<text x="340" y="28" text-anchor="middle" class="h">Alta de usuario</text>
+<rect x="60" y="52" width="560" height="58" rx="10" class="b"/>
+<circle cx="84" cy="81.0" r="13" class="n"/>
+<text x="84" y="86.0" text-anchor="middle" class="nt">1</text>
+<text x="110" y="76" class="t">Pedir a Nexus</text>
+<text x="110" y="95" class="d">Correo, nombre y roles; recibe id y código de confirmación</text>
+<path d="M340,110 L340,136" class="ar"/>
+<rect x="60" y="140" width="560" height="58" rx="10" class="b"/>
+<circle cx="84" cy="169.0" r="13" class="n"/>
+<text x="84" y="174.0" text-anchor="middle" class="nt">2</text>
+<text x="110" y="164" class="t">Abrir /usuarios/altas/ID</text>
+<text x="110" y="183" class="d">Solo ADMIN; revisar los datos</text>
+<path d="M340,198 L340,224" class="ar"/>
+<rect x="60" y="228" width="560" height="58" rx="10" class="b"/>
+<circle cx="84" cy="257.0" r="13" class="n"/>
+<text x="84" y="262.0" text-anchor="middle" class="nt">3</text>
+<text x="110" y="252" class="t">Escribir contraseña y código</text>
+<text x="110" y="271" class="d">La contraseña nunca pasa por Nexus ni por el chat</text>
+<path d="M340,286 L340,312" class="ar"/>
+<rect x="60" y="316" width="560" height="58" rx="10" class="b"/>
+<circle cx="84" cy="345.0" r="13" class="n"/>
+<text x="84" y="350.0" text-anchor="middle" class="nt">4</text>
+<text x="110" y="340" class="t">Crear usuario y completar alta</text>
+<text x="110" y="359" class="d">usuarios-accesos crea; Nexus marca el alta completada</text>
+<path d="M340,374 L340,400" class="ar"/>
+<rect x="60" y="404" width="560" height="58" rx="10" class="b"/>
+<circle cx="84" cy="433.0" r="13" class="n"/>
+<text x="84" y="438.0" text-anchor="middle" class="nt">5</text>
+<text x="110" y="428" class="t">Área y rol JEFE_AREA</text>
+<text x="110" y="447" class="d">PUT /area con motivo; después el rol</text>
+<path d="M340,462 L340,488" class="ar"/>
+<rect x="60" y="492" width="560" height="58" rx="10" class="b"/>
+<circle cx="84" cy="521.0" r="13" class="n"/>
+<text x="84" y="526.0" text-anchor="middle" class="nt">6</text>
+<text x="110" y="516" class="t">Primer inicio de sesión</text>
+<text x="110" y="535" class="d">Cambio de contraseña temporal, mínimo 12 caracteres</text>
+</svg>
