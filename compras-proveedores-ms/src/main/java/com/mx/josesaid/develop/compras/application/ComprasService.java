@@ -1,6 +1,7 @@
 package com.mx.josesaid.develop.compras.application;
 
 import com.mx.josesaid.develop.compras.domain.ConflictoException;
+import com.mx.josesaid.develop.compras.domain.EstatusOrdenCompra;
 import com.mx.josesaid.develop.compras.domain.LineaOrden;
 import com.mx.josesaid.develop.compras.domain.OrdenCompra;
 import com.mx.josesaid.develop.compras.domain.OrdenCompraRepositorio;
@@ -9,8 +10,10 @@ import com.mx.josesaid.develop.compras.domain.ProveedorRepositorio;
 import com.mx.josesaid.develop.compras.domain.Recepcion;
 import com.mx.josesaid.develop.compras.domain.RecepcionRepositorio;
 import com.mx.josesaid.develop.compras.domain.RecursoNoEncontradoException;
+import com.mx.josesaid.develop.compras.domain.ResumenOrdenCompra;
 import com.mx.josesaid.develop.compras.domain.SolicitudInvalidaException;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,6 +27,12 @@ public class ComprasService {
 
     public static final String EVENTO_ORDEN_APROBADA = "orden-compra-aprobada";
     public static final String EVENTO_INSUMOS_RECIBIDOS = "insumos-recibidos";
+    /** Límite fijo del listado de órdenes para las herramientas de IA y la API. */
+    public static final int LIMITE_LISTADO_ORDENES = 15;
+
+    /** Fila del listado: sin RFC, sin montos y sin líneas. */
+    public record ResumenListado(UUID id, EstatusOrdenCompra estatus, String razonSocialProveedor, Instant creadaUtc) {
+    }
 
     private final ProveedorRepositorio proveedores;
     private final OrdenCompraRepositorio ordenes;
@@ -74,6 +83,15 @@ public class ComprasService {
     public OrdenCompra crearOrden(UUID proveedorId, String moneda, List<LineaOrden> lineas, String creadaPor) {
         Proveedor proveedor = obtenerProveedor(proveedorId);
         return ordenes.guardar(OrdenCompra.crear(proveedor, moneda, lineas, creadaPor));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResumenListado> listarOrdenesRecientes(EstatusOrdenCompra estatus) {
+        return ordenes.listarRecientes(estatus, LIMITE_LISTADO_ORDENES).stream()
+                .map(r -> new ResumenListado(r.id(), r.estatus(),
+                        proveedores.buscarPorId(r.proveedorId()).map(Proveedor::getRazonSocial).orElse(""),
+                        r.creadaUtc()))
+                .toList();
     }
 
     @Transactional(readOnly = true)
