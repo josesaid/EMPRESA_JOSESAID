@@ -146,7 +146,7 @@ Tópico `compras.eventos`, clave = id de la orden.
 
 | Tipo | Cuándo | Datos |
 |---|---|---|
-| `orden-compra-aprobada` | Al aprobar | id, proveedor_id, total |
+| `orden-compra-aprobada` | Al aprobar | id, proveedor_id, moneda, total |
 | `insumos-recibidos` | Al registrar una recepción | orden_id, lineas (sku, cantidad) |
 
 Los datos fiscales no aparecen en ningún evento.
