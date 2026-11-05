@@ -43,6 +43,14 @@ class ExistenciaRepositorioJpa implements ExistenciaRepositorio {
         return jpa.findByArticuloId(articuloId).stream().map(this::aDominio).toList();
     }
 
+    @Override
+    public java.util.Map<UUID, java.math.BigDecimal> cantidadTotalPorArticulo() {
+        return jpa.findAll().stream().collect(java.util.stream.Collectors.groupingBy(
+                e -> e.articuloId,
+                java.util.stream.Collectors.reducing(java.math.BigDecimal.ZERO, e -> e.cantidad,
+                        java.math.BigDecimal::add)));
+    }
+
     private Existencia aDominio(ExistenciaEntity e) {
         return Existencia.reconstruir(e.articuloId, e.almacenId, e.cantidad, e.reservado);
     }

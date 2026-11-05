@@ -48,4 +48,16 @@ public final class HerramientasInventario {
                 .body(String.class);
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
+
+    @Tool(name = "listar_articulos_bajo_minimo",
+          description = "Lista hasta 15 artículos cuya existencia total está por debajo de su mínimo, del mayor "
+                  + "faltante al menor: SKU, nombre, unidad, mínimo, existencia y faltante.")
+    public String listarArticulosBajoMinimo() {
+        RegistroHerramientasUsadas.registrar("listar_articulos_bajo_minimo");
+        String cuerpo = gateway.get()
+                .uri(RUTA_BASE + "/articulos/bajo-minimo")
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }
