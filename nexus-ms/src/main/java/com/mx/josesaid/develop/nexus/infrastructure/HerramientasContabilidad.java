@@ -62,4 +62,15 @@ public final class HerramientasContabilidad {
                 .body(String.class);
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
+
+    @Tool(name = "consultar_catalogo_cuentas",
+          description = "Lista las cuentas contables activas del catálogo: código, nombre, tipo y naturaleza.")
+    public String consultarCatalogoCuentas() {
+        RegistroHerramientasUsadas.registrar("consultar_catalogo_cuentas");
+        String cuerpo = gateway.get()
+                .uri(constructor -> constructor.path(RUTA_BASE + "/cuentas").build())
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }

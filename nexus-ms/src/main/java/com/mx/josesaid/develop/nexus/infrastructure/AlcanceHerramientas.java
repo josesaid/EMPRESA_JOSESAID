@@ -56,6 +56,7 @@ final class AlcanceHerramientas {
             Map.entry("buscar_proveedores", ROLES_PROVEEDORES),
             Map.entry("buscar_comprobante_por_folio", ROLES_COMPROBANTES),
             Map.entry("listar_polizas", ROLES_CONTABILIDAD),
+            Map.entry("consultar_catalogo_cuentas", ROLES_CONTABILIDAD),
             Map.entry("preparar_pedido_borrador", ROLES_PREPARAR_PEDIDO),
             Map.entry("crear_prospecto_borrador", ROLES_ACCIONES_VENTAS),
             Map.entry("confirmar_pedido", ROLES_ACCIONES_VENTAS),
