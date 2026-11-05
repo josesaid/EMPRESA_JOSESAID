@@ -90,6 +90,7 @@ public class ComprasService {
         eventos.publicar(new EventoDominio(EVENTO_ORDEN_APROBADA, id.toString(), Map.of(
                 "id", id.toString(),
                 "proveedor_id", guardada.getProveedorId().toString(),
+                "moneda", guardada.getMoneda(),
                 "total", guardada.total().toPlainString())));
         return guardada;
     }
