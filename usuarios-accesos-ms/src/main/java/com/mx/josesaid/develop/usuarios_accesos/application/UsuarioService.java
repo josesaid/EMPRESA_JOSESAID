@@ -182,6 +182,12 @@ public class UsuarioService {
         return repositorio.guardar(usuario);
     }
 
+    /** Últimos 15 usuarios, del más reciente al más antiguo. Solo para ADMIN. */
+    @Transactional(readOnly = true)
+    public List<Usuario> listarRecientes() {
+        return repositorio.listarRecientes(15);
+    }
+
     @Transactional(readOnly = true)
     public Usuario obtener(UUID id) {
         return repositorio.buscarPorId(id)

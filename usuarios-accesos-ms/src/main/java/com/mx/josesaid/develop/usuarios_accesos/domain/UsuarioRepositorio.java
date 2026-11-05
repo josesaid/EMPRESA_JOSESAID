@@ -15,4 +15,7 @@ public interface UsuarioRepositorio {
 
     /** Recibe el correo ya normalizado. */
     boolean existePorCorreo(String correoNormalizado);
+
+    /** Usuarios más recientes primero, hasta {@code limite}. */
+    java.util.List<Usuario> listarRecientes(int limite);
 }
