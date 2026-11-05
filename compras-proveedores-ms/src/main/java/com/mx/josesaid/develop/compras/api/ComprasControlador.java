@@ -83,6 +83,15 @@ public class ComprasControlador {
         });
     }
 
+    @GetMapping("/ordenes-compra")
+    @PreAuthorize("hasAnyRole('COMPRAS','ALMACEN','DIRECCION')")
+    public List<ResumenOrdenRespuesta> listarOrdenes(
+            @RequestParam(required = false) com.mx.josesaid.develop.compras.domain.EstatusOrdenCompra estatus) {
+        return servicio.listarOrdenesRecientes(estatus).stream()
+                .map(r -> new ResumenOrdenRespuesta(r.id(), r.estatus(), r.razonSocialProveedor(), r.creadaUtc()))
+                .toList();
+    }
+
     @GetMapping("/ordenes-compra/{id}")
     @PreAuthorize("hasAnyRole('COMPRAS','ALMACEN','DIRECCION')")
     public OrdenRespuesta obtenerOrden(@PathVariable UUID id) {
@@ -162,6 +171,10 @@ public class ComprasControlador {
 
     public record LineaRespuesta(String articuloSku, BigDecimal cantidadOrdenada, BigDecimal cantidadRecibida,
                                  BigDecimal precioUnitario, BigDecimal subtotal) {
+    }
+
+    public record ResumenOrdenRespuesta(UUID id, EstatusOrdenCompra estatus, String razonSocialProveedor,
+                                        java.time.Instant creadaUtc) {
     }
 
     public record OrdenRespuesta(UUID id, UUID proveedorId, EstatusOrdenCompra estatus, String moneda,

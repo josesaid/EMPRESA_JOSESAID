@@ -24,6 +24,7 @@ class OrdenCompraEntity {
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20) EstatusOrdenCompra estatus;
     @Column(name = "motivo_cancelacion", length = 200) String motivoCancelacion;
     @Column(name = "creada_por", length = 255) String creadaPor;
+    @Column(name = "creado_utc", insertable = false, updatable = false) java.time.Instant creadoUtc;
     @Version Long version;
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     List<LineaOrdenEntity> lineas = new ArrayList<>();

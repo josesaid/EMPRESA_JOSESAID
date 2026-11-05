@@ -3,9 +3,12 @@ package com.mx.josesaid.develop.compras.infrastructure.persistence;
 import com.mx.josesaid.develop.compras.domain.LineaOrden;
 import com.mx.josesaid.develop.compras.domain.OrdenCompra;
 import com.mx.josesaid.develop.compras.domain.OrdenCompraRepositorio;
+import com.mx.josesaid.develop.compras.domain.EstatusOrdenCompra;
+import com.mx.josesaid.develop.compras.domain.ResumenOrdenCompra;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -63,5 +66,16 @@ class OrdenCompraRepositorioJpa implements OrdenCompraRepositorio {
             return OrdenCompra.reconstruir(e.id, e.proveedorId, e.moneda, e.estatus, e.motivoCancelacion, lineas,
                     e.creadaPor);
         });
+    }
+
+    @Override
+    public List<ResumenOrdenCompra> listarRecientes(EstatusOrdenCompra estatus, int limite) {
+        var pagina = PageRequest.of(0, limite);
+        List<OrdenCompraEntity> filas = estatus == null
+                ? jpa.findAllByOrderByCreadoUtcDesc(pagina)
+                : jpa.findByEstatusOrderByCreadoUtcDesc(estatus, pagina);
+        return filas.stream()
+                .map(e -> new ResumenOrdenCompra(e.id, e.proveedorId, e.estatus, e.creadoUtc))
+                .toList();
     }
 }
