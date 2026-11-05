@@ -1,0 +1,53 @@
+# Pendientes de documentación y calidad
+
+Revisión al 2026-11-05.
+
+## 1. Guías paso a paso con imágenes y diagramas
+
+**Hallazgo.** La documentación tiene pocas guías de procedimiento:
+
+- **Rotación de la clave RS256:** paso a paso en `usuarios-accesos-ms/README.md`, sección «Rotación de la clave RS256». Sin imágenes ni diagramas.
+- **Conexión de un cliente MCP:** `nexus-ms/docs/conexion-mcp.md`. Sin imágenes ni diagramas.
+- **Arranque del ecosistema y orden de arranque:** en el README de la raíz, en prosa.
+- **Procedimientos pendientes de definir:** anonimización por derechos ARCO (`clientes-ms`) y rotación de la clave de cifrado de compras (`compras-proveedores-ms`).
+
+**Pendiente.** Cada procedimiento debe tener una guía completa, con pasos numerados, capturas o imágenes y diagramas. Desde el README de cada servicio hay que enlazar a la página HTML correspondiente, que se publica en `docs/`. Guías a crear:
+
+- [ ] Levantar el ecosistema completo y verificar que está arriba (imágenes y diagrama del orden de arranque)
+- [ ] Ejecutar las pruebas de un servicio (`ejecutar-pruebas-<servicio>.sh`)
+- [ ] Rotar la clave RS256 sin cortar sesiones (dos reinicios)
+- [ ] Conectar un cliente MCP a nexus-ms
+- [ ] Dar de alta un usuario y asignarle rol y área
+- [ ] Crear un proveedor, una orden de compra, aprobarla y registrar la recepción
+- [ ] Registrar un pago a proveedor contra una cuenta por pagar
+- [ ] Emitir un comprobante, registrar un cobro y cancelar
+- [ ] Procesar una solicitud de derechos ARCO (pendiente de definir el procedimiento)
+- [ ] Rotar la clave de cifrado y la clave HMAC de compras (pendiente de diseño)
+- [ ] Consultar indicadores para reportes ejecutivos
+
+**Total: 11 guías pendientes.** Hoy existen 2 guías parciales (RS256 y MCP) y 0 con imágenes o diagramas.
+
+## 2. Calidad de código y seguridad
+
+**Hallazgo.** Revisé los `pom.xml` y la raíz del repositorio:
+
+- Plugins de Maven en uso: `spring-boot-maven-plugin`, `maven-failsafe-plugin`, `maven-compiler-plugin` (en `nexus-comun`) y `maven-dependency-plugin` (en `nexus-ms`).
+- No hay PMD, Checkstyle, SonarQube, JaCoCo (cobertura), SpotBugs, OWASP Dependency-Check ni `maven-enforcer-plugin`.
+- No hay configuración de CI (`.github/workflows` ni equivalente).
+
+**Pendiente.**
+
+- [ ] Decidir qué herramientas adoptar: PMD y Checkstyle para estilo y errores comunes, JaCoCo para cobertura, SpotBugs para errores de seguridad en el bytecode, SonarQube o SonarCloud para el panel, y OWASP Dependency-Check para vulnerabilidades en dependencias.
+- [ ] Definir umbrales de cobertura y de hallazgos por servicio.
+- [ ] Revisar aspectos de seguridad en los microservicios:
+  - [ ] Vulnerabilidades en dependencias y versiones de Spring Boot y de librerías.
+  - [ ] Secretos: `.env` fuera del repositorio, claves de cifrado y de firma, y escaneo de secretos en commits.
+  - [ ] Exposición de `/actuator/prometheus` en los puertos del host (pendiente desde la revisión de producción).
+  - [ ] Cobertura del cifrado de datos personales y fiscales, y que los logs no contengan PII ni montos.
+  - [ ] Validación de entrada y límites de tamaño en las APIs.
+  - [ ] Limitación de intentos en el gateway, además del bloqueo por cuenta.
+  - [ ] Imágenes de contenedor: usuario no privilegiado, imagen base actualizada y escaneo de imágenes.
+  - [ ] TLS entre servicios y fuera de la red de Docker.
+  - [ ] Procedimiento de rotación y respaldo de claves, con su prueba.
+
+**Total: 7 decisiones de herramientas y 9 aspectos de seguridad por evaluar.**
