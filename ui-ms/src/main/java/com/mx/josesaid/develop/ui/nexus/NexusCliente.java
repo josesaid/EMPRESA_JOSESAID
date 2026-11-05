@@ -42,6 +42,35 @@ public class NexusCliente {
                 .toBodilessEntity());
     }
 
+    /** Datos del alta pendiente. La contraseña nunca pasa por Nexus. */
+    public DatosAltaDto datosAlta(UUID id) {
+        return sesion.ejecutar(token -> gateway.get()
+                .uri("/nexus/acciones/{id}/alta", id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .retrieve()
+                .body(DatosAltaDto.class));
+    }
+
+    public void verificarAlta(UUID id, String codigo) {
+        sesion.ejecutar(token -> gateway.post()
+                .uri("/nexus/acciones/{id}/alta/verificacion", id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("codigo", codigo))
+                .retrieve()
+                .toBodilessEntity());
+    }
+
+    public void completarAlta(UUID id, String codigo) {
+        sesion.ejecutar(token -> gateway.post()
+                .uri("/nexus/acciones/{id}/alta/completacion", id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("codigo", codigo))
+                .retrieve()
+                .toBodilessEntity());
+    }
+
     public void cancelar(UUID id) {
         sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/acciones/{id}/cancelacion", id)

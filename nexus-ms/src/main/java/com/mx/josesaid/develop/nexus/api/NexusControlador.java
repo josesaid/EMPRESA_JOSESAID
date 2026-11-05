@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
+import com.mx.josesaid.develop.nexus.application.DatosAlta;
 import com.mx.josesaid.develop.nexus.application.AccionNoEncontradaException;
 import com.mx.josesaid.develop.nexus.application.AccionNoPendienteException;
 import com.mx.josesaid.develop.nexus.application.CodigoConfirmacionInvalidoException;
@@ -66,9 +67,36 @@ public class NexusControlador {
                 .body(respuesta);
     }
 
+    /** Datos del alta pendiente (sin contraseña) para que la pantalla de altas los muestre y envíe. */
+    @GetMapping("/acciones/{id}/alta")
+    @PreAuthorize("hasRole('ADMIN')")
+    public DatosAlta datosAlta(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
+        return DatosAlta.de(acciones.altaVigente(id, jwt.getSubject()).payload());
+    }
+
+    /** El administrador verifica el código de un alta antes de crear el usuario. Código incorrecto cancela la acción. */
+    @PostMapping("/acciones/{id}/alta/verificacion")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> verificarAlta(@PathVariable UUID id,
+                                              @RequestBody @Valid ConfirmacionSolicitud solicitud,
+                                              @AuthenticationPrincipal Jwt jwt) {
+        confirmacion.verificarAlta(id, jwt.getSubject(), solicitud.codigo());
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Marca el alta como completada después de que la pantalla de altas creó el usuario. */
+    @PostMapping("/acciones/{id}/alta/completacion")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> completarAlta(@PathVariable UUID id,
+                                              @RequestBody @Valid ConfirmacionSolicitud solicitud,
+                                              @AuthenticationPrincipal Jwt jwt) {
+        confirmacion.completarAlta(id, jwt.getSubject(), solicitud.codigo());
+        return ResponseEntity.noContent().build();
+    }
+
     /** Muestra al dueño la acción pendiente antes de confirmarla. */
     @GetMapping("/acciones/{id}")
-    @PreAuthorize("hasAnyRole('VENTAS','CONTADOR')")
+    @PreAuthorize("hasAnyRole('VENTAS','CONTADOR','ADMIN')")
     public AccionResumen consultarAccion(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
         var accion = acciones.consultar(id, jwt.getSubject());
         return new AccionResumen(accion.id(), accion.tipo(), accion.resumen(), accion.estatus(), accion.expiraUtc());

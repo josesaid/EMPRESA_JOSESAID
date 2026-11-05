@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EMPRESA_JOSESAID · Alta de usuario</title>
+</head>
+<body>
+    <div th:replace="~{fragments/menu :: menu}"></div>
+    <h1>Alta de usuario</h1>
+
+    <p th:if="${mensaje}" th:text="${mensaje}">Mensaje</p>
+    <p th:if="${error}" th:text="${error}">Error</p>
+
+    <section th:if="${datos != null and mensaje == null}">
+        <p>Correo: <strong th:text="${datos.correo}">correo</strong></p>
+        <p>Nombre: <span th:text="${datos.nombreCompleto}">nombre</span></p>
+        <p>Roles: <span th:text="${#strings.listJoin(datos.roles, ', ')}">roles</span></p>
+
+        <form th:action="@{/usuarios/altas/{id}(id=${id})}" method="post">
+            <label>Contraseña temporal
+                <input type="password" name="password" autocomplete="new-password" required>
+            </label>
+            <label>Código de confirmación de 8 dígitos
+                <input type="text" name="codigo" pattern="\d{8}" maxlength="8" inputmode="numeric" autocomplete="off" required>
+            </label>
+            <button type="submit">Crear usuario</button>
+        </form>
+        <p><small>La contraseña se envía directo a usuarios; el asistente no la recibe.</small></p>
+    </section>
+</body>
+</html>

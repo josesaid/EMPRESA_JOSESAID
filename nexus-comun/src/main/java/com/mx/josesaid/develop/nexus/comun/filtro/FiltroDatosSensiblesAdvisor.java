@@ -20,6 +20,12 @@ public final class FiltroDatosSensiblesAdvisor implements CallAdvisor {
 
     public static final String NOMBRE = "filtro-datos-sensibles";
 
+    /**
+     * Clave del contexto de la petición. Si vale {@code true}, los correos del mensaje del usuario no se redactan.
+     * Solo lo activa el asistente para un administrador que pide un alta: el correo es el dato que la herramienta necesita.
+     */
+    public static final String CLAVE_CORREO_PERMITIDO = "correoPermitido";
+
     /** Se ejecuta primero, antes de cualquier otro advisor que pueda leer el prompt. */
     private static final int ORDEN = Integer.MIN_VALUE + 100;
 
@@ -36,10 +42,15 @@ public final class FiltroDatosSensiblesAdvisor implements CallAdvisor {
     @Override
     public ChatClientResponse adviseCall(ChatClientRequest request, CallAdvisorChain chain) {
         Prompt original = request.prompt();
+        boolean correoPermitido = Boolean.TRUE.equals(request.context().get(CLAVE_CORREO_PERMITIDO));
+        EnumSet<FiltroDatosSensibles.Tipo> omitir = EnumSet.of(FiltroDatosSensibles.Tipo.RFC);
+        if (correoPermitido) {
+            omitir.add(FiltroDatosSensibles.Tipo.CORREO);
+        }
         List<Message> nuevos = new ArrayList<>();
         for (Message mensaje : original.getInstructions()) {
             if (mensaje instanceof UserMessage usuario) {
-                String redactado = FiltroDatosSensibles.redactar(usuario.getText(), EnumSet.of(FiltroDatosSensibles.Tipo.RFC)).texto();
+                String redactado = FiltroDatosSensibles.redactar(usuario.getText(), omitir).texto();
                 nuevos.add(new UserMessage(redactado));
             } else {
                 nuevos.add(mensaje);

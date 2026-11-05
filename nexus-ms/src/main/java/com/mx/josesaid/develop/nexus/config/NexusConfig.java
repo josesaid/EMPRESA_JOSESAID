@@ -5,6 +5,7 @@ import java.time.Clock;
 import java.time.ZoneId;
 
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
+import com.mx.josesaid.develop.nexus.application.CodigoConfirmacion;
 import com.mx.josesaid.develop.nexus.application.AlmacenAcciones;
 import com.mx.josesaid.develop.nexus.application.AlmacenFragmentos;
 import com.mx.josesaid.develop.nexus.application.ContextoContable;
@@ -166,8 +167,9 @@ public class NexusConfig {
     }
 
     @Bean
-    HerramientasUsuarios herramientasUsuarios(RestClient gatewayClient) {
-        return new HerramientasUsuarios(gatewayClient);
+    HerramientasUsuarios herramientasUsuarios(RestClient gatewayClient, AccionesPendientes acciones,
+                                              CodigoConfirmacion codigos) {
+        return new HerramientasUsuarios(gatewayClient, acciones, codigos);
     }
 
     @Bean

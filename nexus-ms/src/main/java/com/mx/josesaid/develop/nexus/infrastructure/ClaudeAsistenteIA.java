@@ -66,13 +66,20 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
                 .build();
     }
 
+    /** Solo un ADMIN que pide un alta puede dejar pasar el correo al modelo. */
+    static boolean pideAltaDeAdmin(String texto) {
+        return AlcanceHerramientas.rolesDelUsuario().contains("ADMIN")
+                && texto != null && texto.matches("(?is).*\\balta\\b.*");
+    }
+
     @Override
     public RespuestaAsistente consultar(PreguntaAsistente pregunta) {
         var solicitud = cliente.prompt()
                 .user(pregunta.texto())
                 .advisors(a -> a
                         .param(RegistroTokensAdvisor.CLAVE_SERVICIO, SERVICIO)
-                        .param(RegistroTokensAdvisor.CLAVE_USUARIO, pregunta.usuario()));
+                        .param(RegistroTokensAdvisor.CLAVE_USUARIO, pregunta.usuario())
+                        .param(FiltroDatosSensiblesAdvisor.CLAVE_CORREO_PERMITIDO, pideAltaDeAdmin(pregunta.texto())));
         ToolCallback[] permitidas = Arrays.stream(herramientas)
                 .filter(h -> AlcanceHerramientas.puedeUsar(h.getToolDefinition().name()))
                 .toArray(ToolCallback[]::new);

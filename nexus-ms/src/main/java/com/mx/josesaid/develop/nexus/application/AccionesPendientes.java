@@ -25,6 +25,8 @@ public final class AccionesPendientes {
     public static final String TIPO_PROSPECTO_CONVERTIR = "PROSPECTO_CONVERTIR";
     public static final String TIPO_INTERACCION_REGISTRAR = "INTERACCION_REGISTRAR";
     public static final String TIPO_POLIZA_REGISTRAR = "POLIZA_REGISTRAR";
+    /** El alta no la ejecuta Nexus: la pantalla de altas crea el usuario con la contraseña que escribe el administrador. */
+    public static final String TIPO_USUARIO_ALTA = "USUARIO_ALTA";
     public static final Duration VIGENCIA = Duration.ofMinutes(10);
 
     private final AlmacenAcciones almacen;
@@ -51,6 +53,9 @@ public final class AccionesPendientes {
      */
     public String confirmar(UUID id, String usuario) {
         AccionPendiente accion = propia(id, usuario);
+        if (TIPO_USUARIO_ALTA.equals(accion.tipo())) {
+            throw new AccionNoPendienteException("Las altas de usuario se completan desde la pantalla de altas");
+        }
         if (!AccionPendiente.PENDIENTE.equals(accion.estatus())) {
             throw new AccionNoPendienteException("La acción ya está " + accion.estatus().toLowerCase());
         }
@@ -81,6 +86,31 @@ public final class AccionesPendientes {
             throw new AccionNoPendienteException("La acción ya está " + accion.estatus().toLowerCase());
         }
         almacen.guardar(accion.conEstatus(AccionPendiente.CANCELADA));
+    }
+
+    /** Marca un alta como completada. La creación del usuario ocurre en usuarios-accesos, no aquí. */
+    public void completarAlta(UUID id, String usuario) {
+        AccionPendiente accion = altaVigente(id, usuario);
+        almacen.guardar(accion.conEstatus(AccionPendiente.CONFIRMADA));
+    }
+
+    /**
+     * Devuelve un alta pendiente, vigente y del usuario. Si ya venció la marca como expirada.
+     * No cambia nada si la acción sigue vigente.
+     */
+    public AccionPendiente altaVigente(UUID id, String usuario) {
+        AccionPendiente accion = propia(id, usuario);
+        if (!TIPO_USUARIO_ALTA.equals(accion.tipo())) {
+            throw new AccionNoPendienteException("La acción no es un alta de usuario");
+        }
+        if (!AccionPendiente.PENDIENTE.equals(accion.estatus())) {
+            throw new AccionNoPendienteException("La acción ya está " + accion.estatus().toLowerCase());
+        }
+        if (reloj.instant().isAfter(accion.expiraUtc())) {
+            almacen.guardar(accion.conEstatus(AccionPendiente.EXPIRADA));
+            throw new AccionNoPendienteException("La acción expiró; pide a Nexus que la prepare de nuevo");
+        }
+        return accion;
     }
 
     private AccionPendiente propia(UUID id, String usuario) {
