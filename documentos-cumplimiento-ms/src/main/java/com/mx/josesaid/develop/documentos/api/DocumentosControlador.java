@@ -79,6 +79,12 @@ public class DocumentosControlador {
                 .body(d.contenido());
     }
 
+    @GetMapping(value = "/documentos", params = "titulo")
+    @PreAuthorize("hasAnyRole('LEGAL','DIRECCION')")
+    public List<DocumentoRespuesta> buscarPorTitulo(@RequestParam String titulo) {
+        return servicio.buscarPorTitulo(titulo).stream().map(DocumentoRespuesta::de).toList();
+    }
+
     @GetMapping("/documentos/por-vencer")
     @PreAuthorize("hasAnyRole('LEGAL','DIRECCION')")
     public List<DocumentoRespuesta> porVencer(@RequestParam int dias) {
