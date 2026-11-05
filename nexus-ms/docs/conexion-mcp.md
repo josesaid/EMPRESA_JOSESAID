@@ -1,5 +1,7 @@
 # Conectar un cliente MCP a Nexus (piloto)
 
+Guía paso a paso con diagrama: [docs/guias/04-conectar-cliente-mcp.md](../../docs/guias/04-conectar-cliente-mcp.md).
+
 Nexus expone sus herramientas por MCP en `/mcp`. Cada llamada usa el mismo JWT que usa la plataforma, así que un usuario solo ve y puede hacer lo que su rol permite.
 
 ## 1. Obtener el token

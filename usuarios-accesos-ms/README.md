@@ -284,6 +284,8 @@ Publica un indicador mensual al tópico `indicadores-areas`, que consume `report
 
 ## Rotación de la clave RS256
 
+Guía completa con diagrama: [docs/guias/03-rotar-clave-rs256.md](../docs/guias/03-rotar-clave-rs256.md).
+
 usuarios-accesos-ms firma con una clave RS256 identificada por `kid` (por defecto `empresa-usuarios-1`). La clave pública se publica en `/.well-known/jwks.json`. Los servicios validan por `kid` y recargan el JWKS cuando reciben un `kid` que no conocen, así que no hace falta reiniciarlos.
 
 **Procedimiento sin cortar sesiones (dos reinicios de usuarios-accesos-ms):**
