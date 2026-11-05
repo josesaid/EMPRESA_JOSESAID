@@ -112,6 +112,14 @@ public class InventarioService {
         return guardada;
     }
 
+    /** Últimos 15 movimientos de un artículo, del más reciente al más antiguo. */
+    @Transactional(readOnly = true)
+    public List<MovimientoInventario> movimientosDeArticulo(UUID articuloId) {
+        articulos.buscarPorId(articuloId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Artículo no encontrado: " + articuloId));
+        return movimientos.listarRecientesDeArticulo(articuloId, 15);
+    }
+
     @Transactional(readOnly = true)
     public List<Existencia> existenciasDe(UUID articuloId) {
         obtenerArticulo(articuloId);

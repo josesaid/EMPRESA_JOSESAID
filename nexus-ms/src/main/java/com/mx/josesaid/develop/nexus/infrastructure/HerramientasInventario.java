@@ -48,4 +48,19 @@ public final class HerramientasInventario {
                 .body(String.class);
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
+
+    @Tool(name = "listar_movimientos_articulo",
+          description = "Lista los últimos 15 movimientos de inventario de un artículo, del más reciente al más "
+                  + "antiguo: tipo, cantidad, almacén, lote y referencia.")
+    public String listarMovimientosArticulo(
+            @ToolParam(description = "Identificador UUID del artículo", required = true) String articuloId) {
+        RegistroHerramientasUsadas.registrar("listar_movimientos_articulo");
+        String cuerpo = gateway.get()
+                .uri(constructor -> constructor.path(RUTA_BASE + "/movimientos")
+                        .queryParam("articulo", UUID.fromString(articuloId.trim()))
+                        .build())
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }

@@ -49,6 +49,9 @@ class InventarioServiceTest {
             public List<MovimientoInventario> buscarPorLote(String lote) {
                 return movs.stream().filter(m -> lote.equals(m.getLote())).toList();
             }
+            public List<MovimientoInventario> listarRecientesDeArticulo(UUID articuloId, int limite) {
+                return movs.stream().filter(m -> articuloId.equals(m.getArticuloId())).limit(limite).toList();
+            }
         };
         OrdenRepositorio or = new OrdenRepositorio() {
             public OrdenOperacion guardar(OrdenOperacion o) { return o; }

@@ -26,6 +26,7 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_DOCUMENTOS = Set.of("ROLE_LEGAL", "ROLE_DIRECCION");
     private static final Set<String> ROLES_EXISTENCIAS = Set.of("ROLE_ALMACEN", "ROLE_COMPRAS", "ROLE_VENTAS");
     private static final Set<String> ROLES_TRAZABILIDAD = Set.of("ROLE_OPERACIONES", "ROLE_CALIDAD");
+    private static final Set<String> ROLES_MOVIMIENTOS = Set.of("ROLE_ALMACEN", "ROLE_COMPRAS");
     private static final Set<String> ROLES_CONTABILIDAD = Set.of("ROLE_CONTADOR", "ROLE_DIRECCION");
     private static final Set<String> ROLES_COMPROBANTES = Set.of("ROLE_FINANZAS", "ROLE_VENTAS");
     private static final Set<String> ROLES_PROVEEDORES = Set.of("ROLE_COMPRAS", "ROLE_FINANZAS");
@@ -50,6 +51,7 @@ final class AlcanceHerramientas {
             Map.entry("consultar_poliza", ROLES_CONTABILIDAD),
             Map.entry("consultar_estados_financieros", ROLES_CONTABILIDAD),
             Map.entry("consultar_existencias", ROLES_EXISTENCIAS),
+            Map.entry("listar_movimientos_articulo", ROLES_MOVIMIENTOS),
             Map.entry("consultar_trazabilidad_lote", ROLES_TRAZABILIDAD),
             Map.entry("consultar_documento", ROLES_DOCUMENTOS),
             Map.entry("consultar_documentos_por_vencer", ROLES_DOCUMENTOS),

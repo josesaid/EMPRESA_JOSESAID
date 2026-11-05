@@ -5,4 +5,7 @@ import java.util.List;
 public interface MovimientoRepositorio {
     MovimientoInventario guardar(MovimientoInventario movimiento);
     List<MovimientoInventario> buscarPorLote(String lote);
+
+    /** Movimientos más recientes primero, hasta {@code limite}. */
+    List<MovimientoInventario> listarRecientesDeArticulo(java.util.UUID articuloId, int limite);
 }
