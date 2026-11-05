@@ -49,4 +49,21 @@ public final class HerramientasDocumentos {
                 .body(String.class);
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
+
+    @Tool(name = "buscar_documentos",
+          description = "Busca documentos legales no eliminados cuyo título contiene el texto (sin distinguir "
+                  + "mayúsculas). Devuelve hasta 15 documentos por título, con tipo, área, vencimiento y versiones. "
+                  + "Pide al menos 3 caracteres.")
+    public String buscarDocumentos(
+            @ToolParam(description = "Texto que debe contener el título del documento (mínimo 3 caracteres)",
+                       required = true) String texto) {
+        RegistroHerramientasUsadas.registrar("buscar_documentos");
+        String cuerpo = gateway.get()
+                .uri(constructor -> constructor.path(RUTA_BASE + "/documentos")
+                        .queryParam("titulo", texto.trim())
+                        .build())
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }

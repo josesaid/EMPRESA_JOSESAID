@@ -34,6 +34,14 @@ class ArticuloRepositorioJpa implements ArticuloRepositorio {
     }
 
     @Override
+    public java.util.List<Articulo> listarConMinimo() {
+        return jpa.findAll().stream()
+                .filter(e -> e.minimo.signum() > 0)
+                .map(e -> Articulo.reconstruir(e.id, e.sku, e.nombre, e.unidad, e.loteObligatorio, e.minimo))
+                .toList();
+    }
+
+    @Override
     public boolean existePorSku(String sku) {
         return jpa.existsBySku(sku);
     }

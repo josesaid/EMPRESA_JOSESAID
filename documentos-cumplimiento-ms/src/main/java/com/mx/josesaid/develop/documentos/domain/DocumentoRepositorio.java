@@ -10,4 +10,7 @@ public interface DocumentoRepositorio {
     Optional<Documento> buscarPorId(UUID id);
     List<Documento> buscarVencenEntre(LocalDate desde, LocalDate hasta);
     List<Documento> buscarActivosConRetencionVencida(LocalDate hoy);
+
+    /** Documentos no eliminados cuyo título contiene el texto (sin distinguir mayúsculas), por título. */
+    List<Documento> buscarPorTitulo(String texto, int limite);
 }

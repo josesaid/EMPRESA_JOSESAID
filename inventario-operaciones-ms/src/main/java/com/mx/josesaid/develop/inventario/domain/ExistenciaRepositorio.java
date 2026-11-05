@@ -8,4 +8,7 @@ public interface ExistenciaRepositorio {
     Existencia guardar(Existencia existencia);
     Optional<Existencia> buscar(UUID articuloId, UUID almacenId);
     List<Existencia> buscarPorArticulo(UUID articuloId);
+
+    /** Suma de cantidad en todos los almacenes, por artículo. */
+    java.util.Map<UUID, java.math.BigDecimal> cantidadTotalPorArticulo();
 }

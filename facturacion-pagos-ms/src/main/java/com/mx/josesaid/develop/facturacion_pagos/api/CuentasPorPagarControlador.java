@@ -36,6 +36,15 @@ public class CuentasPorPagarControlador {
         this.idempotencia = idempotencia;
     }
 
+    /** Últimos 15 pagos a proveedores, del más reciente al más antiguo. */
+    @GetMapping("/pagos")
+    @PreAuthorize("hasRole('FINANZAS')")
+    public List<PagoListadoRespuesta> listarPagos() {
+        return servicio.listarPagosRecientes().stream()
+                .map(p -> new PagoListadoRespuesta(p.id(), p.cuentaId(), p.monto(), p.fechaPago(), p.referencia()))
+                .toList();
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('FINANZAS')")
     public CuentaRespuesta obtener(@PathVariable UUID id) {
@@ -66,6 +75,10 @@ public class CuentasPorPagarControlador {
             return new CuentaRespuesta(c.getId(), c.getOrdenId(), c.getProveedorId(), c.getMoneda(), c.getMonto(),
                     c.saldo(), c.estatus().name(), c.getPagos().stream().map(PagoRespuesta::de).toList());
         }
+    }
+
+    public record PagoListadoRespuesta(UUID id, UUID cuentaId, BigDecimal monto, LocalDate fechaPago,
+                                       String referencia) {
     }
 
     public record PagoRespuesta(UUID id, BigDecimal monto, LocalDate fechaPago, String referencia) {

@@ -39,6 +39,13 @@ public class DocumentoRepositorioJpa implements DocumentoRepositorio {
     }
 
     @Override
+    public List<Documento> buscarPorTitulo(String texto, int limite) {
+        String escapado = texto.toLowerCase().replace("!", "!!").replace("%", "!%").replace("_", "!_");
+        return jpa.buscarPorTitulo("%" + escapado + "%", org.springframework.data.domain.PageRequest.of(0, limite))
+                .stream().map(DocumentoEntity::aDominio).toList();
+    }
+
+    @Override
     public List<Documento> buscarActivosConRetencionVencida(LocalDate hoy) {
         return jpa.buscarActivosConRetencionVencida(hoy).stream().map(DocumentoEntity::aDominio).toList();
     }
