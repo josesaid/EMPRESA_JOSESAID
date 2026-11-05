@@ -57,6 +57,16 @@ public class ComprobanteControlador {
         return ComprobanteRespuesta.de(servicio.buscarPorFolio(folio));
     }
 
+    /** Últimos 15 comprobantes emitidos con saldo por cobrar, del más reciente al más antiguo. */
+    @GetMapping("/pendientes-cobro")
+    @PreAuthorize("hasAnyRole('FINANZAS','VENTAS')")
+    public List<ComprobantePendienteRespuesta> listarPendientesCobro() {
+        return servicio.listarPendientesDeCobro().stream()
+                .map(c -> new ComprobantePendienteRespuesta(c.id(), c.folio(), c.moneda(), c.total(), c.saldo(),
+                        c.estatusCobro()))
+                .toList();
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('FINANZAS','VENTAS')")
     public ComprobanteRespuesta obtener(@PathVariable UUID id) {
@@ -98,6 +108,10 @@ public class ComprobanteControlador {
             @NotNull @Positive BigDecimal monto,
             LocalDate fechaPago,
             @Size(max = 100) String referencia) {
+    }
+
+    public record ComprobantePendienteRespuesta(UUID id, String folio, String moneda, BigDecimal total,
+                                                BigDecimal saldo, EstatusCobro estatusCobro) {
     }
 
     public record PagoRespuesta(UUID id, BigDecimal monto, LocalDate fechaPago, String referencia) {

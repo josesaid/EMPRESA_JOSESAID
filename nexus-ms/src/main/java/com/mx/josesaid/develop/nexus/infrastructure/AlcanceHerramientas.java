@@ -47,6 +47,7 @@ final class AlcanceHerramientas {
             Map.entry("consultar_orden_compra", ROLES_ORDENES_COMPRA),
             Map.entry("listar_ordenes_compra", ROLES_ORDENES_COMPRA),
             Map.entry("consultar_comprobante", ROLES_COMPROBANTES),
+            Map.entry("listar_comprobantes_pendientes_cobro", ROLES_COMPROBANTES),
             Map.entry("consultar_poliza", ROLES_CONTABILIDAD),
             Map.entry("consultar_estados_financieros", ROLES_CONTABILIDAD),
             Map.entry("consultar_existencias", ROLES_EXISTENCIAS),

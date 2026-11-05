@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mx.josesaid.develop.facturacion_pagos.domain.Comprobante;
 import com.mx.josesaid.develop.facturacion_pagos.domain.ComprobanteRepositorio;
+import com.mx.josesaid.develop.facturacion_pagos.domain.ComprobantePendienteCobro;
 import com.mx.josesaid.develop.facturacion_pagos.domain.EstatusComprobante;
 import com.mx.josesaid.develop.facturacion_pagos.domain.RecursoNoEncontradoException;
 import java.math.BigDecimal;
@@ -44,6 +45,11 @@ class FacturacionServiceTest {
             @Override
             public Optional<Comprobante> buscarPorFolio(String folio) {
                 return almacen.values().stream().filter(c -> folio.equals(c.getFolio())).findFirst();
+            }
+
+            @Override
+            public List<ComprobantePendienteCobro> listarPendientesDeCobro(int limite) {
+                return List.of();
             }
         };
         Clock reloj = Clock.fixed(Instant.parse("2026-01-15T10:00:00Z"), ZoneOffset.UTC);

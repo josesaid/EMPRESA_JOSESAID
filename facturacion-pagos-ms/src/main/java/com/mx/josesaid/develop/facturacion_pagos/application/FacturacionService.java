@@ -2,10 +2,12 @@ package com.mx.josesaid.develop.facturacion_pagos.application;
 
 import com.mx.josesaid.develop.facturacion_pagos.domain.Comprobante;
 import com.mx.josesaid.develop.facturacion_pagos.domain.ComprobanteRepositorio;
+import com.mx.josesaid.develop.facturacion_pagos.domain.ComprobantePendienteCobro;
 import com.mx.josesaid.develop.facturacion_pagos.domain.RecursoNoEncontradoException;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ public class FacturacionService {
     public static final String EVENTO_COMPROBANTE_EMITIDO = "comprobante-emitido";
     public static final String EVENTO_COMPROBANTE_CANCELADO = "comprobante-cancelado";
     public static final String EVENTO_PAGO_REGISTRADO = "pago-registrado";
+
+    static final int LIMITE_LISTADO_PENDIENTES = 15;
 
     private final ComprobanteRepositorio repositorio;
     private final PublicadorEventos eventos;
@@ -72,6 +76,12 @@ public class FacturacionService {
                 "monto", pago.getMonto().toPlainString(),
                 "saldo", guardado.saldo().toPlainString())));
         return guardado;
+    }
+
+    /** Comprobantes emitidos con saldo por cobrar, para cobranza. */
+    @Transactional(readOnly = true)
+    public List<ComprobantePendienteCobro> listarPendientesDeCobro() {
+        return repositorio.listarPendientesDeCobro(LIMITE_LISTADO_PENDIENTES);
     }
 
     @Transactional(readOnly = true)
