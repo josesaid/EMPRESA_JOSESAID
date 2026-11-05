@@ -61,3 +61,13 @@ Revisión al 2026-11-05.
 - Bloqueo de cuenta de 5 minutos tras 5 intentos fallidos consecutivos (antes 15 minutos, propuesta no validada). Decisión cerrada; el equipo no volverá a decidir este punto. Aplica al backend (`usuarios-accesos-ms`) y a la UI (`ui-ms`). La vigencia del access token (15 minutos) no cambia.
 
 **Total: 7 decisiones de herramientas y 9 aspectos de seguridad por evaluar.**
+
+## 3. Registro de PRs y merges (al final)
+
+**Se hace al final**, cuando el backend esté completo y todos los PR y merges estén registrados. Así la documentación queda completa de una sola vez.
+
+- [ ] Listar cada PR de la sesión en una tabla con: número, título, rama, servicios afectados, commit de merge, fecha y resumen de una línea.
+- [ ] Incluir las decisiones de cada PR (por ejemplo, el bloqueo de 5 minutos o la cuenta por pagar) y enlazar cada fila con su PR en GitHub.
+- [ ] Ubicar la tabla en la documentación del repositorio, con enlace desde el README principal.
+
+**Pendiente:** no iniciar hasta que el backend esté terminado.
