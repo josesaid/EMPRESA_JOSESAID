@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.facturacion_pagos.domain;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,4 +12,7 @@ public interface ComprobanteRepositorio {
     Optional<Comprobante> buscarPorId(UUID id);
 
     Optional<Comprobante> buscarPorFolio(String folio);
+
+    /** Emitidos con saldo pendiente, del más reciente al más antiguo, hasta {@code limite}. */
+    List<ComprobantePendienteCobro> listarPendientesDeCobro(int limite);
 }

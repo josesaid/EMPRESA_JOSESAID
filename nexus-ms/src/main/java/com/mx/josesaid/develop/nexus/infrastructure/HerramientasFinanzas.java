@@ -61,4 +61,16 @@ public final class HerramientasFinanzas {
                 .body(String.class);
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
+
+    @Tool(name = "listar_comprobantes_pendientes_cobro",
+          description = "Lista los últimos 15 comprobantes emitidos con saldo por cobrar, del más reciente al más "
+                  + "antiguo: folio, moneda, total, saldo y estatus de cobro (PENDIENTE o PARCIAL).")
+    public String listarComprobantesPendientesCobro() {
+        RegistroHerramientasUsadas.registrar("listar_comprobantes_pendientes_cobro");
+        String cuerpo = gateway.get()
+                .uri(RUTA_BASE + "/comprobantes/pendientes-cobro")
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }
