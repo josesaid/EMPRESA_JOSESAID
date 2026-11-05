@@ -50,6 +50,18 @@ public final class HerramientasFinanzas {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    @Tool(name = "listar_pagos_proveedor",
+          description = "Lista los últimos 15 pagos registrados a proveedores, del más reciente al más antiguo: "
+                  + "monto, fecha de pago, referencia y la cuenta por pagar a la que pertenecen.")
+    public String listarPagosProveedor() {
+        RegistroHerramientasUsadas.registrar("listar_pagos_proveedor");
+        String cuerpo = gateway.get()
+                .uri(RUTA_BASE + "/cuentas-por-pagar/pagos")
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
+
     @Tool(name = "listar_comprobantes_pendientes_cobro",
           description = "Lista los últimos 15 comprobantes emitidos con saldo por cobrar, del más reciente al más "
                   + "antiguo: folio, moneda, total, saldo y estatus de cobro (PENDIENTE o PARCIAL).")

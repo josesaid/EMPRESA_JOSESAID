@@ -124,6 +124,16 @@ public class DocumentosService {
         return documentos.guardar(d);
     }
 
+    /** Hasta 15 documentos cuyo título contiene el texto. Pide al menos 3 caracteres. */
+    @Transactional(readOnly = true)
+    public List<Documento> buscarPorTitulo(String texto) {
+        String limpio = texto == null ? "" : texto.trim();
+        if (limpio.length() < 3) {
+            throw new SolicitudInvalidaException("La búsqueda necesita al menos 3 caracteres");
+        }
+        return documentos.buscarPorTitulo(limpio, 15);
+    }
+
     @Transactional(readOnly = true)
     public List<Documento> porVencer(int dias) {
         if (dias < 0 || dias > MAX_DIAS) {

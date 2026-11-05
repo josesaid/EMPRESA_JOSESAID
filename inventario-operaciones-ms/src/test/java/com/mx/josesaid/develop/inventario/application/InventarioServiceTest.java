@@ -32,6 +32,7 @@ class InventarioServiceTest {
             public Articulo guardar(Articulo a) { articulos.put(a.getId(), a); return a; }
             public Optional<Articulo> buscarPorId(UUID id) { return Optional.ofNullable(articulos.get(id)); }
             public boolean existePorSku(String sku) { return articulos.values().stream().anyMatch(a -> a.getSku().equals(sku)); }
+            public List<Articulo> listarConMinimo() { return articulos.values().stream().filter(a -> a.getMinimo().signum() > 0).toList(); }
         };
         AlmacenRepositorio alr = new AlmacenRepositorio() {
             public Almacen guardar(Almacen a) { almacenes.put(a.getId(), a); return a; }
@@ -42,6 +43,11 @@ class InventarioServiceTest {
             public Optional<Existencia> buscar(UUID a, UUID l) { return Optional.ofNullable(existencias.get(a + "|" + l)); }
             public List<Existencia> buscarPorArticulo(UUID a) {
                 return existencias.values().stream().filter(e -> e.getArticuloId().equals(a)).toList();
+            }
+            public Map<UUID, java.math.BigDecimal> cantidadTotalPorArticulo() {
+                Map<UUID, java.math.BigDecimal> totales = new HashMap<>();
+                existencias.values().forEach(e -> totales.merge(e.getArticuloId(), e.getCantidad(), java.math.BigDecimal::add));
+                return totales;
             }
         };
         MovimientoRepositorio mr = new MovimientoRepositorio() {

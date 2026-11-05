@@ -72,6 +72,13 @@ public class InventarioControlador {
                         s.cantidad(), s.lote(), s.referencia())));
     }
 
+    /** Hasta 15 artículos por debajo de su mínimo, del mayor faltante al menor. */
+    @GetMapping("/articulos/bajo-minimo")
+    @PreAuthorize("hasAnyRole('ALMACEN','COMPRAS')")
+    public List<ArticuloBajoMinimoRespuesta> articulosBajoMinimo() {
+        return servicio.listarBajoMinimo(15).stream().map(ArticuloBajoMinimoRespuesta::de).toList();
+    }
+
     @GetMapping("/existencias")
     @PreAuthorize("hasAnyRole('ALMACEN','COMPRAS','VENTAS')")
     public List<ExistenciaRespuesta> existencias(@RequestParam UUID articulo) {
@@ -143,6 +150,14 @@ public class InventarioControlador {
         static MovimientoRespuesta de(MovimientoInventario m) {
             return new MovimientoRespuesta(m.getId(), m.getArticuloId(), m.getAlmacenId(), m.getTipo(),
                     m.getCantidad(), m.getLote(), m.getReferencia(), m.getCreadoUtc());
+        }
+    }
+
+    public record ArticuloBajoMinimoRespuesta(UUID articuloId, String sku, String nombre, String unidad,
+                                              BigDecimal minimo, BigDecimal existencia, BigDecimal faltante) {
+        static ArticuloBajoMinimoRespuesta de(com.mx.josesaid.develop.inventario.domain.ArticuloBajoMinimo r) {
+            return new ArticuloBajoMinimoRespuesta(r.articuloId(), r.sku(), r.nombre(), r.unidad(), r.minimo(),
+                    r.existencia(), r.faltante());
         }
     }
 

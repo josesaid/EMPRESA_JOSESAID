@@ -50,6 +50,11 @@ class UsuarioServiceTest {
         public boolean existePorCorreo(String correo) {
             return buscarPorCorreo(correo).isPresent();
         }
+
+        @Override
+        public java.util.List<Usuario> listarRecientes(int limite) {
+            return almacen.values().stream().limit(limite).toList();
+        }
     };
 
     @BeforeEach

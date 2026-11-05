@@ -15,4 +15,9 @@ public interface DocumentoJpaRepository extends JpaRepository<DocumentoEntity, U
     @Query("select d from DocumentoEntity d where d.eliminado = false and d.retencionHasta < :hoy "
             + "and d.revisionRetencion = false")
     List<DocumentoEntity> buscarActivosConRetencionVencida(@Param("hoy") LocalDate hoy);
+
+    @Query("select d from DocumentoEntity d where d.eliminado = false and lower(d.titulo) like :patron escape '!' "
+            + "order by d.titulo asc")
+    List<DocumentoEntity> buscarPorTitulo(@Param("patron") String patron,
+                                          org.springframework.data.domain.Pageable pageable);
 }

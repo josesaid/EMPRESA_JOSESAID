@@ -10,4 +10,6 @@ public interface UsuarioJpaRepository extends JpaRepository<UsuarioEntity, UUID>
     Optional<UsuarioEntity> findByCorreoIndice(String correoIndice);
 
     boolean existsByCorreoIndice(String correoIndice);
+
+    java.util.List<UsuarioEntity> findAllByOrderByCreadoUtcDesc(org.springframework.data.domain.Pageable pageable);
 }

@@ -3,6 +3,7 @@ package com.mx.josesaid.develop.inventario.application;
 import com.mx.josesaid.develop.inventario.domain.Almacen;
 import com.mx.josesaid.develop.inventario.domain.AlmacenRepositorio;
 import com.mx.josesaid.develop.inventario.domain.Articulo;
+import com.mx.josesaid.develop.inventario.domain.ArticuloBajoMinimo;
 import com.mx.josesaid.develop.inventario.domain.ArticuloRepositorio;
 import com.mx.josesaid.develop.inventario.domain.ConflictoException;
 import com.mx.josesaid.develop.inventario.domain.Existencia;
@@ -110,6 +111,25 @@ public class InventarioService {
                 "id", id.toString(),
                 "cantidad_real", guardada.getCantidadReal().toPlainString())));
         return guardada;
+    }
+
+    /**
+     * Artículos cuya existencia total (cantidad, sin restar reservas) está por debajo de su mínimo.
+     * Los de mayor faltante primero. Mismo criterio que el evento existencia-bajo-minimo.
+     */
+    @Transactional(readOnly = true)
+    public List<ArticuloBajoMinimo> listarBajoMinimo(int limite) {
+        Map<UUID, BigDecimal> totales = existencias.cantidadTotalPorArticulo();
+        return articulos.listarConMinimo().stream()
+                .map(a -> {
+                    BigDecimal existencia = totales.getOrDefault(a.getId(), BigDecimal.ZERO);
+                    return new ArticuloBajoMinimo(a.getId(), a.getSku(), a.getNombre(), a.getUnidad(),
+                            a.getMinimo(), existencia, a.getMinimo().subtract(existencia));
+                })
+                .filter(r -> r.existencia().compareTo(r.minimo()) < 0)
+                .sorted(java.util.Comparator.comparing(ArticuloBajoMinimo::faltante).reversed())
+                .limit(limite)
+                .toList();
     }
 
     @Transactional(readOnly = true)

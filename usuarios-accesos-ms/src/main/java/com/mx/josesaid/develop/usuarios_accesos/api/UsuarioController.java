@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,11 @@ public class UsuarioController {
         Usuario usuario = servicio.crearConPasswordTemporal(solicitud.correo(), solicitud.nombreCompleto(),
                 solicitud.password(), solicitud.roles());
         return UsuarioRespuesta.de(usuario);
+    }
+
+    @GetMapping
+    public List<UsuarioRespuesta> listar() {
+        return servicio.listarRecientes().stream().map(UsuarioRespuesta::de).toList();
     }
 
     @GetMapping("/{id}")
