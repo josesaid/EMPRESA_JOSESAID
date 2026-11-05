@@ -28,4 +28,20 @@ public final class ConfirmacionAcciones {
         }
         return acciones.confirmar(id, usuario);
     }
+
+    /** Verifica el código de un alta sin crear nada. Código incorrecto cancela la acción por seguridad. */
+    public void verificarAlta(UUID id, String usuario, String codigo) {
+        acciones.altaVigente(id, usuario);
+        if (!codigos.coincide(id, usuario, codigo)) {
+            acciones.cancelar(id, usuario);
+            throw new CodigoConfirmacionInvalidoException(
+                    "Código incorrecto. La acción se canceló por seguridad; pide a Nexus que la prepare de nuevo");
+        }
+    }
+
+    /** Marca el alta como completada tras crear el usuario. Vuelve a verificar el código. */
+    public void completarAlta(UUID id, String usuario, String codigo) {
+        verificarAlta(id, usuario, codigo);
+        acciones.completarAlta(id, usuario);
+    }
 }
