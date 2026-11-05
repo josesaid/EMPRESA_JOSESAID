@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -24,9 +25,6 @@ public class OrdenCompra {
     private String motivoCancelacion;
     private final List<LineaOrden> lineas;
     private final String creadaPor;
-
-    /** Órdenes de 1,000,000 USD o más solo las aprueba DIRECCION. */
-    public static final BigDecimal LIMITE_APROBACION_USD = new BigDecimal("1000000");
 
     private OrdenCompra(UUID id, UUID proveedorId, String moneda, EstatusOrdenCompra estatus,
                         String motivoCancelacion, List<LineaOrden> lineas, String creadaPor) {
@@ -66,10 +64,11 @@ public class OrdenCompra {
 
     /**
      * Aprueba la orden si el usuario puede hacerlo:
-     * nadie aprueba una orden que creó; las de 1,000,000 USD o más solo las aprueba DIRECCION;
+     * nadie aprueba una orden que creó; las que igualan o superan el límite de aprobación solo las aprueba DIRECCION;
      * las órdenes antiguas, sin creador registrado, solo las aprueba DIRECCION.
      */
-    public void aprobar(String usuario, boolean esDireccion, BigDecimal tipoCambioMxnPorUsd) {
+    public void aprobar(String usuario, boolean esDireccion, BigDecimal tipoCambioMxnPorUsd,
+                        BigDecimal limiteAprobacionUsd) {
         if (estatus != EstatusOrdenCompra.BORRADOR) {
             throw new ConflictoException("Solo una orden en borrador puede aprobarse");
         }
@@ -80,9 +79,9 @@ public class OrdenCompra {
             }
         } else if (creadaPor.equals(usuario)) {
             throw new AprobacionNoPermitidaException("No puedes aprobar una orden que tú creaste");
-        } else if (!esDireccion && totalEnUsd(tipoCambioMxnPorUsd).compareTo(LIMITE_APROBACION_USD) >= 0) {
+        } else if (!esDireccion && totalEnUsd(tipoCambioMxnPorUsd).compareTo(limiteAprobacionUsd) >= 0) {
             throw new AprobacionNoPermitidaException(
-                    "Las órdenes de 1,000,000 USD o más solo puede aprobarlas DIRECCION");
+                    "Las órdenes de " + String.format(Locale.US, "%,d", limiteAprobacionUsd.toBigInteger()) + " USD o más solo puede aprobarlas DIRECCION");
         }
         this.estatus = EstatusOrdenCompra.APROBADA;
     }

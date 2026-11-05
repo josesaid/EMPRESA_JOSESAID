@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 class OrdenCompraTest {
 
     private static final BigDecimal TIPO_CAMBIO = new BigDecimal("18");
+    private static final BigDecimal LIMITE = new BigDecimal("1000000");
 
     private static Proveedor activo() {
         return Proveedor.crear("Aceros del Norte SA", "AAN010101AB3", "ventas@aceros.mx");
@@ -37,7 +38,7 @@ class OrdenCompraTest {
     @Test
     void recepcionNoPuedeExcederLoOrdenado() {
         OrdenCompra o = OrdenCompra.crear(activo(), "MXN", lineas(), "u-compras");
-        o.aprobar("u-direccion", true, TIPO_CAMBIO);
+        o.aprobar("u-direccion", true, TIPO_CAMBIO, LIMITE);
         o.recibir("TORN-1", new BigDecimal("6"));
         assertThat(o.getEstatus()).isEqualTo(EstatusOrdenCompra.RECIBIDA_PARCIAL);
         assertThatThrownBy(() -> o.recibir("TORN-1", new BigDecimal("5")))
@@ -49,9 +50,9 @@ class OrdenCompraTest {
     @Test
     void aprobadaSoloSeCancelaConMotivo() {
         OrdenCompra o = OrdenCompra.crear(activo(), "MXN", lineas(), "u-compras");
-        o.aprobar("u-direccion", true, TIPO_CAMBIO);
+        o.aprobar("u-direccion", true, TIPO_CAMBIO, LIMITE);
         assertThatThrownBy(() -> o.cancelar(" ")).isInstanceOf(SolicitudInvalidaException.class);
-        assertThatThrownBy(() -> o.aprobar("u-direccion", true, TIPO_CAMBIO)).isInstanceOf(ConflictoException.class);
+        assertThatThrownBy(() -> o.aprobar("u-direccion", true, TIPO_CAMBIO, LIMITE)).isInstanceOf(ConflictoException.class);
         o.cancelar("Proveedor sin stock");
         assertThat(o.getEstatus()).isEqualTo(EstatusOrdenCompra.CANCELADA);
     }

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 class OrdenCompraAprobacionTest {
 
     private static final BigDecimal TIPO_CAMBIO = new BigDecimal("18");
+    private static final BigDecimal LIMITE = new BigDecimal("1000000");
 
     private static Proveedor activo() {
         return Proveedor.crear("Aceros del Norte SA", "AAN010101AB3", "ventas@aceros.mx");
@@ -27,7 +28,7 @@ class OrdenCompraAprobacionTest {
     void comprasApruebaUnaOrdenMenorAlLimiteQueNoCreo() {
         OrdenCompra o = orden("MXN", "1000", "u-compras-1");
 
-        o.aprobar("u-compras-2", false, TIPO_CAMBIO);
+        o.aprobar("u-compras-2", false, TIPO_CAMBIO, LIMITE);
 
         assertThat(o.getEstatus()).isEqualTo(EstatusOrdenCompra.APROBADA);
     }
@@ -36,10 +37,10 @@ class OrdenCompraAprobacionTest {
     void nadieApruebaUnaOrdenQueCreo() {
         OrdenCompra o = orden("MXN", "1000", "u-compras-1");
 
-        assertThatThrownBy(() -> o.aprobar("u-compras-1", false, TIPO_CAMBIO))
+        assertThatThrownBy(() -> o.aprobar("u-compras-1", false, TIPO_CAMBIO, LIMITE))
                 .isInstanceOf(AprobacionNoPermitidaException.class)
                 .hasMessageContaining("tú creaste");
-        assertThatThrownBy(() -> o.aprobar("u-compras-1", true, TIPO_CAMBIO))
+        assertThatThrownBy(() -> o.aprobar("u-compras-1", true, TIPO_CAMBIO, LIMITE))
                 .isInstanceOf(AprobacionNoPermitidaException.class);
         assertThat(o.getEstatus()).isEqualTo(EstatusOrdenCompra.BORRADOR);
     }
@@ -48,7 +49,7 @@ class OrdenCompraAprobacionTest {
     void direccionApruebaUnaOrdenQueOtroCreo() {
         OrdenCompra o = orden("MXN", "1000", "u-compras-1");
 
-        o.aprobar("u-direccion", true, TIPO_CAMBIO);
+        o.aprobar("u-direccion", true, TIPO_CAMBIO, LIMITE);
 
         assertThat(o.getEstatus()).isEqualTo(EstatusOrdenCompra.APROBADA);
     }
@@ -57,7 +58,7 @@ class OrdenCompraAprobacionTest {
     void comprasNoApruebaUnaOrdenDeUnMillonDeDolaresOMas() {
         OrdenCompra o = orden("USD", "1000000", "u-compras-1");
 
-        assertThatThrownBy(() -> o.aprobar("u-compras-2", false, TIPO_CAMBIO))
+        assertThatThrownBy(() -> o.aprobar("u-compras-2", false, TIPO_CAMBIO, LIMITE))
                 .isInstanceOf(AprobacionNoPermitidaException.class)
                 .hasMessageContaining("1,000,000 USD");
     }
@@ -66,12 +67,12 @@ class OrdenCompraAprobacionTest {
     void unaOrdenEnPesosSeConvierteAUsdParaComparar() {
         // 18,000,000 MXN a 18 MXN por USD son exactamente 1,000,000 USD: el límite es inclusivo.
         OrdenCompra enLimite = orden("MXN", "18000000", "u-compras-1");
-        assertThatThrownBy(() -> enLimite.aprobar("u-compras-2", false, TIPO_CAMBIO))
+        assertThatThrownBy(() -> enLimite.aprobar("u-compras-2", false, TIPO_CAMBIO, LIMITE))
                 .isInstanceOf(AprobacionNoPermitidaException.class);
 
         // 17,999,999 MXN son menos de 1,000,000 USD: COMPRAS sí aprueba.
         OrdenCompra debajo = orden("MXN", "17999999", "u-compras-1");
-        debajo.aprobar("u-compras-2", false, TIPO_CAMBIO);
+        debajo.aprobar("u-compras-2", false, TIPO_CAMBIO, LIMITE);
         assertThat(debajo.getEstatus()).isEqualTo(EstatusOrdenCompra.APROBADA);
     }
 
@@ -79,7 +80,7 @@ class OrdenCompraAprobacionTest {
     void direccionApruebaUnaOrdenDeUnMillonDeDolaresOMas() {
         OrdenCompra o = orden("USD", "2000000", "u-compras-1");
 
-        o.aprobar("u-direccion", true, TIPO_CAMBIO);
+        o.aprobar("u-direccion", true, TIPO_CAMBIO, LIMITE);
 
         assertThat(o.getEstatus()).isEqualTo(EstatusOrdenCompra.APROBADA);
     }
@@ -90,11 +91,11 @@ class OrdenCompraAprobacionTest {
                 EstatusOrdenCompra.BORRADOR, null,
                 List.of(LineaOrden.nueva("TORN-1", BigDecimal.ONE, new BigDecimal("100"))), null);
 
-        assertThatThrownBy(() -> antigua.aprobar("u-compras-2", false, TIPO_CAMBIO))
+        assertThatThrownBy(() -> antigua.aprobar("u-compras-2", false, TIPO_CAMBIO, LIMITE))
                 .isInstanceOf(AprobacionNoPermitidaException.class)
                 .hasMessageContaining("antes de registrar su creador");
 
-        antigua.aprobar("u-direccion", true, TIPO_CAMBIO);
+        antigua.aprobar("u-direccion", true, TIPO_CAMBIO, LIMITE);
         assertThat(antigua.getEstatus()).isEqualTo(EstatusOrdenCompra.APROBADA);
     }
 
@@ -102,5 +103,15 @@ class OrdenCompraAprobacionTest {
     void laOrdenNecesitaUnCreador() {
         assertThatThrownBy(() -> orden("MXN", "1000", " "))
                 .isInstanceOf(ReglaDeNegocioException.class);
+    }
+
+    @Test
+    void limiteConfigurableCambiaElUmbral() {
+        // 500,000 USD: con límite de 400,000 requiere DIRECCION; con el límite por defecto COMPRAS la aprueba.
+        OrdenCompra o = orden("USD", "500000", "u-compras-1");
+        assertThatThrownBy(() -> o.aprobar("u-compras-2", false, TIPO_CAMBIO, new BigDecimal("400000")))
+                .isInstanceOf(AprobacionNoPermitidaException.class)
+                .hasMessageContaining("400,000 USD");
+        o.aprobar("u-compras-2", false, TIPO_CAMBIO, LIMITE);
     }
 }
