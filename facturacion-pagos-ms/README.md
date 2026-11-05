@@ -141,6 +141,7 @@ Se publican en el tópico `facturacion-pagos.eventos`, con la clave `agregadoId`
 |---|---|---|
 | `comprobante-emitido` | Al emitir | comprobanteId, folio, total |
 | `pago-registrado` | Al registrar un pago | comprobanteId, monto, saldo |
+| `pago-proveedor-registrado` | Al registrar un pago a proveedor | cuentaId, ordenId, proveedorId, moneda, monto, saldo |
 | `comprobante-cancelado` | Al cancelar | comprobanteId, motivo |
 
 ## 14. Outbox
@@ -205,6 +206,16 @@ Imagen multi-etapa (Maven para compilar, JRE 21 para ejecutar), usuario sin priv
 - Métricas Prometheus en `/actuator/prometheus`, sin token, solo lectura.
 - Variables `EUREKA_USUARIO` y `EUREKA_PASSWORD`: obligatorias en Docker; el Compose arma la URL de registro `http://USUARIO:CLAVE@discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://USUARIO:CLAVE@localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.
 
+
+## Cuentas por pagar a proveedores
+
+Cada orden aprobada en compras-proveedores-ms genera una cuenta por pagar, en la moneda y por el total de la orden. La cuenta se crea una sola vez por orden, aunque el evento llegue dos veces.
+
+- `GET /v1/cuentas-por-pagar/{id}` y `POST /v1/cuentas-por-pagar/{id}/pagos` son solo para FINANZAS.
+- Un pago no puede exceder el saldo (422) ni tener un monto que redondee a cero. Si no se envía la fecha, se usa la del reloj del servicio.
+- El estatus se deriva: PENDIENTE sin pagos, PARCIAL con saldo y PAGADA con saldo en cero.
+- Cada pago publica `pago-proveedor-registrado` por outbox y acepta `Idempotency-Key`.
+- Al desplegar, el listener lee `compras.eventos` desde el inicio del topic, así que crea cuentas para las órdenes aprobadas antes del despliegue. Los eventos sin moneda válida (MXN o USD) o con total no positivo se descartan y se registran en el log.
 
 ## Tasa de IVA
 
