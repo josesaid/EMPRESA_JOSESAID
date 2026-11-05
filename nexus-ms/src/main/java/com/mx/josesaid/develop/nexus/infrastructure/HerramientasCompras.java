@@ -59,4 +59,29 @@ public final class HerramientasCompras {
                 .body(String.class);
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
+
+    private static final java.util.Set<String> ESTATUS_ORDEN =
+            java.util.Set.of("BORRADOR", "APROBADA", "RECIBIDA_PARCIAL", "RECIBIDA", "CANCELADA");
+
+    @Tool(name = "listar_ordenes_compra",
+          description = "Lista las órdenes de compra más recientes primero, hasta 15. Filtro opcional por un solo estatus: BORRADOR, APROBADA, RECIBIDA_PARCIAL, RECIBIDA o CANCELADA. Muestra la razón social del proveedor y la fecha de creación.")
+    public String listarOrdenesCompra(
+            @ToolParam(description = "Estatus para filtrar, opcional. Vacío para no filtrar.", required = false) String estatus) {
+        RegistroHerramientasUsadas.registrar("listar_ordenes_compra");
+        String filtro = estatus == null ? "" : estatus.trim().toUpperCase(java.util.Locale.ROOT);
+        if (!filtro.isEmpty() && !ESTATUS_ORDEN.contains(filtro)) {
+            return "Estatus no válido. Use BORRADOR, APROBADA, RECIBIDA_PARCIAL, RECIBIDA o CANCELADA.";
+        }
+        String cuerpo = gateway.get()
+                .uri(constructor -> {
+                    var ruta = constructor.path(RUTA_BASE + "/ordenes-compra");
+                    if (!filtro.isEmpty()) {
+                        ruta.queryParam("estatus", filtro);
+                    }
+                    return ruta.build();
+                })
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
 }
