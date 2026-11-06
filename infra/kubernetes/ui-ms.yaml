@@ -1,0 +1,55 @@
+# ui-ms: solo ClusterIP. La entrada desde fuera la da el Ingress (ingress.yaml).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-ms
+  namespace: empresa
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ui-ms
+  template:
+    metadata:
+      labels:
+        app: ui-ms
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ui-ms
+          image: REGISTRY/ui-ms:0.1.0   # reemplazar por la imagen publicada
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: SERVER_PORT
+              value: "8080"
+            - name: GATEWAY_URL
+              value: http://gateway-ms:8080
+            - name: REDIS_HOST
+              value: redis
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { memory: 512Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui-ms
+  namespace: empresa
+spec:
+  type: ClusterIP
+  selector:
+    app: ui-ms
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

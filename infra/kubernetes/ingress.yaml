@@ -1,0 +1,26 @@
+# Solo la UI sale a la red. Gateway, discovery y actuator quedan internos.
+# Supone ingress-nginx como controlador; cambiar ingressClassName si se usa otro.
+# host: reemplazar por el dominio real.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ui-ms
+  namespace: empresa
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: ["ui.example.com"]
+      secretName: ui-ms-tls
+  rules:
+    - host: ui.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ui-ms
+                port:
+                  name: http
