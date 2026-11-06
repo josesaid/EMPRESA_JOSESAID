@@ -131,6 +131,11 @@ public class ProtectorDatos {
         }
     }
 
+    /** Versión con la que se cifra lo nuevo. */
+    public int versionActiva() {
+        return versionActiva;
+    }
+
     /** Índice determinista para búsquedas por igualdad, por ejemplo el RFC. */
     public String indice(String valor) {
         try {

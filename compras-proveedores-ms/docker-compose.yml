@@ -25,6 +25,8 @@ services:
       # Opcionales: varias versiones de la clave (N:base64,N:base64) y la versión con la que se cifra.
       COMPRAS_CIFRADO_CLAVES: ${COMPRAS_CIFRADO_CLAVES:-}
       COMPRAS_CIFRADO_VERSION_ACTIVA: ${COMPRAS_CIFRADO_VERSION_ACTIVA:-1}
+      # Re-cifra al arrancar los datos de proveedores a la versión activa. Desactivado por defecto.
+      COMPRAS_RECIFRADO_ACTIVO: ${COMPRAS_RECIFRADO_ACTIVO:-false}
       COMPRAS_INDICE_CLAVE: ${COMPRAS_INDICE_CLAVE:?Defina COMPRAS_INDICE_CLAVE en .env}
       # Monto en USD (entero) desde el que solo DIRECCION aprueba órdenes
       COMPRAS_LIMITE_APROBACION_USD: ${COMPRAS_LIMITE_APROBACION_USD:-1000000}
