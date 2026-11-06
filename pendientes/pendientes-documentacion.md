@@ -62,6 +62,13 @@ Revisión al 2026-11-05.
 
 **Total: 7 decisiones de herramientas y 9 aspectos de seguridad por evaluar.**
 
+**Avances del 2026-11-05.** Los siguientes puntos están parcialmente resueltos. Sus casillas siguen abiertas porque el alcance original incluye más trabajo:
+
+- Límites de tamaño y validación de entrada (#102 a #108): `clientes-ms` y los parámetros de búsqueda de todos los servicios tienen longitud máxima. El gateway limita el cuerpo a 64 KiB, salvo la carga de documentos (21 MB) (#103). Faltan el límite del cuerpo en los servicios y una prueba del 400 con valores demasiado largos.
+- Escaneo de secretos (#100): gitleaks corre en push a `main` y en cada PR. Faltan las claves de firma.
+- Imágenes de contenedor (#101): Trivy escanea las 13 imágenes con parches disponibles. Todas usan usuario no root. Falta fijar digests de las imágenes base.
+- Rotación de claves: la guía de prueba en Mac y el inventario quedaron documentados (#94 a #97). Falta documentar respaldo y restauración, y el paso de re-cifrado interrumpido.
+
 ## 3. Registro de PRs y merges (al final)
 
 **Se hace al final**, cuando el backend esté completo y todos los PR y merges estén registrados. Así la documentación queda completa de una sola vez.
