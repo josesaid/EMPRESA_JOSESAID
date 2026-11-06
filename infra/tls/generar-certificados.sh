@@ -5,6 +5,7 @@
 #   ca.crt               certificado público de la CA: confiar en él en los clientes
 #   ca.key               clave privada de la CA: guardarla fuera de la máquina de trabajo
 #   gateway.p12          keystore del gateway (clave + certificado)
+#   truststore.p12       truststore con la CA (para los clientes que llaman al gateway)
 #   gateway-password.txt contraseña del keystore (si no se definió GATEWAY_TLS_PASSWORD)
 set -euo pipefail
 
@@ -51,6 +52,10 @@ openssl x509 -req -sha256 -days "$DIAS_GATEWAY" -in "$SALIDA/gateway.csr" \
 # 3. Keystore PKCS#12 que lee Spring Boot
 openssl pkcs12 -export -name gateway -inkey "$SALIDA/gateway.key" -in "$SALIDA/gateway.crt" \
   -certfile "$SALIDA/ca.crt" -out "$SALIDA/gateway.p12" -passout "pass:$PASSWORD"
+
+# 4. Truststore PKCS#12 con la CA: lo usan ui-ms y nexus-ms para confiar en el gateway
+keytool -importcert -noprompt -alias empresa-ca -file "$SALIDA/ca.crt" \
+  -keystore "$SALIDA/truststore.p12" -storetype PKCS12 -storepass "$PASSWORD" >/dev/null 2>&1
 
 rm -f "$SALIDA/gateway.csr" "$SALIDA/gateway.ext" "$SALIDA/gateway.key" "$SALIDA/gateway.crt" "$SALIDA/ca.srl"
 echo "Listo. Archivos en $SALIDA: ca.crt, gateway.p12 (y gateway-password.txt si no definiste GATEWAY_TLS_PASSWORD)."

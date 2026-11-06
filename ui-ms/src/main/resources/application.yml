@@ -13,6 +13,8 @@ server:
 
 ui:
   gateway-url: ${GATEWAY_URL:http://localhost:8080}
+  # Bundle SSL (spring.ssl.bundles) con la CA interna para llamar al gateway por HTTPS. Vacío = HTTP normal.
+  gateway-tls-bundle: ${GATEWAY_TLS_BUNDLE:}
 
 management:
   endpoints:
