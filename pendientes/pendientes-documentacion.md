@@ -69,6 +69,13 @@ Revisión al 2026-11-05.
 - Imágenes de contenedor (#101): Trivy escanea las 13 imágenes con parches disponibles. Todas usan usuario no root. Falta fijar digests de las imágenes base.
 - Rotación de claves: la guía de prueba en Mac y el inventario quedaron documentados (#94 a #97). Falta documentar respaldo y restauración, y el paso de re-cifrado interrumpido.
 
+**Resultados de `mvn verify` (2026-11-06).** Corrido en los 13 módulos con `-DskipITs` en 12 de ellos. `clientes-ms` se corrió completo: 27 pruebas unitarias pasan, pero dos pruebas de integración (`PublicadorIndicadoresClientesIT`) requieren Docker y fallan en el entorno de trabajo, que no tiene Docker. Gateway pasa completo, incluido JaCoCo.
+
+- Pruebas unitarias: pasan en los 13 módulos (203 en `nexus-ms`, 53 en `usuarios-accesos-ms`, 37 en `compras-proveedores-ms`, entre otros).
+- PMD: 2 hallazgos en `gateway-ms`, `compras-proveedores-ms`, `facturacion-pagos-ms` y `usuarios-accesos-ms`; 12 en `nexus-ms`. Checkstyle y PMD están en modo reporte.
+- SpotBugs: en modo reporte. Los hallazgos más comunes son `EI_EXPOSE_REP2` (exposición de referencias mutables), que en Spring suele ser falso positivo, y `CT_CONSTRUCTOR_THROW` en `CryptoConfig`. Queda para revisar caso por caso.
+- Pendiente: correr las pruebas de integración (`failsafe`) en un entorno con Docker.
+
 ## 3. Registro de PRs y merges (al final)
 
 **Se hace al final**, cuando el backend esté completo y todos los PR y merges estén registrados. Así la documentación queda completa de una sola vez.
