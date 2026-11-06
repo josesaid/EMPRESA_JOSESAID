@@ -142,6 +142,10 @@ Cuando el paso 7 dé `0` en todo, y hayas verificado la lectura, quita la versi�
 
 > **No borres la clave 1 de tu gestor de secretos.** Si restauras el respaldo del paso 1, esos datos siguen cifrados con la clave 1.
 
+> **Variables de clave única.** `CRYPTO_CLAVE_CIFRADO`, `COMPRAS_CIFRADO_CLAVE` y `USUARIOS_CIFRADO_CLAVE` siguen con la clave 1 después de este paso. El `docker-compose.yml` de la raíz las exige para arrancar, así que no se borran. Mientras la lista exista, se ignoran. Para sacar la clave 1 también de esas variables, pon en ellas el valor de la clave 2 (el mismo que aparece en la lista), y deja documentado que una lista borrada las convertiría en versión 1 con la clave 2.
+
+> **Reinicio del gateway.** Después de recrear contenedores, reinicia también `gateway-ms`. Sin ese reinicio, el gateway puede responder `500` o `404` a rutas válidas.
+
 ## Cómo volver atrás
 
 Si algo falla en cualquier paso:
