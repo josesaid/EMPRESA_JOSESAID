@@ -3,6 +3,7 @@ package com.mx.josesaid.develop.nexus.infrastructure.persistence;
 import java.time.Clock;
 import java.time.Duration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,12 @@ public class LimpiezaAcciones {
     private final AccionPendienteRepositorio repositorio;
     private final Clock reloj;
 
-    public LimpiezaAcciones(AccionPendienteRepositorio repositorio, Clock reloj) {
+    @Autowired
+    public LimpiezaAcciones(AccionPendienteRepositorio repositorio) {
+        this(repositorio, Clock.systemUTC());
+    }
+
+    LimpiezaAcciones(AccionPendienteRepositorio repositorio, Clock reloj) {
         this.repositorio = repositorio;
         this.reloj = reloj;
     }
