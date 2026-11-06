@@ -1,0 +1,72 @@
+# 1) Por defecto, nada entra al namespace salvo lo que se permite abajo.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: empresa
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress"]
+---
+# 2) El Ingress llega solo a ui-ms (8080).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ui-desde-ingress
+  namespace: empresa
+spec:
+  podSelector:
+    matchLabels:
+      app: ui-ms
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - port: 8080
+          protocol: TCP
+---
+# 3) La API del gateway solo la llama la UI dentro del namespace.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gateway-api-interna
+  namespace: empresa
+spec:
+  podSelector:
+    matchLabels:
+      app: gateway-ms
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: ui-ms
+      ports:
+        - port: 8080
+          protocol: TCP
+---
+# 4) El puerto de gestión (/actuator) solo lo raspa Prometheus desde el namespace de monitoreo.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gestion-solo-prometheus
+  namespace: empresa
+spec:
+  podSelector:
+    matchLabels:
+      app: gateway-ms
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - port: 9080
+          protocol: TCP

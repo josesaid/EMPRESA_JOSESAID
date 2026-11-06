@@ -1,0 +1,58 @@
+# gateway-ms: el Service solo expone el puerto de la API (8080).
+# El puerto de gestión (9080, /actuator) se declara en el contenedor pero NO
+# está en el Service, así que no es alcanzable por nombre de servicio. Prometheus
+# lo raspa por IP de pod, permitido solo desde el namespace de monitoreo (network-policy.yaml).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-ms
+  namespace: empresa
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gateway-ms
+  template:
+    metadata:
+      labels:
+        app: gateway-ms
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: gateway-ms
+          image: REGISTRY/gateway-ms:latest   # reemplazar por la imagen publicada
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: gestion
+              containerPort: 9080
+          env:
+            - name: GESTION_PUERTO
+              value: "9080"
+            - name: EUREKA_URL
+              value: http://discovery-ms:8761/eureka/
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { memory: 768Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-ms
+  namespace: empresa
+spec:
+  type: ClusterIP
+  selector:
+    app: gateway-ms
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
