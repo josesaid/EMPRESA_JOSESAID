@@ -67,7 +67,7 @@ public class PublicadorIndicadoresUsuarios {
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         } catch (Exception ex) {
-            log.warn("No se pudo publicar el indicador {} {}: {}", NOMBRE, periodo, ex.getMessage());
+            log.warn("No se pudo publicar el indicador {} {}: {}", NOMBRE, periodo, ex.getClass().getSimpleName());
         }
     }
 
