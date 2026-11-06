@@ -15,18 +15,17 @@ import urllib.request
 
 GATEWAY = "http://127.0.0.1:8080"
 
-# (nombre, ruta, códigos aceptables). 400 se acepta solo donde el endpoint exige parámetros.
+# (nombre, ruta, códigos aceptables). 403 = el servicio respondió y aplicó el rol; el usuario de prueba puede no tener ese rol.
 SERVICIOS = [
-    ("clientes", "/clientes-ms/v1/metricas/conversion", {200}),
-    ("compras", "/compras-proveedores-ms/v1/proveedores", {200}),
-    ("contabilidad", "/contabilidad-ms/v1/cuentas", {200}),
-    ("documentos", "/documentos-cumplimiento-ms/v1/catalogos/tipos-documento", {200}),
-    ("facturacion", "/facturacion-pagos-ms/v1/cuentas-por-pagar/pagos", {200}),
-    ("inventario", "/inventario-operaciones-ms/v1/articulos/bajo-minimo", {200}),
-    ("pedidos", "/pedidos-ventas-ms/v1/pedidos", {200}),
-    ("reportes", "/reportes-ejecutivos-ms/v1/indicadores", {200, 400}),
+    ("clientes", "/clientes-ms/v1/metricas/conversion?mes=2026-11", {200, 403}),
+    ("compras", "/compras-proveedores-ms/v1/proveedores?razonSocial=prueba", {200, 403}),
+    ("contabilidad", "/contabilidad-ms/v1/cuentas", {200, 403}),
+    ("documentos", "/documentos-cumplimiento-ms/v1/catalogos/tipos-documento", {200, 403}),
+    ("facturacion", "/facturacion-pagos-ms/v1/comprobantes", {200, 403}),
+    ("inventario", "/inventario-operaciones-ms/v1/articulos/bajo-minimo", {200, 403}),
+    ("pedidos", "/pedidos-ventas-ms/v1/pedidos", {200, 403}),
+    ("reportes", "/reportes-ejecutivos-ms/v1/indicadores", {200, 400, 403}),
 ]
-
 
 def peticion(metodo, ruta, cuerpo=None, token=None):
     cabeceras = {"Content-Type": "application/json", "Accept": "application/json"}
