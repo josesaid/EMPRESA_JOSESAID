@@ -9,6 +9,8 @@ services:
       SERVER_PORT: 8080
       GATEWAY_URL: http://gateway-ms:8080
       REDIS_HOST: redis
+      # Proxies de confianza para X-Forwarded-For del navegador (vacío = usar la IP directa).
+      UI_PROXIES_CONFIABLES: ${UI_PROXIES_CONFIABLES:-}
     ports:
       # Solo desde esta Mac: la UI no se expone a la red local
       - "127.0.0.1:8098:8080"

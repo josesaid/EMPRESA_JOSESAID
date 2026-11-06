@@ -22,10 +22,12 @@ public class UsuariosAuthenticationProvider implements AuthenticationProvider {
 
     private final RestClient gateway;
     private final BloqueoLogin bloqueos;
+    private final IpOrigen ipOrigen;
 
-    public UsuariosAuthenticationProvider(RestClient gatewayClient, BloqueoLogin bloqueos) {
+    public UsuariosAuthenticationProvider(RestClient gatewayClient, BloqueoLogin bloqueos, IpOrigen ipOrigen) {
         this.gateway = gatewayClient;
         this.bloqueos = bloqueos;
+        this.ipOrigen = ipOrigen;
     }
 
     @Override
@@ -38,9 +40,15 @@ public class UsuariosAuthenticationProvider implements AuthenticationProvider {
 
         RespuestaLogin respuesta;
         try {
-            respuesta = gateway.post()
+            var solicitud = gateway.post()
                     .uri("/usuarios-accesos-ms/v1/auth/login")
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON);
+            String ipCliente = ipOrigen.actual();
+            if (ipCliente != null) {
+                // El gateway limita intentos por esta IP, no por la de ui-ms (todos los usuarios compartirían un límite).
+                solicitud.header("X-Forwarded-For", ipCliente);
+            }
+            respuesta = solicitud
                     .body(Map.of("correo", correo, "password", password))
                     .retrieve()
                     .body(RespuestaLogin.class);
