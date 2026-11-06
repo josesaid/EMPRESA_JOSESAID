@@ -29,6 +29,12 @@ public class CampoCifradoConverter implements AttributeConverter<String, String>
     private static final Pattern PREFIJO_VERSION = Pattern.compile("^v(\\d{1,4}):(.*)$", Pattern.DOTALL);
     private static final SecureRandom ALEATORIO = new SecureRandom();
 
+    /** Versión de clave con la que está cifrado un valor de columna. Sin prefijo, la versión 1. */
+    public static int versionDe(String columna) {
+        Matcher prefijo = PREFIJO_VERSION.matcher(columna);
+        return prefijo.matches() ? Integer.parseInt(prefijo.group(1)) : VERSION_SIN_PREFIJO;
+    }
+
     @Override
     public String convertToDatabaseColumn(String texto) {
         if (texto == null) {

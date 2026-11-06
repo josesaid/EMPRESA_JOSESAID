@@ -43,6 +43,9 @@ app:
     claves-cifrado: ${CRYPTO_CLAVES_CIFRADO:}
     # Versión con la que se cifra lo nuevo. Los valores antiguos se leen con su propia versión.
     version-activa: ${CRYPTO_VERSION_ACTIVA:1}
+    # Re-cifra al arrancar los campos que no están en la versión activa. Desactivado por defecto.
+    recifrado:
+      activo: ${CRYPTO_RECIFRADO_ACTIVO:false}
     # Clave HMAC-SHA256 en Base64 (32 bytes) para índices de búsqueda y duplicados.
     clave-indice: ${CRYPTO_CLAVE_INDICE:}
 
