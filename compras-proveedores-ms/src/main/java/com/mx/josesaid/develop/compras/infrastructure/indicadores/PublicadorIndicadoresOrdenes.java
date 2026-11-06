@@ -88,7 +88,7 @@ public class PublicadorIndicadoresOrdenes {
                 new IndicadorEvento(AREA, nombre, periodo, valor, Instant.now(reloj)));
         try {
             kafka.send(topico, AREA + "|" + nombre + "|" + periodo, payload).get(10, TimeUnit.SECONDS);
-            log.info("Indicador publicado: {} {} {} = {}", AREA, nombre, periodo, valor);
+            log.info("Indicador publicado: {} {} {}", AREA, nombre, periodo);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         } catch (Exception ex) {
