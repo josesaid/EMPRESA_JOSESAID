@@ -11,6 +11,7 @@ import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -65,6 +66,17 @@ public class ManejadorErrores {
                 .toList();
         ProblemDetail pd = problema(HttpStatus.BAD_REQUEST, "validacion", "Datos inválidos",
                 "Revise los campos indicados");
+        pd.setProperty("errores", errores);
+        return pd;
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    ProblemDetail parametrosInvalidos(ConstraintViolationException e) {
+        List<Map<String, String>> errores = e.getConstraintViolations().stream()
+                .map(v -> Map.of("campo", String.valueOf(v.getPropertyPath()), "mensaje", String.valueOf(v.getMessage())))
+                .toList();
+        ProblemDetail pd = problema(HttpStatus.BAD_REQUEST, "validacion", "Parámetros inválidos",
+                "Revise los parámetros indicados");
         pd.setProperty("errores", errores);
         return pd;
     }
