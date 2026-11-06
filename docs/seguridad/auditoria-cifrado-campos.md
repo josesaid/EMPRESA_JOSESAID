@@ -1,6 +1,6 @@
 # Auditoría de cobertura del cifrado de campos
 
-Fecha: 2026-11-06. Revisión de las entidades JPA de cada servicio buscando campos con datos personales o fiscales, y comprobando si están cifrados.
+Fecha: 2026-11-05. Revisión de las entidades JPA de cada servicio buscando campos con datos personales o fiscales, y comprobando si están cifrados.
 
 Cómo se cifra en cada servicio:
 
