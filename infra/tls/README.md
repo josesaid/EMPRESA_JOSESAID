@@ -37,8 +37,18 @@ curl --cacert infra/tls/out/ca.crt -X POST https://localhost:8080/usuarios-acces
   -H "Content-Type: application/json" -d '{"correo":"x","password":"x"}'      # 400 o 401: TLS funciona
 ```
 
-## Pendiente antes de activarlo en el entorno compartido
+## 4. Activar TLS entre servicios (ui-ms y nexus-ms)
 
-**`ui-ms` y `nexus-ms` llaman al gateway por `http://gateway-ms:8080`** (`GATEWAY_URL` en sus archivos de Compose). Si activas TLS en el gateway sin cambiarles la URL y darles la CA, dejan de poder llamarlo. Ese cambio es la segunda entrega (tráfico interno), y no está en esta PR.
+Ya no hace falta cambiar código. Con la superposición `docker-compose.tls.yml`, el gateway sirve HTTPS y `ui-ms` y `nexus-ms` llaman al gateway por `https://gateway-ms:8080`, confiando en la CA interna mediante un bundle SSL de Spring (`GATEWAY_TLS_BUNDLE=gateway`).
 
-Tampoco cambian todavía: Eureka, Prometheus (que raspa `gateway-ms:9080`, HTTP por la red interna) y los demás servicios.
+```bash
+docker compose -f docker-compose.yml -f ui-ms/docker-compose.yml -f infra/tls/docker-compose.tls.yml up -d
+```
+
+Requisitos: haber ejecutado el paso 1 (`truststore.p12` y `gateway.p12` en `infra/tls/out/`) y tener `GATEWAY_TLS_PASSWORD` en `.env`.
+
+Sin la superposición, todo sigue en HTTP como antes: el bundle SSL solo se usa cuando `GATEWAY_TLS_BUNDLE` tiene nombre.
+
+**Pendiente de verificación:** esta parte no se probó en un entorno con Docker. Antes de dar por buena la activación, revisa en tu Mac que `ui-ms` inicie sesión, que `nexus-ms` responda a una consulta y que `https://localhost:8080` responda con `--cacert`.
+
+Lo que no cambia: Eureka, Prometheus (`gateway-ms:9080`, HTTP dentro de `empresa-net`) y los servicios que no llaman al gateway. Los demás servicios de área no llaman al gateway, así que no se tocan en esta entrega.

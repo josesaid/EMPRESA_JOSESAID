@@ -43,6 +43,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-http-client</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.mx.josesaid.develop</groupId>
             <artifactId>nexus-comun</artifactId>
             <version>0.1.0</version>

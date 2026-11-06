@@ -1,0 +1,35 @@
+# Superposición opcional: activa TLS en el gateway y en los clientes que lo llaman (ui-ms y nexus-ms).
+# Requiere haber ejecutado infra/tls/generar-certificados.sh y definir GATEWAY_TLS_PASSWORD en .env.
+#
+# Uso (desde la raíz del repositorio):
+#   docker compose -f docker-compose.yml -f ui-ms/docker-compose.yml -f infra/tls/docker-compose.tls.yml up -d
+#
+# Sin este archivo, todo sigue en HTTP como antes.
+services:
+  gateway-ms:
+    environment:
+      GATEWAY_TLS_ACTIVO: "true"
+      GATEWAY_TLS_KEYSTORE: /run/certs/gateway.p12
+      GATEWAY_TLS_PASSWORD: ${GATEWAY_TLS_PASSWORD:?Defina GATEWAY_TLS_PASSWORD en el archivo .env}
+    volumes:
+      - ./infra/tls/out/gateway.p12:/run/certs/gateway.p12:ro
+
+  nexus-ms:
+    environment:
+      GATEWAY_URL: https://gateway-ms:8080
+      GATEWAY_TLS_BUNDLE: gateway
+      SPRING_SSL_BUNDLES_JKS_GATEWAY_TRUSTSTORE_LOCATION: /run/certs/truststore.p12
+      SPRING_SSL_BUNDLES_JKS_GATEWAY_TRUSTSTORE_PASSWORD: ${GATEWAY_TLS_PASSWORD:?Defina GATEWAY_TLS_PASSWORD en el archivo .env}
+      SPRING_SSL_BUNDLES_JKS_GATEWAY_TRUSTSTORE_TYPE: PKCS12
+    volumes:
+      - ./infra/tls/out/truststore.p12:/run/certs/truststore.p12:ro
+
+  ui-ms:
+    environment:
+      GATEWAY_URL: https://gateway-ms:8080
+      GATEWAY_TLS_BUNDLE: gateway
+      SPRING_SSL_BUNDLES_JKS_GATEWAY_TRUSTSTORE_LOCATION: /run/certs/truststore.p12
+      SPRING_SSL_BUNDLES_JKS_GATEWAY_TRUSTSTORE_PASSWORD: ${GATEWAY_TLS_PASSWORD:?Defina GATEWAY_TLS_PASSWORD en el archivo .env}
+      SPRING_SSL_BUNDLES_JKS_GATEWAY_TRUSTSTORE_TYPE: PKCS12
+    volumes:
+      - ./infra/tls/out/truststore.p12:/run/certs/truststore.p12:ro
