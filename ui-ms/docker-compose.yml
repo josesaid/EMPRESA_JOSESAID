@@ -10,7 +10,8 @@ services:
       GATEWAY_URL: http://gateway-ms:8080
       REDIS_HOST: redis
     ports:
-      - "8098:8080"
+      # Solo desde esta Mac: la UI no se expone a la red local
+      - "127.0.0.1:8098:8080"
     networks:
       - empresa-net
     restart: unless-stopped
