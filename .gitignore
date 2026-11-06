@@ -5,3 +5,6 @@
 target/
 .idea/
 *.iml
+
+# TLS: certificados y claves generados (nunca al repositorio)
+infra/tls/out/
