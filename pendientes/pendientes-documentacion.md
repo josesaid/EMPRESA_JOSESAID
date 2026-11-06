@@ -9,7 +9,7 @@ Revisión al 2026-11-05.
 - **Rotación de la clave RS256:** paso a paso en `usuarios-accesos-ms/README.md`, sección «Rotación de la clave RS256». Sin imágenes ni diagramas.
 - **Conexión de un cliente MCP:** `nexus-ms/docs/conexion-mcp.md`. Sin imágenes ni diagramas.
 - **Arranque del ecosistema y orden de arranque:** en el README de la raíz, en prosa.
-- **Procedimientos pendientes de definir:** anonimización por derechos ARCO (`clientes-ms`) y rotación de la clave de cifrado de compras (`compras-proveedores-ms`).
+- **Omitidos por decisión de Said (2026-11-05):** procedimiento de derechos ARCO (`clientes-ms`) y rotación de la clave de cifrado y HMAC de compras (`compras-proveedores-ms`). Se dejan fuera del alcance de este trabajo.
 
 **Pendiente.** Cada procedimiento debe tener una guía completa, con pasos numerados, capturas o imágenes y diagramas. Desde el README de cada servicio hay que enlazar a la página HTML correspondiente, que se publica en `docs/`. Guías a crear:
 
@@ -21,11 +21,11 @@ Revisión al 2026-11-05.
 - [x] Crear un proveedor, una orden de compra, aprobarla y registrar la recepción (`docs/guias/`)
 - [x] Registrar un pago a proveedor contra una cuenta por pagar (`docs/guias/`)
 - [x] Emitir un comprobante, registrar un cobro y cancelar (`docs/guias/`)
-- [ ] Procesar una solicitud de derechos ARCO (pendiente de definir el procedimiento)
-- [ ] Rotar la clave de cifrado y la clave HMAC de compras (pendiente de diseño)
+- [ ] ~~Procesar una solicitud de derechos ARCO~~ (omitido por decisión de Said, 2026-11-05)
+- [ ] ~~Rotar la clave de cifrado y la clave HMAC de compras~~ (omitido por decisión de Said, 2026-11-05)
 - [x] Consultar indicadores para reportes ejecutivos (`docs/guias/`)
 
-**Total: 11 guías. 9 escritas en `docs/guias/` (2026-11-05); 2 pendientes de diseño (ARCO y rotación de clave de compras).** Hoy existen 2 guías parciales (RS256 y MCP) y 0 con imágenes o diagramas.
+**Total: 11 guías. 9 escritas en `docs/guias/` (2026-11-05); 2 omitidas por decisión de Said (ARCO y rotación de clave de compras).** Hoy existen 2 guías parciales (RS256 y MCP) y 0 con imágenes o diagramas.
 
 ## 2. Calidad de código y seguridad
 
@@ -64,9 +64,9 @@ Revisión al 2026-11-05.
 
 **Avances del 2026-11-05.** Los siguientes puntos están parcialmente resueltos. Sus casillas siguen abiertas porque el alcance original incluye más trabajo:
 
-- Límites de tamaño y validación de entrada (#102 a #108): `clientes-ms` y los parámetros de búsqueda de todos los servicios tienen longitud máxima. El gateway limita el cuerpo a 64 KiB, salvo la carga de documentos (21 MB) (#103). Faltan el límite del cuerpo en los servicios y una prueba del 400 con valores demasiado largos.
+- Límites de tamaño y validación de entrada (#102 a #108): `clientes-ms` y los parámetros de búsqueda de todos los servicios tienen longitud máxima. El gateway limita el cuerpo a 64 KiB, salvo la carga de documentos (21 MB) (#103). Parámetros demasiado largos responden 400, con prueba en los seis servicios (#118 a #122). Falta el límite de cuerpo en los servicios, que queda como defensa en profundidad opcional.
 - Escaneo de secretos (#100): gitleaks corre en push a `main` y en cada PR. Faltan las claves de firma.
-- Imágenes de contenedor (#101): Trivy escanea las 13 imágenes con parches disponibles. Todas usan usuario no root. Falta fijar digests de las imágenes base.
+- Imágenes de contenedor (#101): Trivy escanea las 13 imágenes con parches disponibles. Todas usan usuario no root. Los digests de las imágenes base están fijados (#110, #111).
 - Rotación de claves: la guía de prueba en Mac y el inventario quedaron documentados (#94 a #97). Falta documentar respaldo y restauración, y el paso de re-cifrado interrumpido.
 
 **Resultados de `mvn verify` (2026-11-06).** Corrido en los 13 módulos con `-DskipITs` en 12 de ellos. `clientes-ms` se corrió completo: 27 pruebas unitarias pasan, pero dos pruebas de integración (`PublicadorIndicadoresClientesIT`) requieren Docker y fallan en el entorno de trabajo, que no tiene Docker. Gateway pasa completo, incluido JaCoCo.
@@ -75,6 +75,15 @@ Revisión al 2026-11-05.
 - PMD: 2 hallazgos en `gateway-ms`, `compras-proveedores-ms`, `facturacion-pagos-ms` y `usuarios-accesos-ms`; 12 en `nexus-ms`. Checkstyle y PMD están en modo reporte.
 - SpotBugs: en modo reporte. Los hallazgos más comunes son `EI_EXPOSE_REP2` (exposición de referencias mutables), que en Spring suele ser falso positivo, y `CT_CONSTRUCTOR_THROW` en `CryptoConfig`. Queda para revisar caso por caso.
 - Pendiente: correr las pruebas de integración (`failsafe`) en un entorno con Docker.
+
+**Avances posteriores del 2026-11-05 (PR #109 a #125).**
+
+- Logs: sin montos de indicadores y sin mensajes de excepción; solo se registra el nombre de la clase (#112, #113).
+- IP real en el login: el gateway y la UI confían en `X-Forwarded-For` solo desde proxies configurados (#114, #115, #116). Falta activarlo en el Mac: definir `GATEWAY_PROXIES_CONFIABLES` y `UI_PROXIES_CONFIABLES` con `172.19.0.0/16` y reiniciar los dos servicios. Hay que verificar la IP que llega al gateway, porque en Docker Desktop para Mac puede ser la de la VM.
+- Contador de intentos de login compartido entre réplicas con Redis, opcional con `GATEWAY_LIMITE_ALMACEN=redis` (#116). Por defecto sigue en memoria. Si Redis cae, el login pasa y el bloqueo de cuenta sigue activo.
+- Cobertura del cifrado (#123, #124): `clientes`, `usuarios-accesos` y `compras` cifran sus datos personales y fiscales. Decisiones: la razón social de cliente y el título de documentos quedan en claro. El resumen de acciones de nexus ya no guarda nombre ni correo (#125). Pendiente: el campo `payload` de esa misma acción, que sí guarda nombre y correo porque se necesitan para crear el prospecto. Está anotado en `docs/seguridad/auditoria-cifrado-campos.md`.
+- Validación del título de documentos: pendiente de definir el formato aceptado.
+- Kubernetes: manifiestos base en `infra/kubernetes/` (#99). Faltan el registro real, el dominio y las variables sensibles pasadas a `Secret`, y la verificación contra un cluster.
 
 ## 3. Registro de PRs y merges (al final)
 

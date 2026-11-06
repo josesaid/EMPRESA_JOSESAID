@@ -22,9 +22,9 @@ Cómo se cifra en cada servicio:
 
 | Servicio | Campo | Por qué puede ser dato personal | Opción |
 |---|---|---|---|
-| clientes-ms | `cliente.razon_social` | Es personal cuando el cliente es persona física con actividad empresarial | Cifrar, o dejar en claro por ser nombre comercial |
-| nexus-ms | `accion_pendiente.resumen` (hasta 1000 caracteres) | Es un resumen generado a partir de la conversación; puede incluir nombres | Revisar el contenido real antes de decidir |
-| documentos-cumplimiento-ms | `documento.titulo` | Puede incluir el nombre de una persona (por ejemplo, un contrato) | Cifrar, o dejar en claro y evitar nombres en los títulos |
+| clientes-ms | `cliente.razon_social` | Es personal cuando el cliente es persona física con actividad empresarial | **Decidido: dejar en claro** |
+| nexus-ms | `accion_pendiente.resumen` | Guardaba nombre y correo del prospecto | **Resuelto (PR #125):** solo guarda la fuente. Queda en claro el `payload` de la misma acción, que necesita nombre y correo para crear el prospecto |
+| documentos-cumplimiento-ms | `documento.titulo` | Puede incluir el nombre de una persona (por ejemplo, un contrato) | **Decidido: dejar en claro.** Falta definir la validación que evite nombres en el título |
 
 ## Fuera del alcance de esta revisión
 
@@ -33,4 +33,4 @@ Cómo se cifra en cada servicio:
 
 ## Próximo paso
 
-Decidir los tres campos de la tabla de pendientes. Hasta entonces, el punto de cobertura del cifrado queda a medias.
+Pendiente: decidir si el `payload` de las acciones de nexus se cifra, y definir la validación del título de documentos. Los demás campos ya tienen decisión.
