@@ -3,6 +3,8 @@ package com.mx.josesaid.develop.usuarios_accesos.config;
 import com.mx.josesaid.develop.usuarios_accesos.infrastructure.crypto.ClavesCripto;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,15 +13,39 @@ import org.springframework.context.annotation.Configuration;
 public class CryptoConfig {
 
     private static final int LONGITUD_CLAVE = 32;
+    private static final int VERSION_UNICA = 1;
 
     public CryptoConfig(@Value("${USUARIOS_CIFRADO_CLAVE:}") String claveCifrado,
+                        @Value("${USUARIOS_CIFRADO_CLAVES:}") String clavesCifrado,
+                        @Value("${USUARIOS_CIFRADO_VERSION_ACTIVA:1}") int versionActiva,
                         @Value("${USUARIOS_INDICE_CLAVE:}") String claveIndice) {
-        byte[] cifrado = decodificar("USUARIOS_CIFRADO_CLAVE", claveCifrado);
+        Map<Integer, byte[]> cifrado = clavesCifrado(claveCifrado, clavesCifrado);
         byte[] indice = decodificar("USUARIOS_INDICE_CLAVE", claveIndice);
-        if (Arrays.equals(cifrado, indice)) {
-            throw new IllegalStateException("USUARIOS_CIFRADO_CLAVE y USUARIOS_INDICE_CLAVE deben ser distintas");
+        for (byte[] clave : cifrado.values()) {
+            if (Arrays.equals(clave, indice)) {
+                throw new IllegalStateException("Las claves de cifrado y la de índice deben ser distintas");
+            }
         }
-        ClavesCripto.configurar(cifrado, indice);
+        ClavesCripto.configurar(cifrado, versionActiva, indice);
+    }
+
+    private static Map<Integer, byte[]> clavesCifrado(String claveUnica, String lista) {
+        Map<Integer, byte[]> claves = new HashMap<>();
+        if (lista != null && !lista.isBlank()) {
+            for (String entrada : lista.split(",")) {
+                String[] partes = entrada.trim().split(":", 2);
+                if (partes.length != 2) {
+                    throw new IllegalStateException("USUARIOS_CIFRADO_CLAVES debe tener el formato N:base64,N:base64");
+                }
+                int numero = Integer.parseInt(partes[0].trim());
+                if (claves.put(numero, decodificar("USUARIOS_CIFRADO_CLAVES versión " + numero, partes[1])) != null) {
+                    throw new IllegalStateException("La versión " + numero + " de clave aparece más de una vez");
+                }
+            }
+        } else {
+            claves.put(VERSION_UNICA, decodificar("USUARIOS_CIFRADO_CLAVE", claveUnica));
+        }
+        return claves;
     }
 
     private static byte[] decodificar(String nombre, String valor) {

@@ -148,7 +148,7 @@ Roles retirados y su reemplazo: VENDEDOR y GERENTE_VENTAS pasaron a VENTAS; ADMI
 
 **Datos personales:** correo y nombre se enmascaran en las respuestas. Nunca se registran en logs.
 
-**Cifrado:** `correo` y `nombre_completo` se guardan con AES-256-GCM. El correo se busca por un índice HMAC-SHA256 en `correo_indice`. Claves: `USUARIOS_CIFRADO_CLAVE` y `USUARIOS_INDICE_CLAVE` (32 bytes en Base64).
+**Cifrado:** `correo` y `nombre_completo` se guardan con AES-256-GCM. El correo se busca por un índice HMAC-SHA256 en `correo_indice`. Claves: `USUARIOS_CIFRADO_CLAVE` y `USUARIOS_INDICE_CLAVE` (32 bytes en Base64). Los valores cifrados llevan prefijo `v<N>:` con la versión de la clave; los anteriores, sin prefijo, son la versión 1. Para rotar: `USUARIOS_CIFRADO_CLAVES` (`N:base64,N:base64`) y `USUARIOS_CIFRADO_VERSION_ACTIVA`.
 
 ## 11. API
 Documentación completa de endpoints en `docs/diseno.md`.
