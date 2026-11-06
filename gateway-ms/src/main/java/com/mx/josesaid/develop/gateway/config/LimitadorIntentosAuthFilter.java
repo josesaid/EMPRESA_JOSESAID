@@ -52,6 +52,7 @@ public class LimitadorIntentosAuthFilter implements WebFilter {
                 ? null : direccion.getAddress().getHostAddress();
         String ip = IpCliente.resolver(directa,
                 exchange.getRequest().getHeaders().getFirst("X-Forwarded-For"), proxiesConfiables);
+        log.debug("Intento de inicio de sesión: ip={} directa={}", ip, directa);
         return limitador.intentar(ip)
                 .onErrorResume(e -> {
                     log.warn("Límite de intentos no disponible; se deja pasar la solicitud: {}",
