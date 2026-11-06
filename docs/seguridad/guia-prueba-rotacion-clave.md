@@ -25,7 +25,7 @@
 | `COMPRAS_CIFRADO_CLAVES`, `COMPRAS_CIFRADO_VERSION_ACTIVA`, `COMPRAS_RECIFRADO_ACTIVO` | Lo mismo para compras | Igual que arriba |
 | `USUARIOS_CIFRADO_CLAVES`, `USUARIOS_CIFRADO_VERSION_ACTIVA`, `USUARIOS_RECIFRADO_ACTIVO` | Lo mismo para usuarios | Igual que arriba |
 
-Cada servicio necesita que la **misma** clave de la versión 1 aparezca en su lista. En clientes, `1:` debe ser igual a `CRYPTO_CLAVE_CIFRADO`; en compras, `1:` debe ser igual a `COMPRAS_CIFRADO_CLAVE`; en usuarios, `1:` debe ser igual a `USUARIOS_CIFRADO_CLAVE`.
+Cada vez que cambies código o variables de clave, reconstruye (`docker compose build`) y reinicia el servicio afectado. Cada servicio necesita que la **misma** clave de la versión 1 aparezca en su lista. En clientes, `1:` debe ser igual a `CRYPTO_CLAVE_CIFRADO`; en compras, `1:` debe ser igual a `COMPRAS_CIFRADO_CLAVE`; en usuarios, `1:` debe ser igual a `USUARIOS_CIFRADO_CLAVE`.
 
 ## Pasos
 
@@ -70,9 +70,10 @@ CRYPTO_CLAVES_CIFRADO=1:<clave_actual>,2:<clave_nueva>
 CRYPTO_VERSION_ACTIVA=1
 ```
 
-Haz lo mismo con `COMPRAS_CIFRADO_CLAVES` y `USUARIOS_CIFRADO_CLAVES`. Reinicia los tres servicios:
+Haz lo mismo con `COMPRAS_CIFRADO_CLAVES` y `USUARIOS_CIFRADO_CLAVES`. Reconstruye las imágenes y reinicia los tres servicios. **Reconstruir es obligatorio:** `docker compose up -d` solo reinicia con la imagen que ya existe, y esa imagen puede no tener el código de versiones.
 
 ```bash
+docker compose build clientes-ms compras-proveedores-ms usuarios-accesos-ms
 docker compose up -d clientes-ms compras-proveedores-ms usuarios-accesos-ms
 ```
 
