@@ -8,6 +8,7 @@ import com.mx.josesaid.develop.compras.domain.LineaOrden;
 import com.mx.josesaid.develop.compras.domain.OrdenCompra;
 import com.mx.josesaid.develop.compras.domain.Proveedor;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -129,20 +130,20 @@ public class ComprasControlador {
 
     public record LineaSolicitud(
             @NotBlank @Size(max = 40) String articuloSku,
-            @NotNull @Positive BigDecimal cantidad,
-            @NotNull @DecimalMin("0") BigDecimal precioUnitario) {
+            @NotNull @Positive @Digits(integer = 9, fraction = 3) BigDecimal cantidad,
+            @NotNull @DecimalMin("0") @Digits(integer = 10, fraction = 2) BigDecimal precioUnitario) {
     }
 
     public record CrearOrdenSolicitud(
             @NotNull UUID proveedorId,
             @NotBlank @Size(max = 3) String moneda,
-            @NotEmpty List<@Valid LineaSolicitud> lineas) {
+            @NotEmpty @Size(max = 100) List<@Valid LineaSolicitud> lineas) {
     }
 
-    public record LineaRecepcionSolicitud(@NotBlank String articuloSku, @NotNull @Positive BigDecimal cantidad) {
+    public record LineaRecepcionSolicitud(@NotBlank String articuloSku, @NotNull @Positive @Digits(integer = 9, fraction = 3) BigDecimal cantidad) {
     }
 
-    public record RecepcionSolicitud(@NotEmpty List<@Valid LineaRecepcionSolicitud> lineas) {
+    public record RecepcionSolicitud(@NotEmpty @Size(max = 100) List<@Valid LineaRecepcionSolicitud> lineas) {
     }
 
     public record CancelarSolicitud(@NotBlank @Size(max = 200) String motivo) {
