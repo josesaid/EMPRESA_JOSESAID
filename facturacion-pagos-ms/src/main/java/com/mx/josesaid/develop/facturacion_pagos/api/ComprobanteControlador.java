@@ -29,8 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mx.josesaid.develop.facturacion_pagos.infrastructure.idempotencia.Idempotencia;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 
 /** Endpoints de comprobantes y pagos. Escribir exige FINANZAS; leer también permite VENTAS. */
+@Validated
 @RestController
 @RequestMapping("/v1/comprobantes")
 public class ComprobanteControlador {
@@ -53,7 +55,7 @@ public class ComprobanteControlador {
 
     @GetMapping(params = "folio")
     @PreAuthorize("hasAnyRole('FINANZAS','VENTAS')")
-    public ComprobanteRespuesta buscarPorFolio(@RequestParam String folio) {
+    public ComprobanteRespuesta buscarPorFolio(@RequestParam @Size(max = 50) String folio) {
         return ComprobanteRespuesta.de(servicio.buscarPorFolio(folio));
     }
 
