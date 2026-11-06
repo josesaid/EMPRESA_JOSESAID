@@ -11,7 +11,7 @@ COPY src ./src
 RUN mvn -B -q -DskipTests package
 
 # ---- Etapa 2: ejecución ----
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre@sha256:0b99b3376fbb50dbf9c0af8535fdd5b8eb0d3fdfc8b1e4967f383b6919f6901a
 # curl solo sirve para el HEALTHCHECK; usuario sin privilegios
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl \
