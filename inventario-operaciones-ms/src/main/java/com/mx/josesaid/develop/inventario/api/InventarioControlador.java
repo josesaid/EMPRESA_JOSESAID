@@ -10,6 +10,7 @@ import com.mx.josesaid.develop.inventario.domain.OrdenOperacion;
 import com.mx.josesaid.develop.inventario.domain.TipoMovimiento;
 import com.mx.josesaid.develop.inventario.domain.TipoOrden;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -127,15 +128,15 @@ public class InventarioControlador {
             @NotNull UUID articuloId,
             @NotNull UUID almacenId,
             @NotNull TipoMovimiento tipo,
-            @NotNull BigDecimal cantidad,
+            @NotNull @Digits(integer = 9, fraction = 3) BigDecimal cantidad,
             @Size(max = 60) String lote,
             @Size(max = 100) String referencia) {
     }
 
-    public record CrearOrdenSolicitud(@NotNull TipoOrden tipo, @NotNull BigDecimal cantidadObjetivo) {
+    public record CrearOrdenSolicitud(@NotNull TipoOrden tipo, @NotNull @Digits(integer = 9, fraction = 3) BigDecimal cantidadObjetivo) {
     }
 
-    public record CerrarOrdenSolicitud(@NotNull BigDecimal cantidadReal) {
+    public record CerrarOrdenSolicitud(@NotNull @Digits(integer = 9, fraction = 3) BigDecimal cantidadReal) {
     }
 
     public record ArticuloRespuesta(UUID id, String sku, String nombre, String unidad, boolean loteObligatorio,

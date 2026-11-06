@@ -197,7 +197,7 @@ public class PedidosControlador {
             @NotBlank String moneda,
             @NotNull TasaIva tasaIva,
             @NotNull LocalDate vigenteHasta,
-            @NotEmpty List<@Valid LineaPeticion> lineas) {
+            @NotEmpty @Size(max = 100) List<@Valid LineaPeticion> lineas) {
     }
 
     public record CrearPedidoPeticion(
@@ -205,10 +205,10 @@ public class PedidosControlador {
             @NotNull Canal canal,
             @NotBlank String moneda,
             @NotNull TasaIva tasaIva,
-            @NotEmpty List<@Valid LineaPeticion> lineas) {
+            @NotEmpty @Size(max = 100) List<@Valid LineaPeticion> lineas) {
     }
 
-    public record LineasPeticion(@NotNull List<@Valid LineaPeticion> lineas) {
+    public record LineasPeticion(@NotNull @Size(max = 100) List<@Valid LineaPeticion> lineas) {
     }
 
     public record CancelacionPeticion(@NotNull MotivoCancelacion motivo) {
