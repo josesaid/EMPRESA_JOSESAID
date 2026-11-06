@@ -51,7 +51,7 @@ Revisión al 2026-11-05.
   - [ ] Validación de entrada y límites de tamaño en las APIs.
   - [ ] Limitación de intentos en el gateway, además del bloqueo por cuenta.
   - [ ] Imágenes de contenedor: usuario no privilegiado, imagen base actualizada y escaneo de imágenes.
-  - [ ] TLS entre servicios y fuera de la red de Docker.
+  - [ ] TLS entre servicios y fuera de la red de Docker. Aplazado por decisión: se revisa en una fase posterior.
   - [ ] Procedimiento de rotación y respaldo de claves, con su prueba.
 
 **Decisiones tomadas por Said Olano (2026-11-05):**
@@ -64,7 +64,7 @@ Revisión al 2026-11-05.
 
 **Avances del 2026-11-05.** Los siguientes puntos están parcialmente resueltos. Sus casillas siguen abiertas porque el alcance original incluye más trabajo:
 
-- Límites de tamaño y validación de entrada (#102 a #108): `clientes-ms` y los parámetros de búsqueda de todos los servicios tienen longitud máxima. El gateway limita el cuerpo a 64 KiB, salvo la carga de documentos (21 MB) (#103). Parámetros demasiado largos responden 400, con prueba en los seis servicios (#118 a #122). Falta el límite de cuerpo en los servicios, que queda como defensa en profundidad opcional.
+- Límites de tamaño y validación de entrada (#102 a #108): `clientes-ms` y los parámetros de búsqueda de todos los servicios tienen longitud máxima. El gateway limita el cuerpo a 64 KiB, salvo la carga de documentos (21 MB) (#103). Parámetros demasiado largos responden 400, con prueba en los seis servicios (#118 a #122). Falta el límite de cuerpo en los servicios: decidido no implementarlo por ahora, porque el gateway ya limita el cuerpo.
 - Escaneo de secretos (#100): gitleaks corre en push a `main` y en cada PR. Faltan las claves de firma.
 - Imágenes de contenedor (#101): Trivy escanea las 13 imágenes con parches disponibles. Todas usan usuario no root. Los digests de las imágenes base están fijados (#110, #111).
 - Rotación de claves: la guía de prueba en Mac y el inventario quedaron documentados (#94 a #97). Falta documentar respaldo y restauración, y el paso de re-cifrado interrumpido.
