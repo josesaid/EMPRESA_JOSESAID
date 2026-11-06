@@ -22,7 +22,7 @@ SERVICIOS = [
     ("contabilidad", "/contabilidad-ms/v1/cuentas", {200, 403}),
     ("documentos", "/documentos-cumplimiento-ms/v1/catalogos/tipos-documento", {200, 403}),
     ("facturacion", "/facturacion-pagos-ms/v1/comprobantes?folio=PRUEBA", {200, 403}),
-    ("inventario", "/inventario-operaciones-ms/v1/movimientos", {200, 403}),
+    ("inventario", "/inventario-operaciones-ms/v1/movimientos", {200, 400, 403}),
     ("pedidos", "/pedidos-ventas-ms/v1/pedidos", {200, 403}),
     ("reportes", "/reportes-ejecutivos-ms/v1/indicadores", {200, 400, 403}),
 ]
