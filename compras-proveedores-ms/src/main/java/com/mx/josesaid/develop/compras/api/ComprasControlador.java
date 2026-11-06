@@ -35,11 +35,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mx.josesaid.develop.compras.infrastructure.idempotencia.Idempotencia;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * Proveedores y órdenes de compra. Los datos fiscales se enmascaran en las respuestas.
  * GET /ordenes-compra/{id} se añade a la especificación para consultar el estado de cada compra.
  */
+@Validated
 @RestController
 @RequestMapping("/v1")
 public class ComprasControlador {
@@ -61,7 +63,7 @@ public class ComprasControlador {
 
     @GetMapping("/proveedores")
     @PreAuthorize("hasAnyRole('COMPRAS','FINANZAS')")
-    public List<ProveedorRespuesta> buscarProveedores(@RequestParam String razonSocial) {
+    public List<ProveedorRespuesta> buscarProveedores(@RequestParam @Size(max = 250) String razonSocial) {
         return servicio.buscarProveedores(razonSocial).stream().map(ProveedorRespuesta::de).toList();
     }
 
