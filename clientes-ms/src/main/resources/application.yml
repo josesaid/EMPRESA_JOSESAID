@@ -39,6 +39,10 @@ app:
   crypto:
     # Clave AES-256 en Base64 (32 bytes). Se inyecta desde el entorno o un gestor de secretos.
     clave-cifrado: ${CRYPTO_CLAVE_CIFRADO:}
+    # Varias versiones de la clave de cifrado: N:base64,N:base64. Si se define, sustituye a CRYPTO_CLAVE_CIFRADO.
+    claves-cifrado: ${CRYPTO_CLAVES_CIFRADO:}
+    # Versión con la que se cifra lo nuevo. Los valores antiguos se leen con su propia versión.
+    version-activa: ${CRYPTO_VERSION_ACTIVA:1}
     # Clave HMAC-SHA256 en Base64 (32 bytes) para índices de búsqueda y duplicados.
     clave-indice: ${CRYPTO_CLAVE_INDICE:}
 
