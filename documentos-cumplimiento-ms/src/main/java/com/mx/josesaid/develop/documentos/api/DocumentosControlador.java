@@ -31,11 +31,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * API documental. LEGAL carga, versiona, descarga y elimina; DIRECCION solo consulta.
  * Los archivos viajan en multipart: la parte "datos" es JSON y la parte "archivo" es el documento.
  */
+@Validated
 @RestController
 @RequestMapping("/v1")
 public class DocumentosControlador {
@@ -81,7 +83,7 @@ public class DocumentosControlador {
 
     @GetMapping(value = "/documentos", params = "titulo")
     @PreAuthorize("hasAnyRole('LEGAL','DIRECCION')")
-    public List<DocumentoRespuesta> buscarPorTitulo(@RequestParam String titulo) {
+    public List<DocumentoRespuesta> buscarPorTitulo(@RequestParam @Size(max = 200) String titulo) {
         return servicio.buscarPorTitulo(titulo).stream().map(DocumentoRespuesta::de).toList();
     }
 
