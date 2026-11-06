@@ -17,6 +17,9 @@ services:
       # Rangos de proxies de confianza para X-Forwarded-For (IP del cliente real para el límite de intentos).
       # Vacío = no confiar en ninguno. Para la UI: la subred de empresa-net, por ejemplo 172.19.0.0/16.
       GATEWAY_PROXIES_CONFIABLES: ${GATEWAY_PROXIES_CONFIABLES:-}
+      # Almacén del límite de intentos: memoria (por instancia) o redis (compartido entre réplicas).
+      GATEWAY_LIMITE_ALMACEN: ${GATEWAY_LIMITE_ALMACEN:-memoria}
+      SPRING_DATA_REDIS_HOST: redis
       EUREKA_URL: http://${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}:${EUREKA_PASSWORD:?Defina EUREKA_PASSWORD en .env}@discovery-ms:8761/eureka/
     networks:
       - empresa-net
