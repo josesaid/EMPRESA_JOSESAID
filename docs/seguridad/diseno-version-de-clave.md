@@ -1,6 +1,6 @@
 # Diseño propuesto: versión de clave en los datos cifrados
 
-**Estado:** propuesta para revisión. No hay código. Resuelve el bloqueo de la sección «Por qué las claves de cifrado no se pueden rotar todavía» de [inventario-de-claves.md](inventario-de-claves.md).
+**Estado:** diseño aprobado en sus decisiones (ver al final). No hay código todavía. Resuelve el bloqueo de la sección «Por qué las claves de cifrado no se pueden rotar todavía» de [inventario-de-claves.md](inventario-de-claves.md).
 
 ## Problema
 
@@ -72,8 +72,8 @@ Para los índices HMAC, el paso 4 incluye también recalcular las columnas `_v2`
 - Índices: después de recalcular, las búsquedas devuelven el mismo resultado que antes.
 - Fallo al descifrar con una versión no configurada: error explícito, sin devolver datos.
 
-## Decisiones que necesito de ti
+## Decisiones tomadas
 
-1. ¿Esta propuesta de formato y de fases te parece bien, o prefieres un servicio de gestión de claves (KMS) de la nube?
-2. ¿Cada cuánto debe rotarse? (propuesta: una vez al año, o de inmediato si hay sospecha de exposición).
-3. ¿Quién autoriza una rotación?
+1. **Formato propio, sin KMS por ahora.** Las claves se mantienen dentro del sistema, con el prefijo `v<N>:`. El despliegue actual es Docker Compose en un solo entorno; un KMS agregaría una dependencia externa y un costo mensual sin resolver un problema actual. El formato no impide migrar a un KMS después: solo cambia el origen de cada clave.
+2. **Rotación una vez al año**, o de inmediato si hay sospecha de exposición.
+3. **Autoriza solo el responsable del proyecto** (Said Olano).
