@@ -77,7 +77,7 @@ public class PublicadorIndicadoresVentas {
                 new IndicadorEvento(AREA, NOMBRE, periodo, valor, Instant.now(reloj)));
         try {
             kafka.send(topico, AREA + "|" + NOMBRE + "|" + periodo, payload).get(10, TimeUnit.SECONDS);
-            log.info("Indicador publicado: {} {} {} = {}", AREA, NOMBRE, periodo, valor);
+            log.info("Indicador publicado: {} {} {}", AREA, NOMBRE, periodo);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         } catch (Exception ex) {
