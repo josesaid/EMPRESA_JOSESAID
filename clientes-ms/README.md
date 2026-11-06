@@ -84,6 +84,8 @@ Reglas de dependencia:
 | `EVENTOS_TOPICO` | No | `clientes.eventos.v1` | Tópico donde se publican los eventos |
 | `JWT_JWKS_URI` | No | `http://usuarios-accesos-ms:8081/.well-known/jwks.json` | Clave pública de Usuarios y Accesos para validar los JWT (JWKS) |
 | `CRYPTO_CLAVE_CIFRADO` | Sí | (vacío) | Clave AES-256 en Base64, 32 bytes |
+| `CRYPTO_CLAVES_CIFRADO` | No | (vacío) | Varias versiones de la clave AES: `N:base64,N:base64`. Si se define, sustituye a `CRYPTO_CLAVE_CIFRADO` |
+| `CRYPTO_VERSION_ACTIVA` | No | `1` | Versión con la que se cifra lo nuevo. Los valores antiguos se leen con su versión (`v<N>:`; sin prefijo = versión 1) |
 | `CRYPTO_CLAVE_INDICE` | Sí | (vacío) | Clave HMAC-SHA256 en Base64, 32 bytes, distinta de la anterior |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | No | `http://localhost:4318/v1/traces` | Destino de las trazas OTLP HTTP |
 

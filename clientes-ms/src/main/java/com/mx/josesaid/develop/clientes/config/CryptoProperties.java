@@ -2,7 +2,11 @@ package com.mx.josesaid.develop.clientes.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/** Claves en Base64 (32 bytes cada una). Vienen de CRYPTO_CLAVE_CIFRADO y CRYPTO_CLAVE_INDICE. */
+/**
+ * Claves de cifrado. {@code claveCifrado} es la clave única previa (versión 1); {@code clavesCifrado} es la
+ * lista {@code N:base64,N:base64} de todas las versiones y {@code versionActiva} la que se usa para cifrar.
+ * Vienen de CRYPTO_CLAVE_CIFRADO, CRYPTO_CLAVES_CIFRADO, CRYPTO_VERSION_ACTIVA y CRYPTO_CLAVE_INDICE.
+ */
 @ConfigurationProperties(prefix = "app.crypto")
-public record CryptoProperties(String claveCifrado, String claveIndice) {
+public record CryptoProperties(String claveCifrado, String clavesCifrado, Integer versionActiva, String claveIndice) {
 }
