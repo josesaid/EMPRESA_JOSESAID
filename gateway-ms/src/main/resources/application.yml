@@ -42,6 +42,9 @@ eureka:
     registry-fetch-interval-seconds: ${EUREKA_FETCH_SEG:5}
 
 management:
+  server:
+    # Puerto de gestión separado: /actuator no se publica en el host (el 8080 sí)
+    port: ${GESTION_PUERTO:9080}
   tracing:
     sampling:
       # 100% de las solicitudes para ver todo en la práctica; bajar en producción
