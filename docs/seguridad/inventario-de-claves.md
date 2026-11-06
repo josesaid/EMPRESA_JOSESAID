@@ -14,29 +14,40 @@ bash infra/claves/prueba-verificar-claves.sh     # prueba del propio verificador
 | Clave | Servicio | Uso | Rotación | Estado |
 |---|---|---|---|---|
 | `USUARIOS_JWT_CLAVE_PRIVADA` (+ `KID`) | usuarios-accesos-ms | Firma RS256 de los tokens | Sin cortar sesiones, dos reinicios | **Procedimiento listo**: [guía 3](../guias/03-rotar-clave-rs256.md) |
-| `USUARIOS_CIFRADO_CLAVE` | usuarios-accesos-ms | AES-256-GCM de correo y nombre | No definida | **Pendiente de diseño**: el cifrado no lleva versión de clave |
+| `USUARIOS_CIFRADO_CLAVE` (+ `USUARIOS_CIFRADO_CLAVES`, `USUARIOS_CIFRADO_VERSION_ACTIVA`) | usuarios-accesos-ms | AES-256-GCM de correo y nombre | Con versiones: lista `N:base64,N:base64` y versión activa | **Versionada** (PR #90) y re-cifrado por lotes (PR #93). Probada en desarrollo, ver abajo |
 | `USUARIOS_INDICE_CLAVE` | usuarios-accesos-ms | HMAC del índice de búsqueda por correo | No definida | **Pendiente de diseño**: rotarla obliga a recalcular el índice |
-| `COMPRAS_CIFRADO_CLAVE` | compras-proveedores-ms | AES-256-GCM de datos de proveedor | No definida | **Pendiente de diseño** (ver abajo) |
+| `COMPRAS_CIFRADO_CLAVE` (+ `COMPRAS_CIFRADO_CLAVES`, `COMPRAS_CIFRADO_VERSION_ACTIVA`) | compras-proveedores-ms | AES-256-GCM de RFC y correo de proveedor | Con versiones, igual que usuarios | **Versionada** (PR #89) y re-cifrado por lotes (PR #92). Probada en desarrollo |
 | `COMPRAS_INDICE_CLAVE` | compras-proveedores-ms | HMAC del índice (RFC) | No definida | **Pendiente de diseño** |
 | `DOCUMENTOS_CIFRADO_CLAVE` | documentos-cumplimiento-ms | AES-256 de archivos | No definida | **Pendiente de diseño** |
-| `CRYPTO_CLAVE_CIFRADO` / `CRYPTO_CLAVE_INDICE` | clientes-ms | AES-256-GCM e índice HMAC de datos de cliente | No definida | **Pendiente de diseño** |
+| `CRYPTO_CLAVE_CIFRADO` (+ `CRYPTO_CLAVES_CIFRADO`, `CRYPTO_VERSION_ACTIVA`) / `CRYPTO_CLAVE_INDICE` | clientes-ms | AES-256-GCM de datos de cliente; índice HMAC sin cambios | Con versiones, igual que usuarios | **Versionada** (PR #88) y re-cifrado por lotes (PR #91). Probada en desarrollo. El índice HMAC sigue **pendiente** |
 | `GATEWAY_TLS_PASSWORD` | gateway-ms, ui-ms, nexus-ms | Contraseña del keystore y truststore TLS | Regenerar con `generar-certificados.sh` y redistribuir | Procedimiento: [infra/tls](../../infra/tls/README.md) |
 | `*_DB_PASSWORD`, `POSTGRES_PASSWORD` | PostgreSQL | Usuarios de cada base | Cambiar con `ALTER ROLE` y actualizar el `.env` | Sin automatizar |
 | `EUREKA_PASSWORD` | discovery-ms | Registro de servicios | Cambiar en `discovery-ms` y en `.env` a la vez | Sin automatizar |
 | `ANTHROPIC_API_KEY`, `VOYAGE_API_KEY` | nexus-ms | Proveedores de IA | En la consola del proveedor | Externo |
 | `GRAFANA_ADMIN_PASSWORD` | monitoreo | Acceso a Grafana | Cambiar en Grafana y en `.env` | Sin automatizar |
 
-## Por qué las claves de cifrado no se pueden rotar todavía
+## Rotación de claves de cifrado de campos personales
 
-El formato de la columna cifrada es `Base64(IV de 12 bytes || texto cifrado + tag)`. **No incluye un identificador de la clave**, así que el servicio no sabe con cuál descifrar un valor. Eso impide convivir dos claves durante la transición, que es lo que hace posible la rotación sin cortes.
+Los campos cifrados de clientes, compras y usuarios ya llevan prefijo de versión: `v<N>:Base64(IV || cifrado + tag)`. Los valores anteriores, sin prefijo, se leen como versión 1.
 
-Para rotarlas hace falta primero un diseño:
+Para rotar: agregar la nueva clave a la lista `N:base64,N:base64`, cambiar la versión activa, y correr el re-cifrado por lotes (`*_RECIFRADO_ACTIVO=true`, que se apaga después). El diseño está en [diseno-version-de-clave.md](diseno-version-de-clave.md) y el procedimiento de prueba en [guia-prueba-rotacion-clave.md](guia-prueba-rotacion-clave.md).
 
-1. Agregar un identificador de clave al formato (por ejemplo, un prefijo `v2:`), manteniendo la lectura de los valores antiguos.
-2. Un proceso de re-cifrado por lotes que lea con la clave anterior y escriba con la nueva.
-3. Para las claves HMAC de índice, un proceso de recálculo de los índices, con el mismo esquema de versiones.
+**Dónde viven las claves:** `CRYPTO_*` en `clientes-ms/.env`; `USUARIOS_CIFRADO_*` en el `.env` de la raíz y `usuarios-accesos-ms/.env`; `COMPRAS_CIFRADO_*` en el `.env` de la raíz. Cuando cambies una clave, revisa los dos archivos.
 
-Hasta que eso exista, **rotar `*_CIFRADO_CLAVE` o `*_INDICE_CLAVE` dejaría sin acceso a los datos cifrados.** Esa es la razón de que no haya procedimiento.
+**Resultado de la prueba en el entorno de desarrollo del responsable (2026-11-05):**
+- Línea base antes del cambio: consulta de un cliente con `HTTP 200`.
+- Versión 2 agregada sin activarla: la lectura no cambió.
+- Versión activa 2: un contacto nuevo quedó con prefijo `v2:`.
+- Re-cifrado: conteos por campo en clientes, compras y usuarios; después, `0` filas en versión anterior en los cinco campos verificados.
+- Lectura después del re-cifrado: igual a la línea base.
+
+Esto es una prueba en desarrollo, no en producción. Quedan pendientes el retiro de la versión 1 y la prueba de corte a mitad.
+
+**Incidencia encontrada:** después de reconstruir contenedores, el gateway mantuvo conexiones a las direcciones anteriores y respondió `500` y `404` a rutas válidas. Reiniciar `gateway-ms` lo resolvió. Por eso, tras reconstruir o recrear un servicio, reinicia también el gateway.
+
+## Índices HMAC
+
+Rotar `*_INDICE_CLAVE` (`rfc_hash`, `correo_hash`, `rfc_indice`, `correo_indice`) cambia todos los valores de búsqueda. Sigue **pendiente**: requiere columnas nuevas y recálculo, según el diseño. Hasta entonces, esas claves no se rotan.
 
 ## Respaldo
 
@@ -59,7 +70,13 @@ Hazla al menos una vez al trimestre, en un entorno separado:
 
 ## Pendiente
 
-- [ ] Diseñar el formato con versión de clave para los campos cifrados (requisito de cualquier rotación de `*_CIFRADO_CLAVE`).
+- [x] Diseñar el formato con versión de clave para los campos cifrados.
+- [x] Implementar la versión de clave en clientes, compras y usuarios.
+- [x] Implementar el re-cifrado por lotes en clientes, compras y usuarios.
+- [x] Probar la rotación en un entorno de desarrollo.
+- [ ] Retirar la versión 1 de las listas, con la clave 1 guardada fuera de la máquina.
+- [ ] Probar el corte a mitad del re-cifrado.
 - [ ] Diseñar el recálculo de índices HMAC.
+- [ ] Rotar `DOCUMENTOS_CIFRADO_CLAVE` (archivos cifrados en disco; aún sin diseño).
 - [ ] Automatizar la rotación de contraseñas de PostgreSQL.
 - [ ] Hacer la primera prueba de restauración y registrar el resultado.
