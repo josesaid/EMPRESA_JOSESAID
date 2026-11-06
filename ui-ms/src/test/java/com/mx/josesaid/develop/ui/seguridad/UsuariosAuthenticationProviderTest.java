@@ -34,7 +34,7 @@ class UsuariosAuthenticationProviderTest {
     void preparar() {
         RestClient.Builder builder = RestClient.builder().baseUrl(BASE);
         servidor = MockRestServiceServer.bindTo(builder).build();
-        proveedor = new UsuariosAuthenticationProvider(builder.build(), new BloqueoLogin());
+        proveedor = new UsuariosAuthenticationProvider(builder.build(), new BloqueoLogin(), new IpOrigen(""));
     }
 
     @Test
