@@ -56,6 +56,10 @@ compras:
   cifrado:
     # Clave AES-256 en base64 (32 bytes). Generar con: openssl rand -base64 32
     clave: ${COMPRAS_CIFRADO_CLAVE:}
+    # Varias versiones de la clave: N:base64,N:base64. Si se define, sustituye a COMPRAS_CIFRADO_CLAVE.
+    claves: ${COMPRAS_CIFRADO_CLAVES:}
+    # Versión con la que se cifra lo nuevo. Los valores antiguos se leen con su versión.
+    version-activa: ${COMPRAS_CIFRADO_VERSION_ACTIVA:1}
     # Clave HMAC en base64 (mínimo 32 bytes) para el índice de búsqueda del RFC
     indice-clave: ${COMPRAS_INDICE_CLAVE:}
 

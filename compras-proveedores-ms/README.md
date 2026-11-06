@@ -50,6 +50,8 @@ compras-proveedores-ms/
 | `COMPRAS_DB_PASSWORD` | Sí (Compose) | Contraseña del usuario `compras` |
 | `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |
 | `COMPRAS_CIFRADO_CLAVE` | Sí (Compose) | Clave AES-256 en base64 (32 bytes). Si se pierde, los RFC cifrados no se recuperan. |
+| `COMPRAS_CIFRADO_CLAVES` | No | (vacío) | Varias versiones de la clave AES: `N:base64,N:base64`. Si se define, sustituye a `COMPRAS_CIFRADO_CLAVE` |
+| `COMPRAS_CIFRADO_VERSION_ACTIVA` | No | `1` | Versión con la que se cifra lo nuevo. Los valores antiguos se leen con su versión (`v<N>:`; sin prefijo = versión 1) |
 | `COMPRAS_INDICE_CLAVE` | Sí (Compose) | Clave HMAC en base64 para buscar RFC. Si cambia, la búsqueda por RFC deja de encontrar proveedores existentes. |
 | `COMPRAS_LIMITE_APROBACION_USD` | No | Monto en USD (entero mayor a cero) desde el que solo DIRECCION aprueba una orden. Por defecto 1000000. |
 | `COMPRAS_TIPO_CAMBIO_MXN_USD` | No | Tipo de cambio para convertir órdenes en MXN a USD antes de compararlas con el límite. Por defecto 18. |
