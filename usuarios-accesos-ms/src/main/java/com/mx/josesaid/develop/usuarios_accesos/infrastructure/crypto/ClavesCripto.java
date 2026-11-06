@@ -1,28 +1,51 @@
 package com.mx.josesaid.develop.usuarios_accesos.infrastructure.crypto;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Claves de cifrado del proceso. Las llena CryptoConfig al arrancar, porque los convertidores JPA
- * los crea Hibernate y no Spring.
+ * Claves de cifrado del proceso. Hay una clave AES por versión: se cifra con la versión activa y se
+ * descifra con la que indique el prefijo del valor. Las llena CryptoConfig al arrancar, porque los
+ * convertidores JPA los crea Hibernate y no Spring.
  */
 public final class ClavesCripto {
 
-    private static volatile SecretKey cifrado;
+    private static volatile Map<Integer, SecretKey> cifrados = Map.of();
+    private static volatile int versionActiva = 1;
     private static volatile SecretKey indice;
 
     private ClavesCripto() {
     }
 
-    /** Configura las claves. Ambas deben tener 32 bytes y ser distintas. */
+    /** Configura una sola clave de cifrado, como versión 1. Ambas deben tener 32 bytes y ser distintas. */
     public static void configurar(byte[] claveCifrado, byte[] claveIndice) {
-        cifrado = new SecretKeySpec(claveCifrado, "AES");
+        configurar(Map.of(1, claveCifrado), 1, claveIndice);
+    }
+
+    /** Configura varias versiones de clave de cifrado y cuál usar para cifrar. */
+    public static void configurar(Map<Integer, byte[]> clavesCifrado, int version, byte[] claveIndice) {
+        Map<Integer, SecretKey> claves = new HashMap<>();
+        clavesCifrado.forEach((numero, bytes) -> claves.put(numero, new SecretKeySpec(bytes, "AES")));
+        if (!claves.containsKey(version)) {
+            throw new IllegalStateException("La versión activa de clave " + version + " no está configurada");
+        }
+        cifrados = Map.copyOf(claves);
+        versionActiva = version;
         indice = new SecretKeySpec(claveIndice, "HmacSHA256");
     }
 
-    static SecretKey cifrado() {
-        return requerida(cifrado, "cifrado");
+    static int versionActiva() {
+        return versionActiva;
+    }
+
+    static SecretKey cifrado(int version) {
+        SecretKey clave = cifrados.get(version);
+        if (clave == null) {
+            throw new IllegalStateException("Versión de clave de cifrado no configurada: " + version);
+        }
+        return clave;
     }
 
     static SecretKey indice() {

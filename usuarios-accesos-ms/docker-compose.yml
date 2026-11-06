@@ -23,6 +23,9 @@ services:
       JWT_CLAVE_PUBLICA_ANTERIOR: ${USUARIOS_JWT_CLAVE_PUBLICA_ANTERIOR:-}
       JWT_KID_ANTERIOR: ${USUARIOS_JWT_KID_ANTERIOR:-}
       USUARIOS_CIFRADO_CLAVE: ${USUARIOS_CIFRADO_CLAVE:?Defina USUARIOS_CIFRADO_CLAVE en .env}
+      # Opcionales: varias versiones de la clave (N:base64,N:base64) y la versión con la que se cifra.
+      USUARIOS_CIFRADO_CLAVES: ${USUARIOS_CIFRADO_CLAVES:-}
+      USUARIOS_CIFRADO_VERSION_ACTIVA: ${USUARIOS_CIFRADO_VERSION_ACTIVA:-1}
       USUARIOS_INDICE_CLAVE: ${USUARIOS_INDICE_CLAVE:?Defina USUARIOS_INDICE_CLAVE en .env}
       # Administrador inicial opcional: se crea al arrancar si el correo no existe
       ADMIN_INICIAL_CORREO: ${USUARIOS_ADMIN_INICIAL_CORREO:-}
