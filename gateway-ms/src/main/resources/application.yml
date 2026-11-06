@@ -34,6 +34,13 @@ spring:
 
 server:
   port: 8080
+  ssl:
+    # TLS en el gateway. Desactivado por defecto. Certificados: infra/tls/generar-certificados.sh
+    enabled: ${GATEWAY_TLS_ACTIVO:false}
+    key-store: ${GATEWAY_TLS_KEYSTORE:/run/secrets/gateway.p12}
+    key-store-type: PKCS12
+    key-store-password: ${GATEWAY_TLS_PASSWORD:}
+    key-alias: gateway
 
 eureka:
   client:
