@@ -9,7 +9,7 @@ Revisión al 2026-11-05.
 - **Rotación de la clave RS256:** paso a paso en `usuarios-accesos-ms/README.md`, sección «Rotación de la clave RS256». Sin imágenes ni diagramas.
 - **Conexión de un cliente MCP:** `nexus-ms/docs/conexion-mcp.md`. Sin imágenes ni diagramas.
 - **Arranque del ecosistema y orden de arranque:** en el README de la raíz, en prosa.
-- **Procedimientos pendientes de definir:** anonimización por derechos ARCO (`clientes-ms`) y rotación de la clave de cifrado de compras (`compras-proveedores-ms`).
+- **Omitidos por decisión de Said (2026-11-05):** procedimiento de derechos ARCO (`clientes-ms`) y rotación de la clave de cifrado y HMAC de compras (`compras-proveedores-ms`). Se dejan fuera del alcance de este trabajo.
 
 **Pendiente.** Cada procedimiento debe tener una guía completa, con pasos numerados, capturas o imágenes y diagramas. Desde el README de cada servicio hay que enlazar a la página HTML correspondiente, que se publica en `docs/`. Guías a crear:
 
@@ -21,11 +21,11 @@ Revisión al 2026-11-05.
 - [x] Crear un proveedor, una orden de compra, aprobarla y registrar la recepción (`docs/guias/`)
 - [x] Registrar un pago a proveedor contra una cuenta por pagar (`docs/guias/`)
 - [x] Emitir un comprobante, registrar un cobro y cancelar (`docs/guias/`)
-- [ ] Procesar una solicitud de derechos ARCO (pendiente de definir el procedimiento)
-- [ ] Rotar la clave de cifrado y la clave HMAC de compras (pendiente de diseño)
+- [ ] ~~Procesar una solicitud de derechos ARCO~~ (omitido por decisión de Said, 2026-11-05)
+- [ ] ~~Rotar la clave de cifrado y la clave HMAC de compras~~ (omitido por decisión de Said, 2026-11-05)
 - [x] Consultar indicadores para reportes ejecutivos (`docs/guias/`)
 
-**Total: 11 guías. 9 escritas en `docs/guias/` (2026-11-05); 2 pendientes de diseño (ARCO y rotación de clave de compras).** Hoy existen 2 guías parciales (RS256 y MCP) y 0 con imágenes o diagramas.
+**Total: 11 guías. 9 escritas en `docs/guias/` (2026-11-05); 2 omitidas por decisión de Said (ARCO y rotación de clave de compras).** Hoy existen 2 guías parciales (RS256 y MCP) y 0 con imágenes o diagramas.
 
 ## 2. Calidad de código y seguridad
 
