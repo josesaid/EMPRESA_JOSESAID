@@ -46,7 +46,7 @@ Revisión al 2026-11-05.
 - [ ] Revisar aspectos de seguridad en los microservicios:
   - [ ] Vulnerabilidades en dependencias y versiones de Spring Boot y de librerías.
   - [ ] Secretos: `.env` fuera del repositorio, claves de cifrado y de firma, y escaneo de secretos en commits.
-  - [ ] Exposición de `/actuator/prometheus` en los puertos del host (pendiente desde la revisión de producción).
+  - [x] Exposición de `/actuator/prometheus` en los puertos del host: verificado el 2026-11-05. El gateway responde `404` en `/actuator` y en `/{servicio}/actuator`, y los servicios no publican su puerto. La UI (`ui-ms`) se publicó solo en `127.0.0.1:8098`.
   - [ ] Cobertura del cifrado de datos personales y fiscales, y que los logs no contengan PII ni montos.
   - [ ] Validación de entrada y límites de tamaño en las APIs.
   - [ ] Limitación de intentos en el gateway, además del bloqueo por cuenta.
