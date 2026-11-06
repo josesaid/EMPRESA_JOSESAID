@@ -64,4 +64,10 @@ public class ManejadorErrores {
         problema.setType(URI.create("urn:josesaid:documentos-cumplimiento:error:" + slug));
         return ResponseEntity.status(estado).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(problema);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
+    org.springframework.http.ProblemDetail parametrosInvalidos(jakarta.validation.ConstraintViolationException e) {
+        return org.springframework.http.ProblemDetail.forStatusAndDetail(
+                org.springframework.http.HttpStatus.BAD_REQUEST, "Revise los parámetros indicados");
+    }
 }

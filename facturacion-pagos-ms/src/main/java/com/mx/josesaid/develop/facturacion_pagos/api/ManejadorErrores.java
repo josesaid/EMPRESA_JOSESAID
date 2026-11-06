@@ -49,4 +49,10 @@ public class ManejadorErrores {
         pd.setTitle(estatus.getReasonPhrase());
         return pd;
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
+    org.springframework.http.ProblemDetail parametrosInvalidos(jakarta.validation.ConstraintViolationException e) {
+        return org.springframework.http.ProblemDetail.forStatusAndDetail(
+                org.springframework.http.HttpStatus.BAD_REQUEST, "Revise los parámetros indicados");
+    }
 }
