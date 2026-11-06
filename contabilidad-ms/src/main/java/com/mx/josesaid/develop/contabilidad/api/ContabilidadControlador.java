@@ -33,8 +33,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mx.josesaid.develop.contabilidad.infrastructure.idempotencia.Idempotencia;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 
 /** Endpoints de contabilidad. CONTADOR escribe; DIRECCION solo consulta estados financieros y pólizas. */
+@Validated
 @RestController
 @RequestMapping("/v1")
 public class ContabilidadControlador {
@@ -82,7 +84,7 @@ public class ContabilidadControlador {
 
     @GetMapping("/polizas")
     @PreAuthorize("hasAnyRole('CONTADOR','DIRECCION')")
-    public List<PolizaRespuesta> listarPolizas(@RequestParam String periodo) {
+    public List<PolizaRespuesta> listarPolizas(@RequestParam @Size(max = 20) String periodo) {
         return servicio.listarPolizas(YearMonth.parse(periodo)).stream().map(PolizaRespuesta::de).toList();
     }
 
@@ -100,7 +102,7 @@ public class ContabilidadControlador {
 
     @GetMapping("/estados-financieros")
     @PreAuthorize("hasAnyRole('CONTADOR','DIRECCION')")
-    public Balanza estadosFinancieros(@RequestParam String periodo) {
+    public Balanza estadosFinancieros(@RequestParam @Size(max = 20) String periodo) {
         return servicio.estadosFinancieros(YearMonth.parse(periodo));
     }
 
