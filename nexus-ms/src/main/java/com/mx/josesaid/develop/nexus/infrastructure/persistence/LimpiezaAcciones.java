@@ -1,0 +1,32 @@
+package com.mx.josesaid.develop.nexus.infrastructure.persistence;
+
+import java.time.Clock;
+import java.time.Duration;
+
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Borra las acciones pendientes vencidas hace más de una hora. El nombre y el correo del
+ * prospecto viajan en el payload, así que no deben quedar guardados indefinidamente.
+ */
+@Component
+public class LimpiezaAcciones {
+
+    static final Duration RETENCION = Duration.ofHours(1);
+
+    private final AccionPendienteRepositorio repositorio;
+    private final Clock reloj;
+
+    public LimpiezaAcciones(AccionPendienteRepositorio repositorio, Clock reloj) {
+        this.repositorio = repositorio;
+        this.reloj = reloj;
+    }
+
+    @Scheduled(fixedDelayString = "PT5M", initialDelayString = "PT1M")
+    @Transactional
+    public int borrarVencidas() {
+        return repositorio.borrarVencidasAntesDe(reloj.instant().minus(RETENCION));
+    }
+}
