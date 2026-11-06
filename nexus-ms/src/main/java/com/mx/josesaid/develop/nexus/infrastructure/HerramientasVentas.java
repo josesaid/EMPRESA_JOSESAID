@@ -171,7 +171,7 @@ public final class HerramientasVentas {
             cuerpo.put("rfc", rfc.trim().toUpperCase());
         }
         cuerpo.put("fuente", fuenteNormalizada);
-        String resumen = "Prospecto nuevo: " + nombre.trim() + " (" + correo.trim() + "), fuente " + fuenteNormalizada;
+        String resumen = "Prospecto nuevo, fuente " + fuenteNormalizada;
         return guardarAccion(AccionesPendientes.TIPO_PROSPECTO_BORRADOR, aJson(cuerpo), resumen,
                 "Prospecto preparado, no guardado.");
     }
