@@ -2,6 +2,7 @@ package com.mx.josesaid.develop.compras.api;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.mx.josesaid.develop.compras.application.ComprasService;
@@ -9,6 +10,7 @@ import com.mx.josesaid.develop.compras.config.SeguridadConfig;
 import com.mx.josesaid.develop.compras.infrastructure.idempotencia.Idempotencia;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -31,6 +33,11 @@ class ComprasControladorAutorizacionTest {
 
     private static final String SUJETO = "6f1c2e7a-9a3b-4c1d-8e2f-1a2b3c4d5e6f";
     private static final String ID = "11111111-2222-3333-4444-555555555555";
+    private static final String PROVEEDOR = "{\"razonSocial\":\"Proveedor SA\",\"rfc\":\"AAA010101AAA\",\"correo\":\"p@ejemplo.com\"}";
+    private static final String ORDEN = "{\"proveedorId\":\"" + ID + "\",\"moneda\":\"MXN\",\"lineas\":["
+            + "{\"articuloSku\":\"SKU-1\",\"cantidad\":2,\"precioUnitario\":10}]}";
+    private static final String RECEPCION = "{\"lineas\":[{\"articuloSku\":\"SKU-1\",\"cantidad\":2}]}";
+    private static final String CANCELAR = "{\"motivo\":\"Proveedor sin entrega\"}";
 
     @TestConfiguration
     @EnableWebSecurity
@@ -105,5 +112,62 @@ class ComprasControladorAutorizacionTest {
     @Test
     void sinRolNoHayAcceso() throws Exception {
         denegado("/v1/proveedores?razonSocial=prueba", "");
+    }
+
+    private void escribe(MockHttpServletRequestBuilder req, String ruta, String rol, String cuerpo, boolean permite)
+            throws Exception {
+        MockHttpServletRequestBuilder conRol = req.contentType(MediaType.APPLICATION_JSON).content(cuerpo)
+                .with(jwt().jwt(j -> j.subject(SUJETO))
+                        .authorities(rol.isEmpty() ? java.util.List.of()
+                                : java.util.List.of(new SimpleGrantedAuthority("ROLE_" + rol))));
+        if (permite) {
+            int codigo;
+            try {
+                codigo = mvc.perform(conRol).andReturn().getResponse().getStatus();
+            } catch (jakarta.servlet.ServletException e) {
+                codigo = 200; // llegó al controlador: el rol fue aceptado
+            }
+            org.assertj.core.api.Assertions.assertThat(codigo)
+                    .as("%s debería estar permitido para %s", ruta, rol)
+                    .isNotIn(401, 403);
+        } else {
+            mvc.perform(conRol).andExpect(status().isForbidden());
+        }
+    }
+
+    @Test
+    void crearProveedor() throws Exception {
+        String ruta = "/v1/proveedores";
+        escribe(post(ruta), ruta, "COMPRAS", PROVEEDOR, true);
+        escribe(post(ruta), ruta, "FINANZAS", PROVEEDOR, false);
+    }
+
+    @Test
+    void crearOrdenCompra() throws Exception {
+        String ruta = "/v1/ordenes-compra";
+        escribe(post(ruta), ruta, "COMPRAS", ORDEN, true);
+        escribe(post(ruta), ruta, "ALMACEN", ORDEN, false);
+    }
+
+    @Test
+    void aprobarOrdenCompra() throws Exception {
+        String ruta = "/v1/ordenes-compra/" + ID + "/aprobacion";
+        escribe(post(ruta), ruta, "COMPRAS", "", true);
+        escribe(post(ruta), ruta, "DIRECCION", "", true);
+        escribe(post(ruta), ruta, "ALMACEN", "", false);
+    }
+
+    @Test
+    void registrarRecepcion() throws Exception {
+        String ruta = "/v1/ordenes-compra/" + ID + "/recepciones";
+        escribe(post(ruta), ruta, "ALMACEN", RECEPCION, true);
+        escribe(post(ruta), ruta, "COMPRAS", RECEPCION, false);
+    }
+
+    @Test
+    void cancelarOrdenCompra() throws Exception {
+        String ruta = "/v1/ordenes-compra/" + ID + "/cancelacion";
+        escribe(post(ruta), ruta, "COMPRAS", CANCELAR, true);
+        escribe(post(ruta), ruta, "DIRECCION", CANCELAR, false);
     }
 }
