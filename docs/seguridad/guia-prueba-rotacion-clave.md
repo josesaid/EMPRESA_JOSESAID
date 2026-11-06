@@ -63,7 +63,7 @@ Pégala en el `.env` como versión 2 (paso siguiente). Repite el comando para ca
 
 ### 4. Agregar la versión 2 sin cambiar la activa
 
-En el `.env`, para cada servicio, reemplaza la variable de clave única por la lista. Ejemplo para clientes (los valores reales van en tu `.env`, no aquí):
+En el `.env`, para cada servicio, agrega la lista. **Deja también la variable de clave única:** la lista tiene prioridad, y la clave 1 de la lista debe ser la misma que la clave única. Ejemplo para clientes (los valores reales van en tu `.env`, no aquí):
 
 ```
 CRYPTO_CLAVES_CIFRADO=1:<clave_actual>,2:<clave_nueva>
@@ -82,14 +82,14 @@ Repite la consulta del paso 2. Debe responder igual: la versión 2 solo se **lee
 
 En el `.env`, cambia `CRYPTO_VERSION_ACTIVA=2` (y las de compras y usuarios). Reinicia los servicios.
 
-Crea un cliente de prueba y revisa en la base que su correo empieza por `v2:`:
+Crea un contacto de prueba desde la aplicación y luego revisa que existan valores nuevos con la versión 2 (las filas anteriores siguen sin cambiar hasta el paso 6):
 
 ```bash
 docker compose exec -T postgres psql -U postgres -d clientes \
-  -c "SELECT correo_cifrado FROM contacto ORDER BY 1 DESC LIMIT 1;"
+  -c "SELECT count(*) AS en_v2 FROM contacto WHERE correo_cifrado LIKE 'v2:%';"
 ```
 
-Resultado esperado: el valor empieza por `v2:`. Los clientes anteriores siguen en `v1:` o sin prefijo, y deben seguir leyéndose igual.
+Resultado esperado: `en_v2` es mayor que cero. Los datos anteriores siguen en `v1:` o sin prefijo, y deben seguir leyéndose igual.
 
 ### 6. Re-cifrar los datos anteriores
 
