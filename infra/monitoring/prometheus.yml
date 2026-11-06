@@ -55,7 +55,7 @@ scrape_configs:
   - job_name: 'gateway-ms'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: ['gateway-ms:8080']
+      - targets: ['gateway-ms:9080']
 
   - job_name: 'discovery-ms'
     metrics_path: /actuator/prometheus

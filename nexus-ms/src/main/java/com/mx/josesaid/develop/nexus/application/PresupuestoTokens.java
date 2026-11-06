@@ -1,5 +1,8 @@
 package com.mx.josesaid.develop.nexus.application;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -95,7 +98,28 @@ public final class PresupuestoTokens {
 
     private void bloquear(String ambito, String usuario, String mensaje) {
         registro.counter("nexus.presupuesto.bloqueos", "ambito", ambito).increment();
-        log.warn("Consulta bloqueada por presupuesto de tokens: ámbito={} usuario={}", ambito, usuario);
+        log.warn("Consulta bloqueada por presupuesto de tokens: ámbito={} usuario={}", ambito, etiqueta(usuario));
         throw new PresupuestoAgotadoException(mensaje);
+    }
+
+    /**
+     * Identificador no reversible para los logs: no se registra el correo del usuario.
+     * Mismo usuario, misma etiqueta, para poder correlacionar bloqueos sin exponer datos personales.
+     */
+    static String etiqueta(String usuario) {
+        if (usuario == null || usuario.isBlank()) {
+            return "desconocido";
+        }
+        try {
+            byte[] hash = MessageDigest.getInstance("SHA-256")
+                    .digest(usuario.trim().toLowerCase().getBytes(StandardCharsets.UTF_8));
+            StringBuilder hex = new StringBuilder();
+            for (int i = 0; i < 6; i++) {
+                hex.append(String.format("%02x", hash[i]));
+            }
+            return "u-" + hex;
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 no disponible", e);
+        }
     }
 }
