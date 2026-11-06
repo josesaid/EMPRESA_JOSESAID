@@ -92,7 +92,7 @@ public class PublicadorIndicadoresOrdenes {
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         } catch (Exception ex) {
-            log.warn("No se pudo publicar el indicador {} {}: {}", nombre, periodo, ex.getMessage());
+            log.warn("No se pudo publicar el indicador {} {}: {}", nombre, periodo, ex.getClass().getSimpleName());
         }
     }
 

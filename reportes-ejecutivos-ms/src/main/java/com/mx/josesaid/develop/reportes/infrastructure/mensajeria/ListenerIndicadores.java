@@ -35,7 +35,7 @@ public class ListenerIndicadores {
             servicio.registrarIndicador(Area.valueOf(e.area()), e.nombre(), Periodo.de(e.periodo()),
                     e.valor(), e.fuenteActualizadaUtc());
         } catch (RuntimeException e) {
-            log.warn("Indicador descartado: {}", e.getMessage());
+            log.warn("Indicador descartado: {}", e.getClass().getSimpleName());
         }
     }
 

@@ -37,7 +37,7 @@ public class ListenerOrdenesCompra {
         try {
             datos = aDatos(mensaje);
         } catch (RuntimeException e) {
-            log.warn("Evento de compras descartado: {}", e.getMessage());
+            log.warn("Evento de compras descartado: {}", e.getClass().getSimpleName());
             return;
         }
         if (datos != null) {

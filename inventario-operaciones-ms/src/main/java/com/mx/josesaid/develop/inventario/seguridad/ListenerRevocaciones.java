@@ -45,7 +45,7 @@ public class ListenerRevocaciones {
                 revocaciones.revocarUsuario(String.valueOf(datos.get("usuarioId")), ocurridoEn);
             }
         } catch (RuntimeException e) {
-            log.warn("Evento de revocación descartado: {}", e.getMessage());
+            log.warn("Evento de revocación descartado: {}", e.getClass().getSimpleName());
         }
     }
 
