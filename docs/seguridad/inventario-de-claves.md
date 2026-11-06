@@ -74,7 +74,8 @@ Hazla al menos una vez al trimestre, en un entorno separado:
 - [x] Implementar la versión de clave en clientes, compras y usuarios.
 - [x] Implementar el re-cifrado por lotes en clientes, compras y usuarios.
 - [x] Probar la rotación en un entorno de desarrollo.
-- [ ] Retirar la versión 1 de las listas, con la clave 1 guardada fuera de la máquina.
+- [x] Retirar la versión 1 de las listas `*_CIFRADO_CLAVES`, con la clave 1 guardada fuera de la máquina (2026-11-05).
+- [ ] Sustituir el valor de las variables de clave única (`CRYPTO_CLAVE_CIFRADO`, `COMPRAS_CIFRADO_CLAVE`, `USUARIOS_CIFRADO_CLAVE`) por la clave 2. Hace falta porque `docker-compose.yml` exige esas variables para arrancar. Mientras la lista exista, se ignoran; si algún día se borra la lista, la variable quedaría como versión 1 con la clave 2, y los datos nuevos no se leerían.
 - [ ] Probar el corte a mitad del re-cifrado.
 - [ ] Diseñar el recálculo de índices HMAC.
 - [ ] Rotar `DOCUMENTOS_CIFRADO_CLAVE` (archivos cifrados en disco; aún sin diseño).
