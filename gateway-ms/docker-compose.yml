@@ -6,13 +6,17 @@ services:
     build: .
     image: gateway-ms:0.1.0
     ports:
-      # Puerto de tu Mac 8080 -> puerto 8080 dentro del contenedor
-      - "8080:8080"
+      # Solo desde esta Mac: el gateway no se expone a la red local.
+      # Sin esto, un cliente de la LAN podría enviar X-Forwarded-For si su IP cae en un rango de confianza.
+      - "127.0.0.1:8080:8080"
     environment:
       # Dirección del servidor de registro en la red interna
       # Clave pública de usuarios-accesos-ms para validar el JWT en el gateway
       JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
       # Registro de servicios con las credenciales de Eureka (definidas en .env)
+      # Rangos de proxies de confianza para X-Forwarded-For (IP del cliente real para el límite de intentos).
+      # Vacío = no confiar en ninguno. Para la UI: la subred de empresa-net, por ejemplo 172.19.0.0/16.
+      GATEWAY_PROXIES_CONFIABLES: ${GATEWAY_PROXIES_CONFIABLES:-}
       EUREKA_URL: http://${EUREKA_USUARIO:?Defina EUREKA_USUARIO en .env}:${EUREKA_PASSWORD:?Defina EUREKA_PASSWORD en .env}@discovery-ms:8761/eureka/
     networks:
       - empresa-net

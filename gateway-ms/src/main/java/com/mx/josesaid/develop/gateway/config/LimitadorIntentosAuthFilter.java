@@ -2,6 +2,7 @@ package com.mx.josesaid.develop.gateway.config;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -30,10 +31,13 @@ public class LimitadorIntentosAuthFilter implements WebFilter {
             "/usuarios-accesos-ms/v1/auth/cambiar-password-inicial");
 
     private final LimitadorVentana limitador;
+    private final List<String> proxiesConfiables;
 
     public LimitadorIntentosAuthFilter(
-            @Value("${GATEWAY_LIMITE_AUTH_POR_MINUTO:20}") int maximoPorMinuto) {
+            @Value("${GATEWAY_LIMITE_AUTH_POR_MINUTO:20}") int maximoPorMinuto,
+            @Value("${GATEWAY_PROXIES_CONFIABLES:}") String proxies) {
         this.limitador = new LimitadorVentana(maximoPorMinuto, Duration.ofMinutes(1), Clock.systemUTC());
+        this.proxiesConfiables = List.of(proxies.split(","));
     }
 
     @Override
@@ -43,8 +47,10 @@ public class LimitadorIntentosAuthFilter implements WebFilter {
             return chain.filter(exchange);
         }
         var direccion = exchange.getRequest().getRemoteAddress();
-        String ip = direccion == null || direccion.getAddress() == null
-                ? "desconocida" : direccion.getAddress().getHostAddress();
+        String directa = direccion == null || direccion.getAddress() == null
+                ? null : direccion.getAddress().getHostAddress();
+        String ip = IpCliente.resolver(directa,
+                exchange.getRequest().getHeaders().getFirst("X-Forwarded-For"), proxiesConfiables);
         LimitadorVentana.Resultado r = limitador.intentar(ip);
         if (r.permitido()) {
             return chain.filter(exchange);
