@@ -29,11 +29,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.constraints.Size;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * API de reportes. Casi toda la API es de DIRECCION; la consulta también acepta JEFE_AREA, limitada a su área. La carga principal de indicadores es por Kafka;
  * POST /indicadores existe para cargas manuales y correcciones.
  */
+@Validated
 @RestController
 @RequestMapping("/v1")
 public class ReportesControlador {
@@ -56,7 +59,7 @@ public class ReportesControlador {
     @GetMapping("/indicadores")
     @PreAuthorize("hasAnyRole('DIRECCION','JEFE_AREA')")
     public List<IndicadorRespuesta> consultarIndicadores(@RequestParam(required = false) Area area,
-                                                         @RequestParam String periodo,
+                                                         @RequestParam @Size(max = 20) String periodo,
                                                          Authentication autenticacion) {
         return servicio.consultarIndicadores(alcance(area, autenticacion), Periodo.de(periodo)).stream()
                 .map(v -> IndicadorRespuesta.de(v.indicador(), v.desactualizado()))
@@ -107,7 +110,7 @@ public class ReportesControlador {
 
     @GetMapping("/reportes/{id}/exportacion")
     @PreAuthorize("hasRole('DIRECCION')")
-    public ResponseEntity<byte[]> exportar(@PathVariable UUID id, @RequestParam(defaultValue = "CSV") String formato) {
+    public ResponseEntity<byte[]> exportar(@PathVariable UUID id, @RequestParam(defaultValue = "CSV") @Size(max = 10) String formato) {
         ReportesService.Exportacion e = servicio.exportar(id, formato);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + e.nombreArchivo() + "\"")
