@@ -2,7 +2,7 @@
 # Build multietapa: Maven + Temurin 21 para compilar, Temurin 21 JRE para ejecutar.
 
 # ---- Etapa 1: compilación ----
-FROM maven:3.9-eclipse-temurin-21 AS build
+FROM maven:3.9-eclipse-temurin-21@sha256:99e61abcff91a9b1333463bd8451fb18495d6eba9250ac66a338b518f8278320 AS build
 WORKDIR /app
 # Primero las dependencias, para aprovechar la caché de capas
 COPY pom.xml .
