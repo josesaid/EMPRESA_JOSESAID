@@ -14,6 +14,7 @@ import com.mx.josesaid.develop.clientes.application.Comandos;
 import com.mx.josesaid.develop.clientes.domain.Cliente;
 import com.mx.josesaid.develop.clientes.domain.Contacto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import java.net.URI;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Validated
 @RequestMapping("/v1/clientes")
 public class ClienteController {
 
@@ -62,8 +65,8 @@ public class ClienteController {
     @GetMapping
     @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public PagedModel<ClienteResumenResponse> buscar(
-            @RequestParam(required = false) String rfc,
-            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) @Size(max = 13) String rfc,
+            @RequestParam(required = false) @Size(max = 200) String nombre,
             @PageableDefault(size = 20, sort = "razonSocial", direction = Sort.Direction.ASC) Pageable pageable,
             @AuthenticationPrincipal Jwt jwt) {
         Page<Cliente> pagina = servicio.buscar(rfc, nombre, pageable);
