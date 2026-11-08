@@ -41,18 +41,18 @@ Revisión al 2026-11-05.
   - [x] JaCoCo 0.8.12 en modo reporte: umbral de 60% de líneas a nivel bundle, sin romper el build (`haltOnFailure=false`).
   - [x] Checkstyle, PMD (con CPD) y SpotBugs en `verify`, en modo reporte (`failOnViolation=false`).
   - [x] OWASP Dependency-Check en el perfil `seguridad-dependencias` (`mvn verify -Pseguridad-dependencias`), porque descarga la base NVD y tarda. Falla solo con CVSS 11 o superior, y en modo reporte no corta el build.
-  - [ ] Verificar el build con `mvn verify` en cada módulo. No se pudo correr en el entorno de trabajo. PMD y Checkstyle para estilo y errores comunes, JaCoCo para cobertura, SpotBugs para errores de seguridad en el bytecode, SonarQube o SonarCloud para el panel, y OWASP Dependency-Check para vulnerabilidades en dependencias.
-- [ ] Definir umbrales de cobertura y de hallazgos por servicio.
-- [ ] Revisar aspectos de seguridad en los microservicios:
-  - [ ] Vulnerabilidades en dependencias y versiones de Spring Boot y de librerías.
-  - [ ] Secretos: `.env` fuera del repositorio, claves de cifrado y de firma, y escaneo de secretos en commits.
+  - [x] Verificar el build con `mvn verify` en cada módulo (2026-11-07, 13 módulos, con pruebas de integración en Docker). PMD y Checkstyle para estilo y errores comunes, JaCoCo para cobertura, SpotBugs para errores de seguridad en el bytecode, SonarQube o SonarCloud para el panel, y OWASP Dependency-Check para vulnerabilidades en dependencias.
+- [x] Definir umbrales de cobertura y de hallazgos por servicio. Cobertura: piso por servicio que falla el build (#149, #152). Hallazgos de SpotBugs, PMD y Checkstyle: solo advertencia, por decisión.
+- [x] Revisar aspectos de seguridad en los microservicios:
+  - [x] Vulnerabilidades en dependencias y versiones de Spring Boot y de librerías (#146, #147, #148). OWASP con clave NVD omitido por decisión.
+  - [x] Secretos: `.env` fuera del repositorio, claves de cifrado y de firma, y escaneo de secretos en commits (gitleaks, #100; revisión del 2026-11-07 sin hallazgos).
   - [x] Exposición de `/actuator/prometheus` en los puertos del host: verificado el 2026-11-05. El gateway responde `404` en `/actuator` y en `/{servicio}/actuator`, y los servicios no publican su puerto. La UI (`ui-ms`) se publicó solo en `127.0.0.1:8098`.
-  - [ ] Cobertura del cifrado de datos personales y fiscales, y que los logs no contengan PII ni montos.
-  - [ ] Validación de entrada y límites de tamaño en las APIs.
-  - [ ] Limitación de intentos en el gateway, además del bloqueo por cuenta.
-  - [ ] Imágenes de contenedor: usuario no privilegiado, imagen base actualizada y escaneo de imágenes.
+  - [x] Cobertura del cifrado de datos personales y fiscales, y que los logs no contengan PII ni montos (#112, #113, #123 a #128).
+  - [x] Validación de entrada y límites de tamaño en las APIs (#80, #102 a #108, #118, #119, #121, #122).
+  - [x] Limitación de intentos en el gateway, además del bloqueo por cuenta (#81, #114, #116).
+  - [x] Imágenes de contenedor: usuario no privilegiado, imagen base actualizada y escaneo de imágenes (#101, #110, #111, #148; escaneo del 2026-11-07 sin HIGH ni CRITICAL en los 13 servicios).
   - [ ] TLS entre servicios y fuera de la red de Docker. Aplazado por decisión: se revisa en una fase posterior.
-  - [ ] Procedimiento de rotación y respaldo de claves, con su prueba.
+  - [x] Procedimiento de rotación y respaldo de claves, con su prueba (#85, #94 a #97).
 
 **Decisiones tomadas por Said Olano (2026-11-05):**
 
