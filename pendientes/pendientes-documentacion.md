@@ -74,7 +74,7 @@ Revisión al 2026-11-05.
 - Pruebas unitarias: pasan en los 13 módulos (203 en `nexus-ms`, 53 en `usuarios-accesos-ms`, 37 en `compras-proveedores-ms`, entre otros).
 - PMD: 2 hallazgos en `gateway-ms`, `compras-proveedores-ms`, `facturacion-pagos-ms` y `usuarios-accesos-ms`; 12 en `nexus-ms`. Checkstyle y PMD están en modo reporte.
 - SpotBugs: en modo reporte. Los hallazgos más comunes son `EI_EXPOSE_REP2` (exposición de referencias mutables), que en Spring suele ser falso positivo, y `CT_CONSTRUCTOR_THROW` en `CryptoConfig`. Queda para revisar caso por caso.
-- Pendiente: correr las pruebas de integración (`failsafe`) en un entorno con Docker.
+- Pruebas de integración (`failsafe`) en un entorno con Docker: correctas en los 10 servicios que las tienen (74 pruebas, 0 fallas). Se saltan 2 pruebas de nexus porque requieren `ANTHROPIC_API_KEY` y `VOYAGE_API_KEY`. Se corrieron en un contenedor de la nube con Docker, no en el Mac.
 
 **Avances posteriores del 2026-11-05 (PR #109 a #125).**
 
