@@ -236,3 +236,11 @@ Publica un indicador mensual al tópico `indicadores-areas`, que consume `report
 - **Configuración:** `INDICADORES_TOPICO`, `INDICADORES_INTERVALO_MS`, `INDICADORES_INICIO_MS`.
 - **Entrega:** no pasa por el outbox. Es una foto del periodo; si un envío falla, el siguiente ciclo lo corrige.
 - **Clase:** `PublicadorIndicadoresOrdenes`. Prueba: `mvn verify -Dit.test='PublicadorIndicadores*IT'`.
+
+## Guías paso a paso
+
+Procedimientos de este servicio, publicados en HTML:
+
+- [Ejecutar las pruebas de un servicio](../docs/guias/02-ejecutar-pruebas.html)
+- [Crear un proveedor, una orden, aprobarla y recibirla](../docs/guias/06-orden-de-compra.html)
+- [Índice de todas las guías](../docs/guias/README.html)

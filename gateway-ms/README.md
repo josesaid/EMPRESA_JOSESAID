@@ -131,3 +131,11 @@ Para que el gateway vea enseguida los cambios de instancias, los tiempos están 
 - discovery-ms: `EUREKA_EVICCION_MS` (5 000 ms) para retirar instancias caídas.
 
 En producción conviene subirlos para no saturar el registro con renovaciones.
+
+## Guías paso a paso
+
+Procedimientos de este servicio, publicados en HTML:
+
+- [Levantar el ecosistema completo](../docs/guias/01-levantar-ecosistema.html)
+- [Ejecutar las pruebas de un servicio](../docs/guias/02-ejecutar-pruebas.html)
+- [Índice de todas las guías](../docs/guias/README.html)

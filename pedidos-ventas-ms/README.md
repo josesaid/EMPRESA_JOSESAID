@@ -281,3 +281,10 @@ Antes de crear una cotización o un pedido, el servicio consulta `GET /v1/client
 - **Configuración:** `CLIENTES_URL`, por omisión `http://clientes-ms:8080`.
 - **Decisión:** consulta síncrona, aprobada. Si clientes-ms no responde, pedidos tampoco crea nada: prefiere rechazar a guardar un cliente no verificado.
 - **Pruebas:** `ClientesRestValidadorTest` con servidor REST simulado; `PedidosIT` sustituye el validador con `@MockitoBean`.
+
+## Guías paso a paso
+
+Procedimientos de este servicio, publicados en HTML:
+
+- [Ejecutar las pruebas de un servicio](../docs/guias/02-ejecutar-pruebas.html)
+- [Índice de todas las guías](../docs/guias/README.html)
