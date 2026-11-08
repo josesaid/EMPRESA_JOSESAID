@@ -25,6 +25,8 @@
   <description>Existencias por almacén, reservas, lotes con trazabilidad y órdenes de producción o servicio.</description>
 
   <properties>
+
+    <opentelemetry.version>1.67.0</opentelemetry.version>
     <!-- Java 21 es el requisito de la empresa -->
     <java.version>21</java.version>
   </properties>
