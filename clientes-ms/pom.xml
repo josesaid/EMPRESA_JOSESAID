@@ -229,7 +229,7 @@
                         <phase>verify</phase>
                         <goals><goal>check</goal></goals>
                         <configuration>
-                            <haltOnFailure>false</haltOnFailure>
+                            <haltOnFailure>true</haltOnFailure>
                             <rules>
                                 <rule>
                                     <element>BUNDLE</element>
@@ -237,7 +237,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.60</minimum>
+                                            <minimum>0.68</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
