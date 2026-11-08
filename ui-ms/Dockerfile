@@ -10,6 +10,7 @@ RUN mvn -B -q -f ui-ms/pom.xml package -DskipTests
 FROM eclipse-temurin:21-jre@sha256:0b99b3376fbb50dbf9c0af8535fdd5b8eb0d3fdfc8b1e4967f383b6919f6901a
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl \
+ && apt-get install -y --only-upgrade apt \
  && rm -rf /var/lib/apt/lists/* \
  && groupadd --system app \
  && useradd --system --gid app --home /app app
