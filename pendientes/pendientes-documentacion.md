@@ -89,8 +89,8 @@ Revisión al 2026-11-05.
 
 **Se hace al final**, cuando el backend esté completo y todos los PR y merges estén registrados. Así la documentación queda completa de una sola vez.
 
-- [ ] Listar cada PR de la sesión en una tabla con: número, título, rama, servicios afectados, commit de merge, fecha y resumen de una línea.
-- [ ] Incluir las decisiones de cada PR (por ejemplo, el bloqueo de 5 minutos o la cuenta por pagar) y enlazar cada fila con su PR en GitHub.
-- [ ] Ubicar la tabla en la documentación del repositorio, con enlace desde el README principal.
+- [x] Listar cada PR de la sesión en una tabla con: número, título, rama, servicios afectados, commit de merge, fecha y resumen de una línea.
+- [x] Incluir las decisiones de cada PR (por ejemplo, el bloqueo de 5 minutos o la cuenta por pagar) y enlazar cada fila con su PR en GitHub.
+- [x] Ubicar la tabla en la documentación del repositorio, con enlace desde el README principal.
 
 **Pendiente:** no iniciar hasta que el backend esté terminado.

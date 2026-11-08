@@ -205,3 +205,7 @@ Interfaz web de Kafka en http://localhost:8090 (clúster `empresa`).
 ## 14. Guías paso a paso
 
 Procedimientos con pasos numerados, diagramas y verificación (levantar el ecosistema, pruebas, rotación de claves, cliente MCP, altas, compras, pagos, comprobantes e indicadores): ver [docs/guias](docs/guias/README.md).
+
+## 15. Registro de PRs
+
+Lista de los PR de la sesión de seguridad y pruebas (#109 a #149), con su commit de fusión y decisiones: [docs/registro-prs.md](docs/registro-prs.md).
