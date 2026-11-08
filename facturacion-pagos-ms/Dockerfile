@@ -15,6 +15,7 @@ FROM eclipse-temurin:21-jre@sha256:0b99b3376fbb50dbf9c0af8535fdd5b8eb0d3fdfc8b1e
 # curl solo sirve para el HEALTHCHECK; usuario sin privilegios
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl \
+ && apt-get install -y --only-upgrade apt \
  && rm -rf /var/lib/apt/lists/* \
  && useradd --system --uid 10001 --user-group app
 WORKDIR /app
