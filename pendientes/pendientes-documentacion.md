@@ -83,7 +83,7 @@ Revisión al 2026-11-05.
 - Contador de intentos de login compartido entre réplicas con Redis, opcional con `GATEWAY_LIMITE_ALMACEN=redis` (#116). Por defecto sigue en memoria. Si Redis cae, el login pasa y el bloqueo de cuenta sigue activo.
 - Cobertura del cifrado (#123, #124): `clientes`, `usuarios-accesos` y `compras` cifran sus datos personales y fiscales. Decisiones: la razón social de cliente y el título de documentos quedan en claro. El resumen de acciones de nexus ya no guarda nombre ni correo (#125). Pendiente: el campo `payload` de esa misma acción, que sí guarda nombre y correo porque se necesitan para crear el prospecto. Está anotado en `docs/seguridad/auditoria-cifrado-campos.md`.
 - ~~Validación del título de documentos~~: omitido por decisión de Said Olano (2026-11-07).
-- ~~Kubernetes~~: omitido por decisión de Said Olano (2026-11-07). Manifiestos base en `infra/kubernetes/` (#99), sin registro real, dominio ni verificación en cluster. Faltan el registro real, el dominio y las variables sensibles pasadas a `Secret`, y la verificación contra un cluster.
+- ~~Kubernetes~~: omitido por decisión de Said Olano (2026-11-07). Manifiestos base en `infra/kubernetes/` (#99), sin registro real, dominio ni verificación en cluster.
 
 ## 3. Registro de PRs y merges (al final)
 
