@@ -371,3 +371,12 @@ Límites conocidos:
 Las cuentas dadas de alta por `POST /v1/usuarios` reciben una contraseña temporal. Mientras esté pendiente de cambio, `POST /v1/auth/login` responde `403` (`cambio-password-requerido`) y no emite tokens.
 
 Para cambiarla: `POST /v1/auth/cambiar-password-inicial` con `correo`, `passwordActual` (la temporal) y `passwordNueva` (mínimo 12 caracteres, distinta a la temporal). Responde `204`; después el usuario inicia sesión normalmente. El endpoint es público y cuenta los intentos fallidos igual que el login.
+
+## Guías paso a paso
+
+Procedimientos de este servicio, publicados en HTML:
+
+- [Ejecutar las pruebas de un servicio](../docs/guias/02-ejecutar-pruebas.html)
+- [Rotar la clave RS256 sin cortar sesiones](../docs/guias/03-rotar-clave-rs256.html)
+- [Dar de alta un usuario y asignarle rol y área](../docs/guias/05-dar-de-alta-usuario.html)
+- [Índice de todas las guías](../docs/guias/README.html)

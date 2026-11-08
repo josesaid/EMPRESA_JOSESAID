@@ -114,3 +114,11 @@ Detenga el contenedor y regrese a la imagen anterior. No hay datos que revertir.
 - Diseño: `docs/diseno.md`.
 - Orden de arranque: sección 10 del README de la raíz.
 - Gateway y monitoreo: sección 11 del README de la raíz.
+
+## Guías paso a paso
+
+Procedimientos de este servicio, publicados en HTML:
+
+- [Levantar el ecosistema completo](../docs/guias/01-levantar-ecosistema.html)
+- [Ejecutar las pruebas de un servicio](../docs/guias/02-ejecutar-pruebas.html)
+- [Índice de todas las guías](../docs/guias/README.html)

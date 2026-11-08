@@ -25,7 +25,7 @@ Revisión al 2026-11-05.
 - [ ] ~~Rotar la clave de cifrado y la clave HMAC de compras~~ (omitido por decisión de Said, 2026-11-05)
 - [x] Consultar indicadores para reportes ejecutivos (`docs/guias/`)
 
-**Total: 11 guías. 9 escritas en `docs/guias/` (2026-11-05); 2 omitidas por decisión de Said (ARCO y rotación de clave de compras).** Hoy existen 2 guías parciales (RS256 y MCP) y 0 con imágenes o diagramas.
+**Total: 11 guías. 9 escritas en `docs/guias/` (2026-11-05); 2 omitidas por decisión de Said (ARCO y rotación de clave de compras).** Las 9 guías tienen un diagrama SVG en `docs/guias/img/`. Cada una tiene su página HTML en `docs/guias/` y el índice está en `docs/guias/README.html`. Los 13 READMEs de servicio enlazan a sus guías, excepto `ui-ms`, que no tiene README.
 
 ## 2. Calidad de código y seguridad
 

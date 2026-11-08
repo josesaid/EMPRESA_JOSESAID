@@ -221,3 +221,10 @@ Imagen `reportes-ejecutivos-ms:0.1.0`. Requiere red `empresa-net`, base `reporte
 - `GET /reportes/{periodo}` también acepta JEFE_AREA y solo incluye los indicadores de su área.
 - Carga, cierre y exportación siguen solo para DIRECCION.
 
+## Guías paso a paso
+
+Procedimientos de este servicio, publicados en HTML:
+
+- [Ejecutar las pruebas de un servicio](../docs/guias/02-ejecutar-pruebas.html)
+- [Consultar indicadores y generar reportes](../docs/guias/09-indicadores-y-reportes.html)
+- [Índice de todas las guías](../docs/guias/README.html)

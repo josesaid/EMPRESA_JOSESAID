@@ -237,3 +237,11 @@ Revertir la imagen a la versión anterior. Las migraciones no se revierten: son 
 - Diseño del asistente: `Nexus-Diseno-Asistente-IA.pdf` en la raíz del repositorio.
 - Fases y pasos: `Fases y pasos requeridos en la implementación de Nexus.pptx` en la raíz.
 - Monitoreo: `infra/monitoring/`.
+
+## Guías paso a paso
+
+Procedimientos de este servicio, publicados en HTML:
+
+- [Ejecutar las pruebas de un servicio](../docs/guias/02-ejecutar-pruebas.html)
+- [Conectar un cliente MCP a Nexus](../docs/guias/04-conectar-cliente-mcp.html)
+- [Índice de todas las guías](../docs/guias/README.html)
