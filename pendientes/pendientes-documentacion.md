@@ -82,8 +82,8 @@ Revisión al 2026-11-05.
 - IP real en el login: el gateway y la UI confían en `X-Forwarded-For` solo desde proxies configurados (#114, #115, #116). Falta activarlo en el Mac: definir `GATEWAY_PROXIES_CONFIABLES` y `UI_PROXIES_CONFIABLES` con `172.19.0.0/16` y reiniciar los dos servicios. Hay que verificar la IP que llega al gateway, porque en Docker Desktop para Mac puede ser la de la VM.
 - Contador de intentos de login compartido entre réplicas con Redis, opcional con `GATEWAY_LIMITE_ALMACEN=redis` (#116). Por defecto sigue en memoria. Si Redis cae, el login pasa y el bloqueo de cuenta sigue activo.
 - Cobertura del cifrado (#123, #124): `clientes`, `usuarios-accesos` y `compras` cifran sus datos personales y fiscales. Decisiones: la razón social de cliente y el título de documentos quedan en claro. El resumen de acciones de nexus ya no guarda nombre ni correo (#125). Pendiente: el campo `payload` de esa misma acción, que sí guarda nombre y correo porque se necesitan para crear el prospecto. Está anotado en `docs/seguridad/auditoria-cifrado-campos.md`.
-- Validación del título de documentos: pendiente de definir el formato aceptado.
-- Kubernetes: manifiestos base en `infra/kubernetes/` (#99). Faltan el registro real, el dominio y las variables sensibles pasadas a `Secret`, y la verificación contra un cluster.
+- ~~Validación del título de documentos~~: omitido por decisión de Said Olano (2026-11-07).
+- ~~Kubernetes~~: omitido por decisión de Said Olano (2026-11-07). Manifiestos base en `infra/kubernetes/` (#99), sin registro real, dominio ni verificación en cluster. Faltan el registro real, el dominio y las variables sensibles pasadas a `Secret`, y la verificación contra un cluster.
 
 ## 3. Registro de PRs y merges (al final)
 
