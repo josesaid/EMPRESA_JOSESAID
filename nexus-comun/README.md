@@ -126,7 +126,7 @@ En tu Mac también existe `ejecutar-pruebas-nexus.sh` en la raíz del repositori
 
 ## 8. Decisiones y pendientes
 
-- **RFC sin redactar hacia el modelo.** `FiltroDatosSensiblesAdvisor` omite siempre el tipo RFC, así que los RFC sí llegan al modelo. Es probablemente intencional, porque las herramientas de búsqueda necesitan el RFC; pendiente confirmar y documentar la decisión.
+- **RFC sin redactar hacia el modelo (decidido).** `FiltroDatosSensiblesAdvisor` omite siempre el tipo RFC, así que los RFC llegan al modelo. Es intencional: las herramientas de búsqueda necesitan el RFC para localizar al proveedor o cliente.
 - **Evaluaciones con filtro completo.** La regla de datos sensibles de `EjecutorEvaluaciones` usa todos los tipos, incluido RFC, mientras que el advisor no redacta RFC. Pendiente unificar criterio.
 - **Costo estimado.** Depende de que `nexus-ms` configure los precios; sin configuración el costo es cero.
 - **Casos de evaluación.** `casos.tsv` cubre el piloto. Ampliarlo cuando se agreguen áreas nuevas.
