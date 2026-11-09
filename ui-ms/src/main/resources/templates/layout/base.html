@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <style>
         .barra-lateral { width: 250px; min-height: 100vh; }
-        .panel-ia { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); width: min(360px, calc(100vw - 32px)); max-height: 40vh; overflow-y: auto; z-index: 1030; }
+        .panel-ia { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); width: min(560px, calc(100vw - 32px)); max-height: 60vh; overflow-y: auto; z-index: 1030; }
         .barra-rojo { background-color: #b42318; }
         .barra-azul { background-color: #1d4ed8; }
         .barra-naranja { background-color: #ea580c; }
@@ -83,6 +83,10 @@
             <span class="text-secondary font-monospace" th:text="${s.hora}">09:00</span>
             <span class="badge bg-secondary-subtle text-secondary-emphasis" th:text="${s.rol}">VENTAS</span>
             <div class="mt-1" th:text="${s.texto}">Sugerencia</div>
+            <p class="fw-semibold mb-1 mt-2">Pasos</p>
+            <ol class="mb-0 ps-3">
+                <li th:each="paso : ${s.pasos}" th:text="${paso}">Paso</li>
+            </ol>
         </li>
         <li class="py-2 text-secondary" th:if="${sugerenciasIa != null and sugerenciasIa.isEmpty()}">Sin sugerencias para tu rol.</li>
     </ol>

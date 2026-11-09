@@ -25,11 +25,11 @@ class PanelSugerenciasPlantillaTest {
         WebContext ctx = contexto();
         ctx.setVariable("titulo", "Nuevo proveedor");
         ctx.setVariable("correo", "ana@empresa.mx");
-        ctx.setVariable("sugerenciasIa", List.of(new Sugerencia("09:05", "VENTAS", "Resumir el historial de interacciones.")));
+        ctx.setVariable("sugerenciasIa", List.of(new Sugerencia("09:05", "VENTAS", "Resumir el historial de interacciones.", List.of("Obtener interacciones.", "Resumir."))));
 
         String html = motor.process("altas/proveedor", ctx);
 
-        assertThat(html).contains("Sugerencias de IA", "Resumir el historial de interacciones.", "09:05", "VENTAS");
+        assertThat(html).contains("Sugerencias de IA", "Resumir el historial de interacciones.", "09:05", "VENTAS", "Obtener interacciones.");
     }
 
     @Test
