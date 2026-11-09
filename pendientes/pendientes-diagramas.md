@@ -112,9 +112,9 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [x] Reintento tras 401 y cierre de sesión
 
 ### nexus-ms (3)
-- [ ] Arquitectura
-- [ ] Acciones con confirmación
-- [ ] Acciones por MCP
+- [x] Arquitectura
+- [x] Acciones con confirmación
+- [x] Acciones por MCP
 
 **Subtotal por microservicio: 43 diagramas.**
 
