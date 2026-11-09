@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina(${titulo}, ~{::main})}">
+<body>
+<main class="p-3 p-md-4">
+    <h1 class="h3 mb-3" th:text="${titulo}">Nuevo proveedor</h1>
+
+    <div class="alert alert-success" th:if="${mensaje}" th:text="${mensaje}">Mensaje</div>
+    <div class="alert alert-warning" th:if="${error}" th:text="${error}">Error</div>
+
+    <form class="bg-white rounded shadow-sm p-3 col-12 col-lg-8" th:action="@{/altas/proveedores}" method="post">
+        <div class="mb-3">
+            <label class="form-label" for="razonSocial">Razón social</label>
+            <input class="form-control" id="razonSocial" type="text" name="razonSocial" maxlength="200" required
+                   th:value="${valores?.get('razonSocial')}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="rfc">RFC</label>
+            <input class="form-control text-uppercase" id="rfc" type="text" name="rfc" maxlength="13" required
+                   th:value="${valores?.get('rfc')}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="correo">Correo</label>
+            <input class="form-control" id="correo" type="email" name="correo" maxlength="254" required
+                   th:value="${valores?.get('correo')}">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar proveedor</button>
+    </form>
+</main>
+</body>
+</html>

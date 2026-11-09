@@ -45,9 +45,12 @@ public class LecturaController {
     @GetMapping("/clientes")
     public String clientes(@RequestParam(required = false) String rfc,
             @RequestParam(required = false) String nombre, Authentication usuario, Model modelo) {
-        return listado(modelo, usuario, "Clientes", "clientes", "/clientes",
+        String vista = listado(modelo, usuario, "Clientes", "clientes", "/clientes",
                 List.of(campo("rfc", "RFC", rfc, false), campo("nombre", "Nombre", nombre, false)),
                 "/clientes-ms/v1/clientes", query("rfc", rfc, "nombre", nombre), "/clientes", null, true);
+        modelo.addAttribute("nuevoEnlace", "/altas/clientes");
+        modelo.addAttribute("nuevoTexto", "Nuevo cliente");
+        return vista;
     }
 
     @GetMapping("/clientes/{id}")
@@ -86,10 +89,13 @@ public class LecturaController {
 
     @GetMapping("/compras/proveedores")
     public String proveedores(@RequestParam(required = false) String razonSocial, Authentication usuario, Model modelo) {
-        return listado(modelo, usuario, "Proveedores", "proveedores", "/compras/proveedores",
+        String vista = listado(modelo, usuario, "Proveedores", "proveedores", "/compras/proveedores",
                 List.of(campo("razonSocial", "Razón social", razonSocial, true)),
                 "/compras-proveedores-ms/v1/proveedores", query("razonSocial", razonSocial), "/compras/proveedores",
                 null, notBlank(razonSocial));
+        modelo.addAttribute("nuevoEnlace", "/altas/proveedores");
+        modelo.addAttribute("nuevoTexto", "Nuevo proveedor");
+        return vista;
     }
 
     @GetMapping("/compras/proveedores/{id}")
