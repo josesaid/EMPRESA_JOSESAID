@@ -63,9 +63,9 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [x] Flujo de `Idempotency-Key` en altas
 
 ### documentos-cumplimiento-ms (3)
-- [ ] Reglas de estado del documento
-- [ ] Reglas de duplicados
-- [ ] Retención y purga física
+- [x] Reglas de estado del documento
+- [x] Reglas de duplicados
+- [x] Retención y purga física
 
 ### facturacion-pagos-ms (5)
 - [ ] Máquinas de estado de comprobante y cobro
