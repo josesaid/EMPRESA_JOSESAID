@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina(${titulo}, ~{::main})}">
+<body>
+<main class="p-3 p-md-4">
+    <h1 class="h3 mb-3" th:text="${titulo}">Título</h1>
+
+    <form th:if="${not #lists.isEmpty(campos)}" th:action="@{${rutaVista}}" method="get" class="row g-2 align-items-end mb-3">
+        <div class="col-12 col-md-auto" th:each="c : ${campos}">
+            <label class="form-label small mb-1" th:for="${c.nombre}" th:text="${c.etiqueta}">Campo</label>
+            <input class="form-control form-control-sm" type="text" th:id="${c.nombre}" th:name="${c.nombre}"
+                   th:value="${c.valor}" th:required="${c.requerido == 'true'}">
+        </div>
+        <div class="col-12 col-md-auto">
+            <button type="submit" class="btn btn-primary btn-sm">Consultar</button>
+        </div>
+    </form>
+
+    <div class="alert alert-warning" th:if="${error}" th:text="${error}">Error</div>
+    <p class="text-secondary" th:if="${!ejecutado and error == null}" th:text="${ayuda}">Captura los filtros para consultar.</p>
+
+    <div class="table-responsive bg-white rounded shadow-sm" th:if="${ejecutado and error == null}">
+        <table class="table table-hover table-sm align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th th:each="col : ${columnas}" th:text="${col.etiqueta}">Columna</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="fila : ${filas}">
+                    <td th:each="col : ${columnas}" th:text="${fila[col.nombre]}">Valor</td>
+                    <td class="text-end">
+                        <a th:if="${fila['_enlace'] != null}" th:href="@{${fila['_enlace']}}">Ver</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(filas)}">
+                    <td th:colspan="${#lists.size(columnas) + 1}">Sin resultados.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

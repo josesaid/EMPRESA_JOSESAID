@@ -1,44 +1,39 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EMPRESA_JOSESAID · Proponer póliza</title>
-</head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina(${titulo}, ~{::main})}">
 <body>
-    <div th:replace="~{fragments/menu :: menu}"></div>
-    <h1 th:text="${titulo}">Proponer póliza</h1>
+<main class="p-3 p-md-4">
+    <h1 class="h3 mb-3" th:text="${titulo}">Proponer póliza</h1>
+    <div class="alert alert-success" th:if="${mensaje}" th:text="${mensaje}">Mensaje</div>
+    <div class="alert alert-warning" th:if="${error}" th:text="${error}">Error</div>
 
-    <p th:if="${mensaje}" th:text="${mensaje}">Mensaje</p>
-    <p th:if="${error}" th:text="${error}">Error</p>
-
-    <section th:if="${puedeProponer and sugerencia == null}">
+    <section class="bg-white rounded shadow-sm p-3" th:if="${puedeProponer and sugerencia == null}">
         <form th:action="@{/polizas/nueva}" method="post">
-            <label>Describe la operación (montos, moneda y cuentas si las conoces)
-                <textarea name="descripcion" rows="4" maxlength="500" required th:text="${descripcion}"></textarea>
-            </label>
-            <button type="submit">Proponer póliza</button>
+            <label class="form-label" for="descripcion">Describe la operación (montos, moneda y cuentas si las conoces)</label>
+            <textarea class="form-control mb-3" id="descripcion" name="descripcion" rows="4" maxlength="500" required th:text="${descripcion}"></textarea>
+            <button type="submit" class="btn btn-primary">Proponer póliza</button>
         </form>
     </section>
 
-    <section th:if="${sugerencia != null}">
-        <h2>Propuesta pendiente</h2>
+    <section class="bg-white rounded shadow-sm p-3" th:if="${sugerencia != null}">
+        <h2 class="h5">Propuesta pendiente</h2>
         <p th:text="${sugerencia.resumen}">Resumen</p>
-        <p>Tipo: <span th:text="${sugerencia.tipo}">INGRESO</span>
+        <p class="small text-secondary">Tipo: <span th:text="${sugerencia.tipo}">INGRESO</span>
            · Vence (UTC): <span th:text="${sugerencia.expiraUtc}">2026-11-02T19:30:00Z</span></p>
         <p>Código de confirmación: <strong th:text="${sugerencia.codigoConfirmacion}">12345678</strong>
-           <small>(se muestra una sola vez; anótalo antes de confirmar)</small></p>
+           <small class="text-secondary">(se muestra una sola vez; anótalo antes de confirmar)</small></p>
 
-        <form th:action="@{/acciones/{id}/confirmacion(id=${sugerencia.id})}" method="post">
-            <label>Código de 8 dígitos
-                <input type="text" name="codigo" pattern="\d{8}" maxlength="8" inputmode="numeric" autocomplete="off" required>
-            </label>
-            <button type="submit">Confirmar y registrar</button>
+        <form th:action="@{/acciones/{id}/confirmacion(id=${sugerencia.id})}" method="post" class="row g-2 align-items-end mb-2">
+            <div class="col-12 col-md-auto">
+                <label class="form-label small mb-1" for="codigo">Código de 8 dígitos</label>
+                <input class="form-control form-control-sm" id="codigo" type="text" name="codigo" pattern="\d{8}" maxlength="8" inputmode="numeric" autocomplete="off" required>
+            </div>
+            <div class="col-12 col-md-auto"><button type="submit" class="btn btn-primary btn-sm">Confirmar y registrar</button></div>
         </form>
 
         <form th:action="@{/acciones/{id}/cancelacion(id=${sugerencia.id})}" method="post">
-            <button type="submit">Cancelar propuesta</button>
+            <button type="submit" class="btn btn-outline-secondary btn-sm">Cancelar propuesta</button>
         </form>
     </section>
+</main>
 </body>
 </html>

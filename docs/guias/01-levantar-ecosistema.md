@@ -31,16 +31,16 @@
 
    En `.env` completa al menos `POSTGRES_PASSWORD`, `CLIENTES_DB_PASSWORD`, `USUARIOS_JWT_CLAVE_PRIVADA`, `USUARIOS_ADMIN_INICIAL_CORREO` y `USUARIOS_ADMIN_INICIAL_PASSWORD`. La lista completa está en la [sección 4 del README](../../README.md#4-variables-de-env-de-la-raíz). Nunca subas el `.env` al repositorio.
 
-3. **Levanta la infraestructura: PostgreSQL y Kafka.**
+3. **Levanta la infraestructura: PostgreSQL, Kafka y Redis.** Redis guarda las sesiones de la interfaz; sin él, el inicio de sesión en `ui-ms` falla.
 
    ```bash
-   docker compose up -d postgres kafka
+   docker compose up -d postgres kafka redis
    ```
 
-   Espera a que ambos estén `healthy`:
+   Espera a que PostgreSQL y Kafka estén `healthy`:
 
    ```bash
-   docker compose ps postgres kafka
+   docker compose ps postgres kafka redis
    ```
 
 4. **Levanta usuarios-accesos-ms.** Los demás servicios validan tokens con él, así que va primero:

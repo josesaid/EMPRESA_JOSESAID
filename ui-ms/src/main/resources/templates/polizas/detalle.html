@@ -1,44 +1,42 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EMPRESA_JOSESAID · Detalle de póliza</title>
-</head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina(${titulo}, ~{::main})}">
 <body>
-    <div th:replace="~{fragments/menu :: menu}"></div>
-    <h1 th:text="${titulo}">Detalle de póliza</h1>
-    <p th:if="${error}" th:text="${error}">Error</p>
-    <p th:if="${mensaje}" th:text="${mensaje}">Mensaje</p>
-    <p th:if="${errorReversa}" th:text="${errorReversa}">Error</p>
-    <div th:unless="${error}">
-        <p>
-            <span th:text="${poliza.tipo}">INGRESO</span> ·
+<main class="p-3 p-md-4">
+    <h1 class="h3 mb-3" th:text="${titulo}">Detalle de póliza</h1>
+    <div class="alert alert-warning" th:if="${error}" th:text="${error}">Error</div>
+    <div class="alert alert-success" th:if="${mensaje}" th:text="${mensaje}">Mensaje</div>
+    <div class="alert alert-danger" th:if="${errorReversa}" th:text="${errorReversa}">Error</div>
+    <div th:unless="${error}" class="bg-white rounded shadow-sm p-3">
+        <p class="mb-2">
+            <span class="badge text-bg-secondary" th:text="${poliza.tipo}">INGRESO</span>
             <span th:text="${poliza.fecha}">2026-11-02</span> ·
             <span th:text="${poliza.estatus}">APLICADA</span> ·
             Periodo <span th:text="${poliza.periodo}">2026-11</span>
         </p>
         <p th:if="${poliza.reversaDe != null}">Reversa de la póliza <span th:text="${poliza.reversaDe}">id</span></p>
-        <table>
-            <thead>
-                <tr><th>Código</th><th>Cuenta</th><th>Cargo</th><th>Abono</th></tr>
-            </thead>
-            <tbody>
-                <tr th:each="m : ${movimientos}">
-                    <td th:text="${m.codigo}">1102</td>
-                    <td th:text="${m.nombre}">Bancos</td>
-                    <td th:text="${m.cargo}">0.00</td>
-                    <td th:text="${m.abono}">0.00</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr><th colspan="2">Total</th><th th:text="${poliza.total}">1000.00</th><th th:text="${poliza.total}">1000.00</th></tr>
-            </tfoot>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead class="table-light">
+                    <tr><th>Código</th><th>Cuenta</th><th>Cargo</th><th>Abono</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="m : ${movimientos}">
+                        <td th:text="${m.codigo}">1102</td>
+                        <td th:text="${m.nombre}">Bancos</td>
+                        <td th:text="${m.cargo}">0.00</td>
+                        <td th:text="${m.abono}">0.00</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr><th colspan="2">Total</th><th th:text="${poliza.total}">1000.00</th><th th:text="${poliza.total}">1000.00</th></tr>
+                </tfoot>
+            </table>
+        </div>
         <form th:if="${puedeRevertir and poliza.reversaDe == null and poliza.estatus == 'APLICADA'}" th:action="@{/polizas/{id}/reversa(id=${poliza.id})}" method="post">
-            <button type="submit">Revertir póliza</button>
+            <button type="submit" class="btn btn-outline-danger btn-sm">Revertir póliza</button>
         </form>
     </div>
-    <p><a th:href="@{/polizas}">Volver al listado</a></p>
+    <p class="mt-3"><a th:href="@{/polizas}">Volver al listado</a></p>
+</main>
 </body>
 </html>

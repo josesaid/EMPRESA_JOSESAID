@@ -1,32 +1,30 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EMPRESA_JOSESAID · Alta de usuario</title>
-</head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina('Alta de usuario', ~{::main})}">
 <body>
-    <div th:replace="~{fragments/menu :: menu}"></div>
-    <h1>Alta de usuario</h1>
+<main class="p-3 p-md-4">
+    <h1 class="h3 mb-3">Alta de usuario</h1>
 
-    <p th:if="${mensaje}" th:text="${mensaje}">Mensaje</p>
-    <p th:if="${error}" th:text="${error}">Error</p>
+    <div class="alert alert-success" th:if="${mensaje}" th:text="${mensaje}">Mensaje</div>
+    <div class="alert alert-warning" th:if="${error}" th:text="${error}">Error</div>
 
-    <section th:if="${datos != null and mensaje == null}">
-        <p>Correo: <strong th:text="${datos.correo}">correo</strong></p>
-        <p>Nombre: <span th:text="${datos.nombreCompleto}">nombre</span></p>
+    <section class="bg-white rounded shadow-sm p-3" th:if="${datos != null and mensaje == null}">
+        <p class="mb-1">Correo: <strong th:text="${datos.correo}">correo</strong></p>
+        <p class="mb-1">Nombre: <span th:text="${datos.nombreCompleto}">nombre</span></p>
         <p>Roles: <span th:text="${#strings.listJoin(datos.roles, ', ')}">roles</span></p>
 
         <form th:action="@{/usuarios/altas/{id}(id=${id})}" method="post">
-            <label>Contraseña temporal
-                <input type="password" name="password" autocomplete="new-password" required>
-            </label>
-            <label>Código de confirmación de 8 dígitos
-                <input type="text" name="codigo" pattern="\d{8}" maxlength="8" inputmode="numeric" autocomplete="off" required>
-            </label>
-            <button type="submit">Crear usuario</button>
+            <div class="mb-3">
+                <label class="form-label" for="password">Contraseña temporal</label>
+                <input class="form-control" id="password" type="password" name="password" autocomplete="new-password" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="codigo">Código de confirmación de 8 dígitos</label>
+                <input class="form-control" id="codigo" type="text" name="codigo" pattern="\d{8}" maxlength="8" inputmode="numeric" autocomplete="off" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Crear usuario</button>
         </form>
-        <p><small>La contraseña se envía directo a usuarios; el asistente no la recibe.</small></p>
+        <p class="small text-secondary mt-3 mb-0">La contraseña se envía directo a usuarios; el asistente no la recibe.</p>
     </section>
+</main>
 </body>
 </html>
