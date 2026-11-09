@@ -32,6 +32,22 @@ public class NexusCliente {
                 .body(SugerenciaDto.class));
     }
 
+    /** Pregunta libre al asistente Nexus. El asistente decide qué herramientas usar. */
+    public String consultar(String pregunta) {
+        RespuestaConsulta r = sesion.ejecutar(token -> gateway.post()
+                .uri("/nexus/consultas")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("pregunta", pregunta))
+                .retrieve()
+                .body(RespuestaConsulta.class));
+        return r == null || r.respuesta() == null ? "" : r.respuesta();
+    }
+
+    /** Respuesta de nexus-ms a una consulta. */
+    public record RespuestaConsulta(String respuesta) {
+    }
+
     public void confirmar(UUID id, String codigo) {
         sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/acciones/{id}/confirmacion", id)

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina('Asistente Nexus', ~{::main})}">
+<body>
+<main class="p-3 p-md-4">
+    <div class="mx-auto" style="max-width: 800px;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">Asistente Nexus</h1>
+            <form th:if="${!mensajes.isEmpty()}" method="post" th:action="@{/asistente/limpiar}">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Limpiar conversación</button>
+            </form>
+        </div>
+        <p class="text-secondary small">Escribe lo que necesitas en lenguaje natural. Las consultas quedan registradas. Las acciones que modifican datos se preparan y se confirman con un código.</p>
+
+        <div class="alert alert-warning py-2 small" role="alert" th:if="${error}" th:text="${error}">Error</div>
+
+        <section class="bg-white rounded shadow-sm p-3 mb-3" style="min-height: 200px;">
+            <p class="text-secondary mb-0" th:if="${mensajes.isEmpty()}">Aún no hay mensajes. Escribe tu pregunta abajo.</p>
+            <div class="mb-3" th:each="m : ${mensajes}">
+                <p class="small fw-semibold mb-1" th:text="${m.autor}">Autor</p>
+                <p class="mb-0" style="white-space: pre-wrap;" th:text="${m.texto}">Texto</p>
+            </div>
+        </section>
+
+        <form method="post" th:action="@{/asistente}" class="bg-white rounded shadow-sm p-3">
+            <label class="form-label" for="pregunta">Tu pregunta</label>
+            <textarea class="form-control mb-2" id="pregunta" name="pregunta" rows="3" maxlength="2000" required></textarea>
+            <button type="submit" class="btn btn-primary btn-sm">Enviar</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

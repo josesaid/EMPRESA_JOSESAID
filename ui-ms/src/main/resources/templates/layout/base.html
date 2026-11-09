@@ -28,6 +28,7 @@
         <a class="d-block fw-bold text-white text-decoration-none mb-3" th:href="@{/}">EMPRESA_JOSESAID</a>
         <nav class="nav flex-column gap-1 small">
             <a class="nav-link text-light rounded" th:classappend="${seccion == 'inicio'} ? 'active' : ''" th:href="@{/}">Inicio</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'asistente'} ? 'active' : ''" th:href="@{/asistente}">Asistente Nexus</a>
             <a class="nav-link text-light rounded" th:classappend="${seccion == 'agiliza'} ? 'active' : ''" th:href="@{/agiliza-ia}">Agiliza con IA</a>
 
             <p class="text-uppercase text-secondary mt-3 mb-1">Comercial</p>
