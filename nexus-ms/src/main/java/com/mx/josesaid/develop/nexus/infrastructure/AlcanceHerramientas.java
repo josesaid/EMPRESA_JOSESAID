@@ -19,6 +19,13 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_REPORTES = Set.of("ROLE_DIRECCION");
     private static final Set<String> ROLES_CLIENTES = Set.of("ROLE_VENTAS", "ROLE_ADMIN");
     private static final Set<String> ROLES_PEDIDOS = Set.of("ROLE_VENTAS", "ROLE_DIRECCION");
+    private static final Set<String> ROLES_COTIZACION = Set.of("ROLE_VENTAS", "ROLE_DIRECCION", "ROLE_FINANZAS");
+    private static final Set<String> ROLES_PEDIDO_DETALLE = Set.of("ROLE_VENTAS", "ROLE_DIRECCION",
+            "ROLE_FINANZAS", "ROLE_ALMACEN");
+    // Catálogos que cualquier usuario autenticado puede leer.
+    private static final Set<String> ROLES_TODOS = Set.of("ROLE_ADMIN", "ROLE_FINANZAS", "ROLE_CONTADOR",
+            "ROLE_VENTAS", "ROLE_COMPRAS", "ROLE_ALMACEN", "ROLE_OPERACIONES", "ROLE_CALIDAD", "ROLE_DIRECCION",
+            "ROLE_LEGAL", "ROLE_JEFE_AREA");
     private static final Set<String> ROLES_PREPARAR_PEDIDO = Set.of("ROLE_VENTAS");
     private static final Set<String> ROLES_ACCIONES_VENTAS = Set.of("ROLE_VENTAS");
     private static final Set<String> ROLES_USUARIOS = Set.of("ROLE_ADMIN");
@@ -46,6 +53,10 @@ final class AlcanceHerramientas {
             Map.entry("consultar_indicadores", ROLES_REPORTES),
             Map.entry("consultar_reporte", ROLES_REPORTES),
             Map.entry("consultar_pedidos", ROLES_PEDIDOS),
+            Map.entry("obtener_cotizacion", ROLES_COTIZACION),
+            Map.entry("obtener_pedido", ROLES_PEDIDO_DETALLE),
+            Map.entry("consultar_tasas_iva", ROLES_TODOS),
+            Map.entry("consultar_monedas", ROLES_TODOS),
             Map.entry("resumen_ventas", ROLES_RESUMEN_VENTAS),
             Map.entry("consultar_proveedor", ROLES_PROVEEDORES),
             Map.entry("consultar_orden_compra", ROLES_ORDENES_COMPRA),

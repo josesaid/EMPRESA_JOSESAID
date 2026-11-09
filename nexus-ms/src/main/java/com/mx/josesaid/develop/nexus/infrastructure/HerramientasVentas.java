@@ -104,6 +104,57 @@ public final class HerramientasVentas {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    @Tool(name = "obtener_cotizacion",
+          description = "Devuelve una cotización por su identificador UUID: cliente, líneas, totales, vigencia y estatus.")
+    public String obtenerCotizacion(
+            @ToolParam(description = "Identificador UUID de la cotización", required = true) String cotizacionId) {
+        RegistroHerramientasUsadas.registrar("obtener_cotizacion");
+        UUID id = identificador(cotizacionId);
+        if (id == null) {
+            return "El identificador de la cotización no es válido.";
+        }
+        return lectura(RUTA_BASE + "/cotizaciones/" + id, "No encontré esa cotización.");
+    }
+
+    @Tool(name = "obtener_pedido",
+          description = "Devuelve un pedido por su identificador UUID: cliente, canal, líneas, totales y estatus.")
+    public String obtenerPedido(
+            @ToolParam(description = "Identificador UUID del pedido", required = true) String pedidoId) {
+        RegistroHerramientasUsadas.registrar("obtener_pedido");
+        UUID id = identificador(pedidoId);
+        if (id == null) {
+            return "El identificador del pedido no es válido.";
+        }
+        return lectura(RUTA_BASE + "/pedidos/" + id, "No encontré ese pedido.");
+    }
+
+    @Tool(name = "consultar_tasas_iva",
+          description = "Devuelve las tasas de IVA que acepta el sistema para los pedidos y cotizaciones.")
+    public String consultarTasasIva() {
+        RegistroHerramientasUsadas.registrar("consultar_tasas_iva");
+        return lectura(RUTA_BASE + "/catalogos/tasas-iva", "No encontré el catálogo de tasas de IVA.");
+    }
+
+    @Tool(name = "consultar_monedas",
+          description = "Devuelve las monedas que acepta el sistema para pedidos y cotizaciones.")
+    public String consultarMonedas() {
+        RegistroHerramientasUsadas.registrar("consultar_monedas");
+        return lectura(RUTA_BASE + "/catalogos/monedas", "No encontré el catálogo de monedas.");
+    }
+
+    /** Lectura de solo consulta: el cuerpo se redacta antes de volver al modelo. */
+    private String lectura(String ruta, String noEncontrado) {
+        try {
+            String cuerpo = gateway.get()
+                    .uri(ruta)
+                    .retrieve()
+                    .body(String.class);
+            return FiltroDatosSensibles.redactar(cuerpo).texto();
+        } catch (HttpClientErrorException.NotFound e) {
+            return noEncontrado;
+        }
+    }
+
     @Tool(name = "preparar_pedido_borrador",
           description = "Prepara un pedido de venta en borrador. NO lo guarda: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación antes de que se guarde. Úsala solo cuando el usuario pida crear un pedido.")
