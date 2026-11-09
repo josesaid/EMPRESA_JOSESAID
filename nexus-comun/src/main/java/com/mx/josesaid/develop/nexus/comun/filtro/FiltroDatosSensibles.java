@@ -32,6 +32,10 @@ public final class FiltroDatosSensibles {
     }
 
     public record Resultado(String texto, Map<Tipo, Integer> conteo) {
+        public Resultado {
+            conteo = Map.copyOf(conteo);
+        }
+
         public int total() {
             return conteo.values().stream().mapToInt(Integer::intValue).sum();
         }

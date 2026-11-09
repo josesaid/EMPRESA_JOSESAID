@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hallazgos EI_EXPOSE_REP2 aceptados. Las dos clases guardan dependencias de infraestructura
+  inyectadas (ClassLoader y MeterRegistry), no estado mutable que el llamador pueda cambiar.
+-->
+<FindBugsFilter>
+  <Match>
+    <Class name="com.mx.josesaid.develop.nexus.comun.prompts.RepositorioPrompts"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="com.mx.josesaid.develop.nexus.comun.tokens.RegistroTokens"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+</FindBugsFilter>

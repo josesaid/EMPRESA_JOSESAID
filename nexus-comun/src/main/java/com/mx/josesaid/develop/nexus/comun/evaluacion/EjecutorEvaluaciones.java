@@ -15,6 +15,10 @@ public final class EjecutorEvaluaciones {
 
     public record Informe(int total, int aprobados, List<ResultadoCaso> resultados) {
 
+        public Informe {
+            resultados = List.copyOf(resultados);
+        }
+
         public double tasaAprobacion() {
             return total == 0 ? 0.0 : (double) aprobados / total;
         }
