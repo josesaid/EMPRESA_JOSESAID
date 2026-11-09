@@ -51,6 +51,7 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_POLITICAS = Set.of("ROLE_COMPRAS", "ROLE_DIRECCION");
     // Acciones por MCP: quien las prepara debe tener uno de estos roles y además presentar el código.
     private static final Set<String> ROLES_ACCIONES_MCP = Set.of("ROLE_CONTADOR", "ROLE_VENTAS");
+    private static final Set<String> ROLES_CONSULTA_ACCION = Set.of("ROLE_CONTADOR", "ROLE_VENTAS", "ROLE_ADMIN");
 
     /** Rol(es) que pueden usar cada herramienta. Lo que no aparece aquí se niega. */
     private static final Map<String, Set<String>> ROLES_POR_HERRAMIENTA = Map.ofEntries(
@@ -119,7 +120,8 @@ final class AlcanceHerramientas {
             Map.entry("registrar_interaccion_cliente", ROLES_ACCIONES_VENTAS),
             Map.entry("sugerir_poliza", Set.of("ROLE_CONTADOR")),
             Map.entry("confirmar_accion", ROLES_ACCIONES_MCP),
-            Map.entry("cancelar_accion", ROLES_ACCIONES_MCP));
+            Map.entry("cancelar_accion", ROLES_ACCIONES_MCP),
+            Map.entry("consultar_estado_accion", ROLES_CONSULTA_ACCION));
 
     private AlcanceHerramientas() {
     }
