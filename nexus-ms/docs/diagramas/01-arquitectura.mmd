@@ -1,0 +1,13 @@
+flowchart LR
+  A["<b>Usuario o cliente MCP</b><br/>Con JWT"]:::actor --> G["<b>gateway-ms</b><br/>Enruta /nexus y /mcp"]:::servicio
+  G --> N["<b>nexus-ms</b><br/>Asistente de IA"]:::servicio
+  N -- "consultas y preparación" --> M["<b>Modelo de IA</b><br/>Con herramientas por área"]:::servicio
+  N -- "auditoría y acciones" --> D["<b>Base de nexus-ms</b><br/>acciones_pendientes y auditoría"]:::datos
+  N -- "ejecución con el token del usuario" --> G2["<b>gateway-ms</b>"]:::servicio
+  G2 --> S["<b>Servicios dueños</b><br/>Pedidos, clientes, contabilidad, etc."]:::servicio
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
