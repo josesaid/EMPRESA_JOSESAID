@@ -385,12 +385,18 @@ public class LecturaController {
         List<?> elementos = elementos(cuerpo);
         if (!elementos.isEmpty() && elementos.get(0) instanceof Map<?, ?> primera) {
             primera.forEach((clave, valor) -> {
-                if (!"id".equals(clave) && !(valor instanceof Map<?, ?>) && !(valor instanceof List<?>)) {
+                if (!"id".equals(clave) && !(valor instanceof Map<?, ?>) && !(valor instanceof List<?>)
+                        && tieneValor(elementos, clave)) {
                     columnas.add(Map.of("nombre", String.valueOf(clave), "etiqueta", etiqueta(String.valueOf(clave))));
                 }
             });
         }
         return columnas;
+    }
+
+    /** Una columna solo se muestra si al menos una fila tiene valor; así no aparecen columnas vacías. */
+    private static boolean tieneValor(List<?> elementos, Object clave) {
+        return elementos.stream().anyMatch(e -> e instanceof Map<?, ?> mapa && mapa.get(clave) != null);
     }
 
     private static List<Map<String, String>> filas(Object cuerpo, String enlace) {
