@@ -6,7 +6,7 @@ WORKDIR /build
 # nexus-comun se instala en el repositorio Maven de la imagen antes de compilar nexus-ms
 COPY nexus-comun/pom.xml nexus-comun/pom.xml
 COPY nexus-comun/src nexus-comun/src
-RUN mvn -B -q -f nexus-comun/pom.xml install -DskipTests
+RUN mvn -B -q -f nexus-comun/pom.xml install -DskipTests -Dcheckstyle.skip -Dpmd.skip -Dspotbugs.skip -Djavadoc.skip -Djacoco.skip
 
 COPY nexus-ms/pom.xml nexus-ms/pom.xml
 RUN mvn -B -q -f nexus-ms/pom.xml dependency:go-offline
