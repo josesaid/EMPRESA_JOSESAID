@@ -41,6 +41,17 @@ public final class HerramientasDocumentos {
         this.acciones = acciones;
     }
 
+    @Tool(name = "consultar_tipos_documento",
+          description = "Devuelve el catálogo de tipos de documento legal que acepta el sistema.")
+    public String consultarTiposDocumento() {
+        RegistroHerramientasUsadas.registrar("consultar_tipos_documento");
+        String cuerpo = gateway.get()
+                .uri(RUTA_BASE + "/catalogos/tipos-documento")
+                .retrieve()
+                .body(String.class);
+        return FiltroDatosSensibles.redactar(cuerpo).texto();
+    }
+
     @Tool(name = "solicitar_eliminacion_documento",
           description = "Prepara la eliminación de un documento legal. NO lo elimina: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. No se puede eliminar un documento dentro de su "
