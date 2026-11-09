@@ -1,0 +1,12 @@
+flowchart LR
+  A["<b>Navegador</b><br/>Solo recibe la cookie JSESSIONID"]:::actor --> B["<b>ui-ms</b><br/>Guarda los tokens en la sesión"]:::servicio
+  B -- "sesión y tokens" --> R["<b>Redis</b><br/>Sesiones de la UI"]:::datos
+  B -- "llamadas a las APIs" --> G["<b>gateway-ms</b>"]:::servicio
+  G --> U["<b>usuarios-accesos-ms</b><br/>Login, refresh y logout"]:::servicio
+  G --> S["<b>Servicios de negocio</b><br/>Cuentas, pólizas y acciones"]:::servicio
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

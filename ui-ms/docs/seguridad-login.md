@@ -36,6 +36,13 @@
 
 ## Pendientes
 
-- Las sesiones están en memoria del servidor: si se reinicia `ui-ms`, hay que volver a entrar.
 - Aún no hay protección contra fuerza bruta en el formulario de login.
 - Falta una prueba automatizada del flujo de login.
+
+## Diagramas
+
+Los diagramas del flujo (arquitectura, login, renovación con lock, reintento tras 401 y cierre) están en [docs/diagramas.md](diagramas.md).
+
+## Sesiones
+
+Las sesiones se guardan en Redis (`spring-boot-starter-session-data-redis`).
