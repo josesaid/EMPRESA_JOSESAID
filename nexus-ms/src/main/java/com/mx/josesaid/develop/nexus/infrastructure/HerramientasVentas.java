@@ -289,6 +289,25 @@ public final class HerramientasVentas {
                 "Cancelación preparada, no ejecutada.");
     }
 
+    @Tool(name = "registrar_entrega_pedido",
+          description = "Prepara la entrega de un pedido confirmado. NO la registra: devuelve un resumen y un accion_id. "
+                  + "El usuario debe confirmarlo en la aplicación. Solo ALMACEN y DIRECCION pueden usarla.")
+    public String registrarEntregaPedido(
+            @ToolParam(description = "Identificador UUID del pedido confirmado", required = true) String pedidoId) {
+        RegistroHerramientasUsadas.registrar("registrar_entrega_pedido");
+        if (acciones == null) {
+            return NO_DISPONIBLE;
+        }
+        UUID id = identificador(pedidoId);
+        if (id == null) {
+            return "El identificador del pedido no es válido.";
+        }
+        Map<String, Object> cuerpo = new LinkedHashMap<>();
+        cuerpo.put("pedidoId", id.toString());
+        return guardarAccion(AccionesPendientes.TIPO_PEDIDO_ENTREGAR, aJson(cuerpo),
+                "Registrar entrega del pedido " + id, "Entrega preparada, no registrada.");
+    }
+
     private String guardarAccion(String tipo, String payload, String resumen, String encabezado) {
         AccionPendiente accion = acciones.preparar(usuarioActual(), tipo, payload, resumen);
         return FiltroDatosSensibles.redactar(encabezado + " " + resumen

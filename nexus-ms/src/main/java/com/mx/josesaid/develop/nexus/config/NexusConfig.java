@@ -122,8 +122,8 @@ public class NexusConfig {
     }
 
     @Bean
-    HerramientasReportes herramientasReportes(RestClient gatewayClient) {
-        return new HerramientasReportes(gatewayClient);
+    HerramientasReportes herramientasReportes(RestClient gatewayClient, AccionesPendientes acciones) {
+        return new HerramientasReportes(gatewayClient, acciones);
     }
 
     @Bean
