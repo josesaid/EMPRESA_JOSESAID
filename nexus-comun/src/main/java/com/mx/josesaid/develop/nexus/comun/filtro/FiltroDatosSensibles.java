@@ -41,8 +41,9 @@ public final class FiltroDatosSensibles {
     private static final Pattern RFC = Pattern.compile("\\b[A-ZÑ&]{3,4}\\d{6}[A-Z0-9]{3}\\b");
     private static final Pattern CORREO = Pattern.compile("[\\w.+-]+@[\\w-]+(?:\\.[\\w-]+)+");
     // 10 dígitos, opcionalmente con prefijo 52 o +52 y separadores; no se pega a montos con coma o punto.
+    // No puede estar pegado a letras, dígitos ni guiones: así no corta UUID ni identificadores como 6a78ec71-9742-4122-...
     private static final Pattern TELEFONO = Pattern.compile(
-            "(?<!\\d)(?<!\\d[.,])(?:\\+?52[\\s-]?)?(?:\\d{2}[\\s-]?\\d{4}[\\s-]?\\d{4}|\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{4})(?!\\d)(?![.,]\\d)");
+            "(?<![\\p{L}\\p{N}_-])(?<!\\d[.,])(?:\\+?52[\\s-]?)?(?:\\d{2}[\\s-]?\\d{4}[\\s-]?\\d{4}|\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{4})(?![\\p{L}\\p{N}_-])(?![.,]\\d)");
     private static final Pattern CLABE = Pattern.compile("(?<!\\d)(?<!\\d[.,])\\d{18}(?!\\d)(?![.,]\\d)");
     private static final Pattern TARJETA = Pattern.compile("(?<!\\d)(?<!\\d[.,])(?:\\d{4}[\\s-]?){3}\\d{4}(?!\\d)(?![.,]\\d)");
 
