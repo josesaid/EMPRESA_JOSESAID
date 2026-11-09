@@ -58,6 +58,9 @@ inventario:
     topico: ${PEDIDOS_TOPICO:pedidos.eventos}
     # Almacén del que se reservan y descuentan los pedidos. Debe ser el UUID de un almacén existente.
     almacen-id: ${INVENTARIO_ALMACEN_PEDIDOS_ID:}
+  compras:
+    # Topic de eventos de compras-proveedores-ms (recepciones de insumos)
+    topico: ${COMPRAS_TOPICO:compras.eventos}
 
 # Descubrimiento de servicios: se registra al arrancar en discovery-ms.
 # Si discovery-ms no responde, el servicio arranca igual y se registra cuando el registro esté arriba.

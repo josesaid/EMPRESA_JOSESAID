@@ -46,6 +46,7 @@ class ReservasPedidoServiceTest {
             public Articulo guardar(Articulo a) { articulos.put(a.getId(), a); return a; }
             public Optional<Articulo> buscarPorId(UUID id) { return Optional.ofNullable(articulos.get(id)); }
             public boolean existePorSku(String sku) { return false; }
+            public Optional<Articulo> buscarPorSku(String sku) { return articulos.values().stream().filter(a -> sku.equals(a.getSku())).findFirst(); }
             public List<Articulo> listarConMinimo() { return List.of(); }
         };
         ExistenciaRepositorio exr = new ExistenciaRepositorio() {

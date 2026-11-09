@@ -125,6 +125,7 @@ public class ComprasService {
         }
         OrdenCompra guardada = ordenes.guardar(orden);
         eventos.publicar(new EventoDominio(EVENTO_INSUMOS_RECIBIDOS, id.toString(), Map.of(
+                "evento_id", UUID.randomUUID().toString(),
                 "orden_id", id.toString(),
                 "lineas", detalle)));
         return guardada;

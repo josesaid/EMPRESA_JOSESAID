@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 interface ArticuloJpaRepository extends JpaRepository<ArticuloEntity, UUID> {
     boolean existsBySku(String sku);
+    java.util.Optional<ArticuloEntity> findBySku(String sku);
 }

@@ -45,4 +45,9 @@ class ArticuloRepositorioJpa implements ArticuloRepositorio {
     public boolean existePorSku(String sku) {
         return jpa.existsBySku(sku);
     }
+
+    @Override
+    public Optional<Articulo> buscarPorSku(String sku) {
+        return jpa.findBySku(sku).map(e -> Articulo.reconstruir(e.id, e.sku, e.nombre, e.unidad, e.loteObligatorio, e.minimo));
+    }
 }
