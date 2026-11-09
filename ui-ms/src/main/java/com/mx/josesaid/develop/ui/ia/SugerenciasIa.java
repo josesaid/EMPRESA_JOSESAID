@@ -68,9 +68,9 @@ public final class SugerenciasIa {
             entry("CONTADOR", List.of(
                     idea("Sugerir pólizas a partir de movimientos bancarios y revisar cuentas con saldos atípicos.",
                             "En el menú lateral, haz clic en Finanzas > Proponer póliza.",
-                            "Haz clic en el botón \"Desde movimiento bancario\" (nuevo), arriba del formulario.",
-                            "Elige un movimiento sin póliza de la lista y haz clic en \"Sugerir cargos y abonos\" (nuevo).",
-                            "Revisa las líneas y haz clic en Proponer póliza."),
+                            "En el cuadro \"Describe la operación\", escribe el monto, la moneda y las cuentas del movimiento bancario.",
+                            "Haz clic en el botón \"Proponer póliza\".",
+                            "Revisa la propuesta de cargos y abonos antes de registrarla."),
                     idea("Conciliar movimientos bancarios con coincidencias aproximadas de importe y fecha.",
                             "En el menú lateral, haz clic en Finanzas > Cuentas contables.",
                             "Elige la cuenta bancaria y haz clic en el botón \"Conciliar\" (nuevo).",
