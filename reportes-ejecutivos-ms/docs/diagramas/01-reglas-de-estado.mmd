@@ -1,5 +1,5 @@
 flowchart TD
-  A["<b>Periodo</b><br/>AAAA, AAAA-Qn o AAAA-MM"]:::actor --> B{"<b>Formato válido?</b>"}:::pendiente
+  A["<b>Periodo</b><br/>Formato AAAA<br/>Trimestre AAAA-Qn<br/>Mes AAAA-MM"]:::actor --> B{"<b>Formato válido?</b>"}:::pendiente
   B -- "no" --> C["<b>400</b><br/>Formato no soportado"]:::alerta
   B -- "sí" --> D["<b>Reporte BORRADOR</b><br/>Se abre con el primer indicador"]:::servicio
   D --> E["<b>Consolidado en vivo</b><br/>Se calcula al consultar"]:::datos
