@@ -27,6 +27,8 @@ final class AlcanceHerramientas {
             "ROLE_VENTAS", "ROLE_COMPRAS", "ROLE_ALMACEN", "ROLE_OPERACIONES", "ROLE_CALIDAD", "ROLE_DIRECCION",
             "ROLE_LEGAL", "ROLE_JEFE_AREA");
     private static final Set<String> ROLES_PREPARAR_PEDIDO = Set.of("ROLE_VENTAS");
+    private static final Set<String> ROLES_ADMIN = Set.of("ROLE_ADMIN");
+    private static final Set<String> ROLES_VENTAS_CLIENTES = Set.of("ROLE_VENTAS");
     private static final Set<String> ROLES_ACCIONES_VENTAS = Set.of("ROLE_VENTAS");
     private static final Set<String> ROLES_USUARIOS = Set.of("ROLE_ADMIN");
     private static final Set<String> ROLES_RESUMEN_VENTAS = Set.of("ROLE_DIRECCION", "ROLE_FINANZAS");
@@ -57,6 +59,12 @@ final class AlcanceHerramientas {
             Map.entry("obtener_pedido", ROLES_PEDIDO_DETALLE),
             Map.entry("consultar_tasas_iva", ROLES_TODOS),
             Map.entry("consultar_monedas", ROLES_TODOS),
+            Map.entry("consultar_interacciones_cliente", ROLES_VENTAS_CLIENTES),
+            Map.entry("obtener_prospecto", ROLES_VENTAS_CLIENTES),
+            Map.entry("consultar_metricas_conversion", ROLES_VENTAS_CLIENTES),
+            Map.entry("crear_cliente", ROLES_ADMIN),
+            Map.entry("actualizar_cliente", ROLES_ADMIN),
+            Map.entry("agregar_contacto_cliente", ROLES_ADMIN),
             Map.entry("resumen_ventas", ROLES_RESUMEN_VENTAS),
             Map.entry("consultar_proveedor", ROLES_PROVEEDORES),
             Map.entry("consultar_orden_compra", ROLES_ORDENES_COMPRA),

@@ -101,8 +101,32 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
             case AccionesPendientes.TIPO_COTIZACION_A_PEDIDO -> accionCotizacion(payload, "/pedido");
             case AccionesPendientes.TIPO_POLIZA_REGISTRAR -> enviar(RUTA_POLIZAS, payload);
             case AccionesPendientes.TIPO_DOCUMENTO_ELIMINAR -> eliminarDocumento(payload);
+            case AccionesPendientes.TIPO_CLIENTE_CREAR -> enviar(RUTA_CLIENTES, payload);
+            case AccionesPendientes.TIPO_CLIENTE_ACTUALIZAR -> actualizarCliente(payload);
+            case AccionesPendientes.TIPO_CLIENTE_CONTACTO_AGREGAR -> agregarContactoCliente(payload);
             default -> throw new IllegalArgumentException("Tipo de acción no soportado: " + tipo);
         };
+    }
+
+    private String actualizarCliente(String payload) {
+        JsonNode datos = leer(payload);
+        return gateway.patch()
+                .uri(RUTA_CLIENTES + "/" + datos.get("clienteId").asText())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("razonSocial", datos.get("razonSocial").asText()))
+                .retrieve()
+                .body(String.class);
+    }
+
+    private String agregarContactoCliente(String payload) {
+        ObjectNode cuerpo = ((ObjectNode) leer(payload)).deepCopy();
+        String clienteId = cuerpo.remove("clienteId").asText();
+        return gateway.post()
+                .uri(RUTA_CLIENTES + "/" + clienteId + "/contactos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(cuerpo.toString())
+                .retrieve()
+                .body(String.class);
     }
 
     private String eliminarDocumento(String payload) {

@@ -26,6 +26,9 @@ public final class AccionesPendientes {
     public static final String TIPO_INTERACCION_REGISTRAR = "INTERACCION_REGISTRAR";
     public static final String TIPO_POLIZA_REGISTRAR = "POLIZA_REGISTRAR";
     public static final String TIPO_DOCUMENTO_ELIMINAR = "DOCUMENTO_ELIMINAR";
+    public static final String TIPO_CLIENTE_CREAR = "CLIENTE_CREAR";
+    public static final String TIPO_CLIENTE_ACTUALIZAR = "CLIENTE_ACTUALIZAR";
+    public static final String TIPO_CLIENTE_CONTACTO_AGREGAR = "CLIENTE_CONTACTO_AGREGAR";
     /** El alta no la ejecuta Nexus: la pantalla de altas crea el usuario con la contraseña que escribe el administrador. */
     public static final String TIPO_USUARIO_ALTA = "USUARIO_ALTA";
     public static final Duration VIGENCIA = Duration.ofMinutes(10);
