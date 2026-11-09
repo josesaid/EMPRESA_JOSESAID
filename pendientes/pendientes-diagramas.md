@@ -91,12 +91,12 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [ ] Lectura por área (JEFE_AREA)
 
 ### usuarios-accesos-ms (7; 4 existentes)
-- [ ] Máquina de estados del usuario
-- [ ] Reglas de duplicados
-- [ ] Flujo de `Idempotency-Key` en altas
-- [ ] Rotación de la clave RS256
-- [ ] Área por usuario y rol JEFE_AREA
-- [ ] Contraseña temporal
+- [x] Máquina de estados del usuario
+- [x] Reglas de duplicados
+- [x] Flujo de `Idempotency-Key` en altas
+- [x] Rotación de la clave RS256
+- [x] Área por usuario y rol JEFE_AREA
+- [x] Contraseña temporal
 - [x] Bloqueo de 5 minutos tras 5 intentos fallidos (decisión de Said Olano, 2026-11-05)
 
 ### gateway-ms (1)

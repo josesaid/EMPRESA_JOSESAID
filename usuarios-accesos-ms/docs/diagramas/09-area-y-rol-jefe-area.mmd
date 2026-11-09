@@ -1,0 +1,16 @@
+flowchart TD
+  A["<b>ADMIN</b><br/>PUT /v1/usuarios/id/area<br/>Motivo obligatorio"]:::actor --> B{"<b>El área existe en reportes?</b>"}:::pendiente
+  B -- "no" --> E1["<b>422</b><br/>Área desconocida"]:::alerta
+  B -- "sí" --> C["<b>Guarda el área</b><br/>Publica area-asignada"]:::datos
+  C --> D{"<b>Se asigna el rol JEFE_AREA?</b>"}:::pendiente
+  D -- "sí, el usuario ya tiene área" --> F["<b>Rol JEFE_AREA asignado</b>"]:::servicio
+  D -- "no tiene área" --> E2["<b>422</b><br/>JEFE_AREA exige área"]:::alerta
+  F --> G["<b>Token con claim area</b><br/>reportes-ejecutivos-ms limita la consulta"]:::datos
+  H["<b>Alta directa con JEFE_AREA</b>"]:::actor -. "no permitido" .-> E2
+  G -. "sesión abierta antes del cambio" .-> I["<b>Sin claim area</b><br/>Hasta volver a iniciar sesión"]:::pendiente
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
