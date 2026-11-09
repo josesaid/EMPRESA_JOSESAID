@@ -205,7 +205,7 @@ mvn verify
 
 - `mvn test`: pruebas unitarias. No requiere Docker.
 - `mvn verify`: también corre las pruebas de integración (`*IT`), que levantan PostgreSQL con Testcontainers. Requiere Docker y el `.env` cargado.
-- `LineaBaseIT`: corre los casos de evaluación del piloto contra el modelo. Requiere `ANTHROPIC_API_KEY`.
+- `LineaBaseIT`: corre los casos de evaluación del piloto contra el modelo. No corre en `mvn verify` normal. Para ejecutarlo: `NEXUS_LINEA_BASE=1 ANTHROPIC_API_KEY=... mvn verify`, con el stack levantado.
 
 ## 15. Despliegue
 

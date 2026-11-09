@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,15 +16,21 @@ import com.mx.josesaid.develop.nexus.comun.evaluacion.EjecutorEvaluaciones;
 
 /**
  * Línea base de calidad (paso 22). Llama al modelo real con los casos de nexus-comun.
- * Solo corre si ANTHROPIC_API_KEY está definida; sin ella se omite.
+ * Corre solo con NEXUS_LINEA_BASE=1 y ANTHROPIC_API_KEY definida, con el stack levantado.
+ * Así no se ejecuta en cada mvn verify.
  * Sin servicios de negocio levantados, el asistente responde sin datos: esta medición
  * valida reglas de forma, idioma y redacción. La medición con datos reales se hace con el
  * stack completo levantado (ver README).
  * Escribe el informe en target/linea-base-nexus.txt.
  */
 @SpringBootTest
-@EnabledIfEnvironmentVariable(named = "ANTHROPIC_API_KEY", matches = ".+")
+@EnabledIf("lineaBaseHabilitada")
 class LineaBaseIT {
+
+    static boolean lineaBaseHabilitada() {
+        String clave = System.getenv("ANTHROPIC_API_KEY");
+        return "1".equals(System.getenv("NEXUS_LINEA_BASE")) && clave != null && !clave.isBlank();
+    }
 
     @Autowired
     private AsistenteIA asistente;
