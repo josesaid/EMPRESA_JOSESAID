@@ -6,8 +6,11 @@ import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.mx.josesaid.develop.nexus.application.AccionNoEncontradaException;
+import com.mx.josesaid.develop.nexus.application.AccionPendiente;
 import com.mx.josesaid.develop.nexus.application.AccionesPendientes;
 import com.mx.josesaid.develop.nexus.application.ConfirmacionAcciones;
+import com.mx.josesaid.develop.nexus.comun.filtro.FiltroDatosSensibles;
 
 /** Confirma o cancela acciones preparadas por MCP. Solo quien las preparó puede actuar sobre ellas. */
 public final class HerramientasAccionesMcp {
@@ -38,6 +41,28 @@ public final class HerramientasAccionesMcp {
         RegistroHerramientasUsadas.registrar("cancelar_accion");
         acciones.cancelar(UUID.fromString(accionId), usuarioActual());
         return "Acción " + accionId + " cancelada.";
+    }
+
+    @Tool(name = "consultar_estado_accion",
+          description = "Devuelve el estado de una acción preparada por la persona actual: PENDIENTE, CONFIRMADA o "
+                  + "EXPIRADA, con su resumen y su vencimiento. Solo funciona para quien la preparó.")
+    public String consultarEstadoAccion(
+            @ToolParam(description = "Identificador de la acción preparada", required = true) String accionId) {
+        RegistroHerramientasUsadas.registrar("consultar_estado_accion");
+        UUID id;
+        try {
+            id = UUID.fromString(accionId.trim());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return "El identificador de la acción no es válido.";
+        }
+        AccionPendiente accion;
+        try {
+            accion = acciones.consultar(id, usuarioActual());
+        } catch (AccionNoEncontradaException e) {
+            return "No encontré esa acción.";
+        }
+        return FiltroDatosSensibles.redactar("Acción " + accion.id() + ": estatus " + accion.estatus()
+                + ". Resumen: " + accion.resumen() + ". Vence: " + accion.expiraUtc() + ".").texto();
     }
 
     private static String usuarioActual() {
