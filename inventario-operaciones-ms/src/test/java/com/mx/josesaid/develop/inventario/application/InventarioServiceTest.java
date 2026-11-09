@@ -32,6 +32,7 @@ class InventarioServiceTest {
             public Articulo guardar(Articulo a) { articulos.put(a.getId(), a); return a; }
             public Optional<Articulo> buscarPorId(UUID id) { return Optional.ofNullable(articulos.get(id)); }
             public boolean existePorSku(String sku) { return articulos.values().stream().anyMatch(a -> a.getSku().equals(sku)); }
+            public Optional<Articulo> buscarPorSku(String sku) { return articulos.values().stream().filter(a -> sku.equals(a.getSku())).findFirst(); }
             public List<Articulo> listarConMinimo() { return articulos.values().stream().filter(a -> a.getMinimo().signum() > 0).toList(); }
         };
         AlmacenRepositorio alr = new AlmacenRepositorio() {
