@@ -1,0 +1,40 @@
+flowchart LR
+  E(["<b>Aplicaciones y gateway-ms</b>"]):::actor
+  D["<b>discovery-ms</b><br/>Eureka"]:::actor
+  subgraph SVC["inventario-operaciones-ms · 8081 interno (8105 en tu Mac)"]
+    API["<b>API REST /v1</b><br/>ControladorREST"]:::gateway
+    SEG["<b>Seguridad JWT</b><br/>roles por método"]:::seguridad
+    APP["<b>Servicio de aplicación</b><br/>casos de uso"]:::servicio
+    REP["<b>Repositorios JPA</b><br/>migraciones Flyway"]:::infra
+    OUT["<b>Outbox</b><br/>outbox_eventos"]:::infra
+    subgraph DOM["Dominio DDD (agregados y reglas)"]
+      DM1["Articulo"]:::dominio
+      DM2["Almacen"]:::dominio
+      DM3["Existencia"]:::dominio
+      DM4["OrdenOperacion"]:::dominio
+      DM5["MovimientoInventario"]:::dominio
+    end
+  end
+  DB[("<b>PostgreSQL</b><br/>base inventario")]:::datos
+  K[["<b>Kafka</b>"]]:::alerta
+
+  E --> API
+  API --> APP
+  API -.- SEG
+  APP --> REP
+  REP --> DB
+  APP --> OUT
+  OUT --> K
+  APP --> DOM
+  D -. "registro" .-> APP
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef gateway fill:#EEEDFE,stroke:#7F77DD,color:#26215C
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
+  classDef infra fill:#FFF8DC,stroke:#E0A800,color:#4A3800
+  classDef seguridad fill:#FDF0E1,stroke:#E8870E,color:#4A2A00
+  classDef cifrado fill:#FDEEF3,stroke:#D4537E,color:#4B1528
+  classDef dominio fill:#F6EEFB,stroke:#AF52DE,color:#3A1450
