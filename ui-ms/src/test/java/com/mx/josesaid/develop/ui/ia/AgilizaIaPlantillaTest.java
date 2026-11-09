@@ -29,7 +29,8 @@ class AgilizaIaPlantillaTest {
         String html = motor.process("agiliza/ia", ctx);
 
         assertThat(html).contains("Agiliza con IA", elegida.texto(), "Consultar");
-        assertThat(html).contains("/agiliza-ia?opcion=ALMACEN-1");
+        assertThat(html).doesNotContain("Pasos");
+        assertThat(html).contains("type=\"radio\"", "value=\"ALMACEN-1\"", "¿Qué quieres hacer con IA?");
     }
 
     @Test
@@ -74,7 +75,7 @@ class AgilizaIaPlantillaTest {
 
         String html = motor.process("agiliza/ia", ctx);
 
-        assertThat(html).contains("Elige una opción");
+        assertThat(html).contains("Elige una opción abajo");
         assertThat(html).doesNotContain("<h2 class=\"h6\"");
     }
 
