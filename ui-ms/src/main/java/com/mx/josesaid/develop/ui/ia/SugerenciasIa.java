@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -169,6 +170,37 @@ public final class SugerenciasIa {
             }
         }
         return List.copyOf(log);
+    }
+
+    /** Opción elegible en "Agiliza con IA". El id es rol-índice dentro del catálogo. */
+    public record Opcion(String id, String rol, String texto, List<String> pasos) {
+    }
+
+    /** Opciones de los roles del usuario, en el mismo orden que el log. */
+    public static List<Opcion> opciones(Collection<String> roles) {
+        Set<String> textos = new LinkedHashSet<>();
+        List<Opcion> lista = new ArrayList<>();
+        for (String rol : PRIORIDAD) {
+            if (!roles.contains(rol)) {
+                continue;
+            }
+            List<Idea> ideas = CATALOGO.getOrDefault(rol, List.of());
+            for (int i = 0; i < ideas.size(); i++) {
+                Idea idea = ideas.get(i);
+                if (textos.add(idea.texto())) {
+                    lista.add(new Opcion(rol + "-" + i, rol, idea.texto(), idea.pasos()));
+                }
+            }
+        }
+        return List.copyOf(lista);
+    }
+
+    /** Opción por id, solo si pertenece a los roles del usuario. */
+    public static Optional<Opcion> opcion(Collection<String> roles, String id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return opciones(roles).stream().filter(o -> o.id().equals(id)).findFirst();
     }
 
     private static Idea idea(String texto, String... pasos) {

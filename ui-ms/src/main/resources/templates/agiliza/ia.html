@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina('Agiliza con IA', ~{::main})}">
+<body>
+<main class="p-3 p-md-4">
+    <div class="row g-4">
+        <div class="col-12 col-lg-7">
+            <h1 class="h3 mb-2">Agiliza con IA</h1>
+            <p class="text-secondary">Elige una opción en el panel de la derecha para ver sus pasos. Solo aparecen las opciones de tus roles.</p>
+        </div>
+        <aside class="col-12 col-lg-5">
+            <section class="bg-white rounded shadow-sm p-3 mb-3">
+                <h2 class="h5">Opciones</h2>
+                <p class="small mb-2" th:if="${#lists.isEmpty(opciones)}">Tu rol no tiene opciones por ahora.</p>
+                <div class="list-group list-group-flush" th:unless="${#lists.isEmpty(opciones)}">
+                    <a th:each="o : ${opciones}"
+                       class="list-group-item list-group-item-action"
+                       th:classappend="${elegida != null and elegida.id == o.id} ? 'active' : ''"
+                       th:href="@{/agiliza-ia(opcion=${o.id})}">
+                        <span class="small text-uppercase fw-semibold" th:text="${o.rol}">ROL</span><br>
+                        <span th:text="${o.texto}">Opción</span>
+                    </a>
+                </div>
+            </section>
+            <section class="bg-white rounded shadow-sm p-3" th:if="${elegida != null}">
+                <h2 class="h6" th:text="${elegida.texto}">Opción elegida</h2>
+                <p class="fw-bold mb-1">Pasos</p>
+                <ol class="mb-0">
+                    <li th:each="paso : ${elegida.pasos}" th:text="${paso}">Paso</li>
+                </ol>
+            </section>
+        </aside>
+    </div>
+</main>
+</body>
+</html>
