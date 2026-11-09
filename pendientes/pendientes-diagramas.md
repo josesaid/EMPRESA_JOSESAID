@@ -86,9 +86,9 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [ ] Flujo de `Idempotency-Key` en altas
 
 ### reportes-ejecutivos-ms (3)
-- [ ] Reglas de estado
-- [ ] Reglas de duplicados
-- [ ] Lectura por área (JEFE_AREA)
+- [x] Reglas de estado
+- [x] Reglas de duplicados
+- [x] Lectura por área (JEFE_AREA)
 
 ### usuarios-accesos-ms (7; 4 existentes)
 - [x] Máquina de estados del usuario

@@ -1,0 +1,16 @@
+flowchart TD
+  A["<b>Periodo</b><br/>AAAA, AAAA-Qn o AAAA-MM"]:::actor --> B{"<b>Formato válido?</b>"}:::pendiente
+  B -- "no" --> C["<b>400</b><br/>Formato no soportado"]:::alerta
+  B -- "sí" --> D["<b>Reporte BORRADOR</b><br/>Se abre con el primer indicador"]:::servicio
+  D --> E["<b>Consolidado en vivo</b><br/>Se calcula al consultar"]:::datos
+  D -- "cerrar" --> F{"<b>Tiene indicadores?</b>"}:::pendiente
+  F -- "no" --> G["<b>422</b><br/>Periodo sin indicadores"]:::alerta
+  F -- "sí" --> H["<b>CERRADO</b><br/>Foto congelada del consolidado"]:::datos
+  H -- "cerrar otra vez o registrar indicadores" --> I["<b>409</b><br/>Reporte cerrado"]:::alerta
+  J["<b>Indicador</b><br/>Fuente sin actualizar"]:::actor -- "pasa REPORTES_FRESCURA_DIAS" --> K["<b>Marcado como desactualizado</b>"]:::pendiente
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

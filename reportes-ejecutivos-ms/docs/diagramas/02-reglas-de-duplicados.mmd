@@ -1,0 +1,13 @@
+flowchart TD
+  A["<b>Indicador entrante</b><br/>Área, nombre y periodo"]:::actor --> B{"<b>Ya existe esa combinación?</b>"}:::pendiente
+  B -- "no" --> C["<b>Crea el indicador</b>"]:::servicio
+  B -- "sí" --> D["<b>Reemplaza el valor anterior</b><br/>Upsert, no duplica"]:::servicio
+  D --> E{"<b>Cargas simultáneas?</b>"}:::pendiente
+  E -- "sí" --> F["<b>Control optimista</b><br/>409 por concurrencia"]:::alerta
+  E -- "no" --> G["<b>Guarda el valor</b>"]:::datos
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
