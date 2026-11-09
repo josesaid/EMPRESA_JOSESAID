@@ -86,6 +86,28 @@ class LecturaControllerTest {
     }
 
     @Test
+    void columnaSinValorEnNingunaFilaNoSeMuestra() {
+        Map<String, Object> cliente = new LinkedHashMap<>();
+        cliente.put("id", "c-1");
+        cliente.put("razonSocial", "Comercial Prueba SA de CV");
+        cliente.put("prospectoId", null);
+        Map<String, Object> fila = new LinkedHashMap<>();
+        fila.put("cliente", cliente);
+        Map<String, Object> pagina = new LinkedHashMap<>();
+        pagina.put("content", List.of(fila));
+        when(lectura.leer(eq("/clientes-ms/v1/clientes"), any())).thenReturn(pagina);
+        ConcurrentModel modelo = new ConcurrentModel();
+
+        controlador.clientes(null, "Comercial", usuario(), modelo);
+
+        @SuppressWarnings("unchecked")
+        List<Map<String, String>> columnas = (List<Map<String, String>>) modelo.get("columnas");
+        assertThat(columnas.stream().map(c -> c.get("nombre")).toList())
+                .contains("razonSocial")
+                .doesNotContain("prospectoId");
+    }
+
+    @Test
     void sinPermisoMuestraMensajeClaro() {
         when(lectura.leer(anyString(), any())).thenThrow(HttpClientErrorException.create(
                 HttpStatus.FORBIDDEN, "Forbidden", null, null, null));
