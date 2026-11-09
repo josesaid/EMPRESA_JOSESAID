@@ -1,6 +1,7 @@
 package com.mx.josesaid.develop.contabilidad.config;
 
 import java.time.Clock;
+import java.time.ZoneId;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,6 +11,6 @@ public class RelojConfig {
 
     @Bean
     Clock reloj() {
-        return Clock.systemUTC();
+        return Clock.system(ZoneId.of("America/Mexico_City"));
     }
 }
