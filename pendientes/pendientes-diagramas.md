@@ -1,13 +1,13 @@
 # Pendientes de diagramas
 
-Inventario al 2026-11-05. Estado al 2026-11-09: todos los ítems marcados, con los PR #172 a #186 fusionados. Un ítem por cada área y uno por cada microservicio. Cada diagrama pendiente se entrega como fuente `.mmd` y `.png`, igual que los existentes; los de arquitectura solo llevan `.png`.
+Inventario al 2026-11-05. Estado al 2026-11-09: todos los ítems marcados, con los PR #172 a #186 fusionados. Un ítem por cada área y uno por cada microservicio. Cada diagrama se entrega como fuente `.mmd` y `.png`. Los de arquitectura ya tienen su `.mmd` (PR #191).
 
 ## Lo que existe
 
 | Tipo | Cantidad | Dónde |
 |---|---|---|
 | Diagramas de flujo y entidades (`.mmd` + `.png`) | 22 | clientes-ms (18), usuarios-accesos-ms (4) |
-| Arquitectura (`.png`) | 12 | clientes, compras, contabilidad, discovery, documentos, facturación, gateway, inventario, pedidos, reportes, usuarios y la general en `docs/diagramas` |
+| Arquitectura (`.mmd` + `.png`) | 12 | clientes, compras, contabilidad, discovery, documentos, facturación, gateway, inventario, pedidos, reportes, usuarios y la general en `docs/diagramas` |
 | **Total de diagramas** | **34** | 56 archivos (22 `.mmd` y 34 `.png`) |
 
 Hoy no hay diagramas de reglas de negocio ni de flujos en 11 de 13 microservicios (todos excepto clientes-ms y usuarios-accesos-ms), ni diagramas entre servicios en ninguna de las 9 áreas.
@@ -127,4 +127,4 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 | Diagramas pendientes por microservicio | 43 |
 | **Diagramas pendientes en total** | **51** |
 | Imágenes `.png` pendientes | 51 |
-| Fuentes `.mmd` pendientes | 49 (las 2 de arquitectura de ui-ms y nexus-ms solo llevan `.png`) |
+| Fuentes `.mmd` pendientes | 49 (las 2 de arquitectura de ui-ms y nexus-ms ya tienen `.mmd` desde PR #191 y #188-#190) |
