@@ -47,8 +47,8 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 
 ## Pendientes por microservicio (13)
 
-### clientes-ms (1 pendiente; 18 existentes)
-- [ ] Roles y acceso a datos personales (sección 8 del README). **1**
+### clientes-ms (0 pendientes; 19 existentes)
+- [x] Roles y acceso a datos personales (sección 8 del README). **1**
 
 ### compras-proveedores-ms (5)
 - [ ] Máquina de estados de la orden de compra

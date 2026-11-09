@@ -104,3 +104,9 @@ Disparador, outbox, Kafka y payload. Fuente: [evento-cliente-estatus-cambiado.mm
 ![Flujo del evento ConsentimientoRevocado](diagramas/evento-consentimiento-revocado.png)
 
 Disparador, outbox, Kafka y payload. Fuente: [evento-consentimiento-revocado.mmd](diagramas/evento-consentimiento-revocado.mmd).
+
+## Roles y datos personales
+
+![Roles por operación y datos personales enmascarados](diagramas/roles-y-datos-personales.png)
+
+Cada rol tiene su alcance (`VENTAS`, `ADMIN`, `LEGAL`), y un rol insuficiente recibe 403. Los datos personales salen enmascarados en todas las respuestas, también para ADMIN, y nunca aparecen en logs ni eventos. Fuente: [roles-y-datos-personales.mmd](diagramas/roles-y-datos-personales.mmd).
