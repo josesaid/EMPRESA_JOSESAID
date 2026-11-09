@@ -24,7 +24,7 @@ public final class CargadorCasos {
             if (entrada == null) {
                 throw new IllegalStateException("Falta " + RECURSO);
             }
-            BufferedReader lector = new BufferedReader(new InputStreamReader(entrada, StandardCharsets.UTF_8));
+            try (BufferedReader lector = new BufferedReader(new InputStreamReader(entrada, StandardCharsets.UTF_8))) {
             String linea;
             while ((linea = lector.readLine()) != null) {
                 if (linea.isBlank() || linea.startsWith("#")) {
@@ -35,6 +35,7 @@ public final class CargadorCasos {
                     throw new IllegalStateException("Caso mal formado: " + linea);
                 }
                 casos.add(new CasoEvaluacion(c[0].trim(), c[1].trim(), lista(c[2]), lista(c[3])));
+            }
             }
         } catch (IOException e) {
             throw new UncheckedIOException("No se pudo leer " + RECURSO, e);

@@ -69,7 +69,9 @@ public final class RepositorioPrompts {
             if (entrada == null) {
                 throw new IllegalStateException("Falta " + INDICE);
             }
-            props.load(new java.io.InputStreamReader(entrada, StandardCharsets.UTF_8));
+            try (java.io.Reader lector = new java.io.InputStreamReader(entrada, StandardCharsets.UTF_8)) {
+                props.load(lector);
+            }
         } catch (IOException e) {
             throw new UncheckedIOException("No se pudo leer " + INDICE, e);
         }
