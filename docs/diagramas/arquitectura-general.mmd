@@ -1,0 +1,45 @@
+flowchart LR
+  CLI(["<b>Clientes y aplicaciones</b><br/>navegador, móvil, otros sistemas"]):::actor
+  GW["<b>gateway-ms · :8080</b><br/>entrada única · rutas /{servicio}/**"]:::gateway
+  DS["<b>discovery-ms (Eureka) · :8761</b><br/>registro automático de servicios"]:::actor
+  PG[("<b>PostgreSQL 17</b><br/>una base de datos por servicio")]:::datos
+  JA["<b>Jaeger · :16686</b><br/>trazas de cada solicitud"]:::infra
+  GF["<b>Grafana · :3000</b><br/>tableros"]:::infra
+  PR["<b>Prometheus · :9090</b><br/>métricas cada 15 s"]:::infra
+  KUI["<b>Kafka UI · :8090</b><br/>visor de tópicos"]:::actor
+  KF[["<b>Kafka · tópicos</b><br/>clientes.eventos.v1 · compras.eventos · contabilidad.eventos<br/>documentos.eventos · facturacion-pagos.eventos · inventario.eventos<br/>pedidos.eventos · reportes.eventos · usuarios-accesos.eventos<br/>indicadores-areas (lo consume reportes)"]]:::alerta
+
+  subgraph AREAS["9 servicios de área (cada uno con su base y su validación JWT)"]
+    PED["<b>pedidos-ventas-ms · :8107</b>"]:::servicio
+    CLI_MS["<b>clientes-ms · :8101</b>"]:::servicio
+    USU["<b>usuarios-accesos-ms · :8102</b><br/>emite el JWT"]:::gateway
+    CON["<b>contabilidad-ms · :8104</b>"]:::servicio
+    FAC["<b>facturacion-pagos-ms · :8103</b>"]:::servicio
+    INV["<b>inventario-operaciones-ms · :8105</b>"]:::servicio
+    DOC["<b>documentos-cumplimiento-ms · :8108</b>"]:::dominio
+    COM["<b>compras-proveedores-ms · :8106</b>"]:::servicio
+    REP["<b>reportes-ejecutivos-ms · :8109</b>"]:::alerta
+  end
+
+  CLI -- "HTTP + Bearer JWT" --> GW
+  GW -- "rutas /{servicio}/**" --> AREAS
+  GW -. "consulta" .-> DS
+  AREAS -. "registro al arrancar" .-> DS
+  AREAS -- "base propia por servicio" --> PG
+  AREAS -. "OTLP" .-> JA
+  AREAS -. "scrape /actuator/prometheus" .-> PR
+  GF -- "consulta" --> PR
+  AREAS -- "outbox: cada servicio publica en su tópico" --> KF
+  KUI -. "lee" .-> KF
+  KF -- "consume indicadores-areas" --> REP
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef gateway fill:#EEEDFE,stroke:#7F77DD,color:#26215C
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
+  classDef infra fill:#FFF8DC,stroke:#E0A800,color:#4A3800
+  classDef seguridad fill:#FDF0E1,stroke:#E8870E,color:#4A2A00
+  classDef cifrado fill:#FDEEF3,stroke:#D4537E,color:#4B1528
+  classDef dominio fill:#F6EEFB,stroke:#AF52DE,color:#3A1450
