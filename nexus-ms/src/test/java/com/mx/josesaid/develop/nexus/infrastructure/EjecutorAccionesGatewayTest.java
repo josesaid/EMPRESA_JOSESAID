@@ -68,6 +68,22 @@ class EjecutorAccionesGatewayTest {
     }
 
     @Test
+    void eliminarDocumentoEnviaElMotivoAlEndpoint() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/documentos-cumplimiento-ms/v1/documentos/" + ID + "/eliminacion"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"motivo\":\"Contrato vencido\"}"))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\"}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build())
+                .ejecutar(AccionesPendientes.TIPO_DOCUMENTO_ELIMINAR,
+                        "{\"documentoId\":\"" + ID + "\",\"motivo\":\"Contrato vencido\"}");
+
+        servidor.verify();
+    }
+
+    @Test
     void tipoDesconocidoNoSeEjecuta() {
         RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
         MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
