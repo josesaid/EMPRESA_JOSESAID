@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="pagina(titulo, contenido)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' · EMPRESA_JOSESAID'">EMPRESA_JOSESAID</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <style>
+        .barra-lateral { width: 250px; min-height: 100vh; }
+        .contenido { min-width: 0; }
+        .table-responsive { max-width: 100%; }
+        @media (max-width: 767.98px) {
+            .barra-lateral { width: 100%; min-height: 0; }
+        }
+    </style>
+</head>
+<body class="bg-body-tertiary">
+<div class="d-flex flex-column flex-md-row">
+    <aside class="barra-lateral bg-dark text-light p-3 flex-shrink-0">
+        <a class="d-block fw-bold text-white text-decoration-none mb-3" th:href="@{/}">EMPRESA_JOSESAID</a>
+        <nav class="nav flex-column gap-1 small">
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'inicio'} ? 'active' : ''" th:href="@{/}">Inicio</a>
+
+            <p class="text-uppercase text-secondary mt-3 mb-1">Comercial</p>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'clientes'} ? 'active' : ''" th:href="@{/clientes}">Clientes</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'pedidos'} ? 'active' : ''" th:href="@{/ventas/pedidos}">Pedidos</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'metricas'} ? 'active' : ''" th:href="@{/ventas/metricas}">Métricas de ventas</a>
+
+            <p class="text-uppercase text-secondary mt-3 mb-1">Compras</p>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'proveedores'} ? 'active' : ''" th:href="@{/compras/proveedores}">Proveedores</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'ordenes'} ? 'active' : ''" th:href="@{/compras/ordenes}">Órdenes de compra</a>
+
+            <p class="text-uppercase text-secondary mt-3 mb-1">Inventario</p>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'existencias'} ? 'active' : ''" th:href="@{/inventario/existencias}">Existencias</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'bajo-minimo'} ? 'active' : ''" th:href="@{/inventario/bajo-minimo}">Bajo mínimo</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'movimientos'} ? 'active' : ''" th:href="@{/inventario/movimientos}">Movimientos</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'trazabilidad'} ? 'active' : ''" th:href="@{/inventario/trazabilidad}">Trazabilidad de lote</a>
+
+            <p class="text-uppercase text-secondary mt-3 mb-1">Finanzas</p>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'cuentas'} ? 'active' : ''" th:href="@{/cuentas}">Cuentas contables</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'polizas'} ? 'active' : ''" th:href="@{/polizas}">Pólizas</a>
+            <a class="nav-link text-light rounded" th:href="@{/polizas/nueva}">Proponer póliza</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'estados'} ? 'active' : ''" th:href="@{/contabilidad/estados-financieros}">Estados financieros</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'comprobantes'} ? 'active' : ''" th:href="@{/facturacion/comprobantes}">Comprobantes</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'pendientes-cobro'} ? 'active' : ''" th:href="@{/facturacion/pendientes-cobro}">Pendientes de cobro</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'pagos-proveedor'} ? 'active' : ''" th:href="@{/facturacion/pagos-proveedor}">Pagos a proveedores</a>
+
+            <p class="text-uppercase text-secondary mt-3 mb-1">Cumplimiento</p>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'documentos'} ? 'active' : ''" th:href="@{/documentos}">Documentos</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'por-vencer'} ? 'active' : ''" th:href="@{/documentos/por-vencer}">Por vencer</a>
+
+            <p class="text-uppercase text-secondary mt-3 mb-1">Dirección</p>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'indicadores'} ? 'active' : ''" th:href="@{/reportes/indicadores}">Indicadores</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'reporte'} ? 'active' : ''" th:href="@{/reportes/reporte}">Reporte por periodo</a>
+
+            <p class="text-uppercase text-secondary mt-3 mb-1">Accesos</p>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'usuarios'} ? 'active' : ''" th:href="@{/usuarios}">Usuarios</a>
+        </nav>
+    </aside>
+
+    <div class="flex-grow-1 contenido">
+        <header class="d-flex justify-content-between align-items-center bg-white border-bottom px-4 py-2">
+            <span class="small text-secondary" th:text="${correo}">correo</span>
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Cerrar sesión</button>
+            </form>
+        </header>
+        <main th:replace="${contenido}"></main>
+    </div>
+</div>
+</body>
+</html>

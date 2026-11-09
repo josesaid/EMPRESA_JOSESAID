@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EMPRESA_JOSESAID · Inicio</title>
-</head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina('Inicio', ~{::main})}">
 <body>
-    <div th:replace="~{fragments/menu :: menu}"></div>
-    <h1>EMPRESA_JOSESAID · <span th:text="${titulo}">Inicio</span></h1>
-    <p>Roles: <span th:text="${roles}">[]</span></p>
+<main class="p-3 p-md-4">
+    <h1 class="h3 mb-1">Panel general</h1>
+    <p class="text-secondary mb-4">Elige un módulo para consultar su información. Las propuestas de la IA se confirman desde la pantalla de la póliza o la acción correspondiente.</p>
+    <div class="row g-3">
+        <div class="col-12 col-md-6 col-xl-4"><a class="card h-100 text-decoration-none text-body shadow-sm" th:href="@{/clientes}"><div class="card-body"><h2 class="h6">Clientes</h2><p class="small text-secondary mb-0">Búsqueda, ficha e interacciones.</p></div></a></div>
+        <div class="col-12 col-md-6 col-xl-4"><a class="card h-100 text-decoration-none text-body shadow-sm" th:href="@{/ventas/pedidos}"><div class="card-body"><h2 class="h6">Pedidos</h2><p class="small text-secondary mb-0">Pedidos de venta por cliente o estatus.</p></div></a></div>
+        <div class="col-12 col-md-6 col-xl-4"><a class="card h-100 text-decoration-none text-body shadow-sm" th:href="@{/compras/ordenes}"><div class="card-body"><h2 class="h6">Compras</h2><p class="small text-secondary mb-0">Proveedores y órdenes de compra.</p></div></a></div>
+        <div class="col-12 col-md-6 col-xl-4"><a class="card h-100 text-decoration-none text-body shadow-sm" th:href="@{/inventario/bajo-minimo}"><div class="card-body"><h2 class="h6">Inventario</h2><p class="small text-secondary mb-0">Existencias, bajo mínimo y movimientos.</p></div></a></div>
+        <div class="col-12 col-md-6 col-xl-4"><a class="card h-100 text-decoration-none text-body shadow-sm" th:href="@{/polizas}"><div class="card-body"><h2 class="h6">Contabilidad</h2><p class="small text-secondary mb-0">Pólizas, cuentas y estados financieros.</p></div></a></div>
+        <div class="col-12 col-md-6 col-xl-4"><a class="card h-100 text-decoration-none text-body shadow-sm" th:href="@{/facturacion/pendientes-cobro}"><div class="card-body"><h2 class="h6">Facturación y pagos</h2><p class="small text-secondary mb-0">Comprobantes, cobranza y pagos a proveedores.</p></div></a></div>
+        <div class="col-12 col-md-6 col-xl-4"><a class="card h-100 text-decoration-none text-body shadow-sm" th:href="@{/documentos/por-vencer}"><div class="card-body"><h2 class="h6">Documentos</h2><p class="small text-secondary mb-0">Contratos, versiones y vencimientos.</p></div></a></div>
+        <div class="col-12 col-md-6 col-xl-4"><a class="card h-100 text-decoration-none text-body shadow-sm" th:href="@{/reportes/indicadores}"><div class="card-body"><h2 class="h6">Dirección</h2><p class="small text-secondary mb-0">Indicadores y reportes por periodo.</p></div></a></div>
+        <div class="col-12 col-md-6 col-xl-4"><a class="card h-100 text-decoration-none text-body shadow-sm" th:href="@{/usuarios}"><div class="card-body"><h2 class="h6">Usuarios</h2><p class="small text-secondary mb-0">Cuentas y roles de acceso.</p></div></a></div>
+    </div>
+    <p class="small text-secondary mt-4">Roles de tu sesión: <span th:text="${roles}">[]</span></p>
+</main>
 </body>
 </html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina(${titulo}, ~{::main})}">
+<body>
+<main class="p-3 p-md-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0" th:text="${titulo}">Detalle</h1>
+        <a class="btn btn-sm btn-outline-secondary" th:href="@{${volver}}">Volver</a>
+    </div>
+
+    <form th:if="${not #lists.isEmpty(campos)}" th:action="@{${rutaVista}}" method="get" class="row g-2 align-items-end mb-3">
+        <div class="col-12 col-md-auto" th:each="c : ${campos}">
+            <label class="form-label small mb-1" th:for="${c.nombre}" th:text="${c.etiqueta}">Campo</label>
+            <input class="form-control form-control-sm" type="text" th:id="${c.nombre}" th:name="${c.nombre}"
+                   th:value="${c.valor}" th:required="${c.requerido == 'true'}">
+        </div>
+        <div class="col-12 col-md-auto">
+            <button type="submit" class="btn btn-primary btn-sm">Consultar</button>
+        </div>
+    </form>
+
+    <div class="alert alert-warning" th:if="${error}" th:text="${error}">Error</div>
+
+    <div class="bg-white rounded shadow-sm p-3" th:if="${error == null and detalle != null}">
+        <dl class="row mb-0">
+            <th:block th:each="d : ${detalle}">
+                <dt class="col-sm-4 text-secondary fw-normal" th:text="${d.etiqueta}">Campo</dt>
+                <dd class="col-sm-8" th:text="${d.valor}">Valor</dd>
+            </th:block>
+        </dl>
+    </div>
+
+    <section class="mt-4" th:if="${subfilas != null}">
+        <h2 class="h5" th:text="${subtitulo}">Subsección</h2>
+        <div class="table-responsive bg-white rounded shadow-sm">
+            <table class="table table-sm align-middle mb-0">
+                <thead class="table-light">
+                    <tr><th th:each="col : ${subcolumnas}" th:text="${col.etiqueta}">Columna</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="fila : ${subfilas}">
+                        <td th:each="col : ${subcolumnas}" th:text="${fila[col.nombre]}">Valor</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(subfilas)}"><td th:colspan="${#lists.size(subcolumnas) + 1}">Sin registros.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <p class="small text-danger mt-2" th:if="${errorSub}" th:text="${errorSub}">Error</p>
+</main>
+</body>
+</html>
