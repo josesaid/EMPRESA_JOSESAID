@@ -112,9 +112,11 @@ public class PedidosService {
         p.confirmar(Instant.now(reloj));
         Pedido guardado = pedidos.guardar(p);
         eventos.publicar(new EventoDominio("PedidoConfirmado", id.toString(), Map.of(
+                "pedidoId", id.toString(),
                 "clienteId", p.getClienteId().toString(),
                 "moneda", p.getMoneda(),
-                "total", p.totales().total())));
+                "total", p.totales().total(),
+                "lineas", lineasParaEvento(p))));
         return guardado;
     }
 
@@ -124,8 +126,19 @@ public class PedidosService {
         p.entregar(Instant.now(reloj));
         Pedido guardado = pedidos.guardar(p);
         eventos.publicar(new EventoDominio("PedidoEntregado", id.toString(), Map.of(
-                "clienteId", p.getClienteId().toString())));
+                "pedidoId", id.toString(),
+                "clienteId", p.getClienteId().toString(),
+                "lineas", lineasParaEvento(p))));
         return guardado;
+    }
+
+    /** Artículo y cantidad de cada línea, para que inventario reserve y descuente sin consultar a ventas. */
+    private static List<Map<String, Object>> lineasParaEvento(Pedido p) {
+        return p.getLineas().stream()
+                .map(l -> Map.<String, Object>of(
+                        "productoId", l.getProductoId().toString(),
+                        "cantidad", l.getCantidad()))
+                .toList();
     }
 
     @Transactional
