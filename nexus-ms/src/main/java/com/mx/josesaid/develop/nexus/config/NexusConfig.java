@@ -142,8 +142,8 @@ public class NexusConfig {
     }
 
     @Bean
-    HerramientasCompras herramientasCompras(RestClient gatewayClient) {
-        return new HerramientasCompras(gatewayClient);
+    HerramientasCompras herramientasCompras(RestClient gatewayClient, AccionesPendientes acciones) {
+        return new HerramientasCompras(gatewayClient, acciones);
     }
 
     @Bean

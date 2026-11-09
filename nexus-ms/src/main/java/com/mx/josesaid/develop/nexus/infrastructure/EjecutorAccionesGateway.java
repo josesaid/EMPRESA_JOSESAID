@@ -21,6 +21,8 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
     static final String RUTA_CLIENTES = "/clientes-ms/v1/clientes";
     static final String RUTA_POLIZAS = "/contabilidad-ms/v1/polizas";
     static final String RUTA_DOCUMENTOS = "/documentos-cumplimiento-ms/v1/documentos";
+    static final String RUTA_PROVEEDORES = "/compras-proveedores-ms/v1/proveedores";
+    static final String RUTA_ORDENES_COMPRA = "/compras-proveedores-ms/v1/ordenes-compra";
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
@@ -103,7 +105,13 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
             case AccionesPendientes.TIPO_DOCUMENTO_ELIMINAR -> eliminarDocumento(payload);
             case AccionesPendientes.TIPO_CLIENTE_CREAR -> enviar(RUTA_CLIENTES, payload);
             case AccionesPendientes.TIPO_CLIENTE_ACTUALIZAR -> actualizarCliente(payload);
-            case AccionesPendientes.TIPO_CLIENTE_CONTACTO_AGREGAR -> agregarContactoCliente(payload);
+            case AccionesPendientes.TIPO_CLIENTE_CONTACTO_AGREGAR -> postSinId(payload, RUTA_CLIENTES, "clienteId", "/contactos");
+            case AccionesPendientes.TIPO_PROVEEDOR_CREAR -> enviar(RUTA_PROVEEDORES, payload);
+            case AccionesPendientes.TIPO_ORDEN_COMPRA_CREAR -> enviar(RUTA_ORDENES_COMPRA, payload);
+            case AccionesPendientes.TIPO_ORDEN_COMPRA_RECEPCION ->
+                    postSinId(payload, RUTA_ORDENES_COMPRA, "ordenId", "/recepciones");
+            case AccionesPendientes.TIPO_ORDEN_COMPRA_CANCELAR ->
+                    postSinId(payload, RUTA_ORDENES_COMPRA, "ordenId", "/cancelacion");
             default -> throw new IllegalArgumentException("Tipo de acción no soportado: " + tipo);
         };
     }
@@ -118,11 +126,12 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
                 .body(String.class);
     }
 
-    private String agregarContactoCliente(String payload) {
+    /** Envía al recurso del identificador del payload, sin ese campo en el cuerpo. */
+    private String postSinId(String payload, String ruta, String campoId, String sufijo) {
         ObjectNode cuerpo = ((ObjectNode) leer(payload)).deepCopy();
-        String clienteId = cuerpo.remove("clienteId").asText();
+        String id = cuerpo.remove(campoId).asText();
         return gateway.post()
-                .uri(RUTA_CLIENTES + "/" + clienteId + "/contactos")
+                .uri(ruta + "/" + id + sufijo)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(cuerpo.toString())
                 .retrieve()

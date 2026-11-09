@@ -134,6 +134,54 @@ class EjecutorAccionesGatewayTest {
     }
 
     @Test
+    void recepcionEnviaLasLineasSinElOrdenId() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/compras-proveedores-ms/v1/ordenes-compra/" + ID + "/recepciones"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"lineas\":[{\"articuloSku\":\"TUB-1\",\"cantidad\":5}]}"))
+                .andExpect(content().string(org.hamcrest.Matchers.not(containsString("ordenId"))))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\"}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build())
+                .ejecutar(AccionesPendientes.TIPO_ORDEN_COMPRA_RECEPCION,
+                        "{\"ordenId\":\"" + ID + "\",\"lineas\":[{\"articuloSku\":\"TUB-1\",\"cantidad\":5}]}");
+
+        servidor.verify();
+    }
+
+    @Test
+    void cancelarOrdenEnviaElMotivo() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/compras-proveedores-ms/v1/ordenes-compra/" + ID + "/cancelacion"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"motivo\":\"Proveedor sin stock\"}"))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\"}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build())
+                .ejecutar(AccionesPendientes.TIPO_ORDEN_COMPRA_CANCELAR,
+                        "{\"ordenId\":\"" + ID + "\",\"motivo\":\"Proveedor sin stock\"}");
+
+        servidor.verify();
+    }
+
+    @Test
+    void altaDeProveedorSeEnviaComoEstaEnElPayload() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        String payload = "{\"razonSocial\":\"Tubos SA\",\"rfc\":\"TUB850315AB3\",\"correo\":\"ventas@tubos.mx\"}";
+        servidor.expect(requestTo("http://gateway/compras-proveedores-ms/v1/proveedores"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json(payload))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\"}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build()).ejecutar(AccionesPendientes.TIPO_PROVEEDOR_CREAR, payload);
+
+        servidor.verify();
+    }
+
+    @Test
     void tipoDesconocidoNoSeEjecuta() {
         RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
         MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
