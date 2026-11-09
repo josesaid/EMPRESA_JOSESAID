@@ -29,6 +29,10 @@ public final class AccionesPendientes {
     public static final String TIPO_CLIENTE_CREAR = "CLIENTE_CREAR";
     public static final String TIPO_CLIENTE_ACTUALIZAR = "CLIENTE_ACTUALIZAR";
     public static final String TIPO_CLIENTE_CONTACTO_AGREGAR = "CLIENTE_CONTACTO_AGREGAR";
+    public static final String TIPO_PROVEEDOR_CREAR = "PROVEEDOR_CREAR";
+    public static final String TIPO_ORDEN_COMPRA_CREAR = "ORDEN_COMPRA_CREAR";
+    public static final String TIPO_ORDEN_COMPRA_RECEPCION = "ORDEN_COMPRA_RECEPCION";
+    public static final String TIPO_ORDEN_COMPRA_CANCELAR = "ORDEN_COMPRA_CANCELAR";
     /** El alta no la ejecuta Nexus: la pantalla de altas crea el usuario con la contraseña que escribe el administrador. */
     public static final String TIPO_USUARIO_ALTA = "USUARIO_ALTA";
     public static final Duration VIGENCIA = Duration.ofMinutes(10);
