@@ -157,8 +157,8 @@ public class NexusConfig {
     }
 
     @Bean
-    HerramientasInventario herramientasInventario(RestClient gatewayClient) {
-        return new HerramientasInventario(gatewayClient);
+    HerramientasInventario herramientasInventario(RestClient gatewayClient, AccionesPendientes acciones) {
+        return new HerramientasInventario(gatewayClient, acciones);
     }
 
     @Bean

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -177,6 +178,44 @@ class EjecutorAccionesGatewayTest {
                 .andRespond(withSuccess("{\"id\":\"" + ID + "\"}", MediaType.APPLICATION_JSON));
 
         new EjecutorAccionesGateway(builder.build()).ejecutar(AccionesPendientes.TIPO_PROVEEDOR_CREAR, payload);
+
+        servidor.verify();
+    }
+
+    @Test
+    void movimientoEnviaLaClaveDeIdempotenciaComoCabecera() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/inventario-operaciones-ms/v1/movimientos"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header("Idempotency-Key", "clave-accion-1"))
+                .andExpect(content().json("{\"tipo\":\"ENTRADA\",\"cantidad\":3}"))
+                .andExpect(content().string(org.hamcrest.Matchers.not(containsString("idempotencyKey"))))
+                .andRespond(withSuccess("{\"id\":\"m1\"}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build())
+                .ejecutar(AccionesPendientes.TIPO_MOVIMIENTO_REGISTRAR,
+                        "{\"articuloId\":\"" + ID + "\",\"tipo\":\"ENTRADA\",\"cantidad\":3,\"idempotencyKey\":\"clave-accion-1\"}");
+
+        servidor.verify();
+    }
+
+    @Test
+    void articuloYOrdenDeOperacionSeEnvianComoEstanEnElPayload() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/inventario-operaciones-ms/v1/articulos"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"sku\":\"TUB-1\",\"loteObligatorio\":true}"))
+                .andRespond(withSuccess("{\"id\":\"a1\"}", MediaType.APPLICATION_JSON));
+        servidor.expect(requestTo("http://gateway/inventario-operaciones-ms/v1/ordenes-operacion"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"tipo\":\"SERVICIO\",\"cantidadObjetivo\":10}"))
+                .andRespond(withSuccess("{\"id\":\"o1\"}", MediaType.APPLICATION_JSON));
+
+        EjecutorAccionesGateway ejecutor = new EjecutorAccionesGateway(builder.build());
+        ejecutor.ejecutar(AccionesPendientes.TIPO_ARTICULO_CREAR, "{\"sku\":\"TUB-1\",\"loteObligatorio\":true}");
+        ejecutor.ejecutar(AccionesPendientes.TIPO_ORDEN_OPERACION_CREAR, "{\"tipo\":\"SERVICIO\",\"cantidadObjetivo\":10}");
 
         servidor.verify();
     }
