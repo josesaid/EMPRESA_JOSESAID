@@ -222,7 +222,7 @@ Se despliega como contenedor con la imagen `pedidos-ventas-ms:0.1.0`. Requiere l
 - **IVA_FRONTERIZO (8%)**: tasa tomada del catálogo propuesto; falta validación con Contabilidad.
 - **Rol Gerente de ventas**: no existe en el catálogo de usuarios-accesos; se usa DIRECCION. Pendiente de decisión.
 - **Idempotency-Key**: pendiente en POST.
-- **Validación de cliente existente**: pendiente de llamada a clientes-ms (hoy el clienteId se acepta como referencia).
+- **Validación de cliente existente**: implementada; ver la sección «Validación de cliente».
 - **Métricas de ventas**: ventas netas; excluye cancelados y devueltos.
 - **Inventario al confirmar**: no reserva stock todavía; se integrará con inventario-operaciones-ms.
 - **Refresh/logout**: heredado de usuarios-accesos; pendiente de definir si aplica aquí.

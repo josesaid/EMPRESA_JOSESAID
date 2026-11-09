@@ -1,0 +1,17 @@
+flowchart TD
+  A["<b>Áreas publican indicadores</b><br/>Clientes, compras, contabilidad, documentos, facturación, inventario, pedidos y usuarios"]:::actor --> B["<b>Tópico indicadores-areas</b><br/>Mensaje con area, nombre, periodo, valor y fuenteActualizadaUtc"]:::datos
+  B --> C{"<b>Mensaje válido?</b>"}:::pendiente
+  C -- "no o viola una regla" --> E1["<b>Descartado y registrado en log</b>"]:::alerta
+  C -- "sí" --> D["<b>Upsert</b><br/>Un indicador por área, nombre y periodo; los reenvíos no duplican"]:::servicio
+  D --> G{"<b>GET /indicadores</b><br/>Quién consulta?"}:::pendiente
+  G -- "DIRECCION" --> H["<b>Todas las áreas</b><br/>Con marca de desactualizado"]:::servicio
+  G -- "JEFE_AREA" --> I{"<b>Área del claim en el token</b><br/>Coincide con la pedida?"}:::pendiente
+  I -- "sí" --> J["<b>Su área</b>"]:::servicio
+  I -- "no" --> E2["<b>403</b><br/>Solo ve su área"]:::alerta
+  K["<b>Carga manual, cierre y exportación</b>"]:::actor -. "solo DIRECCION" .-> H
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

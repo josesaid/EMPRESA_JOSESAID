@@ -1,0 +1,18 @@
+flowchart TD
+  A["<b>COMPRAS crea la orden</b><br/>BORRADOR, proveedor ACTIVO"]:::actor --> B{"<b>Monto en USD</b><br/>MXN se convierte con el tipo de cambio"}:::pendiente
+  B -- "menor al límite (por defecto 1,000,000 USD)" --> C["<b>COMPRAS aprueba</b><br/>BORRADOR → APROBADA"]:::servicio
+  B -- "igual o mayor al límite" --> D["<b>Solo DIRECCION aprueba</b><br/>COMPRAS recibe 403"]:::alerta
+  D --> C
+  C --> E["<b>Evento orden-compra-aprobada</b><br/>Por outbox, en la misma transacción"]:::datos
+  E --> F["<b>facturacion-pagos-ms</b><br/>Crea la cuenta por pagar, una vez por orden"]:::servicio
+  C --> G["<b>Recepción</b><br/>APROBADA → RECIBIDA_PARCIAL → RECIBIDA"]:::actor
+  G --> H["<b>Evento insumos-recibidos</b><br/>orden_id y líneas (sku, cantidad)"]:::datos
+  H -. "sin consumidor hoy" .-> I["<b>inventario-operaciones-ms</b><br/>Pendiente: no escucha el evento"]:::pendiente
+  H -. "sin consumidor hoy" .-> J["<b>contabilidad-ms</b><br/>Pendiente: no escucha el evento"]:::pendiente
+  C -. "BORRADOR o APROBADA" .-> K["<b>CANCELADA</b><br/>Con motivo; sin más cambios"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

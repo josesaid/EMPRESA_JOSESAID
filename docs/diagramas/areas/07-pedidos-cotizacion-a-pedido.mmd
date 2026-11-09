@@ -1,0 +1,20 @@
+flowchart TD
+  A["<b>VENTAS crea la cotización</b><br/>BORRADOR"]:::actor --> B["<b>ENVIADA</b><br/>POST /envio"]:::servicio
+  B --> C{"<b>Cliente acepta dentro de vigencia?</b>"}:::pendiente
+  C -- "vigencia vencida" --> E1["<b>VENCIDA, responde 410</b><br/>No se reactiva; se crea otra cotización"]:::alerta
+  C -- "sí" --> D["<b>ACEPTADA</b>"]:::servicio
+  D --> P["<b>Crear pedido</b><br/>Valida el cliente en clientes-ms: ACTIVO"]:::actor
+  P --> Q{"<b>Pedido con al menos una línea?</b>"}:::pendiente
+  Q -- "sí" --> R["<b>CONFIRMADO</b><br/>Las líneas dejan de ser editables"]:::servicio
+  Q -- "no" --> E2["<b>422</b><br/>Confirmar requiere al menos una línea"]:::alerta
+  R --> S["<b>Evento PedidoConfirmado</b><br/>pedidos.eventos, por outbox"]:::datos
+  S -. "pendiente: nadie consume hoy" .-> T["<b>facturacion-pagos-ms e inventario-operaciones-ms</b><br/>No escuchan el evento"]:::alerta
+  R --> U["<b>ENTREGADO</b><br/>Evento PedidoEntregado"]:::datos
+  R --> V["<b>CANCELADO</b><br/>CANCELACION_CLIENTE o ERROR_CAPTURA; evento PedidoCancelado"]:::alerta
+  U --> W["<b>Devolución total</b><br/>CANCELADO con motivo DEVOLUCION_TOTAL"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

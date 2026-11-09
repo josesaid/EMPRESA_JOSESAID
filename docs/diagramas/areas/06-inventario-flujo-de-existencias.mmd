@@ -1,0 +1,17 @@
+flowchart TD
+  A["<b>ALMACEN registra el movimiento</b><br/>POST /movimientos: entrada, salida, reserva o ajuste"]:::actor --> B{"<b>Reglas de existencia</b>"}:::pendiente
+  B -- "existencia negativa, reservado mayor a existente o salida mayor a disponible" --> E1["<b>409 o 422</b><br/>Existencia insuficiente o regla violada"]:::alerta
+  B -- "artículo con lote obligatorio sin lote" --> E2["<b>400</b><br/>Requiere lote"]:::alerta
+  B -- "cumple las reglas" --> C["<b>Movimiento inmutable</b><br/>Existencia actualizada por artículo y almacén"]:::servicio
+  C --> D{"<b>Queda por debajo del mínimo?</b>"}:::pendiente
+  D -- "sí" --> E3["<b>Evento existencia-bajo-minimo</b><br/>inventario.eventos, por outbox"]:::datos
+  D -- "no" --> F["<b>Sin evento</b>"]:::actor
+  G["<b>OPERACIONES abre una orden</b><br/>PRODUCCION o SERVICIO, ABIERTA"]:::actor --> H["<b>Cierre con cantidad real</b><br/>Debe ser mayor a cero"]:::servicio
+  H --> I["<b>Evento orden-operacion-cerrada</b><br/>inventario.eventos"]:::datos
+  P1["<b>Recepciones de compra y salidas por venta</b><br/>insumos-recibidos y eventos de pedidos"]:::pendiente -. "pendiente: inventario no consume estos eventos hoy" .-> B
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

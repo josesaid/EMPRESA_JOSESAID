@@ -1,0 +1,21 @@
+flowchart TD
+  P1["<b>pedidos-ventas-ms</b><br/>Publica PedidoConfirmado en pedidos.eventos"]:::servicio -. "pendiente: nadie consume el evento hoy" .-> P2["<b>facturacion-pagos-ms</b><br/>No escucha pedidos.eventos"]:::alerta
+  A["<b>FINANZAS crea el comprobante</b><br/>POST /v1/comprobantes con ordenId, moneda, subtotal y tasaIva"]:::actor --> B["<b>Comprobante BORRADOR</b><br/>Tasa de IVA fijada por el servidor según la fecha de creación"]:::servicio
+  B --> C{"<b>Emisión</b>"}:::pendiente
+  C -- "POST /emision" --> D["<b>Comprobante EMITIDO</b><br/>Folio provisional FAC-"]:::servicio
+  D --> E["<b>Evento comprobante-emitido</b><br/>facturacion-pagos.eventos, por outbox"]:::datos
+  D --> F["<b>Cobro registrado</b><br/>POST /pagos; estatus derivado"]:::actor
+  F --> G{"<b>Saldo</b>"}:::pendiente
+  G -- "mayor a cero" --> H["<b>Cobro PARCIAL o PENDIENTE</b><br/>Evento pago-registrado"]:::datos
+  G -- "cero" --> I["<b>Cobro PAGADO</b><br/>Evento pago-registrado"]:::servicio
+  F -- "pago mayor al saldo" --> E1["<b>422</b><br/>El pago no puede exceder el saldo"]:::alerta
+  B --> J["<b>Cancelación</b><br/>POST /cancelacion"]:::actor
+  D --> J
+  J --> K["<b>Comprobante CANCELADO</b><br/>Evento comprobante-cancelado"]:::alerta
+  P3["<b>Pendientes</b><br/>Timbrado CFDI con PAC, UUID fiscal, complementos de pago"]:::pendiente
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

@@ -1,0 +1,19 @@
+flowchart TD
+  A["<b>ADMIN da de alta el usuario</b><br/>Con correo, nombre, contraseña y roles"]:::actor --> B["<b>Usuario ACTIVO</b>"]:::servicio
+  B --> C["<b>PUT /v1/usuarios/{id}/area</b><br/>Área, por ejemplo VENTAS_ATENCION_CLIENTES"]:::actor
+  C --> D{"<b>Rol JEFE_AREA?</b>"}:::pendiente
+  D -- "sin área asignada" --> E1["<b>422</b><br/>JEFE_AREA exige área"]:::alerta
+  D -- "con área" --> E2["<b>Asignación de roles</b><br/>Evento rol-asignado en usuarios-accesos.eventos"]:::datos
+  E2 -. "pendiente: ningún servicio consume este evento" .-> X["<b>Otros servicios</b><br/>No se enteran del cambio por evento"]:::alerta
+  E2 --> F["<b>Próximo login</b><br/>El token trae roles y claim area"]:::servicio
+  F --> G["<b>Servicios validan el token</b><br/>Usan roles y área del token"]:::servicio
+  B --> H{"<b>Cinco intentos fallidos</b>"}:::pendiente
+  H -- "sí" --> I["<b>BLOQUEADO 5 minutos</b><br/>Evento usuario-bloqueado"]:::alerta
+  I --> B
+  B --> J["<b>BAJA</b><br/>Estado final; sin borrado físico"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
