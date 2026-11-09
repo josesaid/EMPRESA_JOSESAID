@@ -147,8 +147,8 @@ public class NexusConfig {
     }
 
     @Bean
-    HerramientasFinanzas herramientasFinanzas(RestClient gatewayClient) {
-        return new HerramientasFinanzas(gatewayClient);
+    HerramientasFinanzas herramientasFinanzas(RestClient gatewayClient, AccionesPendientes acciones) {
+        return new HerramientasFinanzas(gatewayClient, acciones);
     }
 
     @Bean
