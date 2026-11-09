@@ -173,8 +173,42 @@ public final class SugerenciasIa {
     }
 
     /** Opción elegible en "Agiliza con IA". El id es rol-índice dentro del catálogo. */
-    public record Opcion(String id, String rol, String texto, List<String> pasos) {
+    public record Opcion(String id, String rol, String texto, List<String> pasos, Tarea tarea) {
     }
+
+    /**
+     * Pantalla que abre la opción y el único dato que pide. Si valorFijo no es null, el dato ya viene
+     * resuelto y no se pide; si campo es null, solo se ofrece ir a la pantalla.
+     */
+    public record Tarea(String ruta, String campo, String etiqueta, String ejemplo, String valorFijo) {
+    }
+
+    private static final Tarea SIN_DATO_INICIO = new Tarea("/", null, null, null, null);
+
+    /** Tarea de cada opción, por id (rol-índice). Cada id del catálogo debe tener su entrada. */
+    static final Map<String, Tarea> TAREAS = Map.ofEntries(
+            entry("ADMIN-0", new Tarea("/usuarios", null, null, null, null)),
+            entry("ADMIN-1", new Tarea("/usuarios", null, null, null, null)),
+            entry("DIRECCION-0", new Tarea("/reportes/indicadores", "periodo", "Periodo (AAAA-MM)", "2026-10", null)),
+            entry("DIRECCION-1", new Tarea("/reportes/reporte", "periodo", "Periodo (AAAA-MM)", "2026-10", null)),
+            entry("FINANZAS-0", new Tarea("/facturacion/comprobantes", "folio", "Folio", "", null)),
+            entry("FINANZAS-1", new Tarea("/cuentas", null, null, null, null)),
+            entry("CONTADOR-0", new Tarea("/polizas/nueva", null, null, null, null)),
+            entry("CONTADOR-1", new Tarea("/polizas", "periodo", "Periodo (AAAA-MM)", "2026-10", null)),
+            entry("VENTAS-0", new Tarea("/clientes", "rfc", "RFC del cliente", "", null)),
+            entry("VENTAS-1", new Tarea("/ventas/pedidos", "estatus", "Estatus", "", "CONFIRMADO")),
+            entry("COMPRAS-0", new Tarea("/compras/ordenes", "estatus", "Estatus", "", "BORRADOR")),
+            entry("COMPRAS-1", new Tarea("/compras/proveedores", "razonSocial", "Razón social", "", null)),
+            entry("ALMACEN-0", new Tarea("/inventario/existencias", "articulo", "ID de artículo", "", null)),
+            entry("ALMACEN-1", new Tarea("/inventario/movimientos", "articulo", "ID de artículo", "", null)),
+            entry("OPERACIONES-0", new Tarea("/inventario/trazabilidad", "lote", "Lote", "", null)),
+            entry("OPERACIONES-1", new Tarea("/inventario/existencias", "articulo", "ID de artículo", "", null)),
+            entry("CALIDAD-0", new Tarea("/inventario/trazabilidad", "lote", "Lote", "", null)),
+            entry("CALIDAD-1", new Tarea("/documentos/por-vencer", "dias", "Días", "", "30")),
+            entry("LEGAL-0", new Tarea("/documentos/por-vencer", "dias", "Días", "", "60")),
+            entry("LEGAL-1", new Tarea("/documentos", "titulo", "Título", "", null)),
+            entry("JEFE_AREA-0", new Tarea("/ventas/metricas", "mes", "Mes (AAAA-MM)", "2026-10", null)),
+            entry("JEFE_AREA-1", new Tarea("/", null, null, null, null)));
 
     /** Opciones de los roles del usuario, en el mismo orden que el log. */
     public static List<Opcion> opciones(Collection<String> roles) {
@@ -188,7 +222,8 @@ public final class SugerenciasIa {
             for (int i = 0; i < ideas.size(); i++) {
                 Idea idea = ideas.get(i);
                 if (textos.add(idea.texto())) {
-                    lista.add(new Opcion(rol + "-" + i, rol, idea.texto(), idea.pasos()));
+                    String id = rol + "-" + i;
+                    lista.add(new Opcion(id, rol, idea.texto(), idea.pasos(), TAREAS.getOrDefault(id, SIN_DATO_INICIO)));
                 }
             }
         }

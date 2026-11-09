@@ -33,6 +33,40 @@ class AgilizaIaPlantillaTest {
     }
 
     @Test
+    void conDatoPideSoloEseCampoYLlevaALaPantalla() {
+        WebContext ctx = contexto();
+        ctx.setVariable("opciones", SugerenciasIa.opciones(List.of("ALMACEN")));
+        ctx.setVariable("elegida", SugerenciasIa.opcion(List.of("ALMACEN"), "ALMACEN-0").orElseThrow());
+
+        String html = motor.process("agiliza/ia", ctx);
+
+        assertThat(html).contains("action=\"/inventario/existencias\"", "name=\"articulo\"", "ID de artículo");
+    }
+
+    @Test
+    void conValorFijoNoPideDatoSoloConsulta() {
+        WebContext ctx = contexto();
+        ctx.setVariable("opciones", SugerenciasIa.opciones(List.of("VENTAS")));
+        ctx.setVariable("elegida", SugerenciasIa.opcion(List.of("VENTAS"), "VENTAS-1").orElseThrow());
+
+        String html = motor.process("agiliza/ia", ctx);
+
+        assertThat(html).contains("name=\"estatus\"", "value=\"CONFIRMADO\"", "type=\"hidden\"");
+        assertThat(html).doesNotContain("form-control");
+    }
+
+    @Test
+    void sinDatoOfreceSoloIrALaPantalla() {
+        WebContext ctx = contexto();
+        ctx.setVariable("opciones", SugerenciasIa.opciones(List.of("JEFE_AREA")));
+        ctx.setVariable("elegida", SugerenciasIa.opcion(List.of("JEFE_AREA"), "JEFE_AREA-1").orElseThrow());
+
+        String html = motor.process("agiliza/ia", ctx);
+
+        assertThat(html).contains("Ir a la pantalla").doesNotContain("form-control");
+    }
+
+    @Test
     void sinElegidaNoHayPasos() {
         WebContext ctx = contexto();
         ctx.setVariable("opciones", SugerenciasIa.opciones(List.of("ALMACEN")));

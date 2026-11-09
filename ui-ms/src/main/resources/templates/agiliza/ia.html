@@ -5,7 +5,7 @@
     <div class="row g-4">
         <div class="col-12 col-lg-7">
             <h1 class="h3 mb-2">Agiliza con IA</h1>
-            <p class="text-secondary">Elige una opción en el panel de la derecha para ver sus pasos. Solo aparecen las opciones de tus roles.</p>
+            <p class="text-secondary" th:if="${elegida == null}">Elige una opción a la derecha. Solo te pediremos el dato que falta.</p>
         </div>
         <aside class="col-12 col-lg-5">
             <section class="bg-white rounded shadow-sm p-3 mb-3">
@@ -22,11 +22,31 @@
                 </div>
             </section>
             <section class="bg-white rounded shadow-sm p-3" th:if="${elegida != null}">
-                <h2 class="h6" th:text="${elegida.texto}">Opción elegida</h2>
-                <p class="fw-bold mb-1">Pasos</p>
-                <ol class="mb-0">
-                    <li th:each="paso : ${elegida.pasos}" th:text="${paso}">Paso</li>
-                </ol>
+                <h2 class="h5 mb-3" th:text="${elegida.texto}">Opción elegida</h2>
+
+                <form th:if="${elegida.tarea.campo != null and elegida.tarea.valorFijo == null}"
+                      method="get" th:action="@{${elegida.tarea.ruta}}" class="mb-3">
+                    <label class="form-label" th:for="${elegida.tarea.campo}" th:text="${elegida.tarea.etiqueta}">Dato</label>
+                    <input class="form-control mb-2" type="text" required autocomplete="off"
+                           th:id="${elegida.tarea.campo}" th:name="${elegida.tarea.campo}"
+                           th:placeholder="${elegida.tarea.ejemplo}">
+                    <button type="submit" class="btn btn-primary btn-sm">Consultar</button>
+                </form>
+
+                <form th:if="${elegida.tarea.valorFijo != null}" method="get" th:action="@{${elegida.tarea.ruta}}" class="mb-3">
+                    <input type="hidden" th:name="${elegida.tarea.campo}" th:value="${elegida.tarea.valorFijo}">
+                    <button type="submit" class="btn btn-primary btn-sm">Consultar</button>
+                </form>
+
+                <a th:if="${elegida.tarea.campo == null}" class="btn btn-primary btn-sm mb-3"
+                   th:href="@{${elegida.tarea.ruta}}">Ir a la pantalla</a>
+
+                <details>
+                    <summary class="fw-semibold">Pasos</summary>
+                    <ol class="mb-0 mt-2">
+                        <li th:each="paso : ${elegida.pasos}" th:text="${paso}">Paso</li>
+                    </ol>
+                </details>
             </section>
         </aside>
     </div>
