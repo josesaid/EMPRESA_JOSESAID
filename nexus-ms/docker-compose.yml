@@ -21,6 +21,8 @@ services:
       JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
       GATEWAY_URL: http://gateway-ms:8080
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?Defina ANTHROPIC_API_KEY en el archivo .env}
+      # Tope diario de tokens por usuario. Para pruebas puede subirse en el .env de la raíz.
+      NEXUS_PRESUPUESTO_DIARIO: ${NEXUS_PRESUPUESTO_DIARIO:-15000}
       # Opcional: sin esta clave, nexus-ms arranca pero no indexa las políticas (RAG)
       VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
     # Sin "ports": Prometheus raspa nexus-ms:8080 por empresa-net. Así /actuator/prometheus
