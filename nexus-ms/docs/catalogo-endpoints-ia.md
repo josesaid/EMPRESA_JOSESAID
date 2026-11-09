@@ -21,11 +21,12 @@ Para conectar un cliente MCP, ver [conexion-mcp.md](conexion-mcp.md).
 | Endpoints REST totales | 101 |
 | Excluidos por diseño (autenticación, JWKS y el propio endpoint de chat) | 7 |
 | Endpoints aplicables a IA | 94 |
-| Con herramienta de Nexus | 44 (47 %) |
+| Con herramienta de Nexus | 45 (48 %) |
+| Fuera de Nexus por decisión (2026-11-08) | 7 |
 | Sin herramienta por flujo propio (alta de usuario de Nexus) | 3 |
-| Huecos (sin herramienta) | 47 (50 %) |
+| Huecos sin decidir | 39 (41 %) |
 
-Los 44 cubiertos incluyen `POST /v1/polizas` de contabilidad, que se registra solo a través de la acción `POLIZA_REGISTRAR` (`sugerir_poliza` → `confirmar_accion`).
+Los 45 cubiertos incluyen `POST /v1/polizas` de contabilidad, que se registra solo a través de la acción `POLIZA_REGISTRAR` (`sugerir_poliza` → `confirmar_accion`).
 
 Los 7 excluidos: `POST /v1/auth/login`, `POST /v1/auth/refresh`, `POST /v1/auth/cambiar-password-inicial`, `POST /v1/auth/logout`, `POST /v1/auth/logout-todas`, `GET /.well-known/jwks.json` y `POST /nexus/consultas` (es el endpoint del chat, no una herramienta).
 
@@ -71,13 +72,13 @@ Convención: la columna **Ruta** es la del servicio. El prefijo del gateway es e
 
 | Método | Ruta | Rol requerido | Herramienta Nexus |
 |---|---|---|---|
-| POST | `/v1/cuentas` | CONTADOR | **Hueco** |
+| POST | `/v1/cuentas` | CONTADOR | Fuera de Nexus (decisión 2026-11-08) |
 | GET | `/v1/cuentas` | CONTADOR, DIRECCION | `consultar_catalogo_cuentas` |
 | POST | `/v1/polizas` | CONTADOR | `sugerir_poliza` + `confirmar_accion` (POLIZA_REGISTRAR) |
-| POST | `/v1/polizas/{id}/reversa` | CONTADOR | **Hueco** |
+| POST | `/v1/polizas/{id}/reversa` | CONTADOR | Fuera de Nexus (decisión 2026-11-08) |
 | GET | `/v1/polizas` | CONTADOR, DIRECCION | `listar_polizas` |
 | GET | `/v1/polizas/{id}` | CONTADOR, DIRECCION | `consultar_poliza` |
-| POST | `/v1/periodos/{anioMes}/cierre` | CONTADOR | **Hueco** |
+| POST | `/v1/periodos/{anioMes}/cierre` | CONTADOR | Fuera de Nexus (decisión 2026-11-08) |
 | GET | `/v1/estados-financieros` | CONTADOR, DIRECCION | `consultar_estados_financieros` |
 
 ### documentos-cumplimiento-ms (9 endpoints, 3 cubiertos)
@@ -90,8 +91,8 @@ Convención: la columna **Ruta** es la del servicio. El prefijo del gateway es e
 | GET | `/v1/documentos/{id}/versiones/{n}/descarga` | LEGAL | **Hueco** |
 | GET | `/v1/documentos?titulo=` | LEGAL, DIRECCION | `buscar_documentos` |
 | GET | `/v1/documentos/por-vencer` | LEGAL, DIRECCION | `consultar_documentos_por_vencer` |
-| POST | `/v1/documentos/{id}/eliminacion` | LEGAL | **Hueco** |
-| POST | `/v1/documentos/{id}/purga` | LEGAL | **Hueco** |
+| POST | `/v1/documentos/{id}/eliminacion` | LEGAL | `solicitar_eliminacion_documento` (POLIZA_REGISTRAR, o) |
+| POST | `/v1/documentos/{id}/purga` | LEGAL | Fuera de Nexus (decisión 2026-11-08) |
 | GET | `/v1/catalogos/tipos-documento` | Autenticado | **Hueco** |
 
 ### facturacion-pagos-ms (10 endpoints, 4 cubiertos)
@@ -184,9 +185,9 @@ Rutas en `/nexus`. Son endpoints propios de Nexus, no de un servicio de negocio.
 | POST | `/v1/usuarios` | ADMIN | **Hueco** (el alta por IA usa `preparar_alta_usuario` + flujo de alta de Nexus) |
 | GET | `/v1/usuarios` | ADMIN | `listar_usuarios` |
 | GET | `/v1/usuarios/{id}` | ADMIN | `consultar_usuario` |
-| PUT | `/v1/usuarios/{id}/roles` | ADMIN | **Hueco** |
-| PUT | `/v1/usuarios/{id}/area` | ADMIN | **Hueco** |
-| POST | `/v1/usuarios/{id}/baja` | ADMIN | **Hueco** |
+| PUT | `/v1/usuarios/{id}/roles` | ADMIN | Fuera de Nexus (decisión 2026-11-08) |
+| PUT | `/v1/usuarios/{id}/area` | ADMIN | Fuera de Nexus (decisión 2026-11-08) |
+| POST | `/v1/usuarios/{id}/baja` | ADMIN | Fuera de Nexus (decisión 2026-11-08) |
 
 ## Herramientas de Nexus sin endpoint de negocio
 
@@ -201,8 +202,9 @@ Estas herramientas no llaman a un endpoint REST de un servicio:
 
 ## Observaciones
 
-- **Huecos sin decidir**: las operaciones de administración de usuarios (roles, área, baja), de contabilidad (cuentas, reversa, cierre de periodo) y de documentos legales (eliminación, purga) no tienen herramienta. No hay decisión documentada sobre si deben tenerla; conviene decidirlo antes de añadirlas.
-- **Acciones con tipo y ejecutor**: los tipos de acción que pasan por `EjecutorAccionesGateway` son PEDIDO_BORRADOR, PROSPECTO_BORRADOR, COTIZACION_CREAR, PEDIDO_REEMPLAZAR_LINEAS, PEDIDO_DEVOLVER, PROSPECTO_ESTATUS, PROSPECTO_CONVERTIR, INTERACCION_REGISTRAR, PEDIDO_CONFIRMAR, PEDIDO_CANCELAR, COTIZACION_ENVIAR, COTIZACION_ACEPTAR, COTIZACION_A_PEDIDO y POLIZA_REGISTRAR. `USUARIO_ALTA` no está en ese ejecutor: lo ejecuta el flujo de alta.
+- **Decisiones del 2026-11-08**: la administración de usuarios (roles, área, baja) y la contabilidad (cuentas, reversa, cierre de periodo) quedan fuera de Nexus. La purga de documentos también queda fuera porque es irreversible. La eliminación de documentos sí se cubre, como acción confirmable.
+- **Huecos sin decidir**: 39 endpoints sin herramienta y sin decisión registrada, por ejemplo la creación de usuarios y de comprobantes, o el cierre de órdenes de operación.
+- **Acciones con tipo y ejecutor**: los tipos de acción que pasan por `EjecutorAccionesGateway` son PEDIDO_BORRADOR, PROSPECTO_BORRADOR, COTIZACION_CREAR, PEDIDO_REEMPLAZAR_LINEAS, PEDIDO_DEVOLVER, PROSPECTO_ESTATUS, PROSPECTO_CONVERTIR, INTERACCION_REGISTRAR, PEDIDO_CONFIRMAR, PEDIDO_CANCELAR, COTIZACION_ENVIAR, COTIZACION_ACEPTAR, COTIZACION_A_PEDIDO, POLIZA_REGISTRAR y DOCUMENTO_ELIMINAR. `USUARIO_ALTA` no está en ese ejecutor: lo ejecuta el flujo de alta.
 
 ## Cómo se generó
 

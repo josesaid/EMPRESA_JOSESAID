@@ -1,5 +1,7 @@
 package com.mx.josesaid.develop.nexus.infrastructure;
 
+import java.util.Map;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
@@ -18,6 +20,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
     static final String RUTA_COTIZACIONES = "/pedidos-ventas-ms/v1/cotizaciones";
     static final String RUTA_CLIENTES = "/clientes-ms/v1/clientes";
     static final String RUTA_POLIZAS = "/contabilidad-ms/v1/polizas";
+    static final String RUTA_DOCUMENTOS = "/documentos-cumplimiento-ms/v1/documentos";
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
@@ -97,8 +100,19 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
             case AccionesPendientes.TIPO_COTIZACION_ACEPTAR -> accionCotizacion(payload, "/aceptacion");
             case AccionesPendientes.TIPO_COTIZACION_A_PEDIDO -> accionCotizacion(payload, "/pedido");
             case AccionesPendientes.TIPO_POLIZA_REGISTRAR -> enviar(RUTA_POLIZAS, payload);
+            case AccionesPendientes.TIPO_DOCUMENTO_ELIMINAR -> eliminarDocumento(payload);
             default -> throw new IllegalArgumentException("Tipo de acción no soportado: " + tipo);
         };
+    }
+
+    private String eliminarDocumento(String payload) {
+        JsonNode datos = leer(payload);
+        return gateway.post()
+                .uri(RUTA_DOCUMENTOS + "/" + datos.get("documentoId").asText() + "/eliminacion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("motivo", datos.get("motivo").asText()))
+                .retrieve()
+                .body(String.class);
     }
 
     private String accionCotizacion(String payload, String accion) {
