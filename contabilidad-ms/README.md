@@ -131,7 +131,7 @@ Errores RFC 9457 con `type` `urn:josesaid:contabilidad:error:<slug>`.
 ## 12. Reglas de duplicados
 
 - Código de cuenta único: un duplicado responde 409.
-- Pólizas: no hay deduplicación. Pendiente `Idempotency-Key` (sección 20).
+- Pólizas: no hay deduplicación por contenido. Para evitar duplicados por reintento, el alta acepta `Idempotency-Key` (ver Idempotencia de altas).
 - Un conflicto de versión por edición concurrente responde 409 (`conflicto-concurrencia`).
 
 ## 13. Eventos
@@ -188,8 +188,7 @@ Imagen multi-etapa (Maven y JRE 21), usuario sin privilegios (uid 10001), `HEALT
 - **Pendiente:** consumo de eventos de pagos y compras para generar pólizas automáticas (escenario 1 de la especificación).
 - **Pendiente:** catálogo con código agrupador SAT y exportación fiscal.
 - **Pendiente:** PDF y XLSX de estados financieros.
-- **Pendiente:** `Idempotency-Key` y métricas de negocio.
-- **Pendiente:** diagramas en PNG.
+- **Pendiente:** métricas de negocio.
 
 ## 21. Referencias
 
