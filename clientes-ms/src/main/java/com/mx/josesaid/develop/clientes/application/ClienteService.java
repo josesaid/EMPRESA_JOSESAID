@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.clientes.application;
 
+import com.mx.josesaid.develop.clientes.domain.FechasNegocio;
 import com.mx.josesaid.develop.clientes.application.Comandos.NuevoCliente;
 import com.mx.josesaid.develop.clientes.application.Comandos.NuevoContacto;
 import com.mx.josesaid.develop.clientes.domain.Cliente;
@@ -13,7 +14,6 @@ import com.mx.josesaid.develop.clientes.infrastructure.persistence.InteraccionRe
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,7 +55,7 @@ public class ClienteService {
         Instant ahora = Instant.now(reloj);
         UUID clienteId = UUID.randomUUID();
         UUID contactoId = UUID.randomUUID();
-        Cliente cliente = clientes.save(Cliente.nuevo(clienteId, cmd.razonSocial(), rfc, null, LocalDate.now(reloj), ahora));
+        Cliente cliente = clientes.save(Cliente.nuevo(clienteId, cmd.razonSocial(), rfc, null, FechasNegocio.hoy(reloj), ahora));
         contactos.save(Contacto.nuevo(contactoId, clienteId, cmd.contactoPrincipal().nombre(),
                 cmd.contactoPrincipal().correo(), cmd.contactoPrincipal().rol(), true, ahora));
 
