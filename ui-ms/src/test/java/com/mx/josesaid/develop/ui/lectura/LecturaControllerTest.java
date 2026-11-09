@@ -58,6 +58,34 @@ class LecturaControllerTest {
     }
 
     @Test
+    void clientesPaginadosConClienteAnidadoMuestranFilasYEnlaces() {
+        Map<String, Object> cliente = new LinkedHashMap<>();
+        cliente.put("id", "c-1");
+        cliente.put("razonSocial", "Comercial Prueba SA de CV");
+        cliente.put("rfc", "CPR*******B1");
+        cliente.put("estatus", "ACTIVO");
+        Map<String, Object> fila = new LinkedHashMap<>();
+        fila.put("cliente", cliente);
+        fila.put("ultimaInteraccion", null);
+        Map<String, Object> pagina = new LinkedHashMap<>();
+        pagina.put("content", List.of(fila));
+        pagina.put("page", Map.of("size", 20, "number", 0, "totalElements", 1, "totalPages", 1));
+        when(lectura.leer(eq("/clientes-ms/v1/clientes"), any())).thenReturn(pagina);
+        ConcurrentModel modelo = new ConcurrentModel();
+
+        controlador.clientes(null, "Comercial", usuario(), modelo);
+
+        List<?> filas = (List<?>) modelo.get("filas");
+        assertThat(filas).hasSize(1);
+        assertThat(((Map<?, ?>) filas.get(0)).get("razonSocial")).isEqualTo("Comercial Prueba SA de CV");
+        assertThat(((Map<?, ?>) filas.get(0)).get("_enlace")).isEqualTo("/clientes/c-1");
+        @SuppressWarnings("unchecked")
+        List<Map<String, String>> columnas = (List<Map<String, String>>) modelo.get("columnas");
+        assertThat(columnas.stream().map(c -> c.get("nombre")).toList())
+                .contains("razonSocial", "rfc", "estatus");
+    }
+
+    @Test
     void sinPermisoMuestraMensajeClaro() {
         when(lectura.leer(anyString(), any())).thenThrow(HttpClientErrorException.create(
                 HttpStatus.FORBIDDEN, "Forbidden", null, null, null));

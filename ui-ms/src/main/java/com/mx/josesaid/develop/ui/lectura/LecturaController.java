@@ -344,13 +344,40 @@ public class LecturaController {
     }
 
     private static List<?> elementos(Object cuerpo) {
+        List<?> brutos;
         if (cuerpo instanceof List<?> lista) {
-            return lista;
+            brutos = lista;
+        } else if (cuerpo instanceof Map<?, ?> mapa && mapa.get("content") instanceof List<?> contenido) {
+            brutos = contenido;
+        } else if (cuerpo instanceof Map<?, ?>) {
+            brutos = List.of(cuerpo);
+        } else {
+            return List.of();
         }
-        if (cuerpo instanceof Map<?, ?>) {
-            return List.of(cuerpo);
+        return brutos.stream().map(LecturaController::aplanarFila).toList();
+    }
+
+    /**
+     * Sube los campos escalares de un objeto anidado (por ejemplo {@code cliente}) al nivel de la fila,
+     * para que la tabla muestre sus columnas y el {@code id} genere el enlace al detalle.
+     */
+    private static Object aplanarFila(Object elemento) {
+        if (!(elemento instanceof Map<?, ?> mapa)) {
+            return elemento;
         }
-        return List.of();
+        Map<Object, Object> fila = new LinkedHashMap<>();
+        mapa.forEach((clave, valor) -> {
+            if (valor instanceof Map<?, ?> anidado) {
+                anidado.forEach((claveAnidada, valorAnidado) -> {
+                    if (!(valorAnidado instanceof Map<?, ?>) && !(valorAnidado instanceof List<?>)) {
+                        fila.putIfAbsent(claveAnidada, valorAnidado);
+                    }
+                });
+            } else {
+                fila.put(clave, valor);
+            }
+        });
+        return fila;
     }
 
     private static List<Map<String, String>> columnas(Object cuerpo) {
