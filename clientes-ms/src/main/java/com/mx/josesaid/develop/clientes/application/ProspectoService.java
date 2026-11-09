@@ -1,5 +1,6 @@
 package com.mx.josesaid.develop.clientes.application;
 
+import com.mx.josesaid.develop.clientes.domain.FechasNegocio;
 import com.mx.josesaid.develop.clientes.application.Comandos.ConvertirProspecto;
 import com.mx.josesaid.develop.clientes.application.Comandos.NuevoProspecto;
 import com.mx.josesaid.develop.clientes.domain.Cliente;
@@ -12,7 +13,6 @@ import com.mx.josesaid.develop.clientes.infrastructure.persistence.ProspectoRepo
 import io.micrometer.core.instrument.MeterRegistry;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class ProspectoService {
 
         Prospecto guardado = prospectos.save(
                 Prospecto.nuevo(UUID.randomUUID(), cmd.nombre(), cmd.correo(), rfc, cmd.fuente(),
-                        LocalDate.now(reloj), Instant.now(reloj)));
+                        FechasNegocio.hoy(reloj), Instant.now(reloj)));
         metricas.counter("clientes.altas", "tipo", "prospecto").increment();
         return guardado;
     }
@@ -84,7 +84,7 @@ public class ProspectoService {
         UUID clienteId = UUID.randomUUID();
         UUID contactoId = UUID.randomUUID();
         Cliente cliente = clientes.save(
-                Cliente.nuevo(clienteId, cmd.razonSocial(), rfc, prospecto.getId(), LocalDate.now(reloj), ahora));
+                Cliente.nuevo(clienteId, cmd.razonSocial(), rfc, prospecto.getId(), FechasNegocio.hoy(reloj), ahora));
         contactos.save(Contacto.nuevo(contactoId, clienteId, cmd.contactoPrincipal().nombre(),
                 cmd.contactoPrincipal().correo(), cmd.contactoPrincipal().rol(), true, ahora));
         prospecto.marcarConvertido(ahora);
