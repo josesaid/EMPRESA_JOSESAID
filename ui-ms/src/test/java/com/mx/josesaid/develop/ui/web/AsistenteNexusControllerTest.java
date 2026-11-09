@@ -61,6 +61,20 @@ class AsistenteNexusControllerTest {
     }
 
     @Test
+    void elHistorialSePuedeGuardarEnLaSesionDeRedis() throws Exception {
+        java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
+        try (var salida = new java.io.ObjectOutputStream(bytes)) {
+            salida.writeObject(new java.util.ArrayList<>(List.of(new AsistenteNexusController.Mensaje("Tú", "hola"))));
+        }
+        Object leido;
+        try (var entrada = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(bytes.toByteArray()))) {
+            leido = entrada.readObject();
+        }
+
+        assertThat(leido).isEqualTo(List.of(new AsistenteNexusController.Mensaje("Tú", "hola")));
+    }
+
+    @Test
     void limpiarBorraElHistorial() {
         MockHttpSession sesion = new MockHttpSession();
         sesion.setAttribute(AsistenteNexusController.CLAVE_SESION,

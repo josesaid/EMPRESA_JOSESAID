@@ -2,6 +2,7 @@ package com.mx.josesaid.develop.ui.web;
 
 import com.mx.josesaid.develop.ui.nexus.NexusCliente;
 import jakarta.servlet.http.HttpSession;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.security.core.Authentication;
@@ -25,7 +26,7 @@ public class AsistenteNexusController {
     static final int MAX_PREGUNTA = 2000;
 
     /** Un turno del chat: quién escribió y qué dijo. */
-    public record Mensaje(String autor, String texto) {
+    public record Mensaje(String autor, String texto) implements Serializable {
     }
 
     private final NexusCliente nexus;
