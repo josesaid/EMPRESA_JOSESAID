@@ -60,7 +60,9 @@ class FiltroDatosSensiblesTest {
         "Folio 1234567890123 del 2026.",
         "Pedido 1234 cliente 55 con monto 9999.50.",
         "Versión 2.0.2 del BOM de Spring AI.",
-        "Vence el 12/28 a las 18:30."
+        "Vence el 12/28 a las 18:30.",
+        "Artículo 6a78ec71-9742-4122-8fcf-ffef190453f7 con existencia.",
+        "Póliza 03ea9192-4988-4b68-8cf8-9f0192b2138f aplicada."
     })
     void noRedactaMontosFoliosYAnios(String texto) {
         var r = FiltroDatosSensibles.redactar(texto);
