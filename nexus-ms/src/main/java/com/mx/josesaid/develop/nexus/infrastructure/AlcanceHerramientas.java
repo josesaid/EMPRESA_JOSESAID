@@ -31,6 +31,7 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_VENTAS_CLIENTES = Set.of("ROLE_VENTAS");
     private static final Set<String> ROLES_COMPRAS = Set.of("ROLE_COMPRAS");
     private static final Set<String> ROLES_ALMACEN = Set.of("ROLE_ALMACEN");
+    private static final Set<String> ROLES_OPERACIONES = Set.of("ROLE_OPERACIONES");
     private static final Set<String> ROLES_ACCIONES_VENTAS = Set.of("ROLE_VENTAS");
     private static final Set<String> ROLES_USUARIOS = Set.of("ROLE_ADMIN");
     private static final Set<String> ROLES_RESUMEN_VENTAS = Set.of("ROLE_DIRECCION", "ROLE_FINANZAS");
@@ -71,6 +72,9 @@ final class AlcanceHerramientas {
             Map.entry("crear_orden_compra", ROLES_COMPRAS),
             Map.entry("registrar_recepcion_orden", ROLES_ALMACEN),
             Map.entry("cancelar_orden_compra", ROLES_COMPRAS),
+            Map.entry("crear_articulo", ROLES_OPERACIONES),
+            Map.entry("registrar_movimiento_inventario", ROLES_ALMACEN),
+            Map.entry("crear_orden_operacion", ROLES_OPERACIONES),
             Map.entry("resumen_ventas", ROLES_RESUMEN_VENTAS),
             Map.entry("consultar_proveedor", ROLES_PROVEEDORES),
             Map.entry("consultar_orden_compra", ROLES_ORDENES_COMPRA),
