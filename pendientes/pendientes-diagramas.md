@@ -105,11 +105,11 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 ### discovery-ms (1)
 - [ ] Registro de servicios y acceso protegido
 
-### ui-ms (4; sin README)
-- [ ] Arquitectura
-- [ ] Login y sesión
-- [ ] Renovación de sesión con lock
-- [ ] Reintento tras 401 y cierre de sesión
+### ui-ms (4)
+- [x] Arquitectura
+- [x] Login y sesión
+- [x] Renovación de sesión con lock
+- [x] Reintento tras 401 y cierre de sesión
 
 ### nexus-ms (3)
 - [ ] Arquitectura

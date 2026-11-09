@@ -1,0 +1,17 @@
+flowchart TD
+  A["<b>Abre una página</b>"]:::actor --> B{"<b>Tiene sesión?</b>"}:::pendiente
+  B -- "no" --> C["<b>Redirige a /login</b>"]:::servicio
+  C --> D["<b>Envía correo y contraseña</b><br/>POST auth/login por el gateway"]:::actor
+  D --> E{"<b>Credenciales correctas?</b>"}:::pendiente
+  E -- "no" --> F["<b>/login?error</b>"]:::alerta
+  E -- "sí" --> G["<b>Guarda accessToken y refreshToken</b><br/>El navegador solo recibe JSESSIONID"]:::datos
+  G --> H["<b>Roles del claim roles</b><br/>Solo para mostrar menús; el backend valida"]:::servicio
+  B -- "sí" --> I["<b>Redirige a /</b>"]:::servicio
+  H --> I
+  I -. "POST /logout" .-> J["<b>Cierre de sesión</b><br/>Ver diagrama 04"]:::pendiente
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
