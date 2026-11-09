@@ -58,9 +58,9 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [ ] Flujo de `Idempotency-Key` en altas
 
 ### contabilidad-ms (3)
-- [ ] Máquina de estados de la póliza
-- [ ] Reglas de duplicados
-- [ ] Flujo de `Idempotency-Key` en altas
+- [x] Máquina de estados de la póliza
+- [x] Reglas de duplicados
+- [x] Flujo de `Idempotency-Key` en altas
 
 ### documentos-cumplimiento-ms (3)
 - [ ] Reglas de estado del documento
