@@ -106,7 +106,7 @@ Detenga el contenedor y regrese a la imagen anterior. No hay datos que revertir.
 
 ## 20. Decisiones y pendientes
 
-- **Sin validación de JWT en el gateway:** cada servicio valida su token. Centralizarlo es una decisión pendiente.
+- **Validación de JWT en el gateway:** implementada (resource server con firma). Cada servicio vuelve a validar su token y sus roles.
 - **Sin límites de tasa ni CORS:** pendientes.
 - **Puerto 8080 en tu Mac:** si lo ocupa otra aplicación, cambie el mapeo del compose.
 

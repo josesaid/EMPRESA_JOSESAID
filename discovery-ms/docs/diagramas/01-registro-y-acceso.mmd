@@ -1,0 +1,18 @@
+flowchart TD
+  A["<b>Servicio arranca</b><br/>Con EUREKA_URL configurado"]:::actor --> B["<b>Se registra en discovery-ms</b><br/>Latido periódico"]:::servicio
+  B --> C{"<b>Credenciales HTTP Basic</b><br/>EUREKA_USUARIO y EUREKA_PASSWORD"}:::pendiente
+  C -- "no válidas o ausentes" --> E1["<b>401</b><br/>No se registra"]:::alerta
+  C -- "válidas" --> D["<b>Registro en memoria</b><br/>Visible en el panel y en /eureka/apps"]:::datos
+  D --> G["<b>gateway-ms</b><br/>Consulta el registro para enrutar"]:::servicio
+  H["<b>Petición a discovery-ms</b>"]:::actor --> I{"<b>Ruta</b>"}:::pendiente
+  I -- "salud y métricas" --> J["<b>Acceso libre</b>"]:::servicio
+  I -- "panel y API" --> K{"<b>Autenticado?</b>"}:::pendiente
+  K -- "no" --> E2["<b>401</b>"]:::alerta
+  K -- "sí" --> L["<b>Panel de Eureka</b><br/>Instancias registradas"]:::servicio
+  D -. "pendiente: se borra del registro al caer si la autoprotección está apagada" .-> M["<b>Servicio caído</b>"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
