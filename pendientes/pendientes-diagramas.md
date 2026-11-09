@@ -1,6 +1,6 @@
 # Pendientes de diagramas
 
-Inventario al 2026-11-05. Un ítem por cada área y uno por cada microservicio. Cada diagrama pendiente se entrega como fuente `.mmd` y `.png`, igual que los existentes; los de arquitectura solo llevan `.png`.
+Inventario al 2026-11-05. Estado al 2026-11-09: todos los ítems marcados, con los PR #172 a #186 fusionados. Un ítem por cada área y uno por cada microservicio. Cada diagrama pendiente se entrega como fuente `.mmd` y `.png`, igual que los existentes; los de arquitectura solo llevan `.png`.
 
 ## Lo que existe
 
@@ -17,31 +17,31 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 ## Pendientes por área (9)
 
 ### 1. Clientes y prospectos
-- [ ] Validación de `clienteId` al crear o cotizar un pedido (pedidos-ventas-ms → clientes-ms). **1 diagrama**
+- [x] Validación de `clienteId` al crear o cotizar un pedido (pedidos-ventas-ms → clientes-ms). **1 diagrama**
 
 ### 2. Compras y proveedores
-- [ ] Flujo de compra: orden, aprobación con límite, recepción y eventos hacia inventario y contabilidad. **1 diagrama**
+- [x] Flujo de compra: orden, aprobación con límite, recepción y eventos hacia inventario y contabilidad. **1 diagrama**
 
 ### 3. Contabilidad
-- [ ] Generación de pólizas a partir de eventos de compras, facturación e inventario. **1 diagrama**
+- [x] Generación de pólizas a partir de eventos de compras, facturación e inventario. **1 diagrama**
 
 ### 4. Documentos y cumplimiento
 - Sin pendiente entre servicios. El ciclo de vida interno está en el pendiente de su microservicio. **0 diagramas**
 
 ### 5. Facturación y pagos
-- [ ] Flujo de orden confirmada → comprobante → cobro, con el consumo del evento de pedidos. Los pagos a proveedores quedan fuera de este diagrama. **1 diagrama**
+- [x] Flujo de orden confirmada → comprobante → cobro, con el consumo del evento de pedidos. Los pagos a proveedores quedan fuera de este diagrama. **1 diagrama**
 
 ### 6. Inventario y operaciones
-- [ ] Flujo de existencias: recepciones de compra y movimientos por venta. **1 diagrama**
+- [x] Flujo de existencias: recepciones de compra y movimientos por venta. **1 diagrama**
 
 ### 7. Pedidos y ventas
-- [ ] Flujo de cotización → pedido → eventos hacia facturación e inventario. **1 diagrama**
+- [x] Flujo de cotización → pedido → eventos hacia facturación e inventario. **1 diagrama**
 
 ### 8. Reportes ejecutivos
-- [ ] Flujo de indicadores: cada área publica, reportes guarda por upsert y JEFE_AREA consulta. **1 diagrama**
+- [x] Flujo de indicadores: cada área publica, reportes guarda por upsert y JEFE_AREA consulta. **1 diagrama**
 
 ### 9. Usuarios y accesos
-- [ ] Flujo de alta de usuario, asignación de roles y área, y propagación a los servicios. **1 diagrama**
+- [x] Flujo de alta de usuario, asignación de roles y área, y propagación a los servicios. **1 diagrama**
 
 **Subtotal por área: 8 diagramas.**
 
@@ -51,11 +51,11 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [x] Roles y acceso a datos personales (sección 8 del README). **1**
 
 ### compras-proveedores-ms (5)
-- [ ] Máquina de estados de la orden de compra
-- [ ] Reglas de duplicados de RFC
-- [ ] Aprobación con monto límite (sección 10)
-- [ ] Recepciones y eventos publicados
-- [ ] Flujo de `Idempotency-Key` en altas
+- [x] Máquina de estados de la orden de compra
+- [x] Reglas de duplicados de RFC
+- [x] Aprobación con monto límite (sección 10)
+- [x] Recepciones y eventos publicados
+- [x] Flujo de `Idempotency-Key` en altas
 
 ### contabilidad-ms (3)
 - [x] Máquina de estados de la póliza
@@ -68,11 +68,11 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [x] Retención y purga física
 
 ### facturacion-pagos-ms (5)
-- [ ] Máquinas de estado de comprobante y cobro
-- [ ] Reglas de duplicados
-- [ ] Tasa de IVA por fecha de creación
-- [ ] Registro de pagos contra el saldo
-- [ ] Flujo de `Idempotency-Key` en altas
+- [x] Máquinas de estado de comprobante y cobro
+- [x] Reglas de duplicados
+- [x] Tasa de IVA por fecha de creación
+- [x] Registro de pagos contra el saldo
+- [x] Flujo de `Idempotency-Key` en altas
 
 ### inventario-operaciones-ms (4)
 - [x] Máquinas de estado
@@ -80,10 +80,10 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [x] Flujo de `Idempotency-Key` en altas
 
 ### pedidos-ventas-ms (4)
-- [ ] Máquina de estados del pedido
-- [ ] Reglas de duplicados
-- [ ] Validación de cliente
-- [ ] Flujo de `Idempotency-Key` en altas
+- [x] Máquina de estados del pedido
+- [x] Reglas de duplicados
+- [x] Validación de cliente
+- [x] Flujo de `Idempotency-Key` en altas
 
 ### reportes-ejecutivos-ms (3)
 - [x] Reglas de estado
@@ -100,10 +100,10 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [x] Bloqueo de 5 minutos tras 5 intentos fallidos (decisión de Said Olano, 2026-11-05)
 
 ### gateway-ms (1)
-- [ ] Validación de JWT y enrutamiento
+- [x] Validación de JWT y enrutamiento
 
 ### discovery-ms (1)
-- [ ] Registro de servicios y acceso protegido
+- [x] Registro de servicios y acceso protegido
 
 ### ui-ms (4)
 - [x] Arquitectura
