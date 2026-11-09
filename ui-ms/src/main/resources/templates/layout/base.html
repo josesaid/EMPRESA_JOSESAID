@@ -28,6 +28,7 @@
         <a class="d-block fw-bold text-white text-decoration-none mb-3" th:href="@{/}">EMPRESA_JOSESAID</a>
         <nav class="nav flex-column gap-1 small">
             <a class="nav-link text-light rounded" th:classappend="${seccion == 'inicio'} ? 'active' : ''" th:href="@{/}">Inicio</a>
+            <a class="nav-link text-light rounded" th:classappend="${seccion == 'agiliza'} ? 'active' : ''" th:href="@{/agiliza-ia}">Agiliza con IA</a>
 
             <p class="text-uppercase text-secondary mt-3 mb-1">Comercial</p>
             <a class="nav-link text-light rounded" th:classappend="${seccion == 'clientes'} ? 'active' : ''" th:href="@{/clientes}">Clientes</a>
@@ -76,8 +77,8 @@
         <main th:replace="${contenido}"></main>
     </div>
 </div>
-<section class="panel-ia bg-white rounded shadow" th:if="${sugerenciasIa != null}" aria-label="Sugerencias de IA">
-    <h2 class="h6 px-3 pt-3 mb-2">Sugerencias de IA</h2>
+<details class="panel-ia bg-white rounded shadow" open th:if="${sugerenciasIa != null}">
+    <summary class="h6 px-3 pt-3 pb-2 mb-0" style="cursor: pointer;">Sugerencias de IA</summary>
     <ol class="list-unstyled small mb-0 px-3 pb-2">
         <li class="border-top py-2" th:each="s : ${sugerenciasIa}">
             <span class="text-secondary font-monospace" th:text="${s.hora}">09:00</span>
@@ -90,6 +91,6 @@
         </li>
         <li class="py-2 text-secondary" th:if="${sugerenciasIa != null and sugerenciasIa.isEmpty()}">Sin sugerencias para tu rol.</li>
     </ol>
-</section>
+</details>
 </body>
 </html>
