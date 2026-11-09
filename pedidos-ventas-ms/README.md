@@ -163,7 +163,7 @@ Ejemplo de cotización:
 
 - Una cotización solo genera un pedido (`pedido_id` único y validación de estado).
 - Dos peticiones simultáneas de conversión: una gana y la otra recibe 409 por control optimista.
-- Idempotency-Key en POST: pendiente (sección 20).
+- Idempotency-Key en POST /v1/pedidos: implementada; ver «Idempotencia de altas».
 
 ## 13. Eventos
 
@@ -221,7 +221,7 @@ Se despliega como contenedor con la imagen `pedidos-ventas-ms:0.1.0`. Requiere l
 
 - **IVA_FRONTERIZO (8%)**: tasa tomada del catálogo propuesto; falta validación con Contabilidad.
 - **Rol Gerente de ventas**: no existe en el catálogo de usuarios-accesos; se usa DIRECCION. Pendiente de decisión.
-- **Idempotency-Key**: pendiente en POST.
+- **Idempotency-Key**: implementada en POST /v1/pedidos; ver «Idempotencia de altas».
 - **Validación de cliente existente**: implementada; ver la sección «Validación de cliente».
 - **Métricas de ventas**: ventas netas; excluye cancelados y devueltos.
 - **Inventario al confirmar**: no reserva stock todavía; se integrará con inventario-operaciones-ms.
