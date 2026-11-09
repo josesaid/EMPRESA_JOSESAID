@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina(${titulo}, ~{::main})}">
+<body>
+<main class="p-3 p-md-4">
+    <h1 class="h3 mb-3" th:text="${titulo}">Nuevo cliente</h1>
+
+    <div class="alert alert-success" th:if="${mensaje}" th:text="${mensaje}">Mensaje</div>
+    <div class="alert alert-warning" th:if="${error}" th:text="${error}">Error</div>
+
+    <form class="bg-white rounded shadow-sm p-3 col-12 col-lg-8" th:action="@{/altas/clientes}" method="post">
+        <div class="mb-3">
+            <label class="form-label" for="razonSocial">Razón social</label>
+            <input class="form-control" id="razonSocial" type="text" name="razonSocial" maxlength="250" required
+                   th:value="${valores?.get('razonSocial')}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="rfc">RFC</label>
+            <input class="form-control text-uppercase" id="rfc" type="text" name="rfc" maxlength="13" required
+                   th:value="${valores?.get('rfc')}">
+        </div>
+
+        <h2 class="h6 mt-4">Contacto principal</h2>
+        <div class="mb-3">
+            <label class="form-label" for="contactoNombre">Nombre</label>
+            <input class="form-control" id="contactoNombre" type="text" name="contactoNombre" maxlength="200" required
+                   th:value="${valores?.get('contactoNombre')}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="contactoCorreo">Correo</label>
+            <input class="form-control" id="contactoCorreo" type="email" name="contactoCorreo" maxlength="254" required
+                   th:value="${valores?.get('contactoCorreo')}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="contactoRol">Rol de contacto</label>
+            <select class="form-select" id="contactoRol" name="contactoRol" required>
+                <option th:each="rol : ${roles}" th:value="${rol}" th:text="${rol}"
+                        th:selected="${valores != null and valores.get('contactoRol') == rol}">COMPRAS</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar cliente</button>
+    </form>
+</main>
+</body>
+</html>
