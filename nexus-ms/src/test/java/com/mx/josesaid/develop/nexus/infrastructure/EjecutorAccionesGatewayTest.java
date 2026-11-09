@@ -84,6 +84,56 @@ class EjecutorAccionesGatewayTest {
     }
 
     @Test
+    void crearClienteEnviaElAltaAClientesMs() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        String payload = "{\"razonSocial\":\"Acme\",\"rfc\":\"MOGJ850315AB3\","
+                + "\"contactoPrincipal\":{\"nombre\":\"Ana\",\"correo\":\"ana@ejemplo.com\",\"rol\":\"COMPRAS\"}}";
+        servidor.expect(requestTo("http://gateway/clientes-ms/v1/clientes"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json(payload))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\"}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build()).ejecutar(AccionesPendientes.TIPO_CLIENTE_CREAR, payload);
+
+        servidor.verify();
+    }
+
+    @Test
+    void actualizarClienteEnviaSoloLaRazonSocial() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/clientes-ms/v1/clientes/" + ID))
+                .andExpect(method(HttpMethod.PATCH))
+                .andExpect(content().json("{\"razonSocial\":\"Acme SA\"}"))
+                .andRespond(withSuccess("{\"id\":\"" + ID + "\"}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build())
+                .ejecutar(AccionesPendientes.TIPO_CLIENTE_ACTUALIZAR,
+                        "{\"clienteId\":\"" + ID + "\",\"razonSocial\":\"Acme SA\"}");
+
+        servidor.verify();
+    }
+
+    @Test
+    void agregarContactoQuitaElClienteIdDelCuerpo() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/clientes-ms/v1/clientes/" + ID + "/contactos"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"nombre\":\"Luis\",\"correo\":\"luis@ejemplo.com\",\"rol\":\"PAGOS\",\"principal\":false}"))
+                .andExpect(content().string(org.hamcrest.Matchers.not(containsString("clienteId"))))
+                .andRespond(withSuccess("{\"id\":\"c2\"}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build())
+                .ejecutar(AccionesPendientes.TIPO_CLIENTE_CONTACTO_AGREGAR,
+                        "{\"clienteId\":\"" + ID + "\",\"nombre\":\"Luis\",\"correo\":\"luis@ejemplo.com\","
+                                + "\"rol\":\"PAGOS\",\"principal\":false}");
+
+        servidor.verify();
+    }
+
+    @Test
     void tipoDesconocidoNoSeEjecuta() {
         RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
         MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();

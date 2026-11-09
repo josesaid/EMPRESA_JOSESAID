@@ -127,8 +127,8 @@ public class NexusConfig {
     }
 
     @Bean
-    HerramientasClientes herramientasClientes(RestClient gatewayClient) {
-        return new HerramientasClientes(gatewayClient);
+    HerramientasClientes herramientasClientes(RestClient gatewayClient, AccionesPendientes acciones) {
+        return new HerramientasClientes(gatewayClient, acciones);
     }
 
     @Bean
