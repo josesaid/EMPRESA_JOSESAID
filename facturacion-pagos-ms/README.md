@@ -131,7 +131,7 @@ Los errores siguen RFC 9457 (`ProblemDetail`) con `type` `urn:josesaid:facturaci
 ## 12. Reglas de duplicados
 
 - Folio: único por base de datos. El folio es provisional y se genera en la emisión.
-- Pagos: no hay deduplicación todavía. Dos envíos iguales registran dos pagos. Pendiente `Idempotency-Key` (sección 20).
+- Pagos: con la cabecera `Idempotency-Key` no se duplican. Sin ella, dos envíos iguales registran dos pagos (ver «Idempotencia de altas»).
 
 ## 13. Eventos
 

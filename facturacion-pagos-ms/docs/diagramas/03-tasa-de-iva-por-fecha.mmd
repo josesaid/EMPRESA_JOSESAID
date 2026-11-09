@@ -1,0 +1,13 @@
+flowchart TD
+  A["<b>Creación del comprobante</b><br/>El cliente no envía la tasa"]:::actor --> B{"<b>Fecha del comprobante antes del 1 de noviembre de 2026?</b>"}:::pendiente
+  B -- "sí" --> C["<b>Tasa general 16 %</b>"]:::servicio
+  B -- "no" --> D["<b>Tasa fronteriza 8 %</b><br/>Todas las operaciones"]:::servicio
+  C --> E["<b>El comprobante conserva la tasa</b>"]:::datos
+  D --> E
+  P["<b>Pendiente</b><br/>El README dice creación; el Javadoc dice emisión. Confirmar cuál aplica"]:::pendiente
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
