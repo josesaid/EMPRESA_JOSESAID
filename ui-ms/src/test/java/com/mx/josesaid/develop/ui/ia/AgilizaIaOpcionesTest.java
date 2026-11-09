@@ -35,4 +35,15 @@ class AgilizaIaOpcionesTest {
         assertThat(SugerenciasIa.opcion(List.of("VENTAS"), null)).isEmpty();
         assertThat(SugerenciasIa.opciones(List.of("DESCONOCIDO"))).isEmpty();
     }
+
+    @Test
+    void cadaOpcionDelCatalogoTieneSuPantalla() {
+        List<SugerenciasIa.Opcion> todas = SugerenciasIa.opciones(SugerenciasIa.PRIORIDAD);
+
+        assertThat(todas).hasSize(SugerenciasIa.TAREAS.size());
+        assertThat(todas).allSatisfy(o -> {
+            assertThat(SugerenciasIa.TAREAS).containsKey(o.id());
+            assertThat(o.tarea().ruta()).startsWith("/");
+        });
+    }
 }
