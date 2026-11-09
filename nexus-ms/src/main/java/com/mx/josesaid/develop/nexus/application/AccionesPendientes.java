@@ -36,6 +36,7 @@ public final class AccionesPendientes {
     public static final String TIPO_ARTICULO_CREAR = "ARTICULO_CREAR";
     public static final String TIPO_MOVIMIENTO_REGISTRAR = "MOVIMIENTO_REGISTRAR";
     public static final String TIPO_ORDEN_OPERACION_CREAR = "ORDEN_OPERACION_CREAR";
+    public static final String TIPO_COMPROBANTE_PAGO_REGISTRAR = "COMPROBANTE_PAGO_REGISTRAR";
     /** El alta no la ejecuta Nexus: la pantalla de altas crea el usuario con la contraseña que escribe el administrador. */
     public static final String TIPO_USUARIO_ALTA = "USUARIO_ALTA";
     public static final Duration VIGENCIA = Duration.ofMinutes(10);

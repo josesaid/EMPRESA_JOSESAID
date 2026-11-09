@@ -24,6 +24,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
     static final String RUTA_PROVEEDORES = "/compras-proveedores-ms/v1/proveedores";
     static final String RUTA_ORDENES_COMPRA = "/compras-proveedores-ms/v1/ordenes-compra";
     static final String RUTA_INVENTARIO = "/inventario-operaciones-ms/v1";
+    static final String RUTA_FACTURACION = "/facturacion-pagos-ms/v1";
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
@@ -110,6 +111,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
             case AccionesPendientes.TIPO_PROVEEDOR_CREAR -> enviar(RUTA_PROVEEDORES, payload);
             case AccionesPendientes.TIPO_ARTICULO_CREAR -> enviar(RUTA_INVENTARIO + "/articulos", payload);
             case AccionesPendientes.TIPO_MOVIMIENTO_REGISTRAR -> enviarMovimiento(payload);
+            case AccionesPendientes.TIPO_COMPROBANTE_PAGO_REGISTRAR -> registrarPagoComprobante(payload);
             case AccionesPendientes.TIPO_ORDEN_OPERACION_CREAR -> enviar(RUTA_INVENTARIO + "/ordenes-operacion", payload);
             case AccionesPendientes.TIPO_ORDEN_COMPRA_CREAR -> enviar(RUTA_ORDENES_COMPRA, payload);
             case AccionesPendientes.TIPO_ORDEN_COMPRA_RECEPCION ->
@@ -126,6 +128,20 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
                 .uri(RUTA_CLIENTES + "/" + datos.get("clienteId").asText())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("razonSocial", datos.get("razonSocial").asText()))
+                .retrieve()
+                .body(String.class);
+    }
+
+    /** Registra el cobro con la clave de idempotencia de la acción, que no forma parte del cuerpo. */
+    private String registrarPagoComprobante(String payload) {
+        ObjectNode cuerpo = ((ObjectNode) leer(payload)).deepCopy();
+        String comprobanteId = cuerpo.remove("comprobanteId").asText();
+        String clave = cuerpo.remove("idempotencyKey").asText();
+        return gateway.post()
+                .uri(RUTA_FACTURACION + "/comprobantes/" + comprobanteId + "/pagos")
+                .header("Idempotency-Key", clave)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(cuerpo.toString())
                 .retrieve()
                 .body(String.class);
     }

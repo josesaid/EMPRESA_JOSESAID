@@ -221,6 +221,25 @@ class EjecutorAccionesGatewayTest {
     }
 
     @Test
+    void pagoDeComprobanteEnviaLaClaveYElMontoSinElId() {
+        RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
+        MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
+        servidor.expect(requestTo("http://gateway/facturacion-pagos-ms/v1/comprobantes/" + ID + "/pagos"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header("Idempotency-Key", "clave-pago-1"))
+                .andExpect(content().json("{\"monto\":1500.00,\"fechaPago\":\"2026-11-08\"}"))
+                .andExpect(content().string(org.hamcrest.Matchers.not(containsString("comprobanteId"))))
+                .andRespond(withSuccess("{\"id\":\"p1\"}", MediaType.APPLICATION_JSON));
+
+        new EjecutorAccionesGateway(builder.build())
+                .ejecutar(AccionesPendientes.TIPO_COMPROBANTE_PAGO_REGISTRAR,
+                        "{\"comprobanteId\":\"" + ID + "\",\"monto\":1500.00,\"fechaPago\":\"2026-11-08\","
+                                + "\"idempotencyKey\":\"clave-pago-1\"}");
+
+        servidor.verify();
+    }
+
+    @Test
     void tipoDesconocidoNoSeEjecuta() {
         RestClient.Builder builder = RestClient.builder().baseUrl("http://gateway");
         MockRestServiceServer servidor = MockRestServiceServer.bindTo(builder).build();
