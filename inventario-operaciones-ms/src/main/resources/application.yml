@@ -53,6 +53,11 @@ inventario:
   outbox:
     # Cada cuántos milisegundos el retransmisor envía eventos pendientes a Kafka
     intervalo-ms: ${OUTBOX_INTERVALO_MS:5000}
+  pedidos:
+    # Topic de eventos de pedidos-ventas-ms (confirmación y entrega)
+    topico: ${PEDIDOS_TOPICO:pedidos.eventos}
+    # Almacén del que se reservan y descuentan los pedidos. Debe ser el UUID de un almacén existente.
+    almacen-id: ${INVENTARIO_ALMACEN_PEDIDOS_ID:}
 
 # Descubrimiento de servicios: se registra al arrancar en discovery-ms.
 # Si discovery-ms no responde, el servicio arranca igual y se registra cuando el registro esté arriba.

@@ -54,6 +54,16 @@ public class Existencia {
         }
     }
 
+    /** Libera parte de lo reservado, por ejemplo al entregar el pedido que la reservó. */
+    public void liberarReserva(BigDecimal cantidadLiberada) {
+        BigDecimal c = MovimientoInventario.validarCantidad(TipoMovimiento.RESERVA, cantidadLiberada);
+        if (c.compareTo(reservado) > 0) {
+            throw new ConflictoException("No se puede liberar más de lo reservado: reservado "
+                    + reservado.toPlainString() + ", solicitado " + c.toPlainString());
+        }
+        reservado = reservado.subtract(c);
+    }
+
     public BigDecimal disponible() {
         return cantidad.subtract(reservado);
     }

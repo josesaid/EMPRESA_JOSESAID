@@ -18,6 +18,8 @@ services:
       DB_PASSWORD: ${INVENTARIO_DB_PASSWORD:?Defina INVENTARIO_DB_PASSWORD en .env}
       # Broker interno de Kafka (listener INTERNAL definido en la raíz)
       KAFKA_BOOTSTRAP: kafka:29092
+      # Almacén que usan los pedidos para reservar y descontar (UUID de un almacén existente)
+      INVENTARIO_ALMACEN_PEDIDOS_ID: ${INVENTARIO_ALMACEN_PEDIDOS_ID:-}
       # Secreto compartido con usuarios-accesos-ms: sin él no se validan los tokens
       JWT_JWKS_URI: http://usuarios-accesos-ms:8081/.well-known/jwks.json
     # No hay depends_on: Compose rechaza depender de servicios de otro archivo.
