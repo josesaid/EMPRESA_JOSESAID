@@ -127,7 +127,7 @@ Errores RFC 9457 con `type` `urn:josesaid:inventario-operaciones:error:<slug>`.
 
 - SKU único: un duplicado responde 409.
 - Un par artículo-almacén tiene una sola fila de existencia.
-- Dos movimientos iguales registran dos movimientos. Pendiente `Idempotency-Key`.
+- Dos movimientos iguales registran dos movimientos, salvo que se envíe `Idempotency-Key` (ver Idempotencia de altas).
 - Edición concurrente de una existencia responde 409 (`conflicto-concurrencia`).
 
 ## 13. Eventos
@@ -184,7 +184,7 @@ Las migraciones no revierten solas. Para volver atrás, despliega la imagen ante
 - **Pendiente:** liberar reservas. Hoy una reserva se mantiene hasta que la operación la consume.
 - **Pendiente:** recepción automática desde compras y reserva automática desde ventas (eventos).
 - **Pendiente:** conteo cíclico con dispositivos móviles e integración con sensores.
-- **Pendiente:** `Idempotency-Key`, métricas de negocio y diagramas en PNG.
+- **Pendiente:** métricas de negocio.
 
 ## 21. Referencias
 

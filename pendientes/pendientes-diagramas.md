@@ -74,10 +74,10 @@ El conteo sale de las secciones documentadas de cada servicio: máquinas o regla
 - [ ] Registro de pagos contra el saldo
 - [ ] Flujo de `Idempotency-Key` en altas
 
-### inventario-operaciones-ms (3)
-- [ ] Máquinas de estado
-- [ ] Reglas de duplicados
-- [ ] Flujo de `Idempotency-Key` en altas
+### inventario-operaciones-ms (4)
+- [x] Máquinas de estado
+- [x] Reglas de duplicados
+- [x] Flujo de `Idempotency-Key` en altas
 
 ### pedidos-ventas-ms (4)
 - [ ] Máquina de estados del pedido
