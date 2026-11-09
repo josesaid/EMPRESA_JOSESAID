@@ -2,7 +2,7 @@
 
 Inventario de los endpoints REST de los servicios de EMPRESA_JOSESAID, con el rol que exige cada uno, la herramienta de Nexus que lo envuelve (si existe) y los huecos.
 
-Estado al 2026-11-07. Fuente: anotaciones `@PreAuthorize`, `@*Mapping` y clases `Herramientas*.java` de `nexus-ms`, leídas directamente del código.
+Estado al 2026-11-08. Fuente: anotaciones `@PreAuthorize`, `@*Mapping` y clases `Herramientas*.java` de `nexus-ms`, leídas directamente del código.
 
 ## Cómo consume la IA estos endpoints
 
@@ -21,12 +21,12 @@ Para conectar un cliente MCP, ver [conexion-mcp.md](conexion-mcp.md).
 | Endpoints REST totales | 101 |
 | Excluidos por diseño (autenticación, JWKS y el propio endpoint de chat) | 7 |
 | Endpoints aplicables a IA | 94 |
-| Con herramienta de Nexus | 45 (48 %) |
+| Con herramienta de Nexus | 66 (70 %) |
 | Fuera de Nexus por decisión (2026-11-08) | 7 |
 | Sin herramienta por flujo propio (alta de usuario de Nexus) | 3 |
-| Huecos sin decidir | 39 (41 %) |
+| Huecos sin decidir | 18 (19 %) |
 
-Los 45 cubiertos incluyen `POST /v1/polizas` de contabilidad, que se registra solo a través de la acción `POLIZA_REGISTRAR` (`sugerir_poliza` → `confirmar_accion`).
+Los 66 cubiertos incluyen `POST /v1/polizas` de contabilidad, que se registra solo a través de la acción `POLIZA_REGISTRAR` (`sugerir_poliza` → `confirmar_accion`).
 
 Los 7 excluidos: `POST /v1/auth/login`, `POST /v1/auth/refresh`, `POST /v1/auth/cambiar-password-inicial`, `POST /v1/auth/logout`, `POST /v1/auth/logout-todas`, `GET /.well-known/jwks.json` y `POST /nexus/consultas` (es el endpoint del chat, no una herramienta).
 
@@ -38,19 +38,19 @@ Convención: la columna **Ruta** es la del servicio. El prefijo del gateway es e
 
 | Método | Ruta | Rol requerido | Herramienta Nexus | 
 |---|---|---|---|
-| POST | `/v1/clientes` | ADMIN | **Hueco** |
+| POST | `/v1/clientes` | ADMIN | `crear_cliente (CLIENTE_CREAR)` |
 | GET | `/v1/clientes` | VENTAS, ADMIN | `buscar_clientes` |
 | GET | `/v1/clientes/{id}` | VENTAS, ADMIN | `obtener_cliente` |
-| PATCH | `/v1/clientes/{id}` | ADMIN | **Hueco** |
+| PATCH | `/v1/clientes/{id}` | ADMIN | `actualizar_cliente (CLIENTE_ACTUALIZAR)` |
 | PATCH | `/v1/clientes/{id}/estatus` | ADMIN | **Hueco** |
-| POST | `/v1/clientes/{id}/contactos` | ADMIN | **Hueco** |
+| POST | `/v1/clientes/{id}/contactos` | ADMIN | `agregar_contacto_cliente (CLIENTE_CONTACTO_AGREGAR)` |
 | POST | `/v1/contactos/{contactoId}/consentimientos` | LEGAL | **Hueco** |
 | POST | `/v1/consentimientos/{id}/revocacion` | LEGAL | **Hueco** |
 | POST | `/v1/clientes/{clienteId}/interacciones` | VENTAS | `registrar_interaccion_cliente` (INTERACCION_REGISTRAR) |
-| GET | `/v1/clientes/{clienteId}/interacciones` | VENTAS | **Hueco** |
-| GET | `/v1/metricas/conversion` | VENTAS | **Hueco** |
+| GET | `/v1/clientes/{clienteId}/interacciones` | VENTAS | `consultar_interacciones_cliente` |
+| GET | `/v1/metricas/conversion` | VENTAS | `consultar_metricas_conversion` |
 | POST | `/v1/prospectos` | VENTAS | `crear_prospecto_borrador` (PROSPECTO_BORRADOR) |
-| GET | `/v1/prospectos/{id}` | VENTAS | **Hueco** |
+| GET | `/v1/prospectos/{id}` | VENTAS | `obtener_prospecto` |
 | PATCH | `/v1/prospectos/{id}/estatus` | VENTAS | `cambiar_estatus_prospecto` (PROSPECTO_ESTATUS) |
 | POST | `/v1/prospectos/{id}/conversion` | VENTAS, ADMIN | `convertir_prospecto_en_cliente` (PROSPECTO_CONVERTIR) |
 
@@ -58,15 +58,15 @@ Convención: la columna **Ruta** es la del servicio. El prefijo del gateway es e
 
 | Método | Ruta | Rol requerido | Herramienta Nexus |
 |---|---|---|---|
-| POST | `/v1/proveedores` | COMPRAS | **Hueco** |
+| POST | `/v1/proveedores` | COMPRAS | `crear_proveedor (PROVEEDOR_CREAR)` |
 | GET | `/v1/proveedores` | COMPRAS, FINANZAS | `buscar_proveedores` |
 | GET | `/v1/proveedores/{id}` | COMPRAS, FINANZAS | `consultar_proveedor` |
-| POST | `/v1/ordenes-compra` | COMPRAS | **Hueco** |
+| POST | `/v1/ordenes-compra` | COMPRAS | `crear_orden_compra (ORDEN_COMPRA_CREAR)` |
 | GET | `/v1/ordenes-compra` | COMPRAS, ALMACEN, DIRECCION | `listar_ordenes_compra` |
 | GET | `/v1/ordenes-compra/{id}` | COMPRAS, ALMACEN, DIRECCION | `consultar_orden_compra` |
 | POST | `/v1/ordenes-compra/{id}/aprobacion` | COMPRAS, DIRECCION | **Hueco** |
-| POST | `/v1/ordenes-compra/{id}/recepciones` | ALMACEN | **Hueco** |
-| POST | `/v1/ordenes-compra/{id}/cancelacion` | COMPRAS | **Hueco** |
+| POST | `/v1/ordenes-compra/{id}/recepciones` | ALMACEN | `registrar_recepcion_orden (ORDEN_COMPRA_RECEPCION)` |
+| POST | `/v1/ordenes-compra/{id}/cancelacion` | COMPRAS | `cancelar_orden_compra (ORDEN_COMPRA_CANCELAR)` |
 
 ### contabilidad-ms (8 endpoints, 5 cubiertos)
 
@@ -93,7 +93,7 @@ Convención: la columna **Ruta** es la del servicio. El prefijo del gateway es e
 | GET | `/v1/documentos/por-vencer` | LEGAL, DIRECCION | `consultar_documentos_por_vencer` |
 | POST | `/v1/documentos/{id}/eliminacion` | LEGAL | `solicitar_eliminacion_documento` (POLIZA_REGISTRAR, o) |
 | POST | `/v1/documentos/{id}/purga` | LEGAL | Fuera de Nexus (decisión 2026-11-08) |
-| GET | `/v1/catalogos/tipos-documento` | Autenticado | **Hueco** |
+| GET | `/v1/catalogos/tipos-documento` | Autenticado | `consultar_tipos_documento` |
 
 ### facturacion-pagos-ms (10 endpoints, 4 cubiertos)
 
@@ -105,22 +105,22 @@ Convención: la columna **Ruta** es la del servicio. El prefijo del gateway es e
 | GET | `/v1/comprobantes/{id}` | FINANZAS, VENTAS | `consultar_comprobante` |
 | POST | `/v1/comprobantes/{id}/emision` | FINANZAS | **Hueco** |
 | POST | `/v1/comprobantes/{id}/cancelacion` | FINANZAS | **Hueco** |
-| POST | `/v1/comprobantes/{id}/pagos` | FINANZAS | **Hueco** |
+| POST | `/v1/comprobantes/{id}/pagos` | FINANZAS | `registrar_pago_comprobante (COMPROBANTE_PAGO_REGISTRAR)` |
 | GET | `/v1/cuentas-por-pagar/pagos` | FINANZAS | `listar_pagos_proveedor` |
-| GET | `/v1/cuentas-por-pagar/{id}` | FINANZAS | **Hueco** |
+| GET | `/v1/cuentas-por-pagar/{id}` | FINANZAS | `consultar_cuenta_por_pagar` |
 | POST | `/v1/cuentas-por-pagar/{id}/pagos` | FINANZAS | **Hueco** |
 
 ### inventario-operaciones-ms (9 endpoints, 4 cubiertos)
 
 | Método | Ruta | Rol requerido | Herramienta Nexus |
 |---|---|---|---|
-| POST | `/v1/articulos` | OPERACIONES | **Hueco** |
+| POST | `/v1/articulos` | OPERACIONES | `crear_articulo (ARTICULO_CREAR)` |
 | POST | `/v1/almacenes` | ALMACEN | **Hueco** |
-| POST | `/v1/movimientos` | ALMACEN | **Hueco** |
+| POST | `/v1/movimientos` | ALMACEN | `registrar_movimiento_inventario (MOVIMIENTO_REGISTRAR)` |
 | GET | `/v1/articulos/bajo-minimo` | ALMACEN, COMPRAS | `listar_articulos_bajo_minimo` |
 | GET | `/v1/movimientos` | ALMACEN, COMPRAS | `listar_movimientos_articulo` |
 | GET | `/v1/existencias` | ALMACEN, COMPRAS, VENTAS | `consultar_existencias` |
-| POST | `/v1/ordenes-operacion` | OPERACIONES | **Hueco** |
+| POST | `/v1/ordenes-operacion` | OPERACIONES | `crear_orden_operacion (ORDEN_OPERACION_CREAR)` |
 | POST | `/v1/ordenes-operacion/{id}/cierre` | OPERACIONES | **Hueco** |
 | GET | `/v1/lotes/{lote}/trazabilidad` | OPERACIONES, CALIDAD | `consultar_trazabilidad_lote` |
 
@@ -134,7 +134,7 @@ Rutas en `/nexus`. Son endpoints propios de Nexus, no de un servicio de negocio.
 | GET | `/nexus/acciones/{id}/alta` | ADMIN | Sin herramienta (flujo de alta) |
 | POST | `/nexus/acciones/{id}/alta/verificacion` | ADMIN | Sin herramienta (flujo de alta) |
 | POST | `/nexus/acciones/{id}/alta/completacion` | ADMIN | Sin herramienta (flujo de alta, completa `preparar_alta_usuario`) |
-| GET | `/nexus/acciones/{id}` | VENTAS, CONTADOR, ADMIN | **Hueco** |
+| GET | `/nexus/acciones/{id}` | VENTAS, CONTADOR, ADMIN | `consultar_estado_accion` |
 | POST | `/nexus/acciones/{id}/cancelacion` | VENTAS, CONTADOR | `cancelar_accion` (envoltorio) |
 | POST | `/nexus/consultas` | Autenticado | No aplica (es el endpoint del chat) |
 | POST | `/nexus/polizas/sugerencias` | CONTADOR | `sugerir_poliza` |
@@ -144,21 +144,21 @@ Rutas en `/nexus`. Son endpoints propios de Nexus, no de un servicio de negocio.
 | Método | Ruta | Rol requerido | Herramienta Nexus |
 |---|---|---|---|
 | POST | `/v1/cotizaciones` | VENTAS, DIRECCION | `crear_cotizacion_borrador` (COTIZACION_CREAR) |
-| GET | `/v1/cotizaciones/{id}` | VENTAS, DIRECCION, FINANZAS | **Hueco** |
+| GET | `/v1/cotizaciones/{id}` | VENTAS, DIRECCION, FINANZAS | `obtener_cotizacion` |
 | POST | `/v1/cotizaciones/{id}/envio` | VENTAS, DIRECCION | `enviar_cotizacion` (COTIZACION_ENVIAR) |
 | POST | `/v1/cotizaciones/{id}/aceptacion` | VENTAS, DIRECCION | `aceptar_cotizacion` (COTIZACION_ACEPTAR) |
 | POST | `/v1/cotizaciones/{id}/pedido` | VENTAS, DIRECCION | `convertir_cotizacion_en_pedido` (COTIZACION_A_PEDIDO) |
 | POST | `/v1/pedidos` | VENTAS, DIRECCION | `preparar_pedido_borrador` (PEDIDO_BORRADOR) |
 | GET | `/v1/pedidos` | VENTAS, DIRECCION, FINANZAS | `consultar_pedidos` |
-| GET | `/v1/pedidos/{id}` | VENTAS, DIRECCION, FINANZAS, ALMACEN | **Hueco** |
+| GET | `/v1/pedidos/{id}` | VENTAS, DIRECCION, FINANZAS, ALMACEN | `obtener_pedido` |
 | PUT | `/v1/pedidos/{id}/lineas` | VENTAS, DIRECCION | `reemplazar_lineas_pedido` (PEDIDO_REEMPLAZAR_LINEAS) |
 | POST | `/v1/pedidos/{id}/confirmacion` | VENTAS, DIRECCION | `confirmar_pedido` (PEDIDO_CONFIRMAR) |
 | POST | `/v1/pedidos/{id}/entrega` | ALMACEN, DIRECCION | **Hueco** |
 | POST | `/v1/pedidos/{id}/cancelacion` | VENTAS, DIRECCION | `cancelar_pedido` (PEDIDO_CANCELAR) |
 | POST | `/v1/pedidos/{id}/devolucion` | VENTAS, DIRECCION | `registrar_devolucion_pedido` (PEDIDO_DEVOLVER) |
 | GET | `/v1/metricas/ventas` | DIRECCION, FINANZAS | `resumen_ventas` |
-| GET | `/v1/catalogos/tasas-iva` | Autenticado | **Hueco** |
-| GET | `/v1/catalogos/monedas` | Autenticado | **Hueco** |
+| GET | `/v1/catalogos/tasas-iva` | Autenticado | `consultar_tasas_iva` |
+| GET | `/v1/catalogos/monedas` | Autenticado | `consultar_monedas` |
 
 ### reportes-ejecutivos-ms (5 endpoints, 2 cubiertos)
 
