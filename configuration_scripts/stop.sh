@@ -206,6 +206,12 @@ apagar_todo() {
   else
     echo "   ${ROJO}❌ docker compose down falló${RST}"; ERRORES=$((ERRORES + 1))
   fi
+  # ui-ms es un proyecto Compose aparte: se detiene con su propio nombre de proyecto
+  if ejecutar docker compose --env-file .env -p ui-ms -f ui-ms/docker-compose.yml down --remove-orphans; then
+    hecho "UI (ui-ms) detenida"
+  else
+    echo "   ${AMARILLO}⚠️  No se pudo detener ui-ms (puede que ya estuviera apagada)${RST}"
+  fi
   if [ "$DRY_RUN" = 0 ]; then
     restantes=$(docker ps -q --filter "label=$ETIQUETA_PROYECTO" | wc -l | tr -d ' ')
     if [ "$restantes" = "0" ]; then
