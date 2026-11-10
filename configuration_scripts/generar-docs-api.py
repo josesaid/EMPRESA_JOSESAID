@@ -260,39 +260,454 @@ def construir_spec(svc):
     }, len(endpoints)
 
 
-def pagina_swagger(svc, spec):
-    json_txt = json.dumps(spec, ensure_ascii=False, indent=2).replace("</", "<\\/")
-    return f"""<!doctype html>
+# ---------- Fichas por microservicio ----------
+
+GITHUB_BLOB = "https://github.com/josesaid/EMPRESA_JOSESAID/blob/main"
+GITHUB_RAW = "https://raw.githubusercontent.com/josesaid/EMPRESA_JOSESAID/main"
+EXTENSIONES_IMAGEN = (".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp")
+EXTENSIONES_DIAGRAMA = (".mmd", ".png", ".svg")
+
+
+def servicios_documentados():
+    return sorted(
+        d for d in os.listdir(RAIZ)
+        if os.path.isdir(os.path.join(RAIZ, d)) and d not in EXCLUIDOS
+        and os.path.exists(os.path.join(RAIZ, d, "pom.xml")))
+
+
+def texto_conteo(n):
+    if not n:
+        return "Sin API REST"
+    return f"{n} endpoint{'s' if n != 1 else ''}"
+
+
+def leer_pom(svc_dir):
+    texto = leer(os.path.join(svc_dir, "pom.xml"))
+
+    def etiqueta(nombre):
+        m = re.search(rf"<{nombre}>([^<]*)</{nombre}>", texto)
+        return m.group(1).strip() if m else ""
+
+    java = re.search(r"<java\.version>([^<]+)</java\.version>", texto)
+    padre = re.search(r"<parent>[\s\S]*?<version>([^<]+)</version>", texto)
+    return {
+        "descripcion": etiqueta("description"),
+        "java": java.group(1).strip() if java else "",
+        "spring_boot": padre.group(1).strip() if padre else "",
+    }
+
+
+def puerto_de(svc_dir):
+    for ruta in sorted(glob.glob(os.path.join(svc_dir, "src", "main", "resources", "application*.y*ml"))):
+        dentro = False
+        for linea in leer(ruta).splitlines():
+            if re.match(r"^server:\s*$", linea):
+                dentro = True
+                continue
+            if dentro and linea and not linea.startswith((" ", "\t")):
+                dentro = False
+            if dentro:
+                m = re.match(r"^\s+port:\s*(.+)$", linea)
+                if m:
+                    valor = m.group(1).strip()
+                    d = re.search(r":(\d+)\}", valor)
+                    return d.group(1) if d else valor
+    return ""
+
+
+def filas_permisos(spec):
+    filas = []
+    if not spec:
+        return filas
+    for ruta, ops in spec["paths"].items():
+        for verbo, op in ops.items():
+            desc = op.get("description", "")
+            roles = desc.replace("Roles requeridos: ", "") if desc.startswith("Roles requeridos:") else ""
+            filas.append({"verbo": verbo.upper(), "ruta": ruta,
+                          "operacion": op.get("summary", ""), "roles": roles})
+    return filas
+
+
+def reescribir_readme(svc, texto):
+    import posixpath
+
+    def cambiar(m):
+        ruta = m.group(1)
+        if re.match(r"^(https?:|mailto:|#|/)", ruta):
+            return m.group(0)
+        if ruta.startswith("docs/diagramas/"):
+            return "](" + svc + "/diagramas/" + ruta[len("docs/diagramas/"):] + ")"
+        repo = posixpath.normpath(posixpath.join(svc, ruta))
+        base = GITHUB_RAW if ruta.lower().endswith(EXTENSIONES_IMAGEN) else GITHUB_BLOB
+        return "](" + base + "/" + repo + ")"
+
+    return re.sub(r"\]\(([^)\s]+)\)", cambiar, texto)
+
+
+def copiar_diagramas(svc):
+    import shutil
+    origen = os.path.join(RAIZ, svc, "docs", "diagramas")
+    destino = os.path.join(SALIDA, svc, "diagramas")
+    if os.path.isdir(destino):
+        shutil.rmtree(destino)
+    if not os.path.isdir(origen):
+        return []
+    os.makedirs(destino, exist_ok=True)
+    grupos = {}
+    for nombre in sorted(os.listdir(origen)):
+        base, ext = os.path.splitext(nombre)
+        ext = ext.lower()
+        if ext not in EXTENSIONES_DIAGRAMA:
+            continue
+        shutil.copy2(os.path.join(origen, nombre), os.path.join(destino, nombre))
+        g = grupos.setdefault(base, {"titulo": base.replace("-", " ").replace("_", " "),
+                                     "archivos": [], "imagen": None, "codigo": None})
+        ruta_web = f"{svc}/diagramas/{nombre}"
+        g["archivos"].append(ruta_web)
+        if ext == ".mmd":
+            g["codigo"] = leer(os.path.join(origen, nombre))
+        else:
+            g["imagen"] = ruta_web
+    return list(grupos.values())
+
+
+PLANTILLA_FICHA = r"""<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>API {html.escape(svc)} · Swagger</title>
-<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@{SWAGGER_VERSION}/swagger-ui.css">
-<style>body{{margin:0}} .topbar{{display:none}}
-.volver{{font:14px system-ui,sans-serif;padding:10px 16px;background:#1b1f24;color:#fff}}
-.volver a{{color:#9ecbff}}</style>
+<title>__SVC__ · EMPRESA_JOSESAID</title>
+<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@__SWV__/swagger-ui.css">
+<style>
+:root{--bg:#f5f7fb;--superficie:#ffffff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:40px}
+a{color:hsl(var(--h) 70% 45%)}
+.cabecera{background:linear-gradient(135deg,hsl(var(--h) 72% 40%),hsl(calc(var(--h) + 30) 78% 26%));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 64px}
+.cabecera-in{max-width:1000px;margin:0 auto;min-width:0}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.etiqueta{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin:14px 0 10px}
+h1{margin:0 0 8px;font-size:30px;line-height:1.2;text-wrap:balance;overflow-wrap:anywhere}
+.lead{margin:0;opacity:.92;max-width:70ch}
+.pildoras{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pildora{background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;font-size:13px}
+main{max-width:1000px;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));min-width:0}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:6px;box-shadow:0 6px 20px var(--sombra)}
+nav.tabs button{flex:1 0 auto;border:0;background:transparent;color:var(--muted);font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:10px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:hsl(var(--h) 80% 50% / .14);color:hsl(var(--h) 70% 35%)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}}
+:root[data-theme="dark"] nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}
+.panel{margin-top:18px;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;box-shadow:0 6px 20px var(--sombra);min-width:0}
+[hidden]{display:none!important}
+dl.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 24px;margin:0}
+dl.datos dt{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+dl.datos dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
+.chip{display:inline-block;font:600 12px ui-monospace,monospace;background:hsl(var(--h) 80% 50% / .16);color:hsl(var(--h) 70% 35%);border-radius:6px;padding:3px 8px;margin:2px 4px 2px 0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip{color:hsl(var(--h) 90% 78%)}}
+:root[data-theme="dark"] .chip{color:hsl(var(--h) 90% 78%)}
+.subtitulo{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--linea);vertical-align:top;overflow-wrap:anywhere}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.verbo{font:700 12px ui-monospace,monospace;border-radius:6px;padding:3px 7px;background:hsl(var(--h) 80% 50% / .18);color:hsl(var(--h) 70% 35%)}
+.md{overflow-wrap:anywhere;max-width:100%}
+.md img{max-width:100%;height:auto}
+.md pre{overflow-x:auto;background:rgba(127,127,127,.12);padding:12px;border-radius:10px}
+.md table{display:block;overflow-x:auto}
+.md h1,.md h2,.md h3{line-height:1.25}
+.grid-diag{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:16px}
+.diag{border:1px solid var(--linea);border-radius:12px;padding:12px;background:var(--bg);min-width:0}
+.diag h3{font-size:15px;margin:0 0 8px;overflow-wrap:anywhere}
+.diag a.abrir{display:block;text-align:center}
+.diag img{max-width:100%;height:auto;border-radius:8px;background:#fff}
+.diag .mermaid{overflow-x:auto;text-align:center}
+.diag .pie{font-size:13px;margin-top:8px;overflow-wrap:anywhere}
+.aviso{color:var(--muted)}
+#swagger-ui{max-width:100%;overflow-x:auto}
+.swagger-ui .topbar{display:none}
+</style>
 </head>
-<body>
-<div class="volver"><a href="index.html">← Índice de servicios</a> · {html.escape(svc)}</div>
-<div id="swagger-ui"></div>
-<script type="application/json" id="spec">
-{json_txt}
-</script>
-<script src="https://unpkg.com/swagger-ui-dist@{SWAGGER_VERSION}/swagger-ui-bundle.js"></script>
+<body style="--h:__HUE__">
+<header class="cabecera">
+  <div class="cabecera-in">
+    <a class="volver" href="index.html">← Todos los microservicios</a>
+    <div><span class="etiqueta">Microservicio</span></div>
+    <h1 id="titulo">__SVC__</h1>
+    <p class="lead" id="descr"></p>
+    <div class="pildoras" id="pildoras"></div>
+  </div>
+</header>
+<main>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" data-tab="info" aria-selected="true">Información</button>
+    <button role="tab" data-tab="readme" aria-selected="false">README</button>
+    <button role="tab" data-tab="permisos" aria-selected="false">Roles y permisos</button>
+    <button role="tab" data-tab="diagramas" aria-selected="false">Diagramas</button>
+    <button role="tab" data-tab="api" aria-selected="false">API (Swagger)</button>
+  </nav>
+  <section class="panel" data-panel="info"></section>
+  <section class="panel" data-panel="readme" hidden></section>
+  <section class="panel" data-panel="permisos" hidden></section>
+  <section class="panel" data-panel="diagramas" hidden></section>
+  <section class="panel" data-panel="api" hidden><div id="swagger-ui"></div></section>
+</main>
+<script type="application/json" id="datos">__DATOS__</script>
+<script type="application/json" id="spec">__SPEC__</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@__SWV__/swagger-ui-bundle.js"></script>
 <script>
-window.onload = function () {{
-  window.ui = SwaggerUIBundle({{
-    spec: JSON.parse(document.getElementById("spec").textContent),
-    dom_id: "#swagger-ui",
-    deepLinking: true,
-    persistAuthorization: true
-  }});
-}};
+(function () {
+  const D = JSON.parse(document.getElementById('datos').textContent);
+  const SPEC = JSON.parse(document.getElementById('spec').textContent);
+  const $ = (s) => document.querySelector(s);
+
+  function el(tag, attrs, hijos) {
+    const n = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (hijos || []).forEach(function (h) {
+      if (h === null || h === undefined || h === false) return;
+      n.append(h.nodeType ? h : document.createTextNode(String(h)));
+    });
+    return n;
+  }
+
+  function chips(lista, vacio) {
+    if (!lista || !lista.length) return [el('span', { class: 'aviso', text: vacio })];
+    return lista.map(function (r) { return el('span', { class: 'chip', text: r }); });
+  }
+
+  if (window.mermaid) {
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default'
+    });
+  }
+
+  function pintarInfo() {
+    const i = D.info;
+    $('#titulo').textContent = i.nombre;
+    $('#descr').textContent = i.descripcion || '';
+    const pild = $('#pildoras');
+    [
+      'Puerto ' + (i.puerto || '—'),
+      'Java ' + (i.java || '—'),
+      'Spring Boot ' + (i.spring_boot || '—'),
+      i.endpoints ? i.endpoints + ' endpoints' : 'Sin API REST'
+    ].forEach(function (t) { pild.append(el('span', { class: 'pildora', text: t })); });
+    const campos = [
+      ['Servicio', i.nombre],
+      ['Descripción', i.descripcion || '—'],
+      ['Puerto de la aplicación', i.puerto || '—'],
+      ['Java', i.java || '—'],
+      ['Spring Boot', i.spring_boot || '—'],
+      ['Endpoints REST', i.endpoints || 'Ninguno']
+    ];
+    const dl = el('dl', { class: 'datos' });
+    campos.forEach(function (c) {
+      dl.append(el('div', {}, [el('dt', { text: c[0] }), el('dd', { text: String(c[1]) })]));
+    });
+    dl.append(el('div', {}, [el('dt', { text: 'Roles detectados' }),
+      el('dd', {}, chips(i.roles, 'Ninguno detectado'))]));
+    $('[data-panel="info"]').append(dl);
+  }
+
+  function pintarReadme() {
+    const panel = $('[data-panel="readme"]');
+    if (!D.readme) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene README.md.' }));
+      return;
+    }
+    const art = el('article', { class: 'md' });
+    if (window.marked) {
+      art.innerHTML = marked.parse(D.readme);
+    } else {
+      art.append(el('pre', { text: D.readme }));
+    }
+    art.querySelectorAll('pre > code.language-mermaid').forEach(function (code) {
+      const m = el('div', { class: 'mermaid' });
+      m.dataset.src = code.textContent;
+      code.parentElement.replaceWith(m);
+    });
+    panel.append(art);
+  }
+
+  function pintarPermisos() {
+    const panel = $('[data-panel="permisos"]');
+    panel.append(el('h2', { class: 'subtitulo', text: 'Roles detectados' }));
+    panel.append(el('p', {}, chips(D.info.roles, 'Ninguno detectado')));
+    if (!D.permisos.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene reglas de acceso por endpoint.' }));
+      return;
+    }
+    const cabeza = el('tr', {}, ['Método', 'Ruta', 'Operación', 'Regla de acceso'].map(function (t) {
+      return el('th', { text: t });
+    }));
+    const cuerpo = el('tbody');
+    D.permisos.forEach(function (p) {
+      cuerpo.append(el('tr', {}, [
+        el('td', {}, [el('span', { class: 'verbo', text: p.verbo })]),
+        el('td', { text: p.ruta }),
+        el('td', { text: p.operacion }),
+        el('td', { text: p.roles || 'Solo autenticación (sin @PreAuthorize)' })
+      ]));
+    });
+    const tabla = el('table', {}, [el('thead', {}, [cabeza]), cuerpo]);
+    panel.append(el('div', { class: 'tabla-wrap' }, [tabla]));
+  }
+
+  function pintarDiagramas() {
+    const panel = $('[data-panel="diagramas"]');
+    if (!D.diagramas.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene carpeta docs/diagramas.' }));
+      return;
+    }
+    const grid = el('div', { class: 'grid-diag' });
+    D.diagramas.forEach(function (d) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: d.titulo }));
+      if (d.imagen) {
+        const img = el('img', { src: d.imagen, alt: d.titulo, loading: 'lazy' });
+        img.onerror = function () {
+          img.replaceWith(el('p', { class: 'aviso', text: 'No se pudo mostrar la imagen. Usa el enlace de abajo para abrir el archivo.' }));
+        };
+        tarjeta.append(el('a', { href: d.imagen, target: '_blank', rel: 'noopener', class: 'abrir', title: 'Abrir archivo' }, [img]));
+      } else if (d.codigo) {
+        const m = el('div', { class: 'mermaid' });
+        m.dataset.src = d.codigo;
+        tarjeta.append(m);
+      }
+      const pie = el('div', { class: 'pie' });
+      d.archivos.forEach(function (a, idx) {
+        if (idx) pie.append(' · ');
+        pie.append(el('a', { href: a, target: '_blank', rel: 'noopener', text: a.split('/').pop() }));
+      });
+      tarjeta.append(pie);
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
+  async function renderMermaidIn(raiz) {
+    if (!raiz) return;
+    for (const nodo of raiz.querySelectorAll('.mermaid')) {
+      if (nodo.dataset.ok) continue;
+      const src = nodo.dataset.src || '';
+      if (!window.mermaid) {
+        nodo.replaceChildren(el('pre', { text: src }));
+        continue;
+      }
+      try {
+        const salida = await mermaid.render('m' + Math.random().toString(36).slice(2), src);
+        nodo.innerHTML = salida.svg;
+        nodo.dataset.ok = '1';
+      } catch (e) {
+        nodo.replaceChildren(
+          el('p', { class: 'aviso', text: 'No se pudo renderizar este diagrama. Se muestra el código fuente:' }),
+          el('pre', { text: src }));
+      }
+    }
+  }
+
+  let swaggerListo = false;
+  function iniciarSwagger() {
+    if (swaggerListo || !SPEC || !window.SwaggerUIBundle) return;
+    swaggerListo = true;
+    window.ui = SwaggerUIBundle({ spec: SPEC, dom_id: '#swagger-ui', deepLinking: false, persistAuthorization: true });
+  }
+
+  function pintarApi() {
+    if (SPEC) return;
+    $('[data-panel="api"]').replaceChildren(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene Swagger.' }));
+    $('[data-tab="api"]').hidden = true;
+  }
+
+  const botones = Array.from(document.querySelectorAll('[role="tab"]'));
+  function activar(nombre, cambiarHash) {
+    if (nombre === 'api' && !SPEC) nombre = 'info';
+    botones.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === nombre)); });
+    document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== nombre; });
+    if (nombre === 'readme' || nombre === 'diagramas') renderMermaidIn(document.querySelector('[data-panel="' + nombre + '"]'));
+    if (nombre === 'api') iniciarSwagger();
+    if (cambiarHash) { try { history.replaceState(null, '', '#' + nombre); } catch (e) {} }
+  }
+  botones.forEach(function (b) { b.addEventListener('click', function () { activar(b.dataset.tab, true); }); });
+
+  pintarInfo();
+  pintarReadme();
+  pintarPermisos();
+  pintarDiagramas();
+  pintarApi();
+  const inicial = location.hash.slice(1);
+  activar(['info', 'readme', 'permisos', 'diagramas', 'api'].indexOf(inicial) >= 0 ? inicial : 'info', false);
+})();
 </script>
 </body>
 </html>
 """
+
+
+def pagina_ficha(svc, datos, spec, hue):
+    json_datos = json.dumps(datos, ensure_ascii=False).replace("</", "<\\/")
+    json_spec = json.dumps(spec, ensure_ascii=False).replace("</", "<\\/") if spec else "null"
+    return (PLANTILLA_FICHA
+            .replace("__SVC__", html.escape(svc))
+            .replace("__HUE__", f"{hue:.0f}")
+            .replace("__SWV__", SWAGGER_VERSION)
+            .replace("__DATOS__", json_datos)
+            .replace("__SPEC__", json_spec))
+
+
+def main():
+    os.makedirs(SALIDA, exist_ok=True)
+    servicios = servicios_documentados()
+    resumen = []
+    for svc in servicios:
+        svc_dir = os.path.join(RAIZ, svc)
+        spec, n = construir_spec(svc)
+        pom = leer_pom(svc_dir)
+        ruta_readme = os.path.join(svc_dir, "README.md")
+        readme = reescribir_readme(svc, leer(ruta_readme)) if os.path.exists(ruta_readme) else ""
+        descripcion = pom["descripcion"]
+        if not descripcion and readme:
+            descripcion = next((l.strip() for l in readme.splitlines()
+                                if l.strip() and not l.startswith("#")), "")
+        filas = filas_permisos(spec if n else None)
+        roles = sorted({r for f in filas for r in re.findall(r"'([A-Z_]+)'", f["roles"])})
+        hue = (len(resumen) * 137.508) % 360
+        diagramas = copiar_diagramas(svc)
+        datos = {
+            "svc": svc,
+            "info": {"nombre": svc, "descripcion": descripcion, "puerto": puerto_de(svc_dir),
+                     "java": pom["java"], "spring_boot": pom["spring_boot"],
+                     "endpoints": n, "roles": roles},
+            "readme": readme,
+            "permisos": filas,
+            "diagramas": diagramas,
+            "api": bool(n),
+        }
+        ruta_json = os.path.join(SALIDA, svc + ".json")
+        if n:
+            with open(ruta_json, "w", encoding="utf-8") as f:
+                json.dump(spec, f, ensure_ascii=False, indent=2)
+        elif os.path.exists(ruta_json):
+            os.remove(ruta_json)
+        with open(os.path.join(SALIDA, svc + ".html"), "w", encoding="utf-8") as f:
+            f.write(pagina_ficha(svc, datos, spec if n else None, hue))
+        resumen.append((svc, n))
+        print(f"✅ {svc}: {n} endpoints · {len(diagramas)} diagramas · README {'sí' if readme else 'no'}")
+    with open(os.path.join(SALIDA, "index.html"), "w", encoding="utf-8") as f:
+        f.write(pagina_indice(resumen))
+    print(f"🏁 Fichas generadas en {SALIDA}")
 
 
 def pagina_indice(resumen):
@@ -300,8 +715,8 @@ def pagina_indice(resumen):
     tarjetas = "\n".join(
         f'<a class="tarjeta" style="--h:{(i * 137.508) % 360:.0f}" href="{html.escape(svc)}.html">'
         f'<span class="nombre">{html.escape(svc)}</span>'
-        f'<span class="conteo">{n} endpoint{"s" if n != 1 else ""}</span>'
-        f'<span class="ver">Abrir Swagger →</span></a>'
+        f'<span class="conteo">{texto_conteo(n)}</span>'
+        f'<span class="ver">Abrir ficha →</span></a>'
         for i, (svc, n) in enumerate(resumen))
     fecha = datetime.date.today().isoformat()
     return f"""<!doctype html>
@@ -309,7 +724,7 @@ def pagina_indice(resumen):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Documentación de API · EMPRESA_JOSESAID</title>
+<title>Microservicios · EMPRESA_JOSESAID</title>
 <style>
 :root{{
   --bg:#f5f7fb; --superficie:#ffffff; --fg:#0f172a; --muted:#64748b; --linea:#e2e8f0;
@@ -378,9 +793,9 @@ footer{{margin-top:32px;color:var(--muted);font-size:13px}}
 <header class="cabecera">
   <div class="cabecera-in">
     <div class="cabecera-texto">
-      <span class="etiqueta">Documentación de API</span>
+      <span class="etiqueta">Fichas de microservicios</span>
       <h1>EMPRESA_JOSESAID</h1>
-      <p class="lead">Endpoints REST de cada microservicio, con su especificación OpenAPI 3.0 y Swagger UI.</p>
+      <p class="lead">Ficha de cada microservicio: información, README, roles y permisos, diagramas y Swagger.</p>
       <div class="autor">
         <span><strong>Jose Said Olano Garcia</strong> · Senior Engineering Manager</span>
         <a href="mailto:josesaid@gmail.com">josesaid@gmail.com</a>
@@ -439,26 +854,6 @@ footer{{margin-top:32px;color:var(--muted);font-size:13px}}
 </body>
 </html>
 """
-
-
-def main():
-    os.makedirs(SALIDA, exist_ok=True)
-    servicios = sorted(
-        d for d in os.listdir(RAIZ)
-        if os.path.isdir(os.path.join(RAIZ, d)) and d not in EXCLUIDOS
-        and controladores(os.path.join(RAIZ, d)))
-    resumen = []
-    for svc in servicios:
-        spec, n = construir_spec(svc)
-        with open(os.path.join(SALIDA, svc + ".json"), "w", encoding="utf-8") as f:
-            json.dump(spec, f, ensure_ascii=False, indent=2)
-        with open(os.path.join(SALIDA, svc + ".html"), "w", encoding="utf-8") as f:
-            f.write(pagina_swagger(svc, spec))
-        resumen.append((svc, n))
-        print(f"✅ {svc}: {n} endpoints")
-    with open(os.path.join(SALIDA, "index.html"), "w", encoding="utf-8") as f:
-        f.write(pagina_indice(resumen))
-    print(f"🏁 Documentación generada en {SALIDA}")
 
 
 if __name__ == "__main__":

@@ -3,614 +3,280 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>API contabilidad-ms · Swagger</title>
+<title>contabilidad-ms · EMPRESA_JOSESAID</title>
 <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
-<style>body{margin:0} .topbar{display:none}
-.volver{font:14px system-ui,sans-serif;padding:10px 16px;background:#1b1f24;color:#fff}
-.volver a{color:#9ecbff}</style>
+<style>
+:root{--bg:#f5f7fb;--superficie:#ffffff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:40px}
+a{color:hsl(var(--h) 70% 45%)}
+.cabecera{background:linear-gradient(135deg,hsl(var(--h) 72% 40%),hsl(calc(var(--h) + 30) 78% 26%));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 64px}
+.cabecera-in{max-width:1000px;margin:0 auto;min-width:0}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.etiqueta{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin:14px 0 10px}
+h1{margin:0 0 8px;font-size:30px;line-height:1.2;text-wrap:balance;overflow-wrap:anywhere}
+.lead{margin:0;opacity:.92;max-width:70ch}
+.pildoras{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pildora{background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;font-size:13px}
+main{max-width:1000px;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));min-width:0}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:6px;box-shadow:0 6px 20px var(--sombra)}
+nav.tabs button{flex:1 0 auto;border:0;background:transparent;color:var(--muted);font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:10px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:hsl(var(--h) 80% 50% / .14);color:hsl(var(--h) 70% 35%)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}}
+:root[data-theme="dark"] nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}
+.panel{margin-top:18px;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;box-shadow:0 6px 20px var(--sombra);min-width:0}
+[hidden]{display:none!important}
+dl.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 24px;margin:0}
+dl.datos dt{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+dl.datos dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
+.chip{display:inline-block;font:600 12px ui-monospace,monospace;background:hsl(var(--h) 80% 50% / .16);color:hsl(var(--h) 70% 35%);border-radius:6px;padding:3px 8px;margin:2px 4px 2px 0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip{color:hsl(var(--h) 90% 78%)}}
+:root[data-theme="dark"] .chip{color:hsl(var(--h) 90% 78%)}
+.subtitulo{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--linea);vertical-align:top;overflow-wrap:anywhere}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.verbo{font:700 12px ui-monospace,monospace;border-radius:6px;padding:3px 7px;background:hsl(var(--h) 80% 50% / .18);color:hsl(var(--h) 70% 35%)}
+.md{overflow-wrap:anywhere;max-width:100%}
+.md img{max-width:100%;height:auto}
+.md pre{overflow-x:auto;background:rgba(127,127,127,.12);padding:12px;border-radius:10px}
+.md table{display:block;overflow-x:auto}
+.md h1,.md h2,.md h3{line-height:1.25}
+.grid-diag{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:16px}
+.diag{border:1px solid var(--linea);border-radius:12px;padding:12px;background:var(--bg);min-width:0}
+.diag h3{font-size:15px;margin:0 0 8px;overflow-wrap:anywhere}
+.diag a.abrir{display:block;text-align:center}
+.diag img{max-width:100%;height:auto;border-radius:8px;background:#fff}
+.diag .mermaid{overflow-x:auto;text-align:center}
+.diag .pie{font-size:13px;margin-top:8px;overflow-wrap:anywhere}
+.aviso{color:var(--muted)}
+#swagger-ui{max-width:100%;overflow-x:auto}
+.swagger-ui .topbar{display:none}
+</style>
 </head>
-<body>
-<div class="volver"><a href="index.html">← Índice de servicios</a> · contabilidad-ms</div>
-<div id="swagger-ui"></div>
-<script type="application/json" id="spec">
-{
-  "openapi": "3.0.3",
-  "info": {
-    "title": "API contabilidad-ms",
-    "version": "0.1.0",
-    "description": "Microservicio del área **Finanzas y contabilidad** de EMPRESA_JOSESAID. Lleva el libro contable: catálogo de cuentas, pólizas balanceadas, reversas, cierres de periodo y balanza de comprobación."
-  },
-  "servers": [
-    {
-      "url": "/",
-      "description": "Ruta relativa del servicio"
+<body style="--h:275">
+<header class="cabecera">
+  <div class="cabecera-in">
+    <a class="volver" href="index.html">← Todos los microservicios</a>
+    <div><span class="etiqueta">Microservicio</span></div>
+    <h1 id="titulo">contabilidad-ms</h1>
+    <p class="lead" id="descr"></p>
+    <div class="pildoras" id="pildoras"></div>
+  </div>
+</header>
+<main>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" data-tab="info" aria-selected="true">Información</button>
+    <button role="tab" data-tab="readme" aria-selected="false">README</button>
+    <button role="tab" data-tab="permisos" aria-selected="false">Roles y permisos</button>
+    <button role="tab" data-tab="diagramas" aria-selected="false">Diagramas</button>
+    <button role="tab" data-tab="api" aria-selected="false">API (Swagger)</button>
+  </nav>
+  <section class="panel" data-panel="info"></section>
+  <section class="panel" data-panel="readme" hidden></section>
+  <section class="panel" data-panel="permisos" hidden></section>
+  <section class="panel" data-panel="diagramas" hidden></section>
+  <section class="panel" data-panel="api" hidden><div id="swagger-ui"></div></section>
+</main>
+<script type="application/json" id="datos">{"svc": "contabilidad-ms", "info": {"nombre": "contabilidad-ms", "descripcion": "Libro contable: catálogo de cuentas, pólizas, cierres de periodo y estados financieros.", "puerto": "8081", "java": "21", "spring_boot": "4.1.2", "endpoints": 8, "roles": ["CONTADOR", "DIRECCION"]}, "readme": "# contabilidad-ms\n\nMicroservicio del área **Finanzas y contabilidad** de EMPRESA_JOSESAID. Lleva el libro contable: catálogo de cuentas, pólizas balanceadas, reversas, cierres de periodo y balanza de comprobación.\n\n## 1. Identidad\n\n- **Servicio:** contabilidad-ms · **Versión:** 0.1.0 · **Lenguaje:** Java 21 · **Framework:** Spring Boot 4.1.2\n- **Acceso:** vía gateway, sin puerto publicado (contenedor: contenedor: 8081) · **Base de datos:** `contabilidad`\n- **Responsable:** pendiente de asignar · **Estado:** libro contable funcional; estados financieros parciales (ver sección 20)\n\n## 2. Propósito y alcance\n\nRegistra pólizas (asientos) que deben cuadrar, las compensa con reversas, cierra periodos mensuales y calcula la balanza de comprobación.\n\n**Dentro del alcance:** catálogo de cuentas, pólizas de ingreso, egreso y diario, reversas, cierre de periodos y balanza.\n\n**Fuera del alcance:** emisión de comprobantes (facturacion-pagos-ms), inventarios (inventario-operaciones-ms), reportes consolidados (reportes-ejecutivos-ms) y reglas fiscales de IVA o retenciones (facturacion-pagos-ms).\n\n## 3. Estructura del repositorio\n\n```\ncontabilidad-ms/\n├── pom.xml\n├── Dockerfile\n├── docker-compose.yml          Servicio, con comentarios\n├── .env.example                Variables requeridas (sin valores reales)\n├── docs/diseno.md              Diseño técnico\n├── src/main/java/.../contabilidad/\n│   ├── domain/                 Póliza, Movimiento, Periodo, CuentaContable, Balanza y puertos\n│   ├── application/            ContabilidadService y publicador de eventos\n│   ├── infrastructure/\n│   │   ├── persistence/        Entidades JPA y adaptadores\n│   │   └── outbox/             Outbox y retransmisor a Kafka\n│   ├── api/                    Controlador REST y manejo de errores\n│   └── config/                 Seguridad JWT, reloj y propiedades\n└── src/test/java/...           Pruebas unitarias e integración\n```\n\n## 4. Requisitos\n\n- JDK 21 y Maven 3.9 (solo para compilar fuera de Docker)\n- Docker Desktop con Compose v2\n- Red `empresa-net`: `docker network create empresa-net` (una sola vez)\n\n## 5. Configuración\n\n| Variable | Obligatoria | Descripción |\n|---|---|---|\n| `CONTABILIDAD_DB_PASSWORD` | Sí (Compose) | Contraseña del usuario `contabilidad`. En el `.env` de la raíz o de esta carpeta. |\n| `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |\n| `DB_URL`, `DB_USER`, `DB_PASSWORD` | No | Conexión. Compose ya las fija. |\n| `KAFKA_BOOTSTRAP` | No | Por defecto `localhost:9092`. En Compose: `kafka:29092`. |\n| `OUTBOX_INTERVALO_MS` | No | Cada cuántos milisegundos se envían eventos pendientes. Por defecto 5000. |\n\nNingún valor real está en el código. Las credenciales viven en `.env`, que está en `.gitignore`.\n\n## 6. Ejecución\n\n**Orden de arranque (obligatorio):**\n\n1. Red: `docker network create empresa-net` (una sola vez)\n2. Raíz: `docker compose up -d postgres kafka`\n3. **usuarios-accesos-ms** primero, porque emite los tokens que este servicio valida\n4. **contabilidad-ms** (este servicio). Puede arrancar después de facturacion-pagos-ms, pero no depende de él en tiempo de ejecución.\n\n```bash\ncd contabilidad-ms\ndocker compose up -d --build\ncurl -s http://localhost:8080/contabilidad-ms/actuator/health\n```\n\nPara desarrollo sin contenedor: `mvn spring-boot:run` con las variables de la sección 5.\n\n## 7. Modelo de datos\n\n- **cuentas_contables:** id, codigo (único), nombre, naturaleza (DEUDORA o ACREEDORA), activa.\n- **periodos:** anio_mes (AAAA-MM), estatus (ABIERTO o CERRADO), version.\n- **polizas:** id, anio_mes, tipo (INGRESO, EGRESO, DIARIO), fecha, estatus, reversa_de, version.\n- **movimientos:** id, poliza_id, cuenta_id, cargo, abono. Cada fila tiene un cargo o un abono, nunca ambos.\n- **outbox_eventos:** id, tipo, agregado_id, payload, creado_utc, publicado_utc, intentos.\n\n## 8. Migraciones\n\n- Flyway ejecuta `V1__esquema_inicial.sql` al arrancar. Hibernate solo valida (`ddl-auto: validate`).\n- Las migraciones son hacia adelante: cambios en `V2`, `V3`… Nunca se editan las ya aplicadas.\n\n## 9. Máquinas de estado\n\n**Póliza:** `APLICADA → REVERSADA` (la original). La reversa nace como `APLICADA` con `reversa_de` apuntando a la original. `BORRADOR` está reservado para captura diferida (pendiente).\n\n**Periodo:** `ABIERTO → CERRADO`. No hay reapertura.\n\nUn periodo cerrado rechaza pólizas nuevas y reversas (409). Solo se reversa una póliza `APLICADA` (409 en otro caso).\n\n## 10. Seguridad\n\n- JWT RS256 emitido por usuarios-accesos-ms. Solo `/actuator/health` es público.\n- **CONTADOR:** crea cuentas, registra, reversa y cierra periodos. Además consulta.\n- **DIRECCION:** solo consulta pólizas y estados financieros.\n- Sin token responde 401; sin el rol responde 403.\n\n## 11. API\n\nBase: `/v1`\n\n| Método | Ruta | Rol | Éxito | Errores |\n|---|---|---|---|---|\n| POST | `/cuentas` | CONTADOR | 201 | 400, 409 |\n| POST | `/polizas` | CONTADOR | 201 | 400, 409 (periodo cerrado), 422 (no cuadra, cuenta inexistente o inactiva) |\n| GET | `/polizas/{id}` | CONTADOR, DIRECCION | 200 | 404 |\n| POST | `/polizas/{id}/reversa` | CONTADOR | 201 | 404, 409 |\n| POST | `/periodos/{anioMes}/cierre` | CONTADOR | 200 | 400, 404, 409 |\n| GET | `/estados-financieros?periodo=AAAA-MM` | CONTADOR, DIRECCION | 200 | 400, 404 |\n\nEjemplo de póliza (las cantidades van en pesos con dos decimales):\n\n```json\n{\n  \"tipo\": \"INGRESO\",\n  \"fecha\": \"2026-10-15\",\n  \"movimientos\": [\n    { \"cuentaId\": \"<UUID de 1101 Caja>\", \"cargo\": 1160.00 },\n    { \"cuentaId\": \"<UUID de 4101 Ventas>\", \"abono\": 1000.00 },\n    { \"cuentaId\": \"<UUID de 2108 IVA por pagar>\", \"abono\": 160.00 }\n  ]\n}\n```\n\nErrores RFC 9457 con `type` `urn:josesaid:contabilidad:error:<slug>`.\n\n## 12. Reglas de duplicados\n\n- Código de cuenta único: un duplicado responde 409.\n- Pólizas: no hay deduplicación por contenido. Para evitar duplicados por reintento, el alta acepta `Idempotency-Key` (ver Idempotencia de altas).\n- Un conflicto de versión por edición concurrente responde 409 (`conflicto-concurrencia`).\n\n## 13. Eventos\n\nTópico `contabilidad.eventos`, clave = id de la póliza o del periodo.\n\n| Tipo | Cuándo | Datos |\n|---|---|---|\n| `poliza-aplicada` | Al registrar o reversar una póliza | id, periodo, total |\n| `periodo-cerrado` | Al cerrar un periodo | anioMes |\n\n## 14. Outbox\n\nEl evento se guarda en `outbox_eventos` en la misma transacción que la póliza o el cierre. El retransmisor lo envía a Kafka cada `OUTBOX_INTERVALO_MS`, en orden, y se detiene en el primer fallo.\n\n## 15. Observabilidad\n\n- Salud: `GET /actuator/health`. Métricas: `GET /actuator/prometheus`.\n- Logs JSON en formato ECS. Los logs no incluyen montos individuales ni datos de contacto.\n- Pendiente: métricas de negocio (`polizas_aplicadas_total`, `cierres_periodo_total`) y trazas.\n\n## 16. Pruebas\n\n- Unitarias (10): cuadre, reversa, periodos, balanza por naturaleza y reglas del servicio con repositorios en memoria.\n- Integración (1): PostgreSQL 17 y Kafka 4.0.0 con Testcontainers. Cubre roles, póliza descuadrada (422), cierre (409) y balanza.\n\n```bash\nmvn -B verify              # unitarias e integración, requiere Docker\nmvn -B package -DskipITs   # solo unitarias\n```\n\n## 17. Despliegue\n\nImagen multi-etapa (Maven y JRE 21), usuario sin privilegios (uid 10001), `HEALTHCHECK` sobre `/actuator/health`. Se despliega con `docker compose up -d --build`.\n\n## 18. Rollback\n\n- Las migraciones no revierten solas. Para volver atrás: desplegar la imagen anterior, compatible con el esquema actual.\n- Las correcciones contables nunca borran: se hacen con una póliza de reversa.\n\n## 19. Solución de problemas\n\n- **\"Defina CONTABILIDAD_DB_PASSWORD\":** falta la variable. Compose se detiene a propósito.\n- **422 \"La póliza no cuadra\":** la suma de cargos y abonos no coincide. Revisa cada renglón.\n- **409 \"El periodo está cerrado\":** el periodo ya se cerró. Las correcciones van en el periodo abierto actual.\n- **400 \"Formato de periodo inválido\":** usa AAAA-MM, por ejemplo `2026-10`.\n- **401 en todas las rutas:** el clave pública JWKS no coincide con usuarios-accesos-ms.\n\n## 20. Decisiones y pendientes\n\n- **Decisión:** las pólizas se aplican al registrarlas. `BORRADOR` queda reservado.\n- **Decisión:** la reversa se fecha con la fecha de hoy y cae en el periodo abierto actual.\n- **Pendiente:** estado de resultados y balance general. Hoy solo existe la balanza de comprobación.\n- **Pendiente:** consumo de eventos de pagos y compras para generar pólizas automáticas (escenario 1 de la especificación).\n- **Pendiente:** catálogo con código agrupador SAT y exportación fiscal.\n- **Pendiente:** PDF y XLSX de estados financieros.\n- **Pendiente:** métricas de negocio.\n\n## 21. Referencias\n\n- Especificación del área: `area_md_specification_files/Contabilidad.md`\n- Diseño técnico: `docs/diseno.md`\n- Orden de arranque general: `README.md` de la raíz, sección 10\n\n## Descubrimiento, gateway y monitoreo\n\n- Al arrancar, `contabilidad-ms` se registra en `discovery-ms` (Eureka). Después queda accesible por el gateway en `http://localhost:8080/contabilidad-ms/...`.\n- **Orden de arranque:** `discovery-ms` primero. Si este servicio arranca antes, se registra solo cuando el registro esté disponible.\n- Métricas Prometheus en `/actuator/prometheus`, sin token, solo lectura.\n- Variables `EUREKA_USUARIO` y `EUREKA_PASSWORD`: obligatorias en Docker; el Compose arma la URL de registro `http://USUARIO:CLAVE@discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://USUARIO:CLAVE@localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.\n\n\n## Idempotencia de altas (`Idempotency-Key`)\n\nEl alta de `POST /v1/polizas` acepta la cabecera opcional `Idempotency-Key`. Úsela cuando un reintento no debe crear el registro dos veces (por ejemplo, si se cortó la conexión y no sabe si la petición llegó).\n\n- **Misma clave y mismo cuerpo:** responde la misma respuesta original; no se crea nada nuevo.\n- **Misma clave con otro cuerpo:** responde `422` (`regla-de-negocio`).\n- **Misma clave mientras la primera petición sigue en proceso:** responde `409` (`conflicto-de-estado`).\n- **Sin la cabecera:** la petición se procesa como siempre.\n\nLas respuestas completadas se guardan 24 horas en la tabla `idempotencia`. Si la operación falla, la clave se libera para que el cliente pueda reintentar. Si la petición se interrumpe a medio camino y la clave queda en proceso, un nuevo intento con la misma clave la retoma pasados 2 minutos; antes de eso responde 409.\n\n\n## Indicadores para reportes ejecutivos\n\nPublica un indicador mensual al tópico `indicadores-areas`, que consume `reportes-ejecutivos-ms`.\n\n- **Indicador:** `polizas_mes` (área `FINANZAS_CONTABILIDAD`).\n- **Definición:** Número de pólizas APLICADAS del mes (AAAA-MM).\n- **Clave del mensaje:** `FINANZAS_CONTABILIDAD|polizas_mes|AAAA-MM`. Reportes actualiza el valor por área, nombre y periodo (upsert).\n- **Ciclo:** recalcula el mes actual y el anterior cada 60 minutos; el primer envío ocurre a los 30 segundos.\n- **Configuración:** `INDICADORES_TOPICO`, `INDICADORES_INTERVALO_MS`, `INDICADORES_INICIO_MS`.\n- **Entrega:** no pasa por el outbox. Es una foto del periodo; si un envío falla, el siguiente ciclo lo corrige.\n- **Clase:** `PublicadorIndicadoresPolizas`. Prueba: `mvn verify -Dit.test='PublicadorIndicadores*IT'`.\n\n## Guías paso a paso\n\nProcedimientos de este servicio, publicados en HTML:\n\n- [Ejecutar las pruebas de un servicio](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/02-ejecutar-pruebas.html)\n- [Índice de todas las guías](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/README.html)\n", "permisos": [{"verbo": "POST", "ruta": "/v1/cuentas", "operacion": "Crear cuenta", "roles": "hasRole('CONTADOR')"}, {"verbo": "GET", "ruta": "/v1/cuentas", "operacion": "Listar cuentas", "roles": "hasAnyRole('CONTADOR','DIRECCION')"}, {"verbo": "GET", "ruta": "/v1/estados-financieros", "operacion": "Estados financieros", "roles": "hasAnyRole('CONTADOR','DIRECCION')"}, {"verbo": "POST", "ruta": "/v1/periodos/{anioMes}/cierre", "operacion": "Cerrar periodo", "roles": "hasRole('CONTADOR')"}, {"verbo": "POST", "ruta": "/v1/polizas", "operacion": "Registrar poliza", "roles": "hasRole('CONTADOR')"}, {"verbo": "GET", "ruta": "/v1/polizas", "operacion": "Listar polizas", "roles": "hasAnyRole('CONTADOR','DIRECCION')"}, {"verbo": "GET", "ruta": "/v1/polizas/{id}", "operacion": "Obtener poliza", "roles": "hasAnyRole('CONTADOR','DIRECCION')"}, {"verbo": "POST", "ruta": "/v1/polizas/{id}/reversa", "operacion": "Reversar poliza", "roles": "hasRole('CONTADOR')"}], "diagramas": [{"titulo": "01 maquina de estados poliza", "archivos": ["contabilidad-ms/diagramas/01-maquina-de-estados-poliza.mmd", "contabilidad-ms/diagramas/01-maquina-de-estados-poliza.png"], "imagen": "contabilidad-ms/diagramas/01-maquina-de-estados-poliza.png", "codigo": "flowchart TD\n  A[\"<b>Registro de póliza<\/b><br/>Se aplica al registrarse\"]:::actor --> B[\"<b>APLICADA<\/b>\"]:::servicio\n  B -- \"reversa en periodo abierto\" --> C[\"<b>REVERSADA<\/b><br/>La póliza original\"]:::alerta\n  B -- \"se crea la reversa\" --> D[\"<b>Póliza de reversa<\/b><br/>Nace APLICADA, con reversa_de\"]:::datos\n  C -- \"reversar otra vez\" --> E[\"<b>409<\/b><br/>Solo una póliza aplicada puede reversarse\"]:::alerta\n  F[\"<b>BORRADOR<\/b><br/>Reservado, sin uso\"]:::pendiente\n  G[\"<b>Periodo ABIERTO<\/b>\"]:::servicio -- \"cierre\" --> H[\"<b>Periodo CERRADO<\/b><br/>No hay reapertura\"]:::alerta\n  H -- \"póliza nueva o reversa\" --> I[\"<b>409<\/b><br/>Periodo cerrado\"]:::alerta\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "02 reglas de duplicados", "archivos": ["contabilidad-ms/diagramas/02-reglas-de-duplicados.mmd", "contabilidad-ms/diagramas/02-reglas-de-duplicados.png"], "imagen": "contabilidad-ms/diagramas/02-reglas-de-duplicados.png", "codigo": "flowchart TD\n  A[\"<b>Alta de cuenta<\/b><br/>Con código\"]:::actor --> B{\"<b>Ya existe ese código?<\/b>\"}:::pendiente\n  B -- \"no\" --> C[\"<b>Crea la cuenta<\/b>\"]:::servicio\n  B -- \"sí\" --> D[\"<b>409<\/b><br/>Ya existe la cuenta\"]:::alerta\n  E[\"<b>Alta de póliza<\/b>\"]:::actor --> F[\"<b>Sin deduplicación por contenido<\/b><br/>Cada petición crea una póliza\"]:::alerta\n  F --> G[\"<b>Con Idempotency-Key<\/b><br/>Ver diagrama 03\"]:::datos\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "03 idempotency key en polizas", "archivos": ["contabilidad-ms/diagramas/03-idempotency-key-en-polizas.mmd", "contabilidad-ms/diagramas/03-idempotency-key-en-polizas.png"], "imagen": "contabilidad-ms/diagramas/03-idempotency-key-en-polizas.png", "codigo": "flowchart TD\n  A[\"<b>POST /v1/polizas<\/b><br/>Con Idempotency-Key\"]:::actor --> B{\"<b>La clave ya existe?<\/b>\"}:::pendiente\n  B -- \"no\" --> C[\"<b>Registra la póliza<\/b>\"]:::servicio\n  C -- \"éxito\" --> D[\"<b>Guarda la respuesta 24 horas<\/b><br/>Tabla idempotencia\"]:::datos\n  C -- \"falla\" --> F[\"<b>Libera la clave<\/b><br/>El cliente puede reintentar\"]:::alerta\n  B -- \"sí, la original ya terminó\" --> G{\"<b>Mismo cuerpo?<\/b>\"}:::pendiente\n  G -- \"sí\" --> H[\"<b>Misma respuesta original<\/b><br/>No se crea nada nuevo\"]:::servicio\n  G -- \"no\" --> E1[\"<b>422<\/b><br/>La clave ya se usó con otro cuerpo\"]:::alerta\n  B -- \"sí, sigue en proceso\" --> I{\"<b>Pasaron 2 minutos?<\/b>\"}:::pendiente\n  I -- \"no\" --> E2[\"<b>409<\/b><br/>La petición sigue en proceso\"]:::alerta\n  I -- \"sí\" --> J[\"<b>Retoma con la misma clave<\/b>\"]:::servicio\n  A -. \"sin cabecera\" .-> K[\"<b>Se procesa como siempre<\/b>\"]:::actor\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "arquitectura", "archivos": ["contabilidad-ms/diagramas/arquitectura.mmd", "contabilidad-ms/diagramas/arquitectura.png"], "imagen": "contabilidad-ms/diagramas/arquitectura.png", "codigo": "flowchart LR\n  E([\"<b>Aplicaciones y gateway-ms<\/b>\"]):::actor\n  D[\"<b>discovery-ms<\/b><br/>Eureka\"]:::actor\n  subgraph SVC[\"contabilidad-ms · 8081 interno (8104 en tu Mac)\"]\n    API[\"<b>API REST /v1<\/b><br/>ControladorREST\"]:::gateway\n    SEG[\"<b>Seguridad JWT<\/b><br/>roles por método\"]:::seguridad\n    APP[\"<b>Servicio de aplicación<\/b><br/>casos de uso\"]:::servicio\n    REP[\"<b>Repositorios JPA<\/b><br/>migraciones Flyway\"]:::infra\n    OUT[\"<b>Outbox<\/b><br/>outbox_eventos\"]:::infra\n    subgraph DOM[\"Dominio DDD (agregados y reglas)\"]\n      DM1[\"Poliza\"]:::dominio\n      DM2[\"Movimiento\"]:::dominio\n      DM3[\"Periodo\"]:::dominio\n      DM4[\"CuentaContable\"]:::dominio\n    end\n  end\n  DB[(\"<b>PostgreSQL<\/b><br/>base contabilidad\")]:::datos\n  K[[\"<b>Kafka<\/b>\"]]:::alerta\n\n  E --> API\n  API --> APP\n  API -.- SEG\n  APP --> REP\n  REP --> DB\n  APP --> OUT\n  OUT --> K\n  APP --> DOM\n  D -. \"registro\" .-> APP\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef gateway fill:#EEEDFE,stroke:#7F77DD,color:#26215C\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n  classDef infra fill:#FFF8DC,stroke:#E0A800,color:#4A3800\n  classDef seguridad fill:#FDF0E1,stroke:#E8870E,color:#4A2A00\n  classDef cifrado fill:#FDEEF3,stroke:#D4537E,color:#4B1528\n  classDef dominio fill:#F6EEFB,stroke:#AF52DE,color:#3A1450\n"}], "api": true}</script>
+<script type="application/json" id="spec">{"openapi": "3.0.3", "info": {"title": "API contabilidad-ms", "version": "0.1.0", "description": "Microservicio del área **Finanzas y contabilidad** de EMPRESA_JOSESAID. Lleva el libro contable: catálogo de cuentas, pólizas balanceadas, reversas, cierres de periodo y balanza de comprobación."}, "servers": [{"url": "/", "description": "Ruta relativa del servicio"}], "tags": [{"name": "ContabilidadControlador"}], "paths": {"/v1/cuentas": {"post": {"operationId": "contabilidad-ms.ContabilidadControlador.crearCuenta", "summary": "Crear cuenta", "tags": ["ContabilidadControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CuentaRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('CONTADOR')", "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CrearCuentaSolicitud"}}}}}, "get": {"operationId": "contabilidad-ms.ContabilidadControlador.listarCuentas", "summary": "Listar cuentas", "tags": ["ContabilidadControlador"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "array", "items": {"$ref": "#/components/schemas/CuentaRespuesta"}}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')"}}, "/v1/estados-financieros": {"get": {"operationId": "contabilidad-ms.ContabilidadControlador.estadosFinancieros", "summary": "Estados financieros", "tags": ["ContabilidadControlador"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Balanza"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')", "parameters": [{"name": "periodo", "in": "query", "required": true, "schema": {"type": "string"}}]}}, "/v1/periodos/{anioMes}/cierre": {"post": {"operationId": "contabilidad-ms.ContabilidadControlador.cerrarPeriodo", "summary": "Cerrar periodo", "tags": ["ContabilidadControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PeriodoRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('CONTADOR')", "parameters": [{"name": "anioMes", "in": "path", "required": true, "schema": {"type": "string"}}]}}, "/v1/polizas": {"post": {"operationId": "contabilidad-ms.ContabilidadControlador.registrarPoliza", "summary": "Registrar poliza", "tags": ["ContabilidadControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "string", "description": "?"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('CONTADOR')", "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RegistrarPolizaSolicitud"}}}}}, "get": {"operationId": "contabilidad-ms.ContabilidadControlador.listarPolizas", "summary": "Listar polizas", "tags": ["ContabilidadControlador"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "array", "items": {"$ref": "#/components/schemas/PolizaRespuesta"}}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')", "parameters": [{"name": "periodo", "in": "query", "required": true, "schema": {"type": "string"}}]}}, "/v1/polizas/{id}": {"get": {"operationId": "contabilidad-ms.ContabilidadControlador.obtenerPoliza", "summary": "Obtener poliza", "tags": ["ContabilidadControlador"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PolizaRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}]}}, "/v1/polizas/{id}/reversa": {"post": {"operationId": "contabilidad-ms.ContabilidadControlador.reversarPoliza", "summary": "Reversar poliza", "tags": ["ContabilidadControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PolizaRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('CONTADOR')", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}]}}}, "components": {"securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}}, "schemas": {"CrearCuentaSolicitud": {"type": "object", "properties": {"codigo": {"type": "string"}, "nombre": {"type": "string"}, "naturaleza": {"$ref": "#/components/schemas/Naturaleza"}}}, "Naturaleza": {"type": "object", "properties": {}}, "CuentaRespuesta": {"type": "object", "properties": {"id": {"type": "string", "format": "uuid"}, "codigo": {"type": "string"}, "nombre": {"type": "string"}, "naturaleza": {"$ref": "#/components/schemas/Naturaleza"}, "activa": {"type": "boolean"}}}, "RegistrarPolizaSolicitud": {"type": "object", "properties": {"tipo": {"$ref": "#/components/schemas/TipoPoliza"}, "fecha": {"type": "string", "format": "date"}, "movimientos": {"type": "array", "items": {"$ref": "#/components/schemas/MovimientoSolicitud"}}}}, "TipoPoliza": {"type": "object", "properties": {}}, "MovimientoSolicitud": {"type": "object", "properties": {"cuentaId": {"type": "string", "format": "uuid"}, "cargo": {"type": "number"}, "abono": {"type": "number"}}}, "PolizaRespuesta": {"type": "object", "properties": {"id": {"type": "string", "format": "uuid"}, "periodo": {"type": "string"}, "tipo": {"$ref": "#/components/schemas/TipoPoliza"}, "fecha": {"type": "string", "format": "date"}, "estatus": {"$ref": "#/components/schemas/EstatusPoliza"}, "reversaDe": {"type": "string", "format": "uuid"}, "total": {"type": "number"}, "movimientos": {"type": "array", "items": {"$ref": "#/components/schemas/MovimientoRespuesta"}}}}, "EstatusPoliza": {"type": "object", "properties": {}}, "MovimientoRespuesta": {"type": "object", "properties": {"cuentaId": {"type": "string", "format": "uuid"}, "cargo": {"type": "number"}, "abono": {"type": "number"}}}, "PeriodoRespuesta": {"type": "object", "properties": {"anioMes": {"type": "string"}, "estatus": {"$ref": "#/components/schemas/EstatusPeriodo"}}}, "EstatusPeriodo": {"type": "object", "properties": {}}, "Balanza": {"type": "object", "properties": {"periodo": {"type": "string"}, "lineas": {"type": "array", "items": {"$ref": "#/components/schemas/Linea"}}, "totalCargos": {"type": "number"}, "totalAbonos": {"type": "number"}, "cuadra": {"type": "boolean"}}}, "Linea": {"type": "object", "properties": {"cuentaId": {"type": "string", "format": "uuid"}, "codigo": {"type": "string"}, "nombre": {"type": "string"}, "cargos": {"type": "number"}, "abonos": {"type": "number"}, "saldo": {"type": "number"}}}}}}</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('datos').textContent);
+  const SPEC = JSON.parse(document.getElementById('spec').textContent);
+  const $ = (s) => document.querySelector(s);
+
+  function el(tag, attrs, hijos) {
+    const n = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (hijos || []).forEach(function (h) {
+      if (h === null || h === undefined || h === false) return;
+      n.append(h.nodeType ? h : document.createTextNode(String(h)));
+    });
+    return n;
+  }
+
+  function chips(lista, vacio) {
+    if (!lista || !lista.length) return [el('span', { class: 'aviso', text: vacio })];
+    return lista.map(function (r) { return el('span', { class: 'chip', text: r }); });
+  }
+
+  if (window.mermaid) {
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default'
+    });
+  }
+
+  function pintarInfo() {
+    const i = D.info;
+    $('#titulo').textContent = i.nombre;
+    $('#descr').textContent = i.descripcion || '';
+    const pild = $('#pildoras');
+    [
+      'Puerto ' + (i.puerto || '—'),
+      'Java ' + (i.java || '—'),
+      'Spring Boot ' + (i.spring_boot || '—'),
+      i.endpoints ? i.endpoints + ' endpoints' : 'Sin API REST'
+    ].forEach(function (t) { pild.append(el('span', { class: 'pildora', text: t })); });
+    const campos = [
+      ['Servicio', i.nombre],
+      ['Descripción', i.descripcion || '—'],
+      ['Puerto de la aplicación', i.puerto || '—'],
+      ['Java', i.java || '—'],
+      ['Spring Boot', i.spring_boot || '—'],
+      ['Endpoints REST', i.endpoints || 'Ninguno']
+    ];
+    const dl = el('dl', { class: 'datos' });
+    campos.forEach(function (c) {
+      dl.append(el('div', {}, [el('dt', { text: c[0] }), el('dd', { text: String(c[1]) })]));
+    });
+    dl.append(el('div', {}, [el('dt', { text: 'Roles detectados' }),
+      el('dd', {}, chips(i.roles, 'Ninguno detectado'))]));
+    $('[data-panel="info"]').append(dl);
+  }
+
+  function pintarReadme() {
+    const panel = $('[data-panel="readme"]');
+    if (!D.readme) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene README.md.' }));
+      return;
     }
-  ],
-  "tags": [
-    {
-      "name": "ContabilidadControlador"
+    const art = el('article', { class: 'md' });
+    if (window.marked) {
+      art.innerHTML = marked.parse(D.readme);
+    } else {
+      art.append(el('pre', { text: D.readme }));
     }
-  ],
-  "paths": {
-    "/v1/cuentas": {
-      "post": {
-        "operationId": "contabilidad-ms.ContabilidadControlador.crearCuenta",
-        "summary": "Crear cuenta",
-        "tags": [
-          "ContabilidadControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CuentaRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('CONTADOR')",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CrearCuentaSolicitud"
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "operationId": "contabilidad-ms.ContabilidadControlador.listarCuentas",
-        "summary": "Listar cuentas",
-        "tags": [
-          "ContabilidadControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CuentaRespuesta"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')"
-      }
-    },
-    "/v1/estados-financieros": {
-      "get": {
-        "operationId": "contabilidad-ms.ContabilidadControlador.estadosFinancieros",
-        "summary": "Estados financieros",
-        "tags": [
-          "ContabilidadControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Balanza"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')",
-        "parameters": [
-          {
-            "name": "periodo",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/periodos/{anioMes}/cierre": {
-      "post": {
-        "operationId": "contabilidad-ms.ContabilidadControlador.cerrarPeriodo",
-        "summary": "Cerrar periodo",
-        "tags": [
-          "ContabilidadControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PeriodoRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('CONTADOR')",
-        "parameters": [
-          {
-            "name": "anioMes",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/polizas": {
-      "post": {
-        "operationId": "contabilidad-ms.ContabilidadControlador.registrarPoliza",
-        "summary": "Registrar poliza",
-        "tags": [
-          "ContabilidadControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "description": "?"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('CONTADOR')",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegistrarPolizaSolicitud"
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "operationId": "contabilidad-ms.ContabilidadControlador.listarPolizas",
-        "summary": "Listar polizas",
-        "tags": [
-          "ContabilidadControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PolizaRespuesta"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')",
-        "parameters": [
-          {
-            "name": "periodo",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/polizas/{id}": {
-      "get": {
-        "operationId": "contabilidad-ms.ContabilidadControlador.obtenerPoliza",
-        "summary": "Obtener poliza",
-        "tags": [
-          "ContabilidadControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PolizaRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/polizas/{id}/reversa": {
-      "post": {
-        "operationId": "contabilidad-ms.ContabilidadControlador.reversarPoliza",
-        "summary": "Reversar poliza",
-        "tags": [
-          "ContabilidadControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PolizaRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('CONTADOR')",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ]
-      }
+    art.querySelectorAll('pre > code.language-mermaid').forEach(function (code) {
+      const m = el('div', { class: 'mermaid' });
+      m.dataset.src = code.textContent;
+      code.parentElement.replaceWith(m);
+    });
+    panel.append(art);
+  }
+
+  function pintarPermisos() {
+    const panel = $('[data-panel="permisos"]');
+    panel.append(el('h2', { class: 'subtitulo', text: 'Roles detectados' }));
+    panel.append(el('p', {}, chips(D.info.roles, 'Ninguno detectado')));
+    if (!D.permisos.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene reglas de acceso por endpoint.' }));
+      return;
     }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+    const cabeza = el('tr', {}, ['Método', 'Ruta', 'Operación', 'Regla de acceso'].map(function (t) {
+      return el('th', { text: t });
+    }));
+    const cuerpo = el('tbody');
+    D.permisos.forEach(function (p) {
+      cuerpo.append(el('tr', {}, [
+        el('td', {}, [el('span', { class: 'verbo', text: p.verbo })]),
+        el('td', { text: p.ruta }),
+        el('td', { text: p.operacion }),
+        el('td', { text: p.roles || 'Solo autenticación (sin @PreAuthorize)' })
+      ]));
+    });
+    const tabla = el('table', {}, [el('thead', {}, [cabeza]), cuerpo]);
+    panel.append(el('div', { class: 'tabla-wrap' }, [tabla]));
+  }
+
+  function pintarDiagramas() {
+    const panel = $('[data-panel="diagramas"]');
+    if (!D.diagramas.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene carpeta docs/diagramas.' }));
+      return;
+    }
+    const grid = el('div', { class: 'grid-diag' });
+    D.diagramas.forEach(function (d) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: d.titulo }));
+      if (d.imagen) {
+        const img = el('img', { src: d.imagen, alt: d.titulo, loading: 'lazy' });
+        img.onerror = function () {
+          img.replaceWith(el('p', { class: 'aviso', text: 'No se pudo mostrar la imagen. Usa el enlace de abajo para abrir el archivo.' }));
+        };
+        tarjeta.append(el('a', { href: d.imagen, target: '_blank', rel: 'noopener', class: 'abrir', title: 'Abrir archivo' }, [img]));
+      } else if (d.codigo) {
+        const m = el('div', { class: 'mermaid' });
+        m.dataset.src = d.codigo;
+        tarjeta.append(m);
       }
-    },
-    "schemas": {
-      "CrearCuentaSolicitud": {
-        "type": "object",
-        "properties": {
-          "codigo": {
-            "type": "string"
-          },
-          "nombre": {
-            "type": "string"
-          },
-          "naturaleza": {
-            "$ref": "#/components/schemas/Naturaleza"
-          }
-        }
-      },
-      "Naturaleza": {
-        "type": "object",
-        "properties": {}
-      },
-      "CuentaRespuesta": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "codigo": {
-            "type": "string"
-          },
-          "nombre": {
-            "type": "string"
-          },
-          "naturaleza": {
-            "$ref": "#/components/schemas/Naturaleza"
-          },
-          "activa": {
-            "type": "boolean"
-          }
-        }
-      },
-      "RegistrarPolizaSolicitud": {
-        "type": "object",
-        "properties": {
-          "tipo": {
-            "$ref": "#/components/schemas/TipoPoliza"
-          },
-          "fecha": {
-            "type": "string",
-            "format": "date"
-          },
-          "movimientos": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MovimientoSolicitud"
-            }
-          }
-        }
-      },
-      "TipoPoliza": {
-        "type": "object",
-        "properties": {}
-      },
-      "MovimientoSolicitud": {
-        "type": "object",
-        "properties": {
-          "cuentaId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "cargo": {
-            "type": "number"
-          },
-          "abono": {
-            "type": "number"
-          }
-        }
-      },
-      "PolizaRespuesta": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "periodo": {
-            "type": "string"
-          },
-          "tipo": {
-            "$ref": "#/components/schemas/TipoPoliza"
-          },
-          "fecha": {
-            "type": "string",
-            "format": "date"
-          },
-          "estatus": {
-            "$ref": "#/components/schemas/EstatusPoliza"
-          },
-          "reversaDe": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "total": {
-            "type": "number"
-          },
-          "movimientos": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MovimientoRespuesta"
-            }
-          }
-        }
-      },
-      "EstatusPoliza": {
-        "type": "object",
-        "properties": {}
-      },
-      "MovimientoRespuesta": {
-        "type": "object",
-        "properties": {
-          "cuentaId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "cargo": {
-            "type": "number"
-          },
-          "abono": {
-            "type": "number"
-          }
-        }
-      },
-      "PeriodoRespuesta": {
-        "type": "object",
-        "properties": {
-          "anioMes": {
-            "type": "string"
-          },
-          "estatus": {
-            "$ref": "#/components/schemas/EstatusPeriodo"
-          }
-        }
-      },
-      "EstatusPeriodo": {
-        "type": "object",
-        "properties": {}
-      },
-      "Balanza": {
-        "type": "object",
-        "properties": {
-          "periodo": {
-            "type": "string"
-          },
-          "lineas": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Linea"
-            }
-          },
-          "totalCargos": {
-            "type": "number"
-          },
-          "totalAbonos": {
-            "type": "number"
-          },
-          "cuadra": {
-            "type": "boolean"
-          }
-        }
-      },
-      "Linea": {
-        "type": "object",
-        "properties": {
-          "cuentaId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "codigo": {
-            "type": "string"
-          },
-          "nombre": {
-            "type": "string"
-          },
-          "cargos": {
-            "type": "number"
-          },
-          "abonos": {
-            "type": "number"
-          },
-          "saldo": {
-            "type": "number"
-          }
-        }
+      const pie = el('div', { class: 'pie' });
+      d.archivos.forEach(function (a, idx) {
+        if (idx) pie.append(' · ');
+        pie.append(el('a', { href: a, target: '_blank', rel: 'noopener', text: a.split('/').pop() }));
+      });
+      tarjeta.append(pie);
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
+  async function renderMermaidIn(raiz) {
+    if (!raiz) return;
+    for (const nodo of raiz.querySelectorAll('.mermaid')) {
+      if (nodo.dataset.ok) continue;
+      const src = nodo.dataset.src || '';
+      if (!window.mermaid) {
+        nodo.replaceChildren(el('pre', { text: src }));
+        continue;
+      }
+      try {
+        const salida = await mermaid.render('m' + Math.random().toString(36).slice(2), src);
+        nodo.innerHTML = salida.svg;
+        nodo.dataset.ok = '1';
+      } catch (e) {
+        nodo.replaceChildren(
+          el('p', { class: 'aviso', text: 'No se pudo renderizar este diagrama. Se muestra el código fuente:' }),
+          el('pre', { text: src }));
       }
     }
   }
-}
-</script>
-<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
-<script>
-window.onload = function () {
-  window.ui = SwaggerUIBundle({
-    spec: JSON.parse(document.getElementById("spec").textContent),
-    dom_id: "#swagger-ui",
-    deepLinking: true,
-    persistAuthorization: true
-  });
-};
+
+  let swaggerListo = false;
+  function iniciarSwagger() {
+    if (swaggerListo || !SPEC || !window.SwaggerUIBundle) return;
+    swaggerListo = true;
+    window.ui = SwaggerUIBundle({ spec: SPEC, dom_id: '#swagger-ui', deepLinking: false, persistAuthorization: true });
+  }
+
+  function pintarApi() {
+    if (SPEC) return;
+    $('[data-panel="api"]').replaceChildren(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene Swagger.' }));
+    $('[data-tab="api"]').hidden = true;
+  }
+
+  const botones = Array.from(document.querySelectorAll('[role="tab"]'));
+  function activar(nombre, cambiarHash) {
+    if (nombre === 'api' && !SPEC) nombre = 'info';
+    botones.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === nombre)); });
+    document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== nombre; });
+    if (nombre === 'readme' || nombre === 'diagramas') renderMermaidIn(document.querySelector('[data-panel="' + nombre + '"]'));
+    if (nombre === 'api') iniciarSwagger();
+    if (cambiarHash) { try { history.replaceState(null, '', '#' + nombre); } catch (e) {} }
+  }
+  botones.forEach(function (b) { b.addEventListener('click', function () { activar(b.dataset.tab, true); }); });
+
+  pintarInfo();
+  pintarReadme();
+  pintarPermisos();
+  pintarDiagramas();
+  pintarApi();
+  const inicial = location.hash.slice(1);
+  activar(['info', 'readme', 'permisos', 'diagramas', 'api'].indexOf(inicial) >= 0 ? inicial : 'info', false);
+})();
 </script>
 </body>
 </html>

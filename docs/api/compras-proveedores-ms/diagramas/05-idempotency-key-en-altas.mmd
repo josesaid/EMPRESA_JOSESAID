@@ -1,0 +1,18 @@
+flowchart TD
+  A["<b>POST /v1/ordenes-compra</b><br/>Con cabecera Idempotency-Key"]:::actor --> B{"<b>La clave ya existe?</b>"}:::pendiente
+  B -- "no" --> C["<b>Procesa el alta</b>"]:::servicio
+  C -- "éxito" --> D["<b>Guarda la respuesta 24 horas</b><br/>Tabla idempotencia"]:::datos
+  C -- "falla" --> F["<b>Libera la clave</b>"]:::alerta
+  B -- "sí, y la petición original ya terminó" --> G{"<b>Mismo cuerpo?</b>"}:::pendiente
+  G -- "sí" --> H["<b>Misma respuesta original</b>"]:::servicio
+  G -- "no" --> E1["<b>422</b><br/>Clave usada con otro cuerpo"]:::alerta
+  B -- "sí, y sigue en proceso" --> I{"<b>Pasaron 2 minutos?</b>"}:::pendiente
+  I -- "no" --> E2["<b>409 conflicto-de-estado</b>"]:::alerta
+  I -- "sí" --> J["<b>Retoma con la misma clave</b>"]:::servicio
+  A -. "sin cabecera" .-> K["<b>Se procesa como siempre</b>"]:::actor
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

@@ -1,0 +1,11 @@
+flowchart TD
+  A["<b>POST /v1/usuarios</b><br/>Sin Idempotency-Key"]:::actor --> B{"<b>Ya existe un usuario con ese correo?</b>"}:::pendiente
+  B -- "no" --> C["<b>Crea el usuario</b><br/>Con contraseña temporal"]:::servicio
+  B -- "sí" --> D["<b>409</b><br/>Ya existe un usuario con ese correo"]:::alerta
+  P["<b>Pendiente</b><br/>Idempotency-Key en escrituras no está implementado.<br/>Un reintento no devuelve la respuesta original."]:::pendiente
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

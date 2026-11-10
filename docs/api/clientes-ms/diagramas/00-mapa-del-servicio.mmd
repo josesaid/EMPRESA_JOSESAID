@@ -1,0 +1,27 @@
+flowchart TD
+  V["<b>Vendedor</b><br/>Registra prospectos e interacciones"]:::actor
+  G["<b>Gerente de ventas</b><br/>Consulta métricas y clientes"]:::actor
+  A["<b>Administrador de clientes</b><br/>Da de alta clientes y contactos"]:::actor
+  R["<b>Responsable de protección de datos</b><br/>Gestiona consentimientos"]:::actor
+  U["<b>Usuarios y Accesos</b><br/>Emite tokens JWT"]:::gateway
+  S["<b>clientes-ms</b><br/>API REST, reglas de negocio y outbox"]:::servicio
+  P["<b>PostgreSQL 17</b><br/>Datos cifrados por columna"]:::datos
+  K["<b>Kafka</b><br/>Tópico clientes.eventos.v1"]:::gateway
+  C["<b>Pedidos y Facturación</b><br/>Consumidores de eventos"]:::actor
+  M["<b>Prometheus y OpenTelemetry</b><br/>Métricas, trazas y logs"]:::pendiente
+
+  V --> S
+  G --> S
+  A --> S
+  R --> S
+  U -- "valida el token" --> S
+  S --> P
+  S -- "outbox a Kafka" --> K
+  K --> C
+  S -. "métricas y trazas" .-> M
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef gateway fill:#EEEDFE,stroke:#7F77DD,color:#26215C
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

@@ -1,0 +1,14 @@
+flowchart TD
+  A["<b>Administrador de clientes</b><br/>PATCH /v1/clientes/id/estatus"]:::actor --> B{"<b>Estatus actual es BAJA?</b>"}:::pendiente
+  B -- "sí, y el destino es distinto" --> E1["<b>409 transicion-invalida</b><br/>BAJA es terminal"]:::alerta
+  B -- "no" --> C{"<b>Mismo estatus?</b>"}:::pendiente
+  C -- "sí" --> OK["<b>200 OK</b><br/>Sin evento: idempotente"]:::servicio
+  C -- "no" --> D["<b>Cambiar estatus</b><br/>ACTIVO a SUSPENDIDO, o cualquiera a BAJA"]:::servicio
+  D --> E["<b>Escribir outbox ClienteEstatusCambiado</b><br/>estatusAnterior y estatusNuevo"]:::datos
+  E --> OK
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

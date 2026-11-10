@@ -1,0 +1,19 @@
+flowchart TD
+  A["<b>Petición con token</b><br/>Claim roles"]:::actor --> B{"<b>Token válido?</b>"}:::pendiente
+  B -- "no" --> C["<b>401</b>"]:::alerta
+  B -- "sí" --> D{"<b>Rol de la operación</b>"}:::pendiente
+  D -- "VENTAS" --> E["<b>Prospectos, clientes, interacciones</b><br/>Registrar, convertir, consultar"]:::servicio
+  D -- "ADMIN" --> F["<b>Altas, actualización, estatus, contactos</b><br/>Convertir, buscar, consultar"]:::servicio
+  D -- "LEGAL" --> G["<b>Consentimientos</b><br/>Otorgar y revocar"]:::servicio
+  D -- "rol insuficiente" --> H["<b>403</b>"]:::alerta
+  E --> I["<b>Respuesta con datos personales</b>"]:::datos
+  F --> I
+  I --> J["<b>Enmascarados</b><br/>RFC, correo y nombre, también para ADMIN"]:::datos
+  J -. "mostrar valor completo" .-> M["<b>Pendiente</b><br/>Decisión de negocio, sección 15"]:::pendiente
+  I -. "logs y eventos" .-> K["<b>Sin datos personales</b>"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

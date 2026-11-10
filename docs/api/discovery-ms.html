@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>discovery-ms · EMPRESA_JOSESAID</title>
+<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
+<style>
+:root{--bg:#f5f7fb;--superficie:#ffffff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:40px}
+a{color:hsl(var(--h) 70% 45%)}
+.cabecera{background:linear-gradient(135deg,hsl(var(--h) 72% 40%),hsl(calc(var(--h) + 30) 78% 26%));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 64px}
+.cabecera-in{max-width:1000px;margin:0 auto;min-width:0}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.etiqueta{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin:14px 0 10px}
+h1{margin:0 0 8px;font-size:30px;line-height:1.2;text-wrap:balance;overflow-wrap:anywhere}
+.lead{margin:0;opacity:.92;max-width:70ch}
+.pildoras{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pildora{background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;font-size:13px}
+main{max-width:1000px;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));min-width:0}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:6px;box-shadow:0 6px 20px var(--sombra)}
+nav.tabs button{flex:1 0 auto;border:0;background:transparent;color:var(--muted);font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:10px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:hsl(var(--h) 80% 50% / .14);color:hsl(var(--h) 70% 35%)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}}
+:root[data-theme="dark"] nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}
+.panel{margin-top:18px;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;box-shadow:0 6px 20px var(--sombra);min-width:0}
+[hidden]{display:none!important}
+dl.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 24px;margin:0}
+dl.datos dt{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+dl.datos dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
+.chip{display:inline-block;font:600 12px ui-monospace,monospace;background:hsl(var(--h) 80% 50% / .16);color:hsl(var(--h) 70% 35%);border-radius:6px;padding:3px 8px;margin:2px 4px 2px 0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip{color:hsl(var(--h) 90% 78%)}}
+:root[data-theme="dark"] .chip{color:hsl(var(--h) 90% 78%)}
+.subtitulo{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--linea);vertical-align:top;overflow-wrap:anywhere}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.verbo{font:700 12px ui-monospace,monospace;border-radius:6px;padding:3px 7px;background:hsl(var(--h) 80% 50% / .18);color:hsl(var(--h) 70% 35%)}
+.md{overflow-wrap:anywhere;max-width:100%}
+.md img{max-width:100%;height:auto}
+.md pre{overflow-x:auto;background:rgba(127,127,127,.12);padding:12px;border-radius:10px}
+.md table{display:block;overflow-x:auto}
+.md h1,.md h2,.md h3{line-height:1.25}
+.grid-diag{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:16px}
+.diag{border:1px solid var(--linea);border-radius:12px;padding:12px;background:var(--bg);min-width:0}
+.diag h3{font-size:15px;margin:0 0 8px;overflow-wrap:anywhere}
+.diag a.abrir{display:block;text-align:center}
+.diag img{max-width:100%;height:auto;border-radius:8px;background:#fff}
+.diag .mermaid{overflow-x:auto;text-align:center}
+.diag .pie{font-size:13px;margin-top:8px;overflow-wrap:anywhere}
+.aviso{color:var(--muted)}
+#swagger-ui{max-width:100%;overflow-x:auto}
+.swagger-ui .topbar{display:none}
+</style>
+</head>
+<body style="--h:53">
+<header class="cabecera">
+  <div class="cabecera-in">
+    <a class="volver" href="index.html">← Todos los microservicios</a>
+    <div><span class="etiqueta">Microservicio</span></div>
+    <h1 id="titulo">discovery-ms</h1>
+    <p class="lead" id="descr"></p>
+    <div class="pildoras" id="pildoras"></div>
+  </div>
+</header>
+<main>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" data-tab="info" aria-selected="true">Información</button>
+    <button role="tab" data-tab="readme" aria-selected="false">README</button>
+    <button role="tab" data-tab="permisos" aria-selected="false">Roles y permisos</button>
+    <button role="tab" data-tab="diagramas" aria-selected="false">Diagramas</button>
+    <button role="tab" data-tab="api" aria-selected="false">API (Swagger)</button>
+  </nav>
+  <section class="panel" data-panel="info"></section>
+  <section class="panel" data-panel="readme" hidden></section>
+  <section class="panel" data-panel="permisos" hidden></section>
+  <section class="panel" data-panel="diagramas" hidden></section>
+  <section class="panel" data-panel="api" hidden><div id="swagger-ui"></div></section>
+</main>
+<script type="application/json" id="datos">{"svc": "discovery-ms", "info": {"nombre": "discovery-ms", "descripcion": "Registro y descubrimiento de servicios (Eureka Server).", "puerto": "8761", "java": "21", "spring_boot": "4.1.2", "endpoints": 0, "roles": []}, "readme": "# discovery-ms\n\n## 1. Identidad\n\n- **Nombre:** discovery-ms\n- **Puerto en tu Mac:** 8761\n- **Versión:** 0.1.0 · Java 21 · Spring Boot 4.1.2 · Spring Cloud 2025.1.2\n\n## 2. Propósito y alcance\n\nRegistro y descubrimiento de servicios con Eureka. Cada servicio se anuncia al arrancar y el gateway consulta este registro para enrutar.\n\n## 3. Estructura\n\n```\ndiscovery-ms/\n├── Dockerfile\n├── docker-compose.yml\n├── pom.xml\n├── docs/diseno.md\n└── src/\n    ├── main/java/   aplicación\n    ├── main/resources/application.yml\n    └── test/java/   prueba de arranque\n```\n\n## 4. Requisitos\n\n- Docker Desktop en ejecución.\n- Red `empresa-net` creada (`docker network create empresa-net`).\n- JDK 21 y Maven 3.9+ solo si corre fuera de Docker.\n\n## 5. Configuración\n\nRequiere `EUREKA_USUARIO` y `EUREKA_PASSWORD` en el `.env` de la raíz. Si faltan, el Compose no arranca.\n\n## 6. Ejecución\n\nDesde la raíz: `docker compose up -d --build` o, dentro de `discovery-ms/`, `docker compose up -d --build`.\nSalud: `curl -s http://localhost:8761/actuator/health`.\n\n## 7. Modelo de datos\n\nNo aplica. Este servicio no guarda datos de negocio.\n\n## 8. Migraciones\n\nNo aplica.\n\n## 9. Reglas de estado\n\nNo aplica.\n\n## 10. Seguridad\n\nEl panel y la API de Eureka piden usuario y contraseña (HTTP Basic), definidos con `EUREKA_USUARIO` y `EUREKA_PASSWORD`. Sin ellos, los servicios no se registran.\n\nPúblicos sin credenciales: `/actuator/health`, `/actuator/info` y `/actuator/prometheus`. El gateway no reenvía `/actuator/**` ni `/discovery-ms/**`, así que solo son visibles dentro de `empresa-net` y, desde tu Mac, en `127.0.0.1:8761`. El puerto no se publica en la red local.\n\n## 11. API\n\n| Método | Ruta | Descripción |\n|---|---|---|\n| GET | / | Panel de Eureka con las instancias registradas (requiere usuario y contraseña) |\n| GET | /eureka/apps | Instancias registradas (XML/JSON) |\n| GET | /actuator/health | Salud del servicio |\n\n## 12. Reglas de duplicados\n\nNo aplica.\n\n## 13. Eventos\n\nNo aplica.\n\n## 14. Outbox\n\nNo aplica.\n\n## 15. Observabilidad\n\nSalud y métricas Prometheus en `/actuator/health` y `/actuator/prometheus`.\n\n## 16. Pruebas\n\n```bash\nmvn -B test   # prueba de arranque del contexto\n```\nLa integración completa se verifica con los servicios desde la raíz.\n\n## 17. Despliegue\n\nImagen `discovery-ms:0.1.0`. Se levanta antes que los servicios de área.\n\n## 18. Rollback\n\nDetenga el contenedor y regrese a la imagen anterior. No hay datos que revertir.\n\n## 19. Solución de problemas\n\n| Síntoma | Causa probable | Acción |\n|---|---|---|\n| Un servicio no aparece en el panel | El servicio arrancó antes que el registro, o no encuentra `discovery-ms` | Levante `discovery-ms` y espere un minuto. Revise `EUREKA_URL` del servicio. |\n| Panel no abre en 8761 | Puerto ocupado en tu Mac | Libere el 8761 o cambie el mapeo en el compose. |\n\n## 20. Decisiones y pendientes\n\n- **Autoprotección desactivada:** en desarrollo, los servicios caídos desaparecen del registro. Evaluar en producción.\n- **Panel sin autenticación:** pendiente de decisión si se expone fuera de la red local.\n- **Registro en memoria:** si se reinicia, los servicios se vuelven a registrar en su siguiente latido.\n\n## 21. Referencias\n\n- Diseño: `docs/diseno.md`.\n- Orden de arranque: sección 10 del README de la raíz.\n- Gateway y monitoreo: sección 11 del README de la raíz.\n\n## Guías paso a paso\n\nProcedimientos de este servicio, publicados en HTML:\n\n- [Levantar el ecosistema completo](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/01-levantar-ecosistema.html)\n- [Ejecutar las pruebas de un servicio](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/02-ejecutar-pruebas.html)\n- [Índice de todas las guías](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/README.html)\n", "permisos": [], "diagramas": [{"titulo": "01 registro y acceso", "archivos": ["discovery-ms/diagramas/01-registro-y-acceso.mmd", "discovery-ms/diagramas/01-registro-y-acceso.png"], "imagen": "discovery-ms/diagramas/01-registro-y-acceso.png", "codigo": "flowchart TD\n  A[\"<b>Servicio arranca<\/b><br/>Con EUREKA_URL configurado\"]:::actor --> B[\"<b>Se registra en discovery-ms<\/b><br/>Latido periódico\"]:::servicio\n  B --> C{\"<b>Credenciales HTTP Basic<\/b><br/>EUREKA_USUARIO y EUREKA_PASSWORD\"}:::pendiente\n  C -- \"no válidas o ausentes\" --> E1[\"<b>401<\/b><br/>No se registra\"]:::alerta\n  C -- \"válidas\" --> D[\"<b>Registro en memoria<\/b><br/>Visible en el panel y en /eureka/apps\"]:::datos\n  D --> G[\"<b>gateway-ms<\/b><br/>Consulta el registro para enrutar\"]:::servicio\n  H[\"<b>Petición a discovery-ms<\/b>\"]:::actor --> I{\"<b>Ruta<\/b>\"}:::pendiente\n  I -- \"salud y métricas\" --> J[\"<b>Acceso libre<\/b>\"]:::servicio\n  I -- \"panel y API\" --> K{\"<b>Autenticado?<\/b>\"}:::pendiente\n  K -- \"no\" --> E2[\"<b>401<\/b>\"]:::alerta\n  K -- \"sí\" --> L[\"<b>Panel de Eureka<\/b><br/>Instancias registradas\"]:::servicio\n  D -. \"pendiente: se borra del registro al caer si la autoprotección está apagada\" .-> M[\"<b>Servicio caído<\/b>\"]:::alerta\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "arquitectura", "archivos": ["discovery-ms/diagramas/arquitectura.mmd", "discovery-ms/diagramas/arquitectura.png"], "imagen": "discovery-ms/diagramas/arquitectura.png", "codigo": "flowchart LR\n  CL[\"<b>clientes-ms<\/b>\"]:::servicio\n  US[\"<b>usuarios-accesos-ms<\/b>\"]:::servicio\n  DA[\"<b>demás servicios de área<\/b>\"]:::servicio\n  GW[\"<b>gateway-ms<\/b>\"]:::gateway\n  subgraph DS[\"discovery-ms · Eureka · 8761\"]\n    REG[\"<b>Registro de instancias<\/b><br/>en memoria\"]:::actor\n    PAN[\"<b>Panel web<\/b> /\"]:::actor\n  end\n\n  CL -. \"registra y renueva\" .-> REG\n  US -. \"se registra\" .-> REG\n  DA -. \"se registra\" .-> REG\n  GW -. \"consulta\" .-> REG\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef gateway fill:#EEEDFE,stroke:#7F77DD,color:#26215C\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n  classDef infra fill:#FFF8DC,stroke:#E0A800,color:#4A3800\n  classDef seguridad fill:#FDF0E1,stroke:#E8870E,color:#4A2A00\n  classDef cifrado fill:#FDEEF3,stroke:#D4537E,color:#4B1528\n  classDef dominio fill:#F6EEFB,stroke:#AF52DE,color:#3A1450\n"}], "api": false}</script>
+<script type="application/json" id="spec">null</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('datos').textContent);
+  const SPEC = JSON.parse(document.getElementById('spec').textContent);
+  const $ = (s) => document.querySelector(s);
+
+  function el(tag, attrs, hijos) {
+    const n = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (hijos || []).forEach(function (h) {
+      if (h === null || h === undefined || h === false) return;
+      n.append(h.nodeType ? h : document.createTextNode(String(h)));
+    });
+    return n;
+  }
+
+  function chips(lista, vacio) {
+    if (!lista || !lista.length) return [el('span', { class: 'aviso', text: vacio })];
+    return lista.map(function (r) { return el('span', { class: 'chip', text: r }); });
+  }
+
+  if (window.mermaid) {
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default'
+    });
+  }
+
+  function pintarInfo() {
+    const i = D.info;
+    $('#titulo').textContent = i.nombre;
+    $('#descr').textContent = i.descripcion || '';
+    const pild = $('#pildoras');
+    [
+      'Puerto ' + (i.puerto || '—'),
+      'Java ' + (i.java || '—'),
+      'Spring Boot ' + (i.spring_boot || '—'),
+      i.endpoints ? i.endpoints + ' endpoints' : 'Sin API REST'
+    ].forEach(function (t) { pild.append(el('span', { class: 'pildora', text: t })); });
+    const campos = [
+      ['Servicio', i.nombre],
+      ['Descripción', i.descripcion || '—'],
+      ['Puerto de la aplicación', i.puerto || '—'],
+      ['Java', i.java || '—'],
+      ['Spring Boot', i.spring_boot || '—'],
+      ['Endpoints REST', i.endpoints || 'Ninguno']
+    ];
+    const dl = el('dl', { class: 'datos' });
+    campos.forEach(function (c) {
+      dl.append(el('div', {}, [el('dt', { text: c[0] }), el('dd', { text: String(c[1]) })]));
+    });
+    dl.append(el('div', {}, [el('dt', { text: 'Roles detectados' }),
+      el('dd', {}, chips(i.roles, 'Ninguno detectado'))]));
+    $('[data-panel="info"]').append(dl);
+  }
+
+  function pintarReadme() {
+    const panel = $('[data-panel="readme"]');
+    if (!D.readme) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene README.md.' }));
+      return;
+    }
+    const art = el('article', { class: 'md' });
+    if (window.marked) {
+      art.innerHTML = marked.parse(D.readme);
+    } else {
+      art.append(el('pre', { text: D.readme }));
+    }
+    art.querySelectorAll('pre > code.language-mermaid').forEach(function (code) {
+      const m = el('div', { class: 'mermaid' });
+      m.dataset.src = code.textContent;
+      code.parentElement.replaceWith(m);
+    });
+    panel.append(art);
+  }
+
+  function pintarPermisos() {
+    const panel = $('[data-panel="permisos"]');
+    panel.append(el('h2', { class: 'subtitulo', text: 'Roles detectados' }));
+    panel.append(el('p', {}, chips(D.info.roles, 'Ninguno detectado')));
+    if (!D.permisos.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene reglas de acceso por endpoint.' }));
+      return;
+    }
+    const cabeza = el('tr', {}, ['Método', 'Ruta', 'Operación', 'Regla de acceso'].map(function (t) {
+      return el('th', { text: t });
+    }));
+    const cuerpo = el('tbody');
+    D.permisos.forEach(function (p) {
+      cuerpo.append(el('tr', {}, [
+        el('td', {}, [el('span', { class: 'verbo', text: p.verbo })]),
+        el('td', { text: p.ruta }),
+        el('td', { text: p.operacion }),
+        el('td', { text: p.roles || 'Solo autenticación (sin @PreAuthorize)' })
+      ]));
+    });
+    const tabla = el('table', {}, [el('thead', {}, [cabeza]), cuerpo]);
+    panel.append(el('div', { class: 'tabla-wrap' }, [tabla]));
+  }
+
+  function pintarDiagramas() {
+    const panel = $('[data-panel="diagramas"]');
+    if (!D.diagramas.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene carpeta docs/diagramas.' }));
+      return;
+    }
+    const grid = el('div', { class: 'grid-diag' });
+    D.diagramas.forEach(function (d) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: d.titulo }));
+      if (d.imagen) {
+        const img = el('img', { src: d.imagen, alt: d.titulo, loading: 'lazy' });
+        img.onerror = function () {
+          img.replaceWith(el('p', { class: 'aviso', text: 'No se pudo mostrar la imagen. Usa el enlace de abajo para abrir el archivo.' }));
+        };
+        tarjeta.append(el('a', { href: d.imagen, target: '_blank', rel: 'noopener', class: 'abrir', title: 'Abrir archivo' }, [img]));
+      } else if (d.codigo) {
+        const m = el('div', { class: 'mermaid' });
+        m.dataset.src = d.codigo;
+        tarjeta.append(m);
+      }
+      const pie = el('div', { class: 'pie' });
+      d.archivos.forEach(function (a, idx) {
+        if (idx) pie.append(' · ');
+        pie.append(el('a', { href: a, target: '_blank', rel: 'noopener', text: a.split('/').pop() }));
+      });
+      tarjeta.append(pie);
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
+  async function renderMermaidIn(raiz) {
+    if (!raiz) return;
+    for (const nodo of raiz.querySelectorAll('.mermaid')) {
+      if (nodo.dataset.ok) continue;
+      const src = nodo.dataset.src || '';
+      if (!window.mermaid) {
+        nodo.replaceChildren(el('pre', { text: src }));
+        continue;
+      }
+      try {
+        const salida = await mermaid.render('m' + Math.random().toString(36).slice(2), src);
+        nodo.innerHTML = salida.svg;
+        nodo.dataset.ok = '1';
+      } catch (e) {
+        nodo.replaceChildren(
+          el('p', { class: 'aviso', text: 'No se pudo renderizar este diagrama. Se muestra el código fuente:' }),
+          el('pre', { text: src }));
+      }
+    }
+  }
+
+  let swaggerListo = false;
+  function iniciarSwagger() {
+    if (swaggerListo || !SPEC || !window.SwaggerUIBundle) return;
+    swaggerListo = true;
+    window.ui = SwaggerUIBundle({ spec: SPEC, dom_id: '#swagger-ui', deepLinking: false, persistAuthorization: true });
+  }
+
+  function pintarApi() {
+    if (SPEC) return;
+    $('[data-panel="api"]').replaceChildren(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene Swagger.' }));
+    $('[data-tab="api"]').hidden = true;
+  }
+
+  const botones = Array.from(document.querySelectorAll('[role="tab"]'));
+  function activar(nombre, cambiarHash) {
+    if (nombre === 'api' && !SPEC) nombre = 'info';
+    botones.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === nombre)); });
+    document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== nombre; });
+    if (nombre === 'readme' || nombre === 'diagramas') renderMermaidIn(document.querySelector('[data-panel="' + nombre + '"]'));
+    if (nombre === 'api') iniciarSwagger();
+    if (cambiarHash) { try { history.replaceState(null, '', '#' + nombre); } catch (e) {} }
+  }
+  botones.forEach(function (b) { b.addEventListener('click', function () { activar(b.dataset.tab, true); }); });
+
+  pintarInfo();
+  pintarReadme();
+  pintarPermisos();
+  pintarDiagramas();
+  pintarApi();
+  const inicial = location.hash.slice(1);
+  activar(['info', 'readme', 'permisos', 'diagramas', 'api'].indexOf(inicial) >= 0 ? inicial : 'info', false);
+})();
+</script>
+</body>
+</html>

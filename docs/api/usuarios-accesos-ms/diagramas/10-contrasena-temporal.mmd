@@ -1,0 +1,16 @@
+flowchart TD
+  A["<b>POST /v1/usuarios</b><br/>Alta por ADMIN"]:::actor --> B["<b>Contraseña temporal</b><br/>Cuenta pendiente de cambio"]:::servicio
+  B --> C["<b>POST /v1/auth/login</b>"]:::actor
+  C --> D["<b>403</b> cambio-password-requerido<br/>No emite tokens"]:::alerta
+  D --> E["<b>POST /v1/auth/cambiar-password-inicial</b><br/>correo, passwordActual, passwordNueva"]:::actor
+  E --> F{"<b>Nueva de 12 o más caracteres y distinta de la temporal?</b>"}:::pendiente
+  F -- "no" --> G["<b>Rechazado</b><br/>La contraseña no cambia"]:::alerta
+  F -- "sí" --> H["<b>204</b><br/>Contraseña definitiva"]:::servicio
+  E -. "temporal incorrecta" .-> I["<b>Cuenta intentos fallidos</b><br/>Igual que el login"]:::alerta
+  H --> J["<b>Login normal</b><br/>Emite tokens"]:::datos
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
