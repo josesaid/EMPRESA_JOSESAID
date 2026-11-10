@@ -749,7 +749,157 @@ def bloque_plugin(texto, artefacto):
     return None
 
 
-def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs):
+def resultados_de(svc_dir, tid):
+    import xml.etree.ElementTree as ET
+    tgt = os.path.join(svc_dir, "target")
+
+    def raiz(ruta):
+        try:
+            return ET.parse(ruta).getroot()
+        except Exception:
+            return None
+
+    def fecha_de(rutas):
+        mt = max(os.path.getmtime(r) for r in rutas)
+        return "Actualizado " + datetime.datetime.fromtimestamp(mt).strftime("%Y-%m-%d %H:%M")
+
+    def pct(cubiertos, total):
+        return f"{(100.0 * cubiertos / total):.1f} %" if total else "Sin datos"
+
+    if tid == "pruebas":
+        rutas = (glob.glob(os.path.join(tgt, "surefire-reports", "TEST-*.xml"))
+                 + glob.glob(os.path.join(tgt, "failsafe-reports", "TEST-*.xml")))
+        if not rutas:
+            return None
+        total = fallos = omitidos = 0
+        tiempo = 0.0
+        fallidas = []
+        for ruta in rutas:
+            r = raiz(ruta)
+            if r is None:
+                continue
+            total += int(r.get("tests", 0))
+            fallos += int(r.get("failures", 0)) + int(r.get("errors", 0))
+            omitidos += int(r.get("skipped", 0))
+            tiempo += float(r.get("time", 0) or 0)
+            for c in r.iter("testcase"):
+                if c.find("failure") is not None or c.find("error") is not None:
+                    fallidas.append(f"{c.get('classname', '')}.{c.get('name', '')}")
+        filas = [("Pruebas ejecutadas", total), ("Pasan", total - fallos - omitidos),
+                 ("Fallan", fallos), ("Omitidas", omitidos), ("Tiempo total", f"{tiempo:.1f} s")]
+        return filas, fallidas, fecha_de(rutas)
+
+    if tid == "jacoco":
+        ruta = os.path.join(tgt, "site", "jacoco", "jacoco.xml")
+        r = raiz(ruta) if os.path.exists(ruta) else None
+        if r is None:
+            return None
+        filas = []
+        nombres = {"LINE": "Líneas", "BRANCH": "Ramas", "INSTRUCTION": "Instrucciones",
+                   "METHOD": "Métodos", "CLASS": "Clases"}
+        for c in r.findall("counter"):
+            tipo = c.get("type")
+            if tipo not in nombres:
+                continue
+            missed, covered = int(c.get("missed")), int(c.get("covered"))
+            filas.append((nombres[tipo], f"{pct(covered, missed + covered)} ({covered} de {missed + covered})"))
+        return filas, [], fecha_de([ruta])
+
+    if tid == "checkstyle":
+        ruta = os.path.join(tgt, "checkstyle-result.xml")
+        r = raiz(ruta) if os.path.exists(ruta) else None
+        if r is None:
+            return None
+        archivos = r.findall("file")
+        errores = [(f.get("name", ""), er) for f in archivos for er in f.findall("error")]
+        err = sum(1 for _, er in errores if er.get("severity") == "error")
+        adv = sum(1 for _, er in errores if er.get("severity") == "warning")
+        con = sum(1 for f in archivos if f.findall("error"))
+        filas = [("Archivos revisados", len(archivos)), ("Errores", err),
+                 ("Advertencias", adv), ("Archivos con incidencias", con)]
+        detalle = [f"{os.path.basename(n)}:{er.get('line', '?')} · {er.get('message', '')}" for n, er in errores]
+        return filas, detalle, fecha_de([ruta])
+
+    if tid == "pmd":
+        ruta = os.path.join(tgt, "pmd.xml")
+        r = raiz(ruta) if os.path.exists(ruta) else None
+        if r is None:
+            return None
+        archivos = r.findall("file")
+        viol = [(f.get("name", ""), v) for f in archivos for v in f.findall("violation")]
+        por_prio = {}
+        for _, v in viol:
+            por_prio[v.get("priority", "?")] = por_prio.get(v.get("priority", "?"), 0) + 1
+        filas = [("Archivos revisados", len(archivos)), ("Incidencias", len(viol))]
+        for p in sorted(por_prio):
+            filas.append((f"Prioridad {p}", por_prio[p]))
+        detalle = [f"{os.path.basename(n)}:{v.get('beginline', '?')} · {v.get('rule', '')}: {(v.text or '').strip()}"
+                   for n, v in viol]
+        return filas, detalle, fecha_de([ruta])
+
+    if tid == "spotbugs":
+        ruta = os.path.join(tgt, "spotbugsXml.xml")
+        r = raiz(ruta) if os.path.exists(ruta) else None
+        if r is None:
+            return None
+        bugs = list(r.iter("BugInstance"))
+        por_cat = {}
+        for b in bugs:
+            por_cat[b.get("category", "?")] = por_cat.get(b.get("category", "?"), 0) + 1
+        filas = [("Hallazgos", len(bugs))]
+        for cat in sorted(por_cat):
+            filas.append((f"Categoría {cat.capitalize()}", por_cat[cat]))
+        detalle = []
+        for b in bugs:
+            clase = b.find("Class")
+            detalle.append(f"{b.get('type', '')} · {clase.get('classname', '') if clase is not None else ''}")
+        return filas, detalle, fecha_de([ruta])
+
+    if tid == "javadoc":
+        base = os.path.join(tgt, "site", "apidocs")
+        if not os.path.isdir(base):
+            return None
+        paquetes = [d for d, _, fs in os.walk(base) if "package-summary.html" in fs]
+        clases = 0
+        for d, _, fs in os.walk(base):
+            for f in fs:
+                if f.endswith(".html") and not f.startswith(("package-", "index", "allclasses", "allpackages", "overview", "module-", "constant-values", "serialized-form", "deprecated-list", "help-doc", "search")) and f[:1].isupper() and "-frame" not in f:
+                    clases += 1
+        fecha = fecha_de([os.path.join(base, "index.html")]) if os.path.exists(os.path.join(base, "index.html")) else fecha_de([base])
+        return [("Clases documentadas", clases), ("Paquetes documentados", len(paquetes))], [], fecha
+
+    if tid == "cobertura":
+        ruta = os.path.join(tgt, "site", "cobertura", "coverage.xml")
+        if not os.path.exists(ruta):
+            ruta = os.path.join(tgt, "coverage.xml")
+        r = raiz(ruta) if os.path.exists(ruta) else None
+        if r is None:
+            return None
+        lr = float(r.get("line-rate", 0)) * 100
+        br = float(r.get("branch-rate", 0)) * 100
+        return [("Líneas", f"{lr:.1f} %"), ("Ramas", f"{br:.1f} %")], [], fecha_de([ruta])
+
+    return None
+
+
+def seccion_resultados(svc_dir, tid):
+    e = html.escape
+    r = resultados_de(svc_dir, tid)
+    if r is None:
+        return ("<section class='panel'><h2>Resultados</h2><p class='aviso'>Todavía no hay resultados "
+                "en este equipo. Ejecuta el comando de arriba y vuelve a generar la documentación.</p></section>")
+    filas, detalle, fecha = r
+    tabla = "<table>" + "".join(f"<tr><th>{e(str(k))}</th><td>{e(str(v))}</td></tr>" for k, v in filas) + "</table>"
+    lista = ""
+    if detalle:
+        lista = ("<h2 style='margin-top:16px'>Detalle</h2><ul>"
+                 + "".join(f"<li><code>{e(x)}</code></li>" for x in detalle[:30]) + "</ul>")
+        if len(detalle) > 30:
+            lista += f"<p class='aviso'>y {len(detalle) - 30} más</p>"
+    return f"<section class='panel'><h2>Resultados · {e(fecha)}</h2>{tabla}{lista}</section>"
+
+
+def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs, svc_dir):
     e = html.escape
     comando = t["comando"].replace("{svc}", svc)
     if t["id"] == "pruebas":
@@ -779,7 +929,7 @@ def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs):
         f"<section class='panel'><h2>Plugin y versión</h2>{config}</section>"
         f"{secciones}"
         f"<section class='panel'><h2>Cómo ejecutarlo</h2><pre><code>{e(comando)}</code></pre></section>"
-        f"<section class='panel'><h2>Reportes</h2><p><code>{e(t['reportes'])}</code></p></section>"
+        f"{seccion_resultados(svc_dir, t['id'])}"
     )
     return (
         "<!doctype html><html lang='es'><head><meta charset='utf-8'>"
@@ -814,7 +964,7 @@ def generar_tecnologias(svc, svc_dir, hue):
         if aplicado:
             os.makedirs(destino, exist_ok=True)
             with open(os.path.join(destino, t["id"] + ".html"), "w", encoding="utf-8") as f:
-                f.write(pagina_tecnologia(svc, hue, t, bloque, nombres, libs))
+                f.write(pagina_tecnologia(svc, hue, t, bloque, nombres, libs, svc_dir))
         resultado.append({"id": t["id"], "nombre": t["nombre"], "resumen": t["que"],
                           "aplicado": aplicado,
                           "archivo": f"{svc}/tecnologias/{t['id']}.html" if aplicado else None})
