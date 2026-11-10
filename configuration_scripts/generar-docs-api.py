@@ -518,7 +518,7 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
     campos.forEach(function (c) {
       dl.append(el('div', {}, [el('dt', { text: c[0] }), el('dd', { text: String(c[1]) })]));
     });
-    dl.append(el('div', {}, [el('dt', { text: 'Roles detectados' }),
+    dl.append(el('div', {}, [el('dt', { text: 'Roles a usar' }),
       el('dd', {}, chips(i.roles, 'Ninguno detectado'))]));
     $('[data-panel="info"]').append(dl);
   }
@@ -545,7 +545,7 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
 
   function pintarPermisos() {
     const panel = $('[data-panel="permisos"]');
-    panel.append(el('h2', { class: 'subtitulo', text: 'Roles detectados' }));
+    panel.append(el('h2', { class: 'subtitulo', text: 'Roles a usar' }));
     panel.append(el('p', {}, chips(D.info.roles, 'Ninguno detectado')));
     if (!D.permisos.length) {
       panel.append(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene reglas de acceso por endpoint.' }));
@@ -749,6 +749,22 @@ def bloque_plugin(texto, artefacto):
     return None
 
 
+ENCABEZADOS_DETALLE = {
+    "pruebas": ["Clase", "Prueba", "Resultado", "Tiempo"],
+    "checkstyle": ["Archivo", "Línea", "Severidad", "Mensaje"],
+    "pmd": ["Archivo", "Línea", "Prioridad", "Regla", "Mensaje"],
+    "spotbugs": ["Tipo", "Clase", "Categoría", "Prioridad", "Descripción"],
+    "jacoco": ["Paquete", "Clase", "Líneas", "Ramas", "Métodos"],
+    "cobertura": ["Paquete", "Clase", "Líneas", "Ramas"],
+    "javadoc": ["Paquete", "Clases documentadas"],
+}
+
+CSS_NAV = (".tecs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}"
+           ".tecs a{padding:6px 12px;border:1px solid currentColor;border-radius:999px;"
+           "font-size:14px;text-decoration:none;opacity:.75}"
+           ".tecs a[aria-current='page']{opacity:1;font-weight:700}")
+
+
 def resultados_de(svc_dir, tid):
     import xml.etree.ElementTree as ET
     tgt = os.path.join(svc_dir, "target")
@@ -769,11 +785,12 @@ def resultados_de(svc_dir, tid):
     if tid == "pruebas":
         rutas = (glob.glob(os.path.join(tgt, "surefire-reports", "TEST-*.xml"))
                  + glob.glob(os.path.join(tgt, "failsafe-reports", "TEST-*.xml")))
-        if not rutas:
+        fuentes = glob.glob(os.path.join(svc_dir, "src", "test", "java", "**", "*.java"), recursive=True)
+        if not rutas or not fuentes:
             return None
         total = fallos = omitidos = 0
         tiempo = 0.0
-        fallidas = []
+        casos = []
         for ruta in rutas:
             r = raiz(ruta)
             if r is None:
@@ -784,26 +801,47 @@ def resultados_de(svc_dir, tid):
             tiempo += float(r.get("time", 0) or 0)
             for c in r.iter("testcase"):
                 if c.find("failure") is not None or c.find("error") is not None:
-                    fallidas.append(f"{c.get('classname', '')}.{c.get('name', '')}")
+                    estado = "Falla"
+                elif c.find("skipped") is not None:
+                    estado = "Omitida"
+                else:
+                    estado = "Pasa"
+                casos.append((c.get("classname", ""), c.get("name", ""), estado,
+                              f"{float(c.get('time', 0) or 0):.3f} s"))
         filas = [("Pruebas ejecutadas", total), ("Pasan", total - fallos - omitidos),
                  ("Fallan", fallos), ("Omitidas", omitidos), ("Tiempo total", f"{tiempo:.1f} s")]
-        return filas, fallidas, fecha_de(rutas)
+        return filas, casos, fecha_de(rutas)
 
     if tid == "jacoco":
         ruta = os.path.join(tgt, "site", "jacoco", "jacoco.xml")
         r = raiz(ruta) if os.path.exists(ruta) else None
         if r is None:
             return None
-        filas = []
         nombres = {"LINE": "Líneas", "BRANCH": "Ramas", "INSTRUCTION": "Instrucciones",
                    "METHOD": "Métodos", "CLASS": "Clases"}
-        for c in r.findall("counter"):
-            tipo = c.get("type")
+        filas = []
+        for k in r.findall("counter"):
+            tipo = k.get("type")
             if tipo not in nombres:
                 continue
-            missed, covered = int(c.get("missed")), int(c.get("covered"))
+            missed, covered = int(k.get("missed")), int(k.get("covered"))
             filas.append((nombres[tipo], f"{pct(covered, missed + covered)} ({covered} de {missed + covered})"))
-        return filas, [], fecha_de([ruta])
+        detalle = []
+        for paquete in r.findall("package"):
+            for clase in paquete.findall("class"):
+                cont = {}
+                for k in clase.findall("counter"):
+                    cont[k.get("type")] = (int(k.get("missed")), int(k.get("covered")))
+
+                def cel(tipo):
+                    if tipo not in cont:
+                        return "—"
+                    m, cu = cont[tipo]
+                    return pct(cu, m + cu)
+                detalle.append((paquete.get("name", "").replace("/", "."),
+                                clase.get("name", "").split("/")[-1], cel("LINE"), cel("BRANCH"), cel("METHOD")))
+        detalle.sort()
+        return filas, detalle, fecha_de([ruta])
 
     if tid == "checkstyle":
         ruta = os.path.join(tgt, "checkstyle-result.xml")
@@ -811,13 +849,14 @@ def resultados_de(svc_dir, tid):
         if r is None:
             return None
         archivos = r.findall("file")
-        errores = [(f.get("name", ""), er) for f in archivos for er in f.findall("error")]
+        errores = [(os.path.basename(f.get("name", "")), er) for f in archivos for er in f.findall("error")]
         err = sum(1 for _, er in errores if er.get("severity") == "error")
         adv = sum(1 for _, er in errores if er.get("severity") == "warning")
         con = sum(1 for f in archivos if f.findall("error"))
         filas = [("Archivos revisados", len(archivos)), ("Errores", err),
                  ("Advertencias", adv), ("Archivos con incidencias", con)]
-        detalle = [f"{os.path.basename(n)}:{er.get('line', '?')} · {er.get('message', '')}" for n, er in errores]
+        detalle = [(n, er.get("line", "?"), "Error" if er.get("severity") == "error" else "Advertencia",
+                    er.get("message", "")) for n, er in errores]
         return filas, detalle, fecha_de([ruta])
 
     if tid == "pmd":
@@ -826,15 +865,15 @@ def resultados_de(svc_dir, tid):
         if r is None:
             return None
         archivos = r.findall("file")
-        viol = [(f.get("name", ""), v) for f in archivos for v in f.findall("violation")]
+        viol = [(os.path.basename(f.get("name", "")), v) for f in archivos for v in f.findall("violation")]
         por_prio = {}
         for _, v in viol:
             por_prio[v.get("priority", "?")] = por_prio.get(v.get("priority", "?"), 0) + 1
         filas = [("Archivos revisados", len(archivos)), ("Incidencias", len(viol))]
         for p in sorted(por_prio):
             filas.append((f"Prioridad {p}", por_prio[p]))
-        detalle = [f"{os.path.basename(n)}:{v.get('beginline', '?')} · {v.get('rule', '')}: {(v.text or '').strip()}"
-                   for n, v in viol]
+        detalle = [(n, v.get("beginline", "?"), v.get("priority", "?"), v.get("rule", ""),
+                    (v.text or "").strip()) for n, v in viol]
         return filas, detalle, fecha_de([ruta])
 
     if tid == "spotbugs":
@@ -852,7 +891,10 @@ def resultados_de(svc_dir, tid):
         detalle = []
         for b in bugs:
             clase = b.find("Class")
-            detalle.append(f"{b.get('type', '')} · {clase.get('classname', '') if clase is not None else ''}")
+            desc = b.find("ShortMessage")
+            detalle.append((b.get("type", ""), clase.get("classname", "") if clase is not None else "",
+                            b.get("category", "?"), b.get("priority", "?"),
+                            (desc.text or "").strip() if desc is not None else ""))
         return filas, detalle, fecha_de([ruta])
 
     if tid == "javadoc":
@@ -860,13 +902,20 @@ def resultados_de(svc_dir, tid):
         if not os.path.isdir(base):
             return None
         paquetes = [d for d, _, fs in os.walk(base) if "package-summary.html" in fs]
+        detalle = []
         clases = 0
         for d, _, fs in os.walk(base):
+            n = 0
             for f in fs:
                 if f.endswith(".html") and not f.startswith(("package-", "index", "allclasses", "allpackages", "overview", "module-", "constant-values", "serialized-form", "deprecated-list", "help-doc", "search")) and f[:1].isupper() and "-frame" not in f:
-                    clases += 1
+                    n += 1
+            clases += n
+            if "package-summary.html" in fs:
+                rel = os.path.relpath(d, base).replace(os.sep, ".")
+                detalle.append(("(raíz)" if rel == "." else rel, n))
+        detalle.sort()
         fecha = fecha_de([os.path.join(base, "index.html")]) if os.path.exists(os.path.join(base, "index.html")) else fecha_de([base])
-        return [("Clases documentadas", clases), ("Paquetes documentados", len(paquetes))], [], fecha
+        return [("Clases documentadas", clases), ("Paquetes documentados", len(paquetes))], detalle, fecha
 
     if tid == "cobertura":
         ruta = os.path.join(tgt, "site", "cobertura", "coverage.xml")
@@ -877,7 +926,14 @@ def resultados_de(svc_dir, tid):
             return None
         lr = float(r.get("line-rate", 0)) * 100
         br = float(r.get("branch-rate", 0)) * 100
-        return [("Líneas", f"{lr:.1f} %"), ("Ramas", f"{br:.1f} %")], [], fecha_de([ruta])
+        detalle = []
+        for paquete in r.iter("package"):
+            for clase in paquete.iter("class"):
+                detalle.append((paquete.get("name", ""), clase.get("name", ""),
+                                f"{float(clase.get('line-rate', 0)) * 100:.1f} %",
+                                f"{float(clase.get('branch-rate', 0)) * 100:.1f} %"))
+        detalle.sort()
+        return [("Líneas", f"{lr:.1f} %"), ("Ramas", f"{br:.1f} %")], detalle, fecha_de([ruta])
 
     return None
 
@@ -890,16 +946,17 @@ def seccion_resultados(svc_dir, tid):
                 "en este equipo. Ejecuta el comando de arriba y vuelve a generar la documentación.</p></section>")
     filas, detalle, fecha = r
     tabla = "<table>" + "".join(f"<tr><th>{e(str(k))}</th><td>{e(str(v))}</td></tr>" for k, v in filas) + "</table>"
-    lista = ""
     if detalle:
-        lista = ("<h2 style='margin-top:16px'>Detalle</h2><ul>"
-                 + "".join(f"<li><code>{e(x)}</code></li>" for x in detalle[:30]) + "</ul>")
-        if len(detalle) > 30:
-            lista += f"<p class='aviso'>y {len(detalle) - 30} más</p>"
+        cab = ENCABEZADOS_DETALLE.get(tid, [])
+        cuerpo = "".join("<tr>" + "".join(f"<td>{e(str(c))}</td>" for c in fila) + "</tr>" for fila in detalle)
+        lista = ("<h2 style='margin-top:16px'>Detalle</h2><div style='overflow-x:auto'><table><tr>"
+                 + "".join(f"<th>{e(h)}</th>" for h in cab) + "</tr>" + cuerpo + "</table></div>")
+    else:
+        lista = "<p class='aviso'>Sin elementos que mostrar.</p>"
     return f"<section class='panel'><h2>Resultados · {e(fecha)}</h2>{tabla}{lista}</section>"
 
 
-def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs, svc_dir):
+def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs, svc_dir, navegacion=()):
     e = html.escape
     comando = t["comando"].replace("{svc}", svc)
     if t["id"] == "pruebas":
@@ -924,7 +981,12 @@ def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs, svc_dir):
         if conf:
             secciones = (f"<section class='panel'><h2>Configuración en pom.xml</h2><pre><code>"
                          f"{e(conf.group(0))}</code></pre></section>")
+    enlaces = "".join(
+        "<a href='" + e(i) + ".html'" + (" aria-current='page'" if i == t["id"] else "") + ">" + e(n) + "</a>"
+        for i, n in navegacion)
+    nav = f"<nav class='tecs'>{enlaces}</nav>" if enlaces else ""
     cuerpo = (
+        f"{nav}"
         f"<section class='panel'><h2>Qué hace</h2><p>{e(t['que'])}</p></section>"
         f"<section class='panel'><h2>Plugin y versión</h2>{config}</section>"
         f"{secciones}"
@@ -934,7 +996,7 @@ def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs, svc_dir):
     return (
         "<!doctype html><html lang='es'><head><meta charset='utf-8'>"
         "<meta name='viewport' content='width=device-width, initial-scale=1'>"
-        f"<title>{e(t['nombre'])} · {e(svc)}</title><style>{CSS_TEC}</style></head>"
+        f"<title>{e(t['nombre'])} · {e(svc)}</title><style>{CSS_TEC}{CSS_NAV}</style></head>"
         f"<body style='--h:{hue:.0f}'>"
         f"<header class='cab'><div class='in'><a class='volver' href='../../{e(svc)}.html#tecnologias'>← Ficha de {e(svc)}</a>"
         f"<div><span class='etq'>Tecnología</span></div><h1>{e(t['nombre'])}</h1>"
@@ -953,7 +1015,7 @@ def generar_tecnologias(svc, svc_dir, hue):
     nombres = [os.path.basename(c)[:-5] for c in clases]
     libs = sorted(set(re.findall(
         r"<artifactId>([^<]*(?:junit|mockito|testcontainers|assertj|archunit|rest-assured)[^<]*)</artifactId>", texto)))
-    resultado = []
+    previas = []
     for t in TECNOLOGIAS:
         if t["id"] == "pruebas":
             bloque = None
@@ -961,16 +1023,18 @@ def generar_tecnologias(svc, svc_dir, hue):
         else:
             bloque = bloque_plugin(texto, t["plugin"])
             aplicado = bloque is not None
+        previas.append((t, bloque, aplicado))
+    navegacion = [(t["id"], t["nombre"]) for t, _, aplicado in previas if aplicado]
+    resultado = []
+    for t, bloque, aplicado in previas:
         if aplicado:
             os.makedirs(destino, exist_ok=True)
             with open(os.path.join(destino, t["id"] + ".html"), "w", encoding="utf-8") as f:
-                f.write(pagina_tecnologia(svc, hue, t, bloque, nombres, libs, svc_dir))
+                f.write(pagina_tecnologia(svc, hue, t, bloque, nombres, libs, svc_dir, navegacion))
         resultado.append({"id": t["id"], "nombre": t["nombre"], "resumen": t["que"],
                           "aplicado": aplicado,
                           "archivo": f"{svc}/tecnologias/{t['id']}.html" if aplicado else None})
     return resultado
-
-
 
 
 def main():

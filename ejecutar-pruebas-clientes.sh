@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# ==============================================================================
+# Autor:      Said Olano (josesaid)
+# Proyecto:   EMPRESA_JOSESAID - microservicios Java 21 / Spring Boot
+# GitHub:     https://github.com/josesaid/EMPRESA_JOSESAID
+# ==============================================================================
 # Ejecuta las pruebas completas de clientes-ms en tu Mac (requiere Docker Desktop abierto).
 # Uso: bash ejecutar-pruebas-clientes.sh   (pega la salida completa en el chat)
 set -u

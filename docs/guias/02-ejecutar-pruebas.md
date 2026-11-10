@@ -40,19 +40,25 @@
    bash verificar-docker.sh
    ```
 
-2. **Ejecuta el script del servicio:**
+2. **Dale permiso de ejecución a los scripts** (solo la primera vez, o si los copiaste de otra máquina):
+
+   ```bash
+   chmod +x ejecutar-pruebas*.sh
+   ```
+
+3. **Ejecuta el script del servicio:**
 
    ```bash
    bash ejecutar-pruebas-usuarios.sh
    ```
 
-3. **Espera el resumen.** El script corre estas etapas en orden. Cada una imprime `OK:` o `FALLO:`:
+4. **Espera el resumen.** El script corre estas etapas en orden. Cada una imprime `OK:` o `FALLO:`:
    1. Revisa Java 21 y Maven. Si no encuentra JDK 21, se detiene con un mensaje.
    2. Revisa que Docker responda.
    3. Valida los archivos de Compose con valores de prueba. No levanta contenedores.
    4. Corre las pruebas completas del servicio: unitarias e integración con Testcontainers, que levanta sus propias bases temporales y no toca tus bases de desarrollo.
 
-4. **Revisa los detalles** de un fallo en la salida de Maven: el script no los repite. Los reportes de cobertura quedan en `NOMBRE-ms/target/site/jacoco/index.html` cuando el build los genera.
+5. **Revisa los detalles** de un fallo en la salida de Maven: el script no los repite. Los reportes de cobertura quedan en `NOMBRE-ms/target/site/jacoco/index.html` cuando el build los genera.
 
 ## Verificación
 
