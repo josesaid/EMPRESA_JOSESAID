@@ -17,7 +17,9 @@ class TemasEmpresaTest {
             "¿Qué contratos vencen?",
             "Revisa el RFC XAXX010101000",
             "hola",
-            "¡Buenos días!"
+            "¡Buenos días!",
+            "dame la info de esto: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+            "ok, eso sirve a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"
     })
     void dejaPasarPreguntasDeEmpresa(String pregunta) {
         assertThat(TemasEmpresa.esDeEmpresa(pregunta)).isTrue();

@@ -63,6 +63,7 @@ class MatrizRolesHerramientasTest {
             "ROLE_COMPRAS, confirmar_pedido, false",
             // Almacén, legal, finanzas y administración.
             "ROLE_ALMACEN, consultar_existencias, true",
+            "ROLE_ADMIN, consultar_existencias, true",
             "ROLE_ALMACEN, consultar_orden_compra, true",
             "ROLE_ALMACEN, consultar_politicas, false",
             "ROLE_ALMACEN, sugerir_poliza, false",

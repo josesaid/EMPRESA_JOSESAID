@@ -24,6 +24,10 @@ public final class TemasEmpresa {
     private static final Pattern SALUDO = Pattern.compile(
             "^[\\s!¡?¿.,]*(hola|buenos dias|buenas tardes|buenas noches|ayuda|que puedes hacer)[\\s!¡?¿.,]*$");
 
+    /** Un identificador UUID es dato de inventario: se deja pasar aunque la frase no tenga tema. */
+    private static final Pattern UUID = Pattern.compile(
+            "\\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\b");
+
     private TemasEmpresa() {
     }
 
@@ -35,6 +39,8 @@ public final class TemasEmpresa {
                 .replaceAll("\\p{M}", "")
                 .toLowerCase(Locale.ROOT)
                 .trim();
-        return SALUDO.matcher(normalizado).matches() || TEMAS.matcher(normalizado).find();
+        return SALUDO.matcher(normalizado).matches()
+                || TEMAS.matcher(normalizado).find()
+                || UUID.matcher(normalizado).find();
     }
 }
