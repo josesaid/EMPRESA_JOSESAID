@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Instrucciones · EMPRESA_JOSESAID</title>
+<meta name="description" content="Cómo arrancar, compilar, probar y apagar EMPRESA_JOSESAID con los scripts de configuration_scripts.">
+<style>
+:root{
+  --bg:#f5f7fb; --superficie:#ffffff; --fg:#0f172a; --muted:#64748b; --linea:#e2e8f0;
+  --acento:#6366f1; --cian:#06b6d4; --verde:#10b981; --ambar:#f59e0b; --rojo:#f43f5e;
+  --cab-a:#4338ca; --cab-b:#0e7490; --codigo-bg:#0f172a; --codigo-fg:#e2e8f0; --sombra:rgba(15,23,42,.08);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1020; --superficie:#131a2e; --fg:#e2e8f0; --muted:#94a3b8; --linea:#23304f;
+    --acento:#818cf8; --cian:#22d3ee; --verde:#34d399; --ambar:#fbbf24; --rojo:#fb7185;
+    --cab-a:#312e81; --cab-b:#155e75; --codigo-bg:#050914; --codigo-fg:#e2e8f0; --sombra:rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1020; --superficie:#131a2e; --fg:#e2e8f0; --muted:#94a3b8; --linea:#23304f;
+  --acento:#818cf8; --cian:#22d3ee; --verde:#34d399; --ambar:#fbbf24; --rojo:#fb7185;
+  --cab-a:#312e81; --cab-b:#155e75; --codigo-bg:#050914; --codigo-fg:#e2e8f0; --sombra:rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+.cabecera{background:linear-gradient(135deg,var(--cab-a),var(--cab-b));color:#fff;
+  padding:36px max(16px,env(safe-area-inset-left,0px)) 64px}
+.cabecera-in{width:95%;max-width:none;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.cabecera h1{margin:0 0 6px;font-size:28px;line-height:1.2;text-wrap:balance}
+.cabecera p{margin:0;opacity:.9;max-width:52ch}
+.logo{width:300px;max-width:100%;height:auto;filter:drop-shadow(0 10px 24px rgba(0,0,0,.25))}
+main{width:95%;max-width:none;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px)) 40px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:999px;background:var(--superficie);border:1px solid var(--linea);color:var(--muted)}
+section{background:var(--superficie);border:1px solid var(--linea);border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:0 10px 30px var(--sombra)}
+section h2{margin:0 0 4px;font-size:20px}
+section .sub{margin:0 0 20px;color:var(--muted)}
+ol.pasos{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+ol.pasos li{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;border:1px solid var(--linea);border-radius:14px;padding:14px 16px;background:var(--bg)}
+.num{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#fff;font-size:18px}
+.n1{background:var(--acento)} .n2{background:var(--cian)} .n3{background:var(--verde)} .n4{background:var(--ambar)} .n5{background:var(--rojo)}
+.paso-titulo{font-weight:650;margin:0 0 2px}
+.paso-texto{margin:0;color:var(--muted);font-size:14px}
+.aviso-lento{margin-top:6px;color:var(--ambar)}
+.aviso-lento strong{color:var(--ambar)}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+pre{margin:10px 0 0;background:var(--codigo-bg);color:var(--codigo-fg);padding:10px 14px;border-radius:10px;font-size:13px;overflow-x:auto;white-space:pre}
+.apagar{border-top:4px solid var(--rojo)}
+.apagar ol.pasos li{border-left:4px solid var(--rojo)}
+.nota{margin-top:16px;padding:12px 16px;border-radius:12px;background:color-mix(in srgb,var(--ambar) 14%,transparent);border:1px solid color-mix(in srgb,var(--ambar) 40%,transparent);font-size:14px}
+footer{width:95%;max-width:none;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 32px;color:var(--muted);font-size:14px;display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;border-top:1px solid var(--linea)}
+footer strong{color:var(--fg);font-weight:650}
+footer a{color:var(--acento);text-decoration:none}
+.columnas{display:grid;grid-template-columns:1fr;gap:0}
+.columnas section{margin-bottom:20px}
+@media (min-width:860px){
+  .columnas{grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  .columnas section{margin-bottom:0}
+}
+@media (max-width:640px){.logo{width:240px}}
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="cabecera-in">
+    <div>
+      <h1>Instrucciones</h1>
+      <p>Cómo levantar, probar y apagar EMPRESA_JOSESAID con los scripts del proyecto.</p>
+    </div>
+    <svg class="logo" viewBox="0 0 500 120" role="img" aria-label="EMPRESA_JOSESAID">
+      <defs>
+        <linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#67e8f9"/></linearGradient>
+        <linearGradient id="gt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#a5f3fc"/></linearGradient>
+      </defs>
+      <g transform="translate(4,4) scale(0.52)">
+        <g fill="none" stroke="url(#gl)" stroke-width="5" stroke-linejoin="round">
+          <polygon points="100,18 172,59 172,141 100,182 28,141 28,59"/>
+          <polygon points="100,46 146,72 146,128 100,154 54,128 54,72" stroke-opacity=".5" stroke-width="3"/>
+        </g>
+        <g stroke="#ffffff" stroke-opacity=".55" stroke-width="3">
+          <line x1="100" y1="100" x2="100" y2="18"/><line x1="100" y1="100" x2="172" y2="59"/>
+          <line x1="100" y1="100" x2="172" y2="141"/><line x1="100" y1="100" x2="100" y2="182"/>
+          <line x1="100" y1="100" x2="28" y2="141"/><line x1="100" y1="100" x2="28" y2="59"/>
+        </g>
+        <g fill="#ffffff">
+          <circle cx="100" cy="18" r="8"/><circle cx="172" cy="59" r="8"/><circle cx="172" cy="141" r="8"/>
+          <circle cx="100" cy="182" r="8"/><circle cx="28" cy="141" r="8"/><circle cx="28" cy="59" r="8"/>
+        </g>
+        <circle cx="100" cy="100" r="26" fill="#ffffff"/>
+        <text x="100" y="109" text-anchor="middle" font-family="system-ui,sans-serif" font-size="24" font-weight="800" fill="#312e81">JS</text>
+      </g>
+      <text x="128" y="62" font-family="system-ui,'Segoe UI',sans-serif" font-size="27" font-weight="800" letter-spacing="0.3" fill="url(#gt)">EMPRESA_JOSESAID</text>
+      <text x="130" y="90" font-family="system-ui,sans-serif" font-size="12" font-weight="700" letter-spacing="4" fill="#67e8f9">API · MICROSERVICIOS</text>
+      <line x1="130" y1="100" x2="330" y2="100" stroke="#67e8f9" stroke-opacity=".6" stroke-width="2"/>
+    </svg>
+  </div>
+</header>
+
+<main>
+  <div class="chips">
+    <span class="chip">Arrancar</span><span class="chip">Probar</span><span class="chip">Apagar</span>
+  </div>
+
+  <div class="columnas">
+  <section>
+    <h2>Arrancar el proyecto</h2>
+    <p class="sub">Cinco pasos, desde la raíz del proyecto. Solo el paso 1 se hace una vez.</p>
+    <ol class="pasos">
+      <li>
+        <span class="num n1">1</span>
+        <div>
+          <p class="paso-titulo">Preparar los scripts</p>
+          <p class="paso-texto">Dale permiso de ejecución a los scripts y verifica que exista el archivo <code>.env</code>.</p>
+          <pre>chmod +x configuration_scripts/*.sh</pre>
+        </div>
+      </li>
+      <li>
+        <span class="num n2">2</span>
+        <div>
+          <p class="paso-titulo">Compilar y construir</p>
+          <p class="paso-texto">Compila los 14 proyectos Maven, construye las imágenes Docker y genera la documentación Swagger.</p>
+          <p class="paso-texto aviso-lento"><strong>Es lento:</strong> tarda aproximadamente 2 min 30 s por servicio al construir las imágenes, unos 30 minutos en los 12 servicios de la raíz. Úsalo solo cuando sea necesario, después de un cambio fuerte en el código o en los Dockerfiles.</p>
+          <pre>./configuration_scripts/build.sh</pre>
+        </div>
+      </li>
+      <li>
+        <span class="num n3">3</span>
+        <div>
+          <p class="paso-titulo">Levantar el entorno</p>
+          <p class="paso-texto">Inicia la base de datos, Kafka, los microservicios y la UI. Espera a que todo esté <em>healthy</em> y abre el login.</p>
+          <pre>./configuration_scripts/start.sh</pre>
+        </div>
+      </li>
+      <li>
+        <span class="num n4">4</span>
+        <div>
+          <p class="paso-titulo">Probar un servicio</p>
+          <p class="paso-texto">Ejecuta las pruebas de un servicio. Cambia <code>clientes</code> por el servicio que quieras probar.</p>
+          <pre>./ejecutar-pruebas-clientes.sh</pre>
+        </div>
+      </li>
+      <li>
+        <span class="num n5">5</span>
+        <div>
+          <p class="paso-titulo">Revisar la API</p>
+          <p class="paso-texto">Abre la documentación de los endpoints de cada microservicio en Swagger.</p>
+          <pre>open docs/api/index.html</pre>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="apagar">
+    <h2>Apagar el proyecto</h2>
+    <p class="sub">Tres pasos, en orden. Los datos se conservan.</p>
+    <ol class="pasos">
+      <li>
+        <span class="num n1">1</span>
+        <div>
+          <p class="paso-titulo">Detener los servicios</p>
+          <p class="paso-texto">Apaga todos los contenedores y redes del proyecto, incluida la UI (<code>ui-ms</code>). Los volúmenes de PostgreSQL, Redis y Kafka no se borran.</p>
+          <pre>./configuration_scripts/stop.sh</pre>
+        </div>
+      </li>
+      <li>
+        <span class="num n2">2</span>
+        <div>
+          <p class="paso-titulo">Liberar espacio (opcional)</p>
+          <p class="paso-texto">Borra las carpetas <code>target</code> de Maven. Son temporales y <code>build.sh</code> las vuelve a crear.</p>
+          <pre>./configuration_scripts/rm-target-directories.sh</pre>
+        </div>
+      </li>
+      <li>
+        <span class="num n3">3</span>
+        <div>
+          <p class="paso-titulo">Confirmar que no queda nada</p>
+          <p class="paso-texto">La lista debe salir vacía. Si aparece algún contenedor del proyecto, repite el paso 1.</p>
+          <pre>docker ps --filter "label=com.docker.compose.project"</pre>
+        </div>
+      </li>
+    </ol>
+    <div class="nota"><strong>Antes de empezar:</strong> ten Docker Desktop instalado. Si está cerrado, <code>build.sh</code> y <code>start.sh</code> lo abren solos.</div>
+  </section>
+  </div>
+</main>
+
+<footer>
+  <span><strong>Jose Said Olano Garcia</strong> · Senior Engineering Manager</span>
+  <a href="mailto:josesaid@gmail.com">josesaid@gmail.com</a>
+  <a href="https://josesaid.github.io/">josesaid.github.io</a>
+</footer>
+</body>
+</html>

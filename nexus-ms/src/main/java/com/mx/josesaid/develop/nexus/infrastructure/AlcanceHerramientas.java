@@ -38,7 +38,8 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_RESUMEN_VENTAS = Set.of("ROLE_DIRECCION", "ROLE_FINANZAS");
     private static final Set<String> ROLES_DOCUMENTOS = Set.of("ROLE_LEGAL", "ROLE_DIRECCION");
     private static final Set<String> ROLES_ELIMINAR_DOCUMENTO = Set.of("ROLE_LEGAL");
-    private static final Set<String> ROLES_EXISTENCIAS = Set.of("ROLE_ALMACEN", "ROLE_COMPRAS", "ROLE_VENTAS");
+    private static final Set<String> ROLES_EXISTENCIAS = Set.of("ROLE_ALMACEN", "ROLE_COMPRAS", "ROLE_VENTAS",
+            "ROLE_ADMIN");
     private static final Set<String> ROLES_TRAZABILIDAD = Set.of("ROLE_OPERACIONES", "ROLE_CALIDAD");
     private static final Set<String> ROLES_MOVIMIENTOS = Set.of("ROLE_ALMACEN", "ROLE_COMPRAS");
     private static final Set<String> ROLES_BAJO_MINIMO = Set.of("ROLE_ALMACEN", "ROLE_COMPRAS");
