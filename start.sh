@@ -9,6 +9,7 @@ set -u
 cd "$(dirname "$0")" || exit 1
 
 TIMEOUT_SEG=${TIMEOUT_SEG:-300}
+TIMEOUT_DOCKER_SEG=${TIMEOUT_DOCKER_SEG:-180}
 INTERVALO=5
 ANCHO=30
 
@@ -66,10 +67,24 @@ echo ""
 echo "${NEG}${AZUL}🚀 Iniciando EMPRESA_JOSESAID${RST}"
 
 paso "🐳 Paso 1/6 · Verificando Docker"
-if ! docker info >/dev/null 2>&1; then
+if docker info >/dev/null 2>&1; then
+  echo "   ${VERDE}✅ Docker responde${RST}"
+elif [ "$(uname -s)" = "Darwin" ]; then
+  echo "   ${AMARILLO}🔧 Docker no está corriendo. Abriendo Docker Desktop...${RST}"
+  open -a Docker 2>/dev/null || fallo "No se pudo abrir Docker Desktop. Ábrelo manualmente y vuelve a intentar."
+  espera_docker=$(date +%s)
+  while ! docker info >/dev/null 2>&1; do
+    esperado_docker=$(( $(date +%s) - espera_docker ))
+    if [ "$esperado_docker" -ge "$TIMEOUT_DOCKER_SEG" ]; then
+      fallo "Docker Desktop no respondió en $(formatear "$TIMEOUT_DOCKER_SEG"). Revísalo manualmente."
+    fi
+    echo "   ${TENUE}⏳ [$(formatear "$esperado_docker")] Esperando a que Docker Desktop esté listo...${RST}"
+    sleep 5
+  done
+  echo "   ${VERDE}✅ Docker Desktop listo (tardó $(formatear $(( $(date +%s) - espera_docker ))))${RST}"
+else
   fallo "El daemon de Docker no responde. Abre Docker Desktop y vuelve a intentar."
 fi
-echo "   ${VERDE}✅ Docker responde${RST}"
 
 paso "📄 Paso 2/6 · Verificando archivo .env"
 if [ ! -f .env ]; then
