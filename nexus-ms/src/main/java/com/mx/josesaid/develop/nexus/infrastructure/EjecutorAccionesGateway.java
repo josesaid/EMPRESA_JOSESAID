@@ -25,6 +25,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
     static final String RUTA_ORDENES_COMPRA = "/compras-proveedores-ms/v1/ordenes-compra";
     static final String RUTA_INVENTARIO = "/inventario-operaciones-ms/v1";
     static final String RUTA_FACTURACION = "/facturacion-pagos-ms/v1";
+    static final String RUTA_REPORTES = "/reportes-ejecutivos-ms/v1";
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
@@ -118,8 +119,28 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
                     postSinId(payload, RUTA_ORDENES_COMPRA, "ordenId", "/recepciones");
             case AccionesPendientes.TIPO_ORDEN_COMPRA_CANCELAR ->
                     postSinId(payload, RUTA_ORDENES_COMPRA, "ordenId", "/cancelacion");
+            case AccionesPendientes.TIPO_CLIENTE_ESTATUS -> cambiarEstatusCliente(payload);
+            case AccionesPendientes.TIPO_ALMACEN_CREAR -> enviar(RUTA_INVENTARIO + "/almacenes", payload);
+            case AccionesPendientes.TIPO_PEDIDO_ENTREGAR -> {
+                String pedidoId = id(payload, "pedidoId");
+                yield gateway.post()
+                        .uri(RUTA_PEDIDOS + "/" + pedidoId + "/entrega")
+                        .retrieve()
+                        .body(String.class);
+            }
+            case AccionesPendientes.TIPO_INDICADOR_REGISTRAR -> enviar(RUTA_REPORTES + "/indicadores", payload);
             default -> throw new IllegalArgumentException("Tipo de acción no soportado: " + tipo);
         };
+    }
+
+    private String cambiarEstatusCliente(String payload) {
+        JsonNode datos = leer(payload);
+        return gateway.patch()
+                .uri(RUTA_CLIENTES + "/" + datos.get("clienteId").asText() + "/estatus")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("estatus", datos.get("estatus").asText()))
+                .retrieve()
+                .body(String.class);
     }
 
     private String actualizarCliente(String payload) {

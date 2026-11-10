@@ -21,12 +21,12 @@ Para conectar un cliente MCP, ver [conexion-mcp.md](conexion-mcp.md).
 | Endpoints REST totales | 101 |
 | Excluidos por diseño (autenticación, JWKS y el propio endpoint de chat) | 7 |
 | Endpoints aplicables a IA | 94 |
-| Con herramienta de Nexus | 66 (70 %) |
+| Con herramienta de Nexus | 70 (74 %) |
 | Fuera de Nexus por decisión (2026-11-08) | 7 |
 | Sin herramienta por flujo propio (alta de usuario de Nexus) | 3 |
-| Huecos sin decidir | 18 (19 %) |
+| Huecos sin decidir | 14 (15 %) |
 
-Los 66 cubiertos incluyen `POST /v1/polizas` de contabilidad, que se registra solo a través de la acción `POLIZA_REGISTRAR` (`sugerir_poliza` → `confirmar_accion`).
+Los 70 cubiertos incluyen `POST /v1/polizas` de contabilidad, que se registra solo a través de la acción `POLIZA_REGISTRAR` (`sugerir_poliza` → `confirmar_accion`).
 
 Los 7 excluidos: `POST /v1/auth/login`, `POST /v1/auth/refresh`, `POST /v1/auth/cambiar-password-inicial`, `POST /v1/auth/logout`, `POST /v1/auth/logout-todas`, `GET /.well-known/jwks.json` y `POST /nexus/consultas` (es el endpoint del chat, no una herramienta).
 
@@ -42,7 +42,7 @@ Convención: la columna **Ruta** es la del servicio. El prefijo del gateway es e
 | GET | `/v1/clientes` | VENTAS, ADMIN | `buscar_clientes` |
 | GET | `/v1/clientes/{id}` | VENTAS, ADMIN | `obtener_cliente` |
 | PATCH | `/v1/clientes/{id}` | ADMIN | `actualizar_cliente (CLIENTE_ACTUALIZAR)` |
-| PATCH | `/v1/clientes/{id}/estatus` | ADMIN | **Hueco** |
+| PATCH | `/v1/clientes/{id}/estatus` | ADMIN | `cambiar_estatus_cliente (CLIENTE_ESTATUS)` |
 | POST | `/v1/clientes/{id}/contactos` | ADMIN | `agregar_contacto_cliente (CLIENTE_CONTACTO_AGREGAR)` |
 | POST | `/v1/contactos/{contactoId}/consentimientos` | LEGAL | **Hueco** |
 | POST | `/v1/consentimientos/{id}/revocacion` | LEGAL | **Hueco** |
@@ -115,7 +115,7 @@ Convención: la columna **Ruta** es la del servicio. El prefijo del gateway es e
 | Método | Ruta | Rol requerido | Herramienta Nexus |
 |---|---|---|---|
 | POST | `/v1/articulos` | OPERACIONES | `crear_articulo (ARTICULO_CREAR)` |
-| POST | `/v1/almacenes` | ALMACEN | **Hueco** |
+| POST | `/v1/almacenes` | ALMACEN | `crear_almacen (ALMACEN_CREAR)` |
 | POST | `/v1/movimientos` | ALMACEN | `registrar_movimiento_inventario (MOVIMIENTO_REGISTRAR)` |
 | GET | `/v1/articulos/bajo-minimo` | ALMACEN, COMPRAS | `listar_articulos_bajo_minimo` |
 | GET | `/v1/movimientos` | ALMACEN, COMPRAS | `listar_movimientos_articulo` |
@@ -153,7 +153,7 @@ Rutas en `/nexus`. Son endpoints propios de Nexus, no de un servicio de negocio.
 | GET | `/v1/pedidos/{id}` | VENTAS, DIRECCION, FINANZAS, ALMACEN | `obtener_pedido` |
 | PUT | `/v1/pedidos/{id}/lineas` | VENTAS, DIRECCION | `reemplazar_lineas_pedido` (PEDIDO_REEMPLAZAR_LINEAS) |
 | POST | `/v1/pedidos/{id}/confirmacion` | VENTAS, DIRECCION | `confirmar_pedido` (PEDIDO_CONFIRMAR) |
-| POST | `/v1/pedidos/{id}/entrega` | ALMACEN, DIRECCION | **Hueco** |
+| POST | `/v1/pedidos/{id}/entrega` | ALMACEN, DIRECCION | `registrar_entrega_pedido (PEDIDO_ENTREGAR)` |
 | POST | `/v1/pedidos/{id}/cancelacion` | VENTAS, DIRECCION | `cancelar_pedido` (PEDIDO_CANCELAR) |
 | POST | `/v1/pedidos/{id}/devolucion` | VENTAS, DIRECCION | `registrar_devolucion_pedido` (PEDIDO_DEVOLVER) |
 | GET | `/v1/metricas/ventas` | DIRECCION, FINANZAS | `resumen_ventas` |
@@ -164,7 +164,7 @@ Rutas en `/nexus`. Son endpoints propios de Nexus, no de un servicio de negocio.
 
 | Método | Ruta | Rol requerido | Herramienta Nexus |
 |---|---|---|---|
-| POST | `/v1/indicadores` | DIRECCION | **Hueco** |
+| POST | `/v1/indicadores` | DIRECCION | `registrar_indicador (INDICADOR_REGISTRAR)` |
 | GET | `/v1/indicadores` | DIRECCION, JEFE_AREA | `consultar_indicadores` |
 | GET | `/v1/reportes/{periodo}` | DIRECCION, JEFE_AREA | `consultar_reporte` |
 | POST | `/v1/reportes/{periodo}/cierre` | DIRECCION | **Hueco** |

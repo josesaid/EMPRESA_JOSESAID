@@ -211,6 +211,29 @@ public final class HerramientasInventario {
         return guardar(AccionesPendientes.TIPO_ORDEN_OPERACION_CREAR, cuerpo, resumen, "Orden preparada, no creada.");
     }
 
+    @Tool(name = "crear_almacen",
+          description = "Prepara el alta de un almacén. NO lo crea: devuelve un resumen y un accion_id. "
+                  + "El usuario debe confirmarlo en la aplicación. Solo ALMACEN puede usarla.")
+    public String crearAlmacen(
+            @ToolParam(description = "Nombre del almacén, de hasta 100 caracteres", required = true) String nombre,
+            @ToolParam(description = "Ubicación del almacén, de hasta 200 caracteres", required = true) String ubicacion) {
+        RegistroHerramientasUsadas.registrar("crear_almacen");
+        if (acciones == null) {
+            return NO_DISPONIBLE;
+        }
+        if (vacio(nombre) || nombre.trim().length() > 100) {
+            return "El nombre es obligatorio y de hasta 100 caracteres.";
+        }
+        if (vacio(ubicacion) || ubicacion.trim().length() > 200) {
+            return "La ubicación es obligatoria y de hasta 200 caracteres.";
+        }
+        Map<String, Object> cuerpo = new LinkedHashMap<>();
+        cuerpo.put("nombre", nombre.trim());
+        cuerpo.put("ubicacion", ubicacion.trim());
+        return guardar(AccionesPendientes.TIPO_ALMACEN_CREAR, cuerpo,
+                "Alta de almacén " + nombre.trim(), "Alta preparada, no creada.");
+    }
+
     private String guardar(String tipo, Map<String, Object> cuerpo, String resumen, String encabezado) {
         AccionPendiente accion = acciones.preparar(usuarioActual(), tipo, aJson(cuerpo), resumen);
         return FiltroDatosSensibles.redactar(encabezado + " " + resumen + ". accion_id: " + accion.id()
