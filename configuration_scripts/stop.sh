@@ -233,7 +233,7 @@ limpiar_cache() {
 
 # Candado: pide la clave 3 veces antes de eliminar imágenes
 pedir_clave_imagenes() {
-  local clave="José Said" intento tecleada
+  local clave="josesaid" intento tecleada
   echo "   🔐 Para eliminar imágenes debes escribir la clave 3 veces."
   for intento in 1 2 3; do
     printf "   🔐 Clave (%s/3): " "$intento"
