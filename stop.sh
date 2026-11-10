@@ -35,6 +35,21 @@ paso() {
 echo ""
 echo "${NEG}${ROJO}🛑 Iniciando apagado de EMPRESA_JOSESAID${RST}"
 
+if ! docker info >/dev/null 2>&1; then
+  paso "🐳 Docker no está corriendo"
+  echo "   ${AMARILLO}ℹ️  El daemon de Docker no responde: no hay contenedores que detener${RST}"
+  echo "   ${TENUE}Si Docker Desktop está abierto, revísalo y vuelve a intentar.${RST}"
+  duracion=$(( $(date +%s) - inicio ))
+  echo ""
+  linea
+  echo "${NEG}📋 Resumen${RST}"
+  echo "   ${AZUL}ℹ️  Docker ya estaba apagado: nada que detener${RST}"
+  echo "   ${AZUL}⏱️  Tiempo total: ${NEG}$(formatear "$duracion")${RST}${AZUL}  ($duracion s)${RST}"
+  echo "${NEG}${ROJO}🏁 Apagado terminado${RST}"
+  linea
+  exit 0
+fi
+
 paso "🔎 Paso 1/3 · Revisando contenedores activos"
 activos=$(docker compose ps -q 2>/dev/null | wc -l | tr -d ' ')
 if [ "$activos" = "0" ]; then
