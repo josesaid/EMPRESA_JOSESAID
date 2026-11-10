@@ -14,8 +14,8 @@ class RepositorioPromptsTest {
         PromptVersionado prompt = repositorio.obtener("asistente-base");
 
         assertThat(prompt.nombre()).isEqualTo("asistente-base");
-        assertThat(prompt.version()).isEqualTo(2);
-        assertThat(prompt.texto()).contains("Eres Nexus").contains("Responde siempre en español").contains("No supongas el significado");
+        assertThat(prompt.version()).isEqualTo(3);
+        assertThat(prompt.texto()).contains("Eres Nexus").contains("Responde siempre en español").contains("No supongas el significado").contains("Solo respondes sobre la operación de EMPRESA_JOSESAID");
     }
 
     @Test
