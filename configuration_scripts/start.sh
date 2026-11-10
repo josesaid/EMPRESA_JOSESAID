@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Levanta todo lo que define el docker-compose.yml de la raíz y espera a que cada servicio esté listo.
-# Uso: bash start.sh            usa las imágenes ya construidas
-#      bash start.sh --build    reconstruye las imágenes antes de levantar (tarda más)
+# Uso: bash configuration_scripts/start.sh            usa las imágenes ya construidas
+#      bash configuration_scripts/start.sh --build    reconstruye las imágenes antes de levantar (tarda más)
 # Requiere Docker Desktop corriendo y un archivo .env en la raíz.
 # Tiempo máximo de espera por servicios: TIMEOUT_SEG (300 s por defecto).
 
 set -u
-cd "$(dirname "$0")" || exit 1
+cd "$(dirname "$0")/.." || exit 1
 
 TIMEOUT_SEG=${TIMEOUT_SEG:-300}
 TIMEOUT_DOCKER_SEG=${TIMEOUT_DOCKER_SEG:-180}

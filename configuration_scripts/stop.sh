@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Apaga todo lo que levanta el docker-compose.yml de la raíz (servicios, infraestructura y monitoreo).
 # No borra volúmenes: los datos de PostgreSQL, Redis y Kafka se conservan.
-# Uso: bash stop.sh
+# Uso: bash configuration_scripts/stop.sh
 
 set -u
-cd "$(dirname "$0")" || exit 1
+cd "$(dirname "$0")/.." || exit 1
 
 # Colores solo si la salida es una terminal
 if [ -t 1 ]; then

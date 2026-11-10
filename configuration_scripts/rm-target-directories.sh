@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Borra los directorios target (salida de Maven) de cada microservicio bajo una ruta.
 # Solo borra un target si su carpeta padre tiene pom.xml, para no tocar otros directorios con ese nombre.
-# Uso: bash rm-target-directories.sh [ruta]
-#      Sin ruta usa la carpeta donde está este script.
+# Uso: bash configuration_scripts/rm-target-directories.sh [ruta]
+#      Sin ruta usa la raíz del proyecto.
 
 set -u
-RAIZ="${1:-$(cd "$(dirname "$0")" && pwd)}"
+RAIZ="${1:-$(cd "$(dirname "$0")/.." && pwd)}"
 
 # Colores solo si la salida es una terminal
 if [ -t 1 ]; then
