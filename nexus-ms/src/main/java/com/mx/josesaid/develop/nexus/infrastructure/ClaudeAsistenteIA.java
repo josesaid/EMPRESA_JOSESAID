@@ -11,6 +11,7 @@ import org.springframework.ai.support.ToolCallbacks;
 import com.mx.josesaid.develop.nexus.application.AsistenteIA;
 import com.mx.josesaid.develop.nexus.application.PreguntaAsistente;
 import com.mx.josesaid.develop.nexus.application.RespuestaAsistente;
+import com.mx.josesaid.develop.nexus.application.TemasEmpresa;
 import com.mx.josesaid.develop.nexus.comun.filtro.FiltroDatosSensiblesAdvisor;
 import com.mx.josesaid.develop.nexus.comun.prompts.PromptVersionado;
 import com.mx.josesaid.develop.nexus.comun.prompts.RepositorioPrompts;
@@ -74,6 +75,9 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
 
     @Override
     public RespuestaAsistente consultar(PreguntaAsistente pregunta) {
+        if (!TemasEmpresa.esDeEmpresa(pregunta.texto())) {
+            return new RespuestaAsistente(TemasEmpresa.RECHAZO);
+        }
         var solicitud = cliente.prompt()
                 .user(pregunta.texto())
                 .advisors(a -> a
