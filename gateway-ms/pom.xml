@@ -159,7 +159,8 @@
                         <goals><goal>check</goal></goals>
                         <configuration>
                             <failOnError>false</failOnError>
-                        </configuration>
+                            <excludeFilterFile>../spotbugs-exclude.xml</excludeFilterFile>
+          </configuration>
                     </execution>
                 </executions>
             </plugin>
