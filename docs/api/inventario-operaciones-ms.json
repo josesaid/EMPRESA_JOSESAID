@@ -1,0 +1,685 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API inventario-operaciones-ms",
+    "version": "0.1.0",
+    "description": "Microservicio del área **Operaciones** de EMPRESA_JOSESAID. Controla existencias por almacén, reservas para ventas, lotes con trazabilidad y órdenes de producción o de servicio."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Ruta relativa del servicio"
+    }
+  ],
+  "tags": [
+    {
+      "name": "InventarioControlador"
+    }
+  ],
+  "paths": {
+    "/v1/almacenes": {
+      "post": {
+        "operationId": "inventario-operaciones-ms.InventarioControlador.crearAlmacen",
+        "summary": "Crear almacen",
+        "tags": [
+          "InventarioControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlmacenRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('ALMACEN')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearAlmacenSolicitud"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/articulos": {
+      "post": {
+        "operationId": "inventario-operaciones-ms.InventarioControlador.crearArticulo",
+        "summary": "Crear articulo",
+        "tags": [
+          "InventarioControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticuloRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('OPERACIONES')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearArticuloSolicitud"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/articulos/bajo-minimo": {
+      "get": {
+        "operationId": "inventario-operaciones-ms.InventarioControlador.articulosBajoMinimo",
+        "summary": "Articulos bajo minimo",
+        "tags": [
+          "InventarioControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticuloBajoMinimoRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('ALMACEN','COMPRAS')"
+      }
+    },
+    "/v1/existencias": {
+      "get": {
+        "operationId": "inventario-operaciones-ms.InventarioControlador.existencias",
+        "summary": "Existencias",
+        "tags": [
+          "InventarioControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExistenciaRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('ALMACEN','COMPRAS','VENTAS')",
+        "parameters": [
+          {
+            "name": "articulo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/lotes/{lote}/trazabilidad": {
+      "get": {
+        "operationId": "inventario-operaciones-ms.InventarioControlador.trazabilidad",
+        "summary": "Trazabilidad",
+        "tags": [
+          "InventarioControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MovimientoRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('OPERACIONES','CALIDAD')",
+        "parameters": [
+          {
+            "name": "lote",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/movimientos": {
+      "post": {
+        "operationId": "inventario-operaciones-ms.InventarioControlador.registrarMovimiento",
+        "summary": "Registrar movimiento",
+        "tags": [
+          "InventarioControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "?"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('ALMACEN')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrarMovimientoSolicitud"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "inventario-operaciones-ms.InventarioControlador.movimientosDeArticulo",
+        "summary": "Movimientos de articulo",
+        "tags": [
+          "InventarioControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MovimientoRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('ALMACEN','COMPRAS')",
+        "parameters": [
+          {
+            "name": "articulo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/ordenes-operacion": {
+      "post": {
+        "operationId": "inventario-operaciones-ms.InventarioControlador.crearOrden",
+        "summary": "Crear orden",
+        "tags": [
+          "InventarioControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdenRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('OPERACIONES')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearOrdenSolicitud"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ordenes-operacion/{id}/cierre": {
+      "post": {
+        "operationId": "inventario-operaciones-ms.InventarioControlador.cerrarOrden",
+        "summary": "Cerrar orden",
+        "tags": [
+          "InventarioControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdenRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('OPERACIONES')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CerrarOrdenSolicitud"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "CrearArticuloSolicitud": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "unidad": {
+            "type": "string"
+          },
+          "loteObligatorio": {
+            "type": "boolean"
+          },
+          "minimo": {
+            "type": "number"
+          }
+        }
+      },
+      "ArticuloRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "unidad": {
+            "type": "string"
+          },
+          "loteObligatorio": {
+            "type": "boolean"
+          },
+          "minimo": {
+            "type": "number"
+          }
+        }
+      },
+      "CrearAlmacenSolicitud": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string"
+          },
+          "ubicacion": {
+            "type": "string"
+          }
+        }
+      },
+      "AlmacenRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "ubicacion": {
+            "type": "string"
+          }
+        }
+      },
+      "RegistrarMovimientoSolicitud": {
+        "type": "object",
+        "properties": {
+          "articuloId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "almacenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoMovimiento"
+          },
+          "cantidad": {
+            "type": "number"
+          },
+          "lote": {
+            "type": "string"
+          },
+          "referencia": {
+            "type": "string"
+          }
+        }
+      },
+      "TipoMovimiento": {
+        "type": "object",
+        "properties": {}
+      },
+      "ArticuloBajoMinimoRespuesta": {
+        "type": "object",
+        "properties": {
+          "articuloId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "unidad": {
+            "type": "string"
+          },
+          "minimo": {
+            "type": "number"
+          },
+          "existencia": {
+            "type": "number"
+          },
+          "faltante": {
+            "type": "number"
+          }
+        }
+      },
+      "MovimientoRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "articuloId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "almacenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoMovimiento"
+          },
+          "cantidad": {
+            "type": "number"
+          },
+          "lote": {
+            "type": "string"
+          },
+          "referencia": {
+            "type": "string"
+          },
+          "creadoUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ExistenciaRespuesta": {
+        "type": "object",
+        "properties": {
+          "almacenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cantidad": {
+            "type": "number"
+          },
+          "reservado": {
+            "type": "number"
+          },
+          "disponible": {
+            "type": "number"
+          }
+        }
+      },
+      "CrearOrdenSolicitud": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "$ref": "#/components/schemas/TipoOrden"
+          },
+          "cantidadObjetivo": {
+            "type": "number"
+          }
+        }
+      },
+      "TipoOrden": {
+        "type": "object",
+        "properties": {}
+      },
+      "OrdenRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoOrden"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusOrden"
+          },
+          "cantidadObjetivo": {
+            "type": "number"
+          },
+          "cantidadReal": {
+            "type": "number"
+          }
+        }
+      },
+      "EstatusOrden": {
+        "type": "object",
+        "properties": {}
+      },
+      "CerrarOrdenSolicitud": {
+        "type": "object",
+        "properties": {
+          "cantidadReal": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
