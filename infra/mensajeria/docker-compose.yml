@@ -13,6 +13,12 @@ services:
     ports:
       # Puerto de tu Mac 8090 -> puerto 8080 dentro del contenedor
       - "127.0.0.1:8090:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 60s
     networks:
       - empresa-net
     restart: unless-stopped

@@ -59,6 +59,45 @@ fallo() {
   exit 1
 }
 
+# Lista los servicios que tienen "build" en el compose indicado
+lista_servicios() {
+  docker compose "$@" config --format json 2>/dev/null | python3 -c '
+import sys, json
+d = json.load(sys.stdin)
+for nombre, svc in d.get("services", {}).items():
+    if "build" in svc:
+        print(nombre)'
+}
+
+# Construye los servicios de un compose uno por uno, mostrando el avance
+construir_grupo() {
+  local etiqueta=$1
+  shift
+  local servicios total n svc inicio_svc
+  servicios=$(lista_servicios "$@")
+  total=$(printf "%s\n" "$servicios" | grep -c . || true)
+  if [ "$total" -eq 0 ]; then
+    echo "   ${AMARILLO}⚠️  No hay servicios con build en $etiqueta${RST}"
+    return 0
+  fi
+  echo "   ${AZUL}📦 Servicios a construir: ${NEG}$total${RST}"
+  n=0
+  while IFS= read -r svc; do
+    [ -z "$svc" ] && continue
+    n=$((n + 1))
+    echo "   ⏳ [$n/$total] Construyendo ${NEG}$svc${RST}${TENUE} ...${RST}"
+    inicio_svc=$(date +%s)
+    if docker compose "$@" build $NO_CACHE "$svc" > "$LOGS/$svc.build.log" 2>&1; then
+      echo "      ${VERDE}✅ $svc lista${RST} ${TENUE}($(formatear $(( $(date +%s) - inicio_svc ))))${RST}"
+    else
+      echo "      ${ROJO}❌ Falló $svc. Últimas líneas del log:${RST}"
+      tail -n 20 "$LOGS/$svc.build.log" | sed 's/^/         /'
+      return 1
+    fi
+  done <<< "$servicios"
+  return 0
+}
+
 echo ""
 echo "${NEG}${AZUL}🛠️  Construyendo EMPRESA_JOSESAID${RST}"
 
@@ -125,24 +164,17 @@ else
   fi
 fi
 
-paso "🐋 Paso 3/5 · Construyendo imágenes Docker (raíz)"
-echo "   ${TENUE}Servicios incluidos en el docker-compose.yml de la raíz${RST}"
-if docker compose build $NO_CACHE --progress plain > "$LOGS/build-raiz.log" 2>&1; then
-  echo "   ${VERDE}✅ Imágenes de la raíz construidas${RST}"
-else
-  echo "   ${ROJO}❌ Falló la construcción. Últimas líneas del log:${RST}"
-  tail -n 25 "$LOGS/build-raiz.log" | sed 's/^/      /'
-  fallo "docker compose build falló en la raíz"
+paso "🐋 Paso 3/5 · Construyendo imágenes de la raíz (una por una)"
+if ! construir_grupo "raíz"; then
+  fallo "Falló la construcción de una imagen de la raíz. Revisa el log mostrado arriba."
 fi
+echo "   ${VERDE}✅ Imágenes de la raíz listas${RST}"
 
-paso "🐋 Paso 4/5 · Construyendo imágenes Docker (ui-ms)"
-if docker compose --env-file .env -f ui-ms/docker-compose.yml build $NO_CACHE --progress plain > "$LOGS/build-ui.log" 2>&1; then
-  echo "   ${VERDE}✅ Imagen de ui-ms construida${RST}"
-else
-  echo "   ${ROJO}❌ Falló la construcción de ui-ms. Últimas líneas del log:${RST}"
-  tail -n 25 "$LOGS/build-ui.log" | sed 's/^/      /'
-  fallo "docker compose build falló en ui-ms"
+paso "🐋 Paso 4/5 · Construyendo la imagen de ui-ms"
+if ! construir_grupo "ui-ms" --env-file .env -f ui-ms/docker-compose.yml; then
+  fallo "Falló la construcción de ui-ms. Revisa el log mostrado arriba."
 fi
+echo "   ${VERDE}✅ Imagen de ui-ms lista${RST}"
 
 paso "🔍 Paso 5/5 · Verificando que existan todas las imágenes"
 # Solo las imágenes que este script construye (servicios con "build"), no las de terceros como Kafka o Redis
@@ -179,6 +211,6 @@ if [ "$faltan" -gt 0 ]; then
 fi
 echo "${NEG}${VERDE}🏁 Build terminado: $ok imágenes listas${RST}"
 echo "${AZUL}⏱️  Tiempo total: ${NEG}$(formatear "$duracion")${RST}${AZUL}  ($duracion s)${RST}"
-echo "${TENUE}Ahora puedes ejecutar: ./start.sh${RST}"
+echo "${TENUE}Ahora puedes ejecutar: ./configuration_scripts/start.sh${RST}"
 linea
 rm -rf "$LOGS"

@@ -8,6 +8,12 @@ services:
     ports:
       # Interfaz web de Jaeger en tu Mac
       - "127.0.0.1:16686:16686"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:13133/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
     networks:
       - empresa-net
     restart: unless-stopped
