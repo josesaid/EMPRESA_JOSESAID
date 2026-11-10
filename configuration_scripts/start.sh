@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # Levanta todo lo que define el docker-compose.yml de la raíz y espera a que cada servicio esté listo.
-# Uso: bash start.sh            usa las imágenes ya construidas
-#      bash start.sh --build    reconstruye las imágenes antes de levantar (tarda más)
+# Uso: bash configuration_scripts/start.sh            usa las imágenes ya construidas
+#      bash configuration_scripts/start.sh --build    reconstruye las imágenes antes de levantar (tarda más)
 # Requiere Docker Desktop corriendo y un archivo .env en la raíz.
 # Tiempo máximo de espera por servicios: TIMEOUT_SEG (300 s por defecto).
 
 set -u
-cd "$(dirname "$0")" || exit 1
+cd "$(dirname "$0")/.." || exit 1
 
 TIMEOUT_SEG=${TIMEOUT_SEG:-300}
+TIMEOUT_UI_SEG=${TIMEOUT_UI_SEG:-120}
 TIMEOUT_DOCKER_SEG=${TIMEOUT_DOCKER_SEG:-180}
 INTERVALO=5
 ANCHO=30
@@ -171,9 +172,35 @@ docker compose ps -a --format '{{.Service}}|{{.State}}|{{.Health}}' 2>/dev/null 
   fi
 done
 
+paso "🖥️  Paso 7/7 · Levantando la UI (ui-ms)"
+LOGIN_URL=${LOGIN_URL:-http://localhost:8098/login}
+SALUD_UI=${SALUD_UI:-http://localhost:8098/actuator/health}
+echo "   ⬆️  Levantando el contenedor de ui-ms..."
+docker compose --env-file .env -f ui-ms/docker-compose.yml up -d || fallo "No se pudo levantar ui-ms. Revisa el mensaje anterior."
+echo "   ✅ Contenedor de ui-ms creado"
+espera_ui=$(date +%s)
+while ! curl -fsS "$SALUD_UI" >/dev/null 2>&1; do
+  esperado_ui=$(( $(date +%s) - espera_ui ))
+  if [ "$esperado_ui" -ge "$TIMEOUT_UI_SEG" ]; then
+    fallo "ui-ms no respondió en $(formatear "$TIMEOUT_UI_SEG"). Revisa con: docker compose --env-file .env -f ui-ms/docker-compose.yml logs"
+  fi
+  echo "   ⏳ [$(formatear "$esperado_ui")] Esperando a que la UI responda..."
+  sleep 5
+done
+echo "   ✅ UI lista"
+
 duracion=$(( $(date +%s) - inicio ))
 echo ""
 linea
 echo "${AZUL}⏱️  Tiempo total: ${NEG}$(formatear "$duracion")${RST}${AZUL}  ($duracion s)${RST}"
 echo "${NEG}${VERDE}🏁 EMPRESA_JOSESAID está listo${RST}"
 linea
+
+echo ""
+echo "${AZUL}🌐 Abriendo el login en 3 segundos: ${NEG}$LOGIN_URL${RST}"
+sleep 3
+if [ "$(uname -s)" = "Darwin" ] && open "$LOGIN_URL" 2>/dev/null; then
+  echo "   ${VERDE}✅ Navegador abierto en el login${RST}"
+else
+  echo "   ${AMARILLO}⚠️  No se pudo abrir el navegador. Abre manualmente: $LOGIN_URL${RST}"
+fi
