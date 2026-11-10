@@ -1,5 +1,8 @@
 package com.mx.josesaid.develop.clientes.config;
 
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+
 import com.mx.josesaid.develop.clientes.seguridad.EntradaNoAutorizada;
 
 import com.mx.josesaid.develop.clientes.seguridad.RevocacionSesiones;
@@ -55,5 +58,13 @@ public class SeguridadConfig {
         decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefault(),
                 new ValidadorRevocacion(revocaciones)));
         return decoder;
+    }
+
+    /** ADMIN puede hacer todo: hereda todos los roles de negocio. */
+    @Bean
+    RoleHierarchy jerarquiaRoles() {
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+                .role("ADMIN").implies("FINANZAS", "CONTADOR", "VENTAS", "COMPRAS", "ALMACEN", "OPERACIONES", "CALIDAD", "DIRECCION", "LEGAL", "JEFE_AREA")
+                .build();
     }
 }
