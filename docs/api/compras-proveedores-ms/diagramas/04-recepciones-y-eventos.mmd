@@ -1,0 +1,15 @@
+flowchart TD
+  A["<b>Recepción</b><br/>Lista de líneas: SKU y cantidad"]:::actor --> B{"<b>Todas las líneas son válidas?</b>"}:::pendiente
+  B -- "no" --> E1["<b>Se revierte toda la recepción</b><br/>No sale ningún evento"]:::alerta
+  B -- "sí" --> C["<b>Se registra la recepción</b><br/>Cambia el estatus de la orden"]:::servicio
+  C --> D{"<b>Quedan líneas pendientes?</b>"}:::pendiente
+  D -- "sí" --> E2["<b>RECIBIDA_PARCIAL</b>"]:::servicio
+  D -- "no" --> E3["<b>RECIBIDA</b>"]:::datos
+  C --> F["<b>Evento insumos-recibidos</b><br/>compras.eventos, en el outbox de la misma transacción"]:::datos
+  F -. "pendiente: inventario y contabilidad no lo consumen hoy" .-> G["<b>inventario-operaciones-ms</b><br/>Sin listener"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

@@ -1,0 +1,14 @@
+flowchart TD
+  A["<b>Registro de póliza</b><br/>Se aplica al registrarse"]:::actor --> B["<b>APLICADA</b>"]:::servicio
+  B -- "reversa en periodo abierto" --> C["<b>REVERSADA</b><br/>La póliza original"]:::alerta
+  B -- "se crea la reversa" --> D["<b>Póliza de reversa</b><br/>Nace APLICADA, con reversa_de"]:::datos
+  C -- "reversar otra vez" --> E["<b>409</b><br/>Solo una póliza aplicada puede reversarse"]:::alerta
+  F["<b>BORRADOR</b><br/>Reservado, sin uso"]:::pendiente
+  G["<b>Periodo ABIERTO</b>"]:::servicio -- "cierre" --> H["<b>Periodo CERRADO</b><br/>No hay reapertura"]:::alerta
+  H -- "póliza nueva o reversa" --> I["<b>409</b><br/>Periodo cerrado"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

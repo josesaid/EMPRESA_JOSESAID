@@ -1,0 +1,13 @@
+flowchart TD
+  A["<b>Crear cotización o pedido</b><br/>Con clienteId y el token del usuario"]:::actor --> B["<b>GET /v1/clientes/{id}</b><br/>clientes-ms, mismo token"]:::servicio
+  B --> C{"<b>Respuesta</b>"}:::pendiente
+  C -- "404" --> E1["<b>422</b><br/>El cliente no existe"]:::alerta
+  C -- "error o timeout" --> E2["<b>503 servicio-no-disponible</b><br/>Reintentar; no crea nada"]:::alerta
+  C -- "estatus SUSPENDIDO o BAJA" --> E3["<b>422</b><br/>El cliente no está activo"]:::alerta
+  C -- "ACTIVO" --> OK["<b>Continúa la operación</b>"]:::servicio
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

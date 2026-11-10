@@ -1,0 +1,18 @@
+flowchart TD
+  A["<b>Orden BORRADOR</b><br/>Total en MXN o USD"]:::actor --> C{"<b>Es el creador de la orden?</b>"}:::pendiente
+  C -- "sí" --> E1["<b>403</b><br/>No puedes aprobar una orden que tú creaste"]:::alerta
+  C -- "no" --> M{"<b>Moneda</b>"}:::pendiente
+  M -- "MXN" --> V["<b>Convierte a USD</b><br/>COMPRAS_TIPO_CAMBIO_MXN_USD"]:::servicio
+  M -- "USD" --> L{"<b>Total mayor o igual al límite?</b><br/>COMPRAS_LIMITE_APROBACION_USD, por defecto 1,000,000"}:::pendiente
+  V --> L
+  L -- "no" --> OK["<b>COMPRAS aprueba</b>"]:::servicio
+  L -- "sí" --> DIR["<b>Solo DIRECCION aprueba</b><br/>COMPRAS recibe 403"]:::alerta
+  OK --> F["<b>APROBADA</b>"]:::datos
+  DIR --> F
+  K["<b>Orden antigua sin creador registrado</b>"]:::actor -. "solo DIRECCION la aprueba" .-> DIR
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

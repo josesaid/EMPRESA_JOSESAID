@@ -1,0 +1,18 @@
+flowchart TD
+  A["<b>Movimiento</b><br/>Entrada, salida, reserva o ajuste"]:::actor --> B{"<b>Tipo de movimiento</b>"}:::pendiente
+  B -- "entrada" --> C["<b>Suma a la existencia</b>"]:::servicio
+  B -- "salida o reserva" --> D{"<b>Cabe en lo disponible?</b>"}:::pendiente
+  D -- "no" --> E["<b>409</b><br/>Existencia insuficiente"]:::alerta
+  D -- "sí" --> F["<b>Descuenta o reserva</b>"]:::servicio
+  B -- "ajuste" --> G{"<b>Deja la existencia sin negativos y sin bajar de lo reservado?</b>"}:::pendiente
+  G -- "no" --> H["<b>409</b><br/>El ajuste no es válido"]:::alerta
+  G -- "sí" --> I["<b>Aplica el ajuste</b>"]:::servicio
+  F --> J{"<b>Queda bajo el mínimo?</b>"}:::pendiente
+  I --> J
+  J -- "sí" --> K["<b>Evento existencia-bajo-minimo</b>"]:::datos
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

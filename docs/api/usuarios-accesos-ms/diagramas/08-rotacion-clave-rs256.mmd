@@ -1,0 +1,13 @@
+flowchart TD
+  A["<b>Clave actual</b><br/>kid empresa-usuarios-1"]:::datos --> B["<b>Pasos 1 y 2</b><br/>Guardar la pública anterior<br/>Generar la clave nueva"]:::servicio
+  B --> C["<b>Pasos 3 y 4 · Reinicio 1</b><br/>JWKS publica las dos claves<br/>Tokens nuevos con la clave nueva"]:::servicio
+  C --> D["<b>Paso 5</b><br/>Esperar 15 minutos<br/>Expiran los tokens de la clave anterior"]:::pendiente
+  D --> E["<b>Paso 6 · Reinicio 2</b><br/>Quitar la clave anterior del JWKS"]:::servicio
+  C -- "si la clave se expuso, no esperar" --> E
+  E --> F["<b>Listo</b><br/>Solo se valida la clave nueva"]:::datos
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

@@ -1,0 +1,14 @@
+flowchart TD
+  P["<b>Proveedor</b><br/>ACTIVO, INACTIVO o BLOQUEADO"]:::actor -. "solo ACTIVO recibe órdenes nuevas" .-> A["<b>Orden BORRADOR</b>"]:::actor
+  A --> B["<b>Aprobación</b><br/>Ver diagrama 03: límite de monto y creador"]:::pendiente
+  B --> C["<b>APROBADA</b>"]:::servicio
+  C -- "recepción parcial" --> D["<b>RECIBIDA_PARCIAL</b>"]:::servicio
+  D -- "recepción completa" --> F["<b>RECIBIDA</b><br/>Sin más cambios"]:::datos
+  A -- "cancelar con motivo" --> X["<b>CANCELADA</b>"]:::alerta
+  C -- "cancelar con motivo" --> X
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

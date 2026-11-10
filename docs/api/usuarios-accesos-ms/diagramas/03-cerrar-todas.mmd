@@ -1,0 +1,14 @@
+flowchart LR
+  A["POST /v1/auth/logout-todas con access token"]:::actor --> B["Revocar todas las familias del usuario"]:::servicio
+  B --> C["Outbox: sesiones-usuario-cerradas (usuarioId, ocurridoEn)"]:::datos
+  C --> D["Kafka entrega el evento a los servicios de área"]:::datos
+  D --> E["Cada servicio guarda usuarioId con ocurridoEn"]:::servicio
+  E --> F{"Token emitido antes de ocurridoEn?"}:::pendiente
+  F -- "sí" --> X["401: rechazado"]:::alerta
+  F -- "no, login posterior" --> OK["Aceptado: sesión nueva"]:::servicio
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

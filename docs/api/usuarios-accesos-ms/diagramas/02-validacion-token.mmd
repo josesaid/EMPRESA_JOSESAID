@@ -1,0 +1,14 @@
+flowchart TD
+  R["Petición con Authorization: Bearer"]:::actor --> F{"Firma RS256 válida y no vencido?"}:::pendiente
+  F -- "no" --> E1["401 invalid_token"]:::alerta
+  F -- "sí" --> S{"El sid pertenece a una sesión cerrada?"}:::pendiente
+  S -- "sí" --> E1
+  S -- "no" --> T{"Emitido antes de cerrar todas las sesiones del usuario?"}:::pendiente
+  T -- "sí" --> E1
+  T -- "no" --> P["Roles convertidos en ROLE_* y evaluación de @PreAuthorize"]:::servicio
+  P --> OK["Operación ejecutada"]:::servicio
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

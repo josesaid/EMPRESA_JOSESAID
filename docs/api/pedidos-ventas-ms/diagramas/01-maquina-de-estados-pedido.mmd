@@ -1,0 +1,17 @@
+flowchart TD
+  A["<b>Cotización BORRADOR</b>"]:::actor -->|"enviar"| B["<b>ENVIADA</b>"]:::servicio
+  B --> C{"<b>Aceptar dentro de vigencia?</b>"}:::pendiente
+  C -- "vencida" --> V["<b>VENCIDA, responde 410</b><br/>No se reactiva; nueva cotización"]:::alerta
+  C -- "sí" --> AC["<b>ACEPTADA</b>"]:::servicio
+  AC --> P1["<b>Pedido BORRADOR</b><br/>Solo aquí se editan las líneas"]:::actor
+  P1 -->|"confirmar, con al menos una línea"| P2["<b>CONFIRMADO</b>"]:::servicio
+  P2 -->|"entregar"| P3["<b>ENTREGADO</b>"]:::datos
+  P1 -->|"cancelar"| X["<b>CANCELADO</b><br/>CANCELACION_CLIENTE o ERROR_CAPTURA"]:::alerta
+  P2 -->|"cancelar"| X
+  P3 -->|"devolución total"| X2["<b>CANCELADO</b><br/>DEVOLUCION_TOTAL"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

@@ -1,0 +1,16 @@
+sequenceDiagram
+  autonumber
+  participant C as Cliente
+  participant U as usuarios-accesos-ms
+  participant K as Kafka
+  participant A as Servicio de área
+  C->>U: Logout de la sesión
+  U-->>C: 204 No Content
+  Note over U,K: El evento viaja por el outbox y Kafka en segundos
+  C->>A: Token viejo antes de que llegue el evento
+  A-->>C: 200 OK (ventana de consistencia)
+  U->>K: sesion-cerrada publicado
+  K->>A: Evento entregado al listener
+  Note over A: A partir de aquí el sid está revocado localmente
+  C->>A: Token viejo después de la entrega
+  A-->>C: 401 invalid_token

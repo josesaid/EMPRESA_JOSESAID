@@ -1,0 +1,14 @@
+flowchart TD
+  A["<b>Vendedor</b><br/>PATCH /v1/prospectos/id/estatus"]:::actor --> B{"<b>Es el mismo estatus?</b>"}:::pendiente
+  B -- "sí" --> OK["<b>200 OK</b><br/>Sin cambios: operación idempotente"]:::servicio
+  B -- "no" --> C{"<b>Destino CONVERTIDO?</b>"}:::pendiente
+  C -- "sí" --> E1["<b>409 transicion-invalida</b><br/>Use POST /conversion"]:::alerta
+  C -- "no" --> D{"<b>Transición permitida?</b><br/>NUEVO a CONTACTADO a CALIFICADO<br/>PERDIDO desde estados abiertos"}:::pendiente
+  D -- "no" --> E2["<b>409 transicion-invalida</b>"]:::alerta
+  D -- "sí" --> F["<b>Actualizar estatus</b><br/>updated_at en UTC"]:::servicio
+  F --> OK
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

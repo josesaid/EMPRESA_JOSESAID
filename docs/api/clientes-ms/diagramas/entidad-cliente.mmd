@@ -1,0 +1,9 @@
+flowchart TD
+  C["<b>Cliente</b><br/>id: UUID<br/>razon_social: VARCHAR 250<br/>rfc: texto cifrado y rfc_hash<br/>estatus: ACTIVO, SUSPENDIDO o BAJA<br/>prospecto_id: UUID opcional<br/>fecha_alta: DATE<br/>created_at, updated_at: TIMESTAMPTZ<br/>version: BIGINT"]:::servicio
+  K["<b>Contacto</b><br/>Un principal obligatorio"]:::datos
+  I["<b>Interaccion</b><br/>Historial del cliente"]:::datos
+  C -- "tiene 1 a N" --> K
+  C -- "registra 0 a N" --> I
+
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
