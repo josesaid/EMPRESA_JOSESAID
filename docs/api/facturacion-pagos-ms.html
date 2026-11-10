@@ -145,7 +145,7 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
     campos.forEach(function (c) {
       dl.append(el('div', {}, [el('dt', { text: c[0] }), el('dd', { text: String(c[1]) })]));
     });
-    dl.append(el('div', {}, [el('dt', { text: 'Roles detectados' }),
+    dl.append(el('div', {}, [el('dt', { text: 'Roles a usar' }),
       el('dd', {}, chips(i.roles, 'Ninguno detectado'))]));
     $('[data-panel="info"]').append(dl);
   }
@@ -172,7 +172,7 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
 
   function pintarPermisos() {
     const panel = $('[data-panel="permisos"]');
-    panel.append(el('h2', { class: 'subtitulo', text: 'Roles detectados' }));
+    panel.append(el('h2', { class: 'subtitulo', text: 'Roles a usar' }));
     panel.append(el('p', {}, chips(D.info.roles, 'Ninguno detectado')));
     if (!D.permisos.length) {
       panel.append(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene reglas de acceso por endpoint.' }));

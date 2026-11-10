@@ -197,7 +197,7 @@
             "description": "Sin permiso para esta operación"
           }
         },
-        "description": "Roles requeridos: hasRole('VENTAS')",
+        "description": "Roles requeridos: hasAnyRole('VENTAS', 'ADMIN')",
         "parameters": [
           {
             "name": "clienteId",
@@ -253,7 +253,7 @@
             "description": "Sin permiso para esta operación"
           }
         },
-        "description": "Roles requeridos: hasAnyRole('VENTAS')",
+        "description": "Roles requeridos: hasAnyRole('VENTAS', 'ADMIN')",
         "parameters": [
           {
             "name": "clienteId",
@@ -542,7 +542,7 @@
             "description": "Sin permiso para esta operación"
           }
         },
-        "description": "Roles requeridos: hasRole('LEGAL')",
+        "description": "Roles requeridos: hasAnyRole('LEGAL', 'ADMIN')",
         "parameters": [
           {
             "name": "id",
@@ -589,7 +589,7 @@
             "description": "Sin permiso para esta operación"
           }
         },
-        "description": "Roles requeridos: hasRole('LEGAL')",
+        "description": "Roles requeridos: hasAnyRole('LEGAL', 'ADMIN')",
         "parameters": [
           {
             "name": "contactoId",
@@ -646,7 +646,7 @@
             "description": "Sin permiso para esta operación"
           }
         },
-        "description": "Roles requeridos: hasRole('VENTAS')",
+        "description": "Roles requeridos: hasAnyRole('VENTAS', 'ADMIN')",
         "parameters": [
           {
             "name": "mes",
@@ -693,7 +693,7 @@
             "description": "Sin permiso para esta operación"
           }
         },
-        "description": "Roles requeridos: hasRole('VENTAS')",
+        "description": "Roles requeridos: hasAnyRole('VENTAS', 'ADMIN')",
         "parameters": [
           {
             "name": "confirmarDuplicado",
@@ -749,7 +749,7 @@
             "description": "Sin permiso para esta operación"
           }
         },
-        "description": "Roles requeridos: hasAnyRole('VENTAS')",
+        "description": "Roles requeridos: hasAnyRole('VENTAS', 'ADMIN')",
         "parameters": [
           {
             "name": "id",
@@ -853,7 +853,7 @@
             "description": "Sin permiso para esta operación"
           }
         },
-        "description": "Roles requeridos: hasRole('VENTAS')",
+        "description": "Roles requeridos: hasAnyRole('VENTAS', 'ADMIN')",
         "parameters": [
           {
             "name": "id",

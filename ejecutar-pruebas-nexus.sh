@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# ==============================================================================
+# Autor:      Said Olano (josesaid)
+# Proyecto:   EMPRESA_JOSESAID - microservicios Java 21 / Spring Boot
+# GitHub:     https://github.com/josesaid/EMPRESA_JOSESAID
+# ==============================================================================
 # Ejecuta las pruebas de nexus-comun en tu Mac. No necesita Docker: es una librería, no un servicio.
 # Uso: bash ejecutar-pruebas-nexus.sh   (pega la salida completa en el chat)
 set -u
