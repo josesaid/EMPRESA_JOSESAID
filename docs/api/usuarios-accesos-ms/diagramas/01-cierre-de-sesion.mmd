@@ -1,0 +1,17 @@
+sequenceDiagram
+  autonumber
+  participant C as Cliente
+  participant U as usuarios-accesos-ms
+  participant DB as PostgreSQL
+  participant K as Kafka
+  participant A as Servicio de área
+  C->>U: POST /v1/auth/logout con refreshToken
+  U->>DB: Revocar la familia del refresh token
+  U->>DB: Outbox: sesion-cerrada (sid, usuarioId, ocurridoEn)
+  Note over U,DB: Misma transacción
+  U-->>C: 204 No Content
+  U->>K: Relay del outbox publica en usuarios-accesos.eventos
+  K->>A: Listener recibe el evento
+  A->>A: RevocacionSesiones guarda el sid cerrado
+  C->>A: Access token de la sesión cerrada
+  A-->>C: 401 invalid_token

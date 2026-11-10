@@ -1,0 +1,14 @@
+flowchart TD
+  A["<b>Vendedor</b><br/>POST /v1/prospectos"]:::actor --> B{"<b>Datos válidos?</b><br/>correo, RFC y fuente"}:::pendiente
+  B -- "no" --> E1["<b>400 Validación</b><br/>Lista de campos con error"]:::alerta
+  B -- "sí" --> C{"<b>RFC igual a un cliente</b><br/>no dado de baja?"}:::pendiente
+  C -- "sí" --> E2["<b>409 rfc-duplicado</b><br/>Devuelve clienteExistenteId"]:::alerta
+  C -- "no" --> D{"<b>Correo o nombre parecidos?</b>"}:::pendiente
+  D -- "sí, sin confirmar" --> E3["<b>409 posible-duplicado</b><br/>Requiere confirmarDuplicado=true"]:::alerta
+  D -- "no, o confirmado" --> F["<b>Guardar prospecto</b><br/>estatus NUEVO, datos cifrados"]:::servicio
+  F --> G["<b>201 Created</b><br/>Location: /v1/prospectos/id"]:::servicio
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

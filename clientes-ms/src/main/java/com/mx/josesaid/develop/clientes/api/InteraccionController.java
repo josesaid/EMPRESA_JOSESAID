@@ -40,7 +40,7 @@ public class InteraccionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('VENTAS')")
+    @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public ResponseEntity<InteraccionResponse> registrar(@PathVariable UUID clienteId,
                                                          @Valid @RequestBody NuevaInteraccionRequest req,
                                                          @AuthenticationPrincipal Jwt jwt) {
@@ -51,7 +51,7 @@ public class InteraccionController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('VENTAS')")
+    @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public PagedModel<InteraccionResponse> listar(
             @PathVariable UUID clienteId,
             @PageableDefault(size = 20, sort = "fecha", direction = Sort.Direction.DESC) Pageable pageable,

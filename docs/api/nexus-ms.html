@@ -3,565 +3,301 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>API nexus-ms · Swagger</title>
+<title>nexus-ms · EMPRESA_JOSESAID</title>
 <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
-<style>body{margin:0} .topbar{display:none}
-.volver{font:14px system-ui,sans-serif;padding:10px 16px;background:#1b1f24;color:#fff}
-.volver a{color:#9ecbff}</style>
+<style>
+:root{--bg:#f5f7fb;--superficie:#ffffff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:40px}
+a{color:hsl(var(--h) 70% 45%)}
+.cabecera{background:linear-gradient(135deg,hsl(var(--h) 72% 40%),hsl(calc(var(--h) + 30) 78% 26%));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 64px}
+.cabecera-in{max-width:1000px;margin:0 auto;min-width:0}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.etiqueta{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin:14px 0 10px}
+h1{margin:0 0 8px;font-size:30px;line-height:1.2;text-wrap:balance;overflow-wrap:anywhere}
+.lead{margin:0;opacity:.92;max-width:70ch}
+.pildoras{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pildora{background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;font-size:13px}
+main{max-width:1000px;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));min-width:0}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:6px;box-shadow:0 6px 20px var(--sombra)}
+nav.tabs button{flex:1 0 auto;border:0;background:transparent;color:var(--muted);font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:10px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:hsl(var(--h) 80% 50% / .14);color:hsl(var(--h) 70% 35%)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}}
+:root[data-theme="dark"] nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}
+.panel{margin-top:18px;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;box-shadow:0 6px 20px var(--sombra);min-width:0}
+[hidden]{display:none!important}
+dl.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 24px;margin:0}
+dl.datos dt{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+dl.datos dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
+.chip{display:inline-block;font:600 12px ui-monospace,monospace;background:hsl(var(--h) 80% 50% / .16);color:hsl(var(--h) 70% 35%);border-radius:6px;padding:3px 8px;margin:2px 4px 2px 0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip{color:hsl(var(--h) 90% 78%)}}
+:root[data-theme="dark"] .chip{color:hsl(var(--h) 90% 78%)}
+.subtitulo{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--linea);vertical-align:top;overflow-wrap:anywhere}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.verbo{font:700 12px ui-monospace,monospace;border-radius:6px;padding:3px 7px;background:hsl(var(--h) 80% 50% / .18);color:hsl(var(--h) 70% 35%)}
+.md{overflow-wrap:anywhere;max-width:100%}
+.md img{max-width:100%;height:auto}
+.md pre{overflow-x:auto;background:rgba(127,127,127,.12);padding:12px;border-radius:10px}
+.md table{display:block;overflow-x:auto}
+.md h1,.md h2,.md h3{line-height:1.25}
+.grid-diag{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:16px}
+.diag{border:1px solid var(--linea);border-radius:12px;padding:12px;background:var(--bg);min-width:0}
+.diag h3{font-size:15px;margin:0 0 8px;overflow-wrap:anywhere}
+.diag a.abrir{display:block;text-align:center}
+.diag img{max-width:100%;height:auto;border-radius:8px;background:#fff}
+.diag .mermaid{overflow-x:auto;text-align:center}
+.diag .pie{font-size:13px;margin-top:8px;overflow-wrap:anywhere}
+.aviso{color:var(--muted)}
+#swagger-ui{max-width:100%;overflow-x:auto}
+.swagger-ui .topbar{display:none}
+</style>
 </head>
-<body>
-<div class="volver"><a href="index.html">← Índice de servicios</a> · nexus-ms</div>
-<div id="swagger-ui"></div>
-<script type="application/json" id="spec">
-{
-  "openapi": "3.0.3",
-  "info": {
-    "title": "API nexus-ms",
-    "version": "0.1.0",
-    "description": "- **Nombre:** nexus-ms"
-  },
-  "servers": [
-    {
-      "url": "/",
-      "description": "Ruta relativa del servicio"
+<body style="--h:20">
+<header class="cabecera">
+  <div class="cabecera-in">
+    <a class="volver" href="index.html">← Todos los microservicios</a>
+    <div><span class="etiqueta">Microservicio</span></div>
+    <h1 id="titulo">nexus-ms</h1>
+    <p class="lead" id="descr"></p>
+    <div class="pildoras" id="pildoras"></div>
+  </div>
+</header>
+<main>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" data-tab="info" aria-selected="true">Información</button>
+    <button role="tab" data-tab="readme" aria-selected="false">README</button>
+    <button role="tab" data-tab="permisos" aria-selected="false">Roles y permisos</button>
+    <button role="tab" data-tab="diagramas" aria-selected="false">Diagramas</button>
+    <button role="tab" data-tab="tecnologias" aria-selected="false">Calidad y tecnologías</button>
+    <button role="tab" data-tab="api" aria-selected="false">API (Swagger)</button>
+  </nav>
+  <section class="panel" data-panel="info"></section>
+  <section class="panel" data-panel="readme" hidden></section>
+  <section class="panel" data-panel="permisos" hidden></section>
+  <section class="panel" data-panel="diagramas" hidden></section>
+  <section class="panel" data-panel="tecnologias" hidden></section>
+  <section class="panel" data-panel="api" hidden><div id="swagger-ui"></div></section>
+</main>
+<script type="application/json" id="datos">{"svc": "nexus-ms", "info": {"nombre": "nexus-ms", "descripcion": "Nexus: asistente de consulta con IA sobre los servicios de EMPRESA_JOSESAID.", "puerto": "8081", "java": "21", "spring_boot": "4.1.2", "endpoints": 8, "roles": ["ADMIN", "CONTADOR", "VENTAS"]}, "readme": "# nexus-ms\n\n## 1. Identidad\n\n- **Nombre:** nexus-ms\n- **Área de negocio:** Asistente de IA sobre el resto de la plataforma (consulta y, con confirmación del usuario, escritura)\n- **Acceso:** vía gateway (`/nexus/**`). Dentro del contenedor escucha en 8080; en el host, 8097.\n- **Base de datos:** `nexus`, usuario `nexus`. El esquema lo maneja Flyway.\n- **Versión:** 0.1.0 · Java 21 · Spring Boot 4.1.2 · Spring AI · PostgreSQL 17\n\n## 2. Propósito y alcance\n\nResponde preguntas en lenguaje natural sobre la empresa usando herramientas que consultan los microservicios con el token del propio usuario. Nunca actúa con permisos propios: cada servicio vuelve a validar el rol.\n\nIncluye:\n- Consultas de solo lectura: pedidos, resumen de ventas, clientes, reportes, proveedores, órdenes de compra, existencias, trazabilidad, documentos, contabilidad y usuarios, según el rol.\n- Escritura con confirmación: Nexus prepara la acción, muestra un resumen y el usuario la confirma. Ver sección 9.\n- Auditoría de cada consulta, con datos sensibles redactados.\n- Tope de tokens por usuario y por servicio. Ver sección 12.\n\nNo incluye: ejecutar acciones sin confirmación, guardar datos sensibles en claro, ni decidir por el usuario.\n\n## 3. Estructura del repositorio\n\n```\nnexus-ms/\n├── Dockerfile                  Build multi-etapa (JDK 21 → JRE 21), usuario no root\n├── docker-compose.yml          Servicio; se incluye desde la raíz\n├── pom.xml                     Dependencias heredadas del padre de la empresa\n└── src/\n    ├── main/java/.../nexus/\n    │   ├── application/        AsistenteIA, AccionesPendientes, PresupuestoTokens, puertos\n    │   ├── infrastructure/     Herramientas por área, ClaudeAsistenteIA, EjecutorAccionesGateway,\n    │   │                       AlcanceHerramientas y persistencia JPA\n    │   ├── api/                NexusControlador, ManejoErrores (RFC 9457), DTOs\n    │   └── config/             Seguridad JWT, propagación del token, beans y Clock\n    ├── main/resources/\n    │   ├── application.yml\n    │   └── db/migration/       V1 auditoría · V2 acciones pendientes · V3 estatus CANCELADA\n    └── test/java/.../nexus/\n        ├── application/        AccionesPendientesTest, PresupuestoTokensTest\n        ├── infrastructure/     Pruebas unitarias de herramientas y del ejecutor (MockRestServiceServer)\n        ├── api/                NexusIT (Testcontainers) y pruebas de identidad\n        └── evaluacion/         LineaBaseIT: casos de evaluación del piloto\n```\n\n## 4. Requisitos\n\n- macOS con Docker Desktop en ejecución.\n- JDK 21 y Maven 3.9+ (solo si se corre fuera de Docker).\n- Red `empresa-net` creada por la raíz.\n- postgres, usuarios-accesos-ms (JWKS), gateway-ms y discovery-ms levantados.\n- Clave de API de Anthropic (`ANTHROPIC_API_KEY`).\n\n## 5. Configuración\n\nLos secretos se leen de variables de entorno o del `.env` de la raíz. Nunca se escriben en el repositorio.\n\n| Variable | Obligatoria | Descripción |\n|---|---|---|\n| `ANTHROPIC_API_KEY` | Sí | Clave del modelo. |\n| `NEXUS_DB_PASSWORD` | Sí | Contraseña del usuario `nexus`. |\n| `EUREKA_USUARIO`, `EUREKA_PASSWORD` | Sí (en compose) | Credenciales del registro en Eureka. |\n| `NEXUS_MODELO` | No | Modelo de Claude. Por defecto `claude-sonnet-5-5`. |\n| `NEXUS_MODELO_TIMEOUT` | No | Tiempo máximo por llamada al modelo. Por defecto `20s`. |\n| `NEXUS_MODELO_REINTENTOS` | No | Reintentos por llamada. Por defecto `1`. |\n| `NEXUS_MAX_HERRAMIENTAS` | No | Máximo de herramientas por pregunta. Por defecto `4`. |\n| `NEXUS_PRESUPUESTO_DIARIO` | No | Tope diario por usuario, en tokens. Por defecto `15000`. |\n| `NEXUS_PRESUPUESTO_MENSUAL` | No | Tope mensual por usuario, en tokens. Por defecto `150000`. |\n| `NEXUS_PRESUPUESTO_SERVICIO_MENSUAL` | No | Tope mensual de todo el servicio, en tokens. Por defecto `1000000`. |\n| `JWT_JWKS_URI` | Sí (en compose) | Llave pública de usuarios-accesos-ms. |\n| `GATEWAY_URL` | Sí (en compose) | URL del gateway para llamar a los servicios. |\n\n## 6. Ejecución\n\nDesde la raíz del repositorio, con el `.env` configurado:\n\n```\ndocker compose up -d --build nexus-ms\n```\n\nVerificación rápida:\n\n```\ncurl -s http://localhost:8097/actuator/health\n```\n\n## 7. Modelo de datos\n\n- `nexus_consultas`: una fila por pregunta. Guarda usuario, pregunta redactada, resumen de la respuesta, herramientas usadas y tokens de entrada y salida.\n- `acciones_pendientes`: acciones preparadas con su estatus (PENDIENTE, CONFIRMADA, EXPIRADA, CANCELADA), payload técnico y vigencia.\n\n## 8. Migraciones\n\n| Versión | Descripción |\n|---|---|\n| V1 | Tabla de auditoría de consultas. |\n| V2 | Tabla de acciones pendientes. |\n| V3 | Agrega CANCELADA al check de estatus de acciones. |\n\nNo se edita una migración ya aplicada: Flyway valida el checksum.\n\n## 9. Acciones con confirmación\n\nNexus nunca ejecuta una escritura por sí solo. El flujo es:\n\n1. **Preparar.** La herramienta valida con el token del usuario contra el servicio dueño y guarda la acción como PENDIENTE, con vigencia de 10 minutos. Devuelve un resumen y un `accion_id`.\n2. **Consultar.** `GET /nexus/acciones/{id}` muestra el resumen. Si ya venció, la marca como EXPIRADA.\n3. **Confirmar.** `POST /nexus/acciones/{id}/confirmacion` ejecuta la acción con el token del usuario. Si la ejecución falla, la acción sigue PENDIENTE.\n4. **Cancelar.** `POST /nexus/acciones/{id}/cancelacion` la marca como CANCELADA sin ejecutarla.\n\nSolo quien la preparó puede consultarla, confirmarla o cancelarla. Para otros usuarios responde 404.\n\n### Acciones por MCP (con código de confirmación)\n\nPor MCP (`/mcp`) la confirmación exige un código de una sola vez de 8 dígitos además del JWT:\n\n1. `sugerir_poliza` prepara una póliza (rol CONTADOR). No la registra. Devuelve el `accion_id` y el código.\n2. `confirmar_accion` con `accion_id` y código la registra. Solo quien la preparó puede confirmarla, dentro de 10 minutos.\n3. `cancelar_accion` la cancela sin ejecutarla.\n\nUn código incorrecto cancela la acción. El código se deriva con HMAC-SHA256 del id de la acción y del usuario, con el secreto `NEXUS_CONFIRMACION_SECRETO`. Si el secreto no está definido, cada instancia usa uno aleatorio y los códigos dejan de valer al reiniciar.\n\nAcciones disponibles (solo rol VENTAS):\n\n| Herramienta | Qué hace al confirmar |\n|---|---|\n| `preparar_pedido_borrador` | Crea un pedido en borrador. |\n| `crear_prospecto_borrador` | Crea un prospecto. |\n| `confirmar_pedido` | Confirma un pedido en borrador. |\n| `cancelar_pedido` | Cancela un pedido en borrador o confirmado. |\n| `enviar_cotizacion` | Envía una cotización en borrador. |\n| `aceptar_cotizacion` | Acepta una cotización enviada. |\n| `convertir_cotizacion_en_pedido` | Convierte una cotización aceptada en pedido. |\n| `crear_cotizacion_borrador` | Crea una cotización con una línea. |\n| `reemplazar_lineas_pedido` | Reemplaza las líneas de un pedido en borrador por una línea. |\n| `registrar_devolucion_pedido` | Registra la devolución total de un pedido entregado. |\n| `cambiar_estatus_prospecto` | Cambia el estatus de un prospecto a CONTACTADO, CALIFICADO o PERDIDO. |\n| `convertir_prospecto_en_cliente` | Convierte un prospecto calificado en cliente con su contacto principal. |\n| `registrar_interaccion_cliente` | Registra una llamada, correo o visita con un cliente. |\n\nLas reglas de negocio se validan dos veces: en Nexus, para dar un mensaje claro antes de preparar, y en el servicio dueño, al confirmar.\n\n## 10. Seguridad\n\n- Valida el JWT contra la llave pública de usuarios-accesos-ms (JWKS). No comparte secretos con otros servicios.\n- Cada herramienta usa el token del usuario, así que el servicio dueño aplica sus propios permisos.\n- `AlcanceHerramientas` decide qué herramientas se ofrecen al modelo según el rol. Lo que no está en el mapa se niega.\n- Las respuestas de los servicios y las preguntas pasan por `FiltroDatosSensibles` antes de volver al modelo o guardarse.\n- La API de consultas requiere autenticación. Las de acciones requieren rol VENTAS.\n- El endpoint MCP (`/mcp`) usa el mismo JWT. Cada llamada toma la identidad del cliente y aplica `AlcanceHerramientas`; una herramienta fuera del mapa de roles se niega aunque el cliente la pida. El gateway enruta `/mcp` a nexus-ms.\n\n## 11. API\n\n| Método | Ruta | Rol | Descripción |\n|---|---|---|---|\n| POST | `/nexus/consultas` | Autenticado | Hace una pregunta al asistente. |\n| GET | `/nexus/acciones/{id}` | VENTAS | Muestra una acción pendiente (sin payload). |\n| POST | `/nexus/acciones/{id}/confirmacion` | VENTAS | Confirma y ejecuta la acción. Responde 201. |\n| POST | `/nexus/acciones/{id}/cancelacion` | VENTAS | Cancela la acción. Responde 204. |\n| POST | `/nexus/polizas/sugerencias` | CONTADOR | Prepara una póliza sugerida. No la registra. Responde 201 y 422 si no cuadra. |\n| POST | `/mcp` | JWT | Endpoint MCP (streamable). Herramientas de lectura, `sugerir_poliza`, `confirmar_accion` y `cancelar_accion`. Ver `docs/conexion-mcp.md`. |\n\nErrores (RFC 9457): 404 si la acción no existe o no es del usuario, 409 si ya no está pendiente, 429 si se alcanzó un tope de tokens, 504 si el modelo o un servicio no responde a tiempo.\n\n## 12. Presupuesto de tokens\n\nAntes de llamar al modelo, Nexus revisa tres topes en este orden:\n\n1. Diario por usuario.\n2. Mensual por usuario.\n3. Mensual del servicio.\n\nSi uno se alcanzó, responde 429 con el motivo y no gasta tokens. Los días y meses se cuentan en hora de Ciudad de México.\n\nEl tope se revisa antes de la consulta, así que una consulta que empieza debajo del límite puede pasarlo por unos miles de tokens. Ese exceso sí se cobra.\n\n## 13. Observabilidad\n\nMétricas en `/actuator/prometheus`:\n\n| Métrica | Tipo | Uso |\n|---|---|---|\n| `nexus_presupuesto_bloqueos_total{ambito}` | Contador | Bloqueos por tope: `usuario-diario`, `usuario-mensual` o `servicio`. |\n| `nexus_presupuesto_servicio_consumo` | Gauge | Tokens consumidos por el servicio en el mes. |\n| `nexus_presupuesto_servicio_limite` | Gauge | Tope mensual del servicio. |\n| `nexus_presupuesto_umbral_alcanzado_total` | Contador | Avisos del 80% del tope del servicio. |\n| `nexus.tokens` y `nexus.costo.estimado` | Métricas | Tokens y costo estimado por llamada. El costo queda en cero hasta configurar los precios por millón de tokens. |\n\nLogs: un aviso al cruzar el 80% del tope del servicio (una vez por mes) y un error en cada bloqueo.\n\nAlarmas en `infra/monitoring/alertas-nexus.yml`:\n\n- **Crítica:** bloqueo por tope del servicio.\n- **Aviso:** consumo arriba del 80% durante 5 minutos.\n- **Aviso:** un usuario choca con su tope más de 3 veces en 15 minutos.\n\n## 14. Pruebas\n\n```\ncd nexus-ms\nmvn test\nmvn verify\n```\n\n- `mvn test`: pruebas unitarias. No requiere Docker.\n- `mvn verify`: también corre las pruebas de integración (`*IT`), que levantan PostgreSQL con Testcontainers. Requiere Docker y el `.env` cargado.\n- `LineaBaseIT`: corre los casos de evaluación del piloto contra el modelo. No corre en `mvn verify` normal. Para ejecutarlo: `NEXUS_LINEA_BASE=1 ANTHROPIC_API_KEY=... mvn verify`, con el stack levantado.\n\n## 15. Despliegue\n\nSe publica igual que el resto de los servicios: imagen construida desde el Dockerfile y registro en Eureka. Antes de desplegar, confirmar que las migraciones se aplican sin cambios sobre V1 a V3.\n\n## 16. Rollback\n\nRevertir la imagen a la versión anterior. Las migraciones no se revierten: son aditivas. Si una acción quedó PENDIENTE, expira sola en 10 minutos.\n\n## 17. Solución de problemas\n\n- **404 en `/nexus/acciones/{id}`:** la acción no existe o la preparó otro usuario.\n- **409 al confirmar:** la acción ya se confirmó, se canceló o expiró.\n- **429:** se alcanzó un tope. Revisar la métrica `nexus_presupuesto_bloqueos_total` para ver el ámbito.\n- **Prometheus no ve `nexus-ms`:** el scrape apunta al puerto 8080 del contenedor. Revisar en `/targets` que el objetivo esté `up`.\n\n## 18. Decisiones y pendientes\n\n- Fase 5: no se crean agentes por dominio. La decisión y sus motivos están en `docs/decisiones/fase-5-agentes.md`.\n- Fase 6: el piloto usa un cliente MCP conectado a `/mcp` con token manual. Guía en `docs/conexion-mcp.md`. Pendiente: OAuth para clientes MCP, porque hoy el token se pega a mano y vence en 15 minutos.\n- Pendiente: el código de confirmación aparece en la respuesta de `sugerir_poliza`. Quien tenga acceso a esa conversación lo ve; es una barrera suave.\n- Se reemplazan líneas de pedido de una en una. Varias líneas quedan para una iteración posterior.\n- El tope de servicio es de 1 000 000 tokens al mes. Se revisa con el consumo real del piloto.\n- Pendiente: decisión de proveedor de modelo y de datos redactados (fase 0).\n- Pendiente: monto límite de aprobación en compras (fase 2).\n\n## 19. Referencias\n\n- Diseño del asistente: `Nexus-Diseno-Asistente-IA.pdf` en la raíz del repositorio.\n- Fases y pasos: `Fases y pasos requeridos en la implementación de Nexus.pptx` en la raíz.\n- Monitoreo: `infra/monitoring/`.\n\n## Guías paso a paso\n\nProcedimientos de este servicio, publicados en HTML:\n\n- [Ejecutar las pruebas de un servicio](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/02-ejecutar-pruebas.html)\n- [Conectar un cliente MCP a Nexus](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/04-conectar-cliente-mcp.html)\n- [Índice de todas las guías](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/README.html)\n", "permisos": [{"verbo": "GET", "ruta": "/nexus/acciones/{id}", "operacion": "Consultar accion", "roles": "hasAnyRole('VENTAS','CONTADOR','ADMIN')"}, {"verbo": "GET", "ruta": "/nexus/acciones/{id}/alta", "operacion": "Datos alta", "roles": "hasRole('ADMIN')"}, {"verbo": "POST", "ruta": "/nexus/acciones/{id}/alta/completacion", "operacion": "Completar alta", "roles": "hasRole('ADMIN')"}, {"verbo": "POST", "ruta": "/nexus/acciones/{id}/alta/verificacion", "operacion": "Verificar alta", "roles": "hasRole('ADMIN')"}, {"verbo": "POST", "ruta": "/nexus/acciones/{id}/cancelacion", "operacion": "Cancelar accion", "roles": "hasAnyRole('VENTAS','CONTADOR')"}, {"verbo": "POST", "ruta": "/nexus/acciones/{id}/confirmacion", "operacion": "Confirmar accion", "roles": "hasAnyRole('VENTAS','CONTADOR')"}, {"verbo": "POST", "ruta": "/nexus/consultas", "operacion": "Consultar", "roles": "isAuthenticated()"}, {"verbo": "POST", "ruta": "/nexus/polizas/sugerencias", "operacion": "Sugerir", "roles": "hasRole('CONTADOR')"}], "diagramas": [{"titulo": "01 arquitectura", "archivos": ["nexus-ms/diagramas/01-arquitectura.mmd", "nexus-ms/diagramas/01-arquitectura.png"], "imagen": "nexus-ms/diagramas/01-arquitectura.png", "codigo": "flowchart LR\n  A[\"<b>Usuario o cliente MCP<\/b><br/>Con JWT\"]:::actor --> G[\"<b>gateway-ms<\/b><br/>Enruta /nexus y /mcp\"]:::servicio\n  G --> N[\"<b>nexus-ms<\/b><br/>Asistente de IA\"]:::servicio\n  N -- \"consultas y preparación\" --> M[\"<b>Modelo de IA<\/b><br/>Con herramientas por área\"]:::servicio\n  N -- \"auditoría y acciones\" --> D[\"<b>Base de nexus-ms<\/b><br/>acciones_pendientes y auditoría\"]:::datos\n  N -- \"ejecución con el token del usuario\" --> G2[\"<b>gateway-ms<\/b>\"]:::servicio\n  G2 --> S[\"<b>Servicios dueños<\/b><br/>Pedidos, clientes, contabilidad, etc.\"]:::servicio\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "02 acciones con confirmacion", "archivos": ["nexus-ms/diagramas/02-acciones-con-confirmacion.mmd", "nexus-ms/diagramas/02-acciones-con-confirmacion.png"], "imagen": "nexus-ms/diagramas/02-acciones-con-confirmacion.png", "codigo": "flowchart TD\n  A[\"<b>Preparar<\/b><br/>Valida con el token del usuario\"]:::actor --> B[\"<b>PENDIENTE<\/b><br/>Vigencia de 10 minutos<br/>Devuelve accion_id y resumen\"]:::servicio\n  B -- \"consulta después de vencer\" --> C[\"<b>EXPIRADA<\/b>\"]:::alerta\n  B -- \"confirmar\" --> D{\"<b>Ejecuta en el servicio dueño<\/b>\"}:::pendiente\n  D -- \"la ejecución falla\" --> B\n  D -- \"ejecuta bien\" --> E[\"<b>CONFIRMADA<\/b>\"]:::datos\n  B -- \"cancelar\" --> F[\"<b>CANCELADA<\/b><br/>Sin ejecutar\"]:::alerta\n  G[\"<b>Otro usuario<\/b>\"]:::actor -. \"consultar, confirmar o cancelar\" .-> H[\"<b>404<\/b>\"]:::alerta\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "03 acciones por mcp", "archivos": ["nexus-ms/diagramas/03-acciones-por-mcp.mmd", "nexus-ms/diagramas/03-acciones-por-mcp.png"], "imagen": "nexus-ms/diagramas/03-acciones-por-mcp.png", "codigo": "flowchart TD\n  A[\"<b>sugerir_poliza<\/b><br/>Rol CONTADOR, no registra\"]:::actor --> B[\"<b>Devuelve accion_id y código de 8 dígitos<\/b><br/>Código de un solo uso\"]:::servicio\n  B --> C{\"<b>confirmar_accion<\/b><br/>Mismo usuario y dentro de 10 minutos?\"}:::pendiente\n  C -- \"código incorrecto\" --> D[\"<b>Acción cancelada<\/b>\"]:::alerta\n  C -- \"sí, código correcto\" --> E[\"<b>Registra la póliza<\/b>\"]:::datos\n  C -- \"no es quien la preparó o venció\" --> F[\"<b>No se ejecuta<\/b>\"]:::alerta\n  B -- \"cancelar_accion\" --> G[\"<b>Cancelada sin ejecutar<\/b>\"]:::alerta\n  H[\"<b>Código<\/b><br/>HMAC-SHA256 del id y del usuario\"]:::pendiente -. \"secreto NEXUS_CONFIRMACION_SECRETO\" .-> B\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}], "api": true, "tecnologias": [{"id": "pruebas", "nombre": "Pruebas automatizadas", "resumen": "Pruebas unitarias y de integración con JUnit 5. Surefire ejecuta las unitarias y Failsafe las de integración.", "aplicado": true, "archivo": "nexus-ms/tecnologias/pruebas.html"}, {"id": "checkstyle", "nombre": "Checkstyle", "resumen": "Revisa convenciones de estilo del código Java (nombres, tamaños de métodos, imports) contra un conjunto de reglas.", "aplicado": true, "archivo": "nexus-ms/tecnologias/checkstyle.html"}, {"id": "pmd", "nombre": "PMD", "resumen": "Busca patrones problemáticos en el código: variables sin uso, bloques vacíos y complejidad excesiva.", "aplicado": true, "archivo": "nexus-ms/tecnologias/pmd.html"}, {"id": "spotbugs", "nombre": "SpotBugs", "resumen": "Analiza el bytecode para detectar errores probables: referencias nulas, recursos sin cerrar y problemas de concurrencia.", "aplicado": true, "archivo": "nexus-ms/tecnologias/spotbugs.html"}, {"id": "jacoco", "nombre": "JaCoCo", "resumen": "Mide la cobertura de pruebas (líneas y ramas) y puede fallar el build si no se alcanza el mínimo configurado.", "aplicado": true, "archivo": "nexus-ms/tecnologias/jacoco.html"}, {"id": "javadoc", "nombre": "Javadoc", "resumen": "Genera documentación técnica a partir de los comentarios /** */.", "aplicado": true, "archivo": "nexus-ms/tecnologias/javadoc.html"}, {"id": "cobertura", "nombre": "Cobertura", "resumen": "Alternativa a JaCoCo para medir la cobertura de pruebas.", "aplicado": true, "archivo": "nexus-ms/tecnologias/cobertura.html"}]}</script>
+<script type="application/json" id="spec">{"openapi": "3.0.3", "info": {"title": "API nexus-ms", "version": "0.1.0", "description": "- **Nombre:** nexus-ms"}, "servers": [{"url": "/", "description": "Ruta relativa del servicio"}], "tags": [{"name": "NexusControlador"}, {"name": "PolizasControlador"}], "paths": {"/nexus/acciones/{id}": {"get": {"operationId": "nexus-ms.NexusControlador.consultarAccion", "summary": "Consultar accion", "tags": ["NexusControlador"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AccionResumen"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasAnyRole('VENTAS','CONTADOR','ADMIN')", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}]}}, "/nexus/acciones/{id}/alta": {"get": {"operationId": "nexus-ms.NexusControlador.datosAlta", "summary": "Datos alta", "tags": ["NexusControlador"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/DatosAlta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('ADMIN')", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}]}}, "/nexus/acciones/{id}/alta/completacion": {"post": {"operationId": "nexus-ms.NexusControlador.completarAlta", "summary": "Completar alta", "tags": ["NexusControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "string", "description": "Void"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('ADMIN')", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConfirmacionSolicitud"}}}}}}, "/nexus/acciones/{id}/alta/verificacion": {"post": {"operationId": "nexus-ms.NexusControlador.verificarAlta", "summary": "Verificar alta", "tags": ["NexusControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "string", "description": "Void"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('ADMIN')", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConfirmacionSolicitud"}}}}}}, "/nexus/acciones/{id}/cancelacion": {"post": {"operationId": "nexus-ms.NexusControlador.cancelarAccion", "summary": "Cancelar accion", "tags": ["NexusControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "string", "description": "Void"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasAnyRole('VENTAS','CONTADOR')", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}]}}, "/nexus/acciones/{id}/confirmacion": {"post": {"operationId": "nexus-ms.NexusControlador.confirmarAccion", "summary": "Confirmar accion", "tags": ["NexusControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "string"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasAnyRole('VENTAS','CONTADOR')", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConfirmacionSolicitud"}}}}}}, "/nexus/consultas": {"post": {"operationId": "nexus-ms.NexusControlador.consultar", "summary": "Consultar", "tags": ["NexusControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConsultaResponse"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: isAuthenticated()", "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConsultaRequest"}}}}}}, "/nexus/polizas/sugerencias": {"post": {"operationId": "nexus-ms.PolizasControlador.sugerir", "summary": "Sugerir", "tags": ["PolizasControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SugerenciaRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('CONTADOR')", "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SugerenciaPolizaSolicitud"}}}}}}}, "components": {"securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}}, "schemas": {"ConfirmacionSolicitud": {"type": "object", "properties": {"codigo": {"type": "string"}}}, "DatosAlta": {"type": "object", "properties": {"correo": {"type": "string"}, "nombreCompleto": {"type": "string"}, "roles": {"type": "array", "items": {"type": "string"}}}}, "AccionResumen": {"type": "object", "properties": {"id": {"type": "string", "format": "uuid"}, "tipo": {"type": "string"}, "resumen": {"type": "string"}, "estatus": {"type": "string"}, "expiraUtc": {"type": "string", "format": "date-time"}}}, "ConsultaRequest": {"type": "object", "properties": {"pregunta": {"type": "string"}}}, "ConsultaResponse": {"type": "object", "properties": {"respuesta": {"type": "string"}}}, "SugerenciaPolizaSolicitud": {"type": "object", "properties": {"descripcion": {"type": "string"}}}, "SugerenciaRespuesta": {"type": "object", "properties": {"id": {"type": "string", "format": "uuid"}, "tipo": {"type": "string"}, "resumen": {"type": "string"}, "estatus": {"type": "string"}, "expiraUtc": {"type": "string", "format": "date-time"}, "codigoConfirmacion": {"type": "string"}}}}}}</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('datos').textContent);
+  const SPEC = JSON.parse(document.getElementById('spec').textContent);
+  const $ = (s) => document.querySelector(s);
+
+  function el(tag, attrs, hijos) {
+    const n = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (hijos || []).forEach(function (h) {
+      if (h === null || h === undefined || h === false) return;
+      n.append(h.nodeType ? h : document.createTextNode(String(h)));
+    });
+    return n;
+  }
+
+  function chips(lista, vacio) {
+    if (!lista || !lista.length) return [el('span', { class: 'aviso', text: vacio })];
+    return lista.map(function (r) { return el('span', { class: 'chip', text: r }); });
+  }
+
+  if (window.mermaid) {
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default'
+    });
+  }
+
+  function pintarInfo() {
+    const i = D.info;
+    $('#titulo').textContent = i.nombre;
+    $('#descr').textContent = i.descripcion || '';
+    const pild = $('#pildoras');
+    [
+      'Puerto ' + (i.puerto || '—'),
+      'Java ' + (i.java || '—'),
+      'Spring Boot ' + (i.spring_boot || '—'),
+      i.endpoints ? i.endpoints + ' endpoints' : 'Sin API REST'
+    ].forEach(function (t) { pild.append(el('span', { class: 'pildora', text: t })); });
+    const campos = [
+      ['Servicio', i.nombre],
+      ['Descripción', i.descripcion || '—'],
+      ['Puerto de la aplicación', i.puerto || '—'],
+      ['Java', i.java || '—'],
+      ['Spring Boot', i.spring_boot || '—'],
+      ['Endpoints REST', i.endpoints || 'Ninguno']
+    ];
+    const dl = el('dl', { class: 'datos' });
+    campos.forEach(function (c) {
+      dl.append(el('div', {}, [el('dt', { text: c[0] }), el('dd', { text: String(c[1]) })]));
+    });
+    dl.append(el('div', {}, [el('dt', { text: 'Roles detectados' }),
+      el('dd', {}, chips(i.roles, 'Ninguno detectado'))]));
+    $('[data-panel="info"]').append(dl);
+  }
+
+  function pintarReadme() {
+    const panel = $('[data-panel="readme"]');
+    if (!D.readme) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene README.md.' }));
+      return;
     }
-  ],
-  "tags": [
-    {
-      "name": "NexusControlador"
-    },
-    {
-      "name": "PolizasControlador"
+    const art = el('article', { class: 'md' });
+    if (window.marked) {
+      art.innerHTML = marked.parse(D.readme);
+    } else {
+      art.append(el('pre', { text: D.readme }));
     }
-  ],
-  "paths": {
-    "/nexus/acciones/{id}": {
-      "get": {
-        "operationId": "nexus-ms.NexusControlador.consultarAccion",
-        "summary": "Consultar accion",
-        "tags": [
-          "NexusControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccionResumen"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasAnyRole('VENTAS','CONTADOR','ADMIN')",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ]
-      }
-    },
-    "/nexus/acciones/{id}/alta": {
-      "get": {
-        "operationId": "nexus-ms.NexusControlador.datosAlta",
-        "summary": "Datos alta",
-        "tags": [
-          "NexusControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DatosAlta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('ADMIN')",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ]
-      }
-    },
-    "/nexus/acciones/{id}/alta/completacion": {
-      "post": {
-        "operationId": "nexus-ms.NexusControlador.completarAlta",
-        "summary": "Completar alta",
-        "tags": [
-          "NexusControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "description": "Void"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('ADMIN')",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfirmacionSolicitud"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/nexus/acciones/{id}/alta/verificacion": {
-      "post": {
-        "operationId": "nexus-ms.NexusControlador.verificarAlta",
-        "summary": "Verificar alta",
-        "tags": [
-          "NexusControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "description": "Void"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('ADMIN')",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfirmacionSolicitud"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/nexus/acciones/{id}/cancelacion": {
-      "post": {
-        "operationId": "nexus-ms.NexusControlador.cancelarAccion",
-        "summary": "Cancelar accion",
-        "tags": [
-          "NexusControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "description": "Void"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasAnyRole('VENTAS','CONTADOR')",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ]
-      }
-    },
-    "/nexus/acciones/{id}/confirmacion": {
-      "post": {
-        "operationId": "nexus-ms.NexusControlador.confirmarAccion",
-        "summary": "Confirmar accion",
-        "tags": [
-          "NexusControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasAnyRole('VENTAS','CONTADOR')",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfirmacionSolicitud"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/nexus/consultas": {
-      "post": {
-        "operationId": "nexus-ms.NexusControlador.consultar",
-        "summary": "Consultar",
-        "tags": [
-          "NexusControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConsultaResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: isAuthenticated()",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConsultaRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/nexus/polizas/sugerencias": {
-      "post": {
-        "operationId": "nexus-ms.PolizasControlador.sugerir",
-        "summary": "Sugerir",
-        "tags": [
-          "PolizasControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SugerenciaRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('CONTADOR')",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SugerenciaPolizaSolicitud"
-              }
-            }
-          }
-        }
-      }
+    art.querySelectorAll('pre > code.language-mermaid').forEach(function (code) {
+      const m = el('div', { class: 'mermaid' });
+      m.dataset.src = code.textContent;
+      code.parentElement.replaceWith(m);
+    });
+    panel.append(art);
+  }
+
+  function pintarPermisos() {
+    const panel = $('[data-panel="permisos"]');
+    panel.append(el('h2', { class: 'subtitulo', text: 'Roles detectados' }));
+    panel.append(el('p', {}, chips(D.info.roles, 'Ninguno detectado')));
+    if (!D.permisos.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene reglas de acceso por endpoint.' }));
+      return;
     }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+    const cabeza = el('tr', {}, ['Método', 'Ruta', 'Operación', 'Regla de acceso'].map(function (t) {
+      return el('th', { text: t });
+    }));
+    const cuerpo = el('tbody');
+    D.permisos.forEach(function (p) {
+      cuerpo.append(el('tr', {}, [
+        el('td', {}, [el('span', { class: 'verbo', text: p.verbo })]),
+        el('td', { text: p.ruta }),
+        el('td', { text: p.operacion }),
+        el('td', { text: p.roles || 'Solo autenticación (sin @PreAuthorize)' })
+      ]));
+    });
+    const tabla = el('table', {}, [el('thead', {}, [cabeza]), cuerpo]);
+    panel.append(el('div', { class: 'tabla-wrap' }, [tabla]));
+  }
+
+  function pintarDiagramas() {
+    const panel = $('[data-panel="diagramas"]');
+    if (!D.diagramas.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene carpeta docs/diagramas.' }));
+      return;
+    }
+    const grid = el('div', { class: 'grid-diag' });
+    D.diagramas.forEach(function (d) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: d.titulo }));
+      if (d.imagen) {
+        const img = el('img', { src: d.imagen, alt: d.titulo, loading: 'lazy' });
+        img.onerror = function () {
+          img.replaceWith(el('p', { class: 'aviso', text: 'No se pudo mostrar la imagen. Usa el enlace de abajo para abrir el archivo.' }));
+        };
+        tarjeta.append(el('a', { href: d.imagen, target: '_blank', rel: 'noopener', class: 'abrir', title: 'Abrir archivo' }, [img]));
+      } else if (d.codigo) {
+        const m = el('div', { class: 'mermaid' });
+        m.dataset.src = d.codigo;
+        tarjeta.append(m);
       }
-    },
-    "schemas": {
-      "ConfirmacionSolicitud": {
-        "type": "object",
-        "properties": {
-          "codigo": {
-            "type": "string"
-          }
-        }
-      },
-      "DatosAlta": {
-        "type": "object",
-        "properties": {
-          "correo": {
-            "type": "string"
-          },
-          "nombreCompleto": {
-            "type": "string"
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "AccionResumen": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "tipo": {
-            "type": "string"
-          },
-          "resumen": {
-            "type": "string"
-          },
-          "estatus": {
-            "type": "string"
-          },
-          "expiraUtc": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "ConsultaRequest": {
-        "type": "object",
-        "properties": {
-          "pregunta": {
-            "type": "string"
-          }
-        }
-      },
-      "ConsultaResponse": {
-        "type": "object",
-        "properties": {
-          "respuesta": {
-            "type": "string"
-          }
-        }
-      },
-      "SugerenciaPolizaSolicitud": {
-        "type": "object",
-        "properties": {
-          "descripcion": {
-            "type": "string"
-          }
-        }
-      },
-      "SugerenciaRespuesta": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "tipo": {
-            "type": "string"
-          },
-          "resumen": {
-            "type": "string"
-          },
-          "estatus": {
-            "type": "string"
-          },
-          "expiraUtc": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "codigoConfirmacion": {
-            "type": "string"
-          }
-        }
+      const pie = el('div', { class: 'pie' });
+      d.archivos.forEach(function (a, idx) {
+        if (idx) pie.append(' · ');
+        pie.append(el('a', { href: a, target: '_blank', rel: 'noopener', text: a.split('/').pop() }));
+      });
+      tarjeta.append(pie);
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
+  async function renderMermaidIn(raiz) {
+    if (!raiz) return;
+    for (const nodo of raiz.querySelectorAll('.mermaid')) {
+      if (nodo.dataset.ok) continue;
+      const src = nodo.dataset.src || '';
+      if (!window.mermaid) {
+        nodo.replaceChildren(el('pre', { text: src }));
+        continue;
+      }
+      try {
+        const salida = await mermaid.render('m' + Math.random().toString(36).slice(2), src);
+        nodo.innerHTML = salida.svg;
+        nodo.dataset.ok = '1';
+      } catch (e) {
+        nodo.replaceChildren(
+          el('p', { class: 'aviso', text: 'No se pudo renderizar este diagrama. Se muestra el código fuente:' }),
+          el('pre', { text: src }));
       }
     }
   }
-}
-</script>
-<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
-<script>
-window.onload = function () {
-  window.ui = SwaggerUIBundle({
-    spec: JSON.parse(document.getElementById("spec").textContent),
-    dom_id: "#swagger-ui",
-    deepLinking: true,
-    persistAuthorization: true
-  });
-};
+
+  function pintarTecnologias() {
+    const panel = $('[data-panel="tecnologias"]');
+    panel.append(el('p', { class: 'aviso', text: 'Herramientas de calidad y pruebas que el pom.xml de este servicio aplica. Las marcadas como no aplicadas no están configuradas.' }));
+    const grid = el('div', { class: 'grid-diag' });
+    D.tecnologias.forEach(function (t) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: t.nombre }));
+      tarjeta.append(el('p', { class: 'aviso', text: t.resumen }));
+      if (t.aplicado) {
+        tarjeta.append(el('a', { href: t.archivo, class: 'chip', text: 'Ver detalle →' }));
+      } else {
+        tarjeta.append(el('span', { class: 'chip', text: 'No aplicado' }));
+      }
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
+  let swaggerListo = false;
+  function iniciarSwagger() {
+    if (swaggerListo || !SPEC || !window.SwaggerUIBundle) return;
+    swaggerListo = true;
+    window.ui = SwaggerUIBundle({ spec: SPEC, dom_id: '#swagger-ui', deepLinking: false, persistAuthorization: true });
+  }
+
+  function pintarApi() {
+    if (SPEC) return;
+    $('[data-panel="api"]').replaceChildren(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene Swagger.' }));
+    $('[data-tab="api"]').hidden = true;
+  }
+
+  const botones = Array.from(document.querySelectorAll('[role="tab"]'));
+  function activar(nombre, cambiarHash) {
+    if (nombre === 'api' && !SPEC) nombre = 'info';
+    botones.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === nombre)); });
+    document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== nombre; });
+    if (nombre === 'readme' || nombre === 'diagramas') renderMermaidIn(document.querySelector('[data-panel="' + nombre + '"]'));
+    if (nombre === 'api') iniciarSwagger();
+    if (cambiarHash) { try { history.replaceState(null, '', '#' + nombre); } catch (e) {} }
+  }
+  botones.forEach(function (b) { b.addEventListener('click', function () { activar(b.dataset.tab, true); }); });
+
+  pintarInfo();
+  pintarReadme();
+  pintarPermisos();
+  pintarDiagramas();
+  pintarApi();
+  pintarTecnologias();
+  const inicial = location.hash.slice(1);
+  activar(['info', 'readme', 'permisos', 'diagramas', 'tecnologias', 'api'].indexOf(inicial) >= 0 ? inicial : 'info', false);
+})();
 </script>
 </body>
 </html>

@@ -1,0 +1,12 @@
+flowchart TD
+  A["<b>Carga de documento</b><br/>Con contenido"]:::actor --> B{"<b>Mismo contenido que la versión anterior?</b>"}:::pendiente
+  B -- "sí" --> C["<b>409</b><br/>No crea versión"]:::alerta
+  B -- "no" --> D{"<b>Dos cargas simultáneas de la misma versión?</b>"}:::pendiente
+  D -- "no" --> E["<b>Guarda la versión</b>"]:::servicio
+  D -- "sí, una gana" --> F["<b>La otra recibe 409</b><br/>Control optimista"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

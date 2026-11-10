@@ -1,0 +1,15 @@
+flowchart TD
+  A["<b>GET /v1/indicadores</b><br/>Token con rol y claim area"]:::actor --> B{"<b>Rol DIRECCION?</b>"}:::pendiente
+  B -- "sí" --> C["<b>Consulta cualquier área</b><br/>Sin área, todas"]:::servicio
+  B -- "no, es JEFE_AREA" --> D{"<b>Claim area válido?</b>"}:::pendiente
+  D -- "no" --> E["<b>403</b><br/>Token sin área válida"]:::alerta
+  D -- "sí" --> F{"<b>Pide otra área?</b>"}:::pendiente
+  F -- "sí" --> G["<b>403</b><br/>Solo su área"]:::alerta
+  F -- "no, o no envía área" --> H["<b>Recibe su área</b><br/>Indicadores y reporte filtrados"]:::servicio
+  A -. "carga, cierre o exportación" .-> I["<b>403</b><br/>Solo DIRECCION"]:::alerta
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

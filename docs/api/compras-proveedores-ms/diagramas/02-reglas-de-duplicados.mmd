@@ -1,0 +1,17 @@
+flowchart TD
+  A["<b>Alta de proveedor</b><br/>RFC"]:::actor --> B["<b>Normaliza el RFC</b><br/>Mayúsculas y sin espacios; se compara por índice HMAC"]:::servicio
+  B --> C{"<b>RFC ya existe?</b>"}:::pendiente
+  C -- "sí" --> E1["<b>409</b><br/>Duplicado"]:::alerta
+  C -- "no" --> OK1["<b>Alta permitida</b>"]:::servicio
+  L["<b>Línea de orden</b><br/>SKU"]:::actor --> M{"<b>El SKU ya está en la orden?</b>"}:::pendiente
+  M -- "sí" --> E2["<b>Rechazo</b><br/>Un SKU aparece una vez por orden"]:::alerta
+  M -- "no" --> OK2["<b>Línea agregada</b>"]:::servicio
+  R["<b>Recepción repetida</b>"]:::actor --> S{"<b>Excede lo ordenado?</b>"}:::pendiente
+  S -- "sí" --> E3["<b>Rechazo</b>"]:::alerta
+  S -- "no" --> OK3["<b>Registra otra recepción</b><br/>Pendiente: Idempotency-Key en recepciones"]:::pendiente
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

@@ -1,0 +1,16 @@
+flowchart TD
+  A["<b>Responsable de protección de datos</b><br/>POST /v1/contactos/id/consentimientos"]:::actor --> B{"<b>Contacto existe?</b>"}:::pendiente
+  B -- "no" --> E1["<b>404 recurso-no-encontrado</b>"]:::alerta
+  B -- "sí" --> C["<b>201 Created</b><br/>Consentimiento con finalidad, medio y vigencia"]:::servicio
+
+  A2["<b>Responsable de protección de datos</b><br/>POST /v1/consentimientos/id/revocacion"]:::actor --> D{"<b>Ya fue revocado?</b>"}:::pendiente
+  D -- "sí" --> OK["<b>200 OK</b><br/>Sin evento nuevo: idempotente"]:::servicio
+  D -- "no" --> F["<b>Fijar revocado_at en UTC</b>"]:::servicio
+  F --> G["<b>Escribir outbox ConsentimientoRevocado</b><br/>Misma transacción"]:::datos
+  G --> OK
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

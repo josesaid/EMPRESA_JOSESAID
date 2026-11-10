@@ -1,0 +1,14 @@
+flowchart TD
+  A["<b>Comprobante BORRADOR</b><br/>Moneda MXN o USD, subtotal mayor a cero"]:::actor -->|"emisión"| B["<b>EMITIDO</b><br/>Folio provisional FAC-"]:::servicio
+  A -->|"cancelación"| C["<b>CANCELADO</b><br/>Evento comprobante-cancelado"]:::alerta
+  B -->|"cancelación"| C
+  B --> D{"<b>Pagos registrados</b><br/>El cobro se deriva, no se guarda"}:::pendiente
+  D -- "sin pagos" --> E["<b>Cobro PENDIENTE</b>"]:::actor
+  D -- "saldo mayor a cero" --> F["<b>Cobro PARCIAL</b>"]:::servicio
+  D -- "saldo en cero" --> G["<b>Cobro PAGADO</b>"]:::datos
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

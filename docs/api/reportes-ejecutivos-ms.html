@@ -3,423 +3,301 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>API reportes-ejecutivos-ms · Swagger</title>
+<title>reportes-ejecutivos-ms · EMPRESA_JOSESAID</title>
 <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
-<style>body{margin:0} .topbar{display:none}
-.volver{font:14px system-ui,sans-serif;padding:10px 16px;background:#1b1f24;color:#fff}
-.volver a{color:#9ecbff}</style>
+<style>
+:root{--bg:#f5f7fb;--superficie:#ffffff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:40px}
+a{color:hsl(var(--h) 70% 45%)}
+.cabecera{background:linear-gradient(135deg,hsl(var(--h) 72% 40%),hsl(calc(var(--h) + 30) 78% 26%));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 64px}
+.cabecera-in{max-width:1000px;margin:0 auto;min-width:0}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.etiqueta{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin:14px 0 10px}
+h1{margin:0 0 8px;font-size:30px;line-height:1.2;text-wrap:balance;overflow-wrap:anywhere}
+.lead{margin:0;opacity:.92;max-width:70ch}
+.pildoras{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pildora{background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;font-size:13px}
+main{max-width:1000px;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));min-width:0}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:6px;box-shadow:0 6px 20px var(--sombra)}
+nav.tabs button{flex:1 0 auto;border:0;background:transparent;color:var(--muted);font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:10px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:hsl(var(--h) 80% 50% / .14);color:hsl(var(--h) 70% 35%)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}}
+:root[data-theme="dark"] nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}
+.panel{margin-top:18px;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;box-shadow:0 6px 20px var(--sombra);min-width:0}
+[hidden]{display:none!important}
+dl.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 24px;margin:0}
+dl.datos dt{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+dl.datos dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
+.chip{display:inline-block;font:600 12px ui-monospace,monospace;background:hsl(var(--h) 80% 50% / .16);color:hsl(var(--h) 70% 35%);border-radius:6px;padding:3px 8px;margin:2px 4px 2px 0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip{color:hsl(var(--h) 90% 78%)}}
+:root[data-theme="dark"] .chip{color:hsl(var(--h) 90% 78%)}
+.subtitulo{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--linea);vertical-align:top;overflow-wrap:anywhere}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.verbo{font:700 12px ui-monospace,monospace;border-radius:6px;padding:3px 7px;background:hsl(var(--h) 80% 50% / .18);color:hsl(var(--h) 70% 35%)}
+.md{overflow-wrap:anywhere;max-width:100%}
+.md img{max-width:100%;height:auto}
+.md pre{overflow-x:auto;background:rgba(127,127,127,.12);padding:12px;border-radius:10px}
+.md table{display:block;overflow-x:auto}
+.md h1,.md h2,.md h3{line-height:1.25}
+.grid-diag{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:16px}
+.diag{border:1px solid var(--linea);border-radius:12px;padding:12px;background:var(--bg);min-width:0}
+.diag h3{font-size:15px;margin:0 0 8px;overflow-wrap:anywhere}
+.diag a.abrir{display:block;text-align:center}
+.diag img{max-width:100%;height:auto;border-radius:8px;background:#fff}
+.diag .mermaid{overflow-x:auto;text-align:center}
+.diag .pie{font-size:13px;margin-top:8px;overflow-wrap:anywhere}
+.aviso{color:var(--muted)}
+#swagger-ui{max-width:100%;overflow-x:auto}
+.swagger-ui .topbar{display:none}
+</style>
 </head>
-<body>
-<div class="volver"><a href="index.html">← Índice de servicios</a> · reportes-ejecutivos-ms</div>
-<div id="swagger-ui"></div>
-<script type="application/json" id="spec">
-{
-  "openapi": "3.0.3",
-  "info": {
-    "title": "API reportes-ejecutivos-ms",
-    "version": "0.1.0",
-    "description": "- **Nombre:** reportes-ejecutivos-ms"
-  },
-  "servers": [
-    {
-      "url": "/",
-      "description": "Ruta relativa del servicio"
+<body style="--h:295">
+<header class="cabecera">
+  <div class="cabecera-in">
+    <a class="volver" href="index.html">← Todos los microservicios</a>
+    <div><span class="etiqueta">Microservicio</span></div>
+    <h1 id="titulo">reportes-ejecutivos-ms</h1>
+    <p class="lead" id="descr"></p>
+    <div class="pildoras" id="pildoras"></div>
+  </div>
+</header>
+<main>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" data-tab="info" aria-selected="true">Información</button>
+    <button role="tab" data-tab="readme" aria-selected="false">README</button>
+    <button role="tab" data-tab="permisos" aria-selected="false">Roles y permisos</button>
+    <button role="tab" data-tab="diagramas" aria-selected="false">Diagramas</button>
+    <button role="tab" data-tab="tecnologias" aria-selected="false">Calidad y tecnologías</button>
+    <button role="tab" data-tab="api" aria-selected="false">API (Swagger)</button>
+  </nav>
+  <section class="panel" data-panel="info"></section>
+  <section class="panel" data-panel="readme" hidden></section>
+  <section class="panel" data-panel="permisos" hidden></section>
+  <section class="panel" data-panel="diagramas" hidden></section>
+  <section class="panel" data-panel="tecnologias" hidden></section>
+  <section class="panel" data-panel="api" hidden><div id="swagger-ui"></div></section>
+</main>
+<script type="application/json" id="datos">{"svc": "reportes-ejecutivos-ms", "info": {"nombre": "reportes-ejecutivos-ms", "descripcion": "Consolidado de indicadores por área, cierre de reportes por periodo y exportación.", "puerto": "8081", "java": "21", "spring_boot": "4.1.2", "endpoints": 5, "roles": ["DIRECCION", "JEFE_AREA"]}, "readme": "# reportes-ejecutivos-ms\n\n## 1. Identidad\n\n- **Nombre:** reportes-ejecutivos-ms\n- **Área de negocio:** Dirección general\n- **Acceso:** vía gateway, sin puerto publicado (contenedor: dentro del contenedor escucha en 8081)\n- **Base de datos:** `reportes`, usuario `reportes` (creados por `infra/postgres/init-databases.sh`)\n- **Versión:** 0.1.0 · Java 21 · Spring Boot 4.1.2 · PostgreSQL 17 · Kafka 4.0.0\n\n## 2. Propósito y alcance\n\nConsolida indicadores de todas las áreas por periodo, para que Dirección general los consulte, cierre reportes y los exporte.\n\nIncluye: recepción de indicadores por Kafka, consolidado por periodo con marca de desactualizado, cierre de reportes con foto inmutable y exportación en CSV, PDF y XLSX.\n\nNo incluye: la captura de datos (cada área es dueña de los suyos), cálculos contables (Contabilidad), tableros interactivos ni alertas por umbral (pendientes).\n\n## 3. Estructura del repositorio\n\n```\nreportes-ejecutivos-ms/\n├── Dockerfile                  Build multi-etapa, usuario no root\n├── docker-compose.yml          Servicio con comentarios; se incluye desde la raíz\n├── .env.example                Variables del servicio\n├── pom.xml\n├── docs/diseno.md              Diseño y decisiones\n└── src/\n    ├── main/java/.../reportes/\n    │   ├── domain/             Indicador, Reporte, Periodo, Area y reglas\n    │   ├── application/        ReportesService, puerto ExportadorReporte, FormatoExportacion\n    │   ├── infrastructure/\n    │   │   ├── exportacion/    ExportadorCsv, ExportadorPdf (OpenPDF), ExportadorXlsx (Apache POI)\n    │   │   ├── mensajeria/     ListenerIndicadores (Kafka, entrada de indicadores)\n    │   │   ├── persistence/    Entidades JPA y adaptadores\n    │   │   └── outbox/         Outbox y retransmisor a Kafka\n    │   ├── api/                ReportesControlador y ManejadorErrores (RFC 9457)\n    │   └── config/             Seguridad JWT, reloj y propiedades\n    ├── main/resources/\n    │   ├── application.yml\n    │   └── db/migration/V1__esquema_inicial.sql\n    └── test/java/.../reportes/\n        ├── domain/             PeriodoTest, ReporteTest\n        └── api/ReportesIT.java Integración con Testcontainers\n```\n\n## 4. Requisitos\n\n- macOS con Docker Desktop en ejecución.\n- JDK 21 y Maven 3.9+ (solo para correr fuera de Docker).\n- Red `empresa-net`, postgres y kafka levantados desde la raíz.\n- Valida tokens con la clave pública de usuarios-accesos-ms (JWKS), sin secreto compartido.\n\n## 5. Configuración\n\n| Variable | Obligatoria | Descripción |\n|---|---|---|\n| `REPORTES_DB_PASSWORD` | Sí (compose) | Contraseña del usuario `reportes`. |\n| `JWT_JWKS_URI` | No | URL del JWKS de usuarios-accesos-ms (clave pública). Ya viene configurada en el Compose |\n| `REPORTES_FRESCURA_DIAS` | No | Días sin actualización para marcar un indicador como desactualizado. Por omisión 7. |\n| `REPORTES_TOPICO_INDICADORES` | No | Tópico Kafka de entrada. Por omisión `indicadores-areas`. |\n\n## 6. Ejecución\n\nDesde la raíz:\n\n```bash\ndocker compose up -d postgres kafka\ncd reportes-ejecutivos-ms\ndocker compose up -d --build\ncurl -s http://localhost:8080/reportes-ejecutivos-ms/actuator/health\n```\n\n## 7. Modelo de datos\n\n| Tabla | Contenido |\n|---|---|\n| `indicadores` | Valor vigente por área, nombre y periodo. Clave única por esas tres columnas. |\n| `reportes` | Un reporte por periodo: BORRADOR o CERRADO. |\n| `reporte_indicadores` | Foto de cada indicador al cerrar el reporte. |\n| `outbox_eventos` | Eventos pendientes de enviar a Kafka. |\n\n## 8. Migraciones\n\nFlyway ejecuta `V1__esquema_inicial.sql`. Hibernate solo valida. Los cambios futuros serán migraciones nuevas.\n\n## 9. Reglas de estado\n\n**Periodos.** Formato `AAAA` (anual), `AAAA-Qn` (trimestral) o `AAAA-MM` (mensual). Otro formato responde 400.\n\n**Indicadores.** Un indicador se identifica por área, nombre y periodo. Un nuevo valor reemplaza al anterior.\n\n**Desactualizado.** Un indicador cuya fuente no se actualizó dentro de `REPORTES_FRESCURA_DIAS` aparece marcado. El cálculo se hace al momento de consultar.\n\n**Reporte.** Se abre automáticamente con el primer indicador de su periodo. Mientras es BORRADOR, el consolidado se calcula en vivo.\n\n**Cierre.** Congela una foto del consolidado. Un reporte cerrado no cambia: cerrar de nuevo responde 409, y registrar indicadores de ese periodo responde 409. Un periodo sin indicadores no se puede cerrar (422).\n\n## 10. Seguridad\n\n- API sin estado con JWT RS256. Solo `/actuator/health` es público.\n- Toda la API es de rol DIRECCION (lectura completa, carga manual y cierre), salvo `GET /indicadores`, que también acepta JEFE_AREA (ver abajo).\n- Cada área solo ve sus indicadores en el consolidado: **propuesta, pendiente**.\n\n## 11. API\n\nBase `/v1`.\n\n| Método | Ruta | Descripción | Éxito |\n|---|---|---|---|\n| POST | /indicadores | Carga o corrige un indicador (manual) | 201 |\n| GET | /indicadores?area=&periodo= | Indicadores del periodo, con marca de desactualizado. JEFE_AREA solo recibe su área y recibe 403 si pide otra | 200 |\n| GET | /reportes/{periodo} | Reporte del periodo (BORRADOR en vivo o CERRADO con foto) | 200 |\n| POST | /reportes/{periodo}/cierre | Cierra el reporte | 200 |\n| GET | /reportes/{id}/exportacion?formato=CSV\\|PDF\\|XLSX | Descarga el reporte en el formato indicado (CSV por omisión) | 200 |\n\nEjemplo de carga:\n\n```json\n{\"area\":\"OPERACIONES\",\"nombre\":\"Órdenes cerradas\",\"periodo\":\"2026-10\",\n \"valor\":12.5,\"fuenteActualizadaUtc\":\"2026-10-29T10:00:00Z\"}\n```\n\nFormatos: `CSV` (UTF-8 con BOM), `PDF` (A4 horizontal con tabla) y `XLSX` (una hoja con encabezados). El nombre del formato no distingue mayúsculas.\n\nErrores: 400 solicitud inválida o formato no soportado, 403 sin rol, 404 reporte inexistente, 409 reporte cerrado o concurrencia, 422 periodo sin indicadores. Todos en RFC 9457.\n\n## 12. Reglas de duplicados\n\nUn indicador con la misma área, nombre y periodo reemplaza al anterior; no se duplica. Las cargas simultáneas del mismo indicador se resuelven por control optimista.\n\n## 13. Eventos\n\n| Evento | Cuándo | Datos |\n|---|---|---|\n| reporte-cerrado | Al cerrar un reporte | id, periodo |\n\nEntrada: mensajes JSON en el tópico `indicadores-areas` (confirmado) con `area`, `nombre`, `periodo`, `valor` y `fuenteActualizadaUtc`. Un mensaje inválido o que viola una regla (por ejemplo, periodo cerrado) se registra en el log y se descarta.\n\nProductores activos (cada hora, recalculan el mes actual y el anterior):\n\n| Servicio | Indicador | Área |\n|---|---|---|\n| pedidos-ventas-ms | `ventas_mes` | `VENTAS_ATENCION_CLIENTES` |\n| facturacion-pagos-ms | `cobrado_mes` | `FINANZAS_CONTABILIDAD` |\n| contabilidad-ms | `polizas_mes` | `FINANZAS_CONTABILIDAD` |\n| compras-proveedores-ms | `ordenes_mes` | `COMPRAS_PROVEEDORES` |\n| compras-proveedores-ms | `ordenes_canceladas_mes` | `COMPRAS_PROVEEDORES` |\n| inventario-operaciones-ms | `movimientos_mes` | `OPERACIONES` |\n| documentos-cumplimiento-ms | `documentos_por_vencer_30d` | `ADMINISTRACION_LEGAL` |\n| clientes-ms | `clientes_nuevos_mes` | `VENTAS_ATENCION_CLIENTES` |\n| usuarios-accesos-ms | `usuarios_activos` | `ADMINISTRACION_LEGAL` |\n\nUn mismo indicador de la misma área y periodo se reemplaza en cada envío (upsert), así que los reenvíos no duplican.\n\n## 14. Outbox\n\nLos eventos se escriben en `outbox_eventos` dentro de la misma transacción y `RetransmisorOutbox` los envía a Kafka.\n\n## 15. Observabilidad\n\n- Salud: `GET /actuator/health`.\n- Métricas Prometheus: `GET /actuator/prometheus`. Contadores `indicadores_recibidos_total` y `reportes_cerrados_total`.\n- Logs JSON ECS. Indicadores descartados quedan en el log como `WARN`.\n\n## 16. Pruebas\n\n```bash\nmvn -B test     # unitarias: periodos, reglas del reporte y exportación (10)\nmvn -B verify   # además ReportesIT con PostgreSQL y Kafka reales (requiere Docker)\n```\n\nDesde la raíz, en tu Mac: `bash ejecutar-pruebas-reportes.sh`.\n\n## 17. Despliegue\n\nImagen `reportes-ejecutivos-ms:0.1.0`. Requiere red `empresa-net`, base `reportes` y clave pública JWKS. Canary según el anexo. Se despliega después de los servicios de área, porque depende de sus eventos.\n\n## 18. Rollback\n\n1. `docker compose stop reportes-ejecutivos-ms`.\n2. Regrese a la imagen anterior.\n3. Los reportes cerrados se conservan en la base de datos; no se borran al hacer rollback.\n\n## 19. Solución de problemas\n\n| Síntoma | Causa probable | Acción |\n|---|---|---|\n| 404 en `/reportes/{periodo}` | No hay indicadores para ese periodo | Cargue un indicador primero. |\n| Indicador no aparece tras el evento | Mensaje inválido o área mal escrita | Revise el log `Indicador descartado`. |\n| 409 al cargar indicador | Periodo ya cerrado | Un cierre no se reabre; cargue en el periodo siguiente. |\n| 400 al exportar | Formato distinto de CSV, PDF o XLSX | Use `formato=CSV`, `PDF` o `XLSX`. |\n\n## 20. Decisiones y pendientes\n\n- **Permisos por área:** implementados. JEFE_AREA consulta solo su área según el claim `area` del token; carga, cierre y exportación siguen solo para DIRECCION.\n- **Alertas por umbral y tableros interactivos:** pendientes, según la especificación.\n- **Descarte de mensajes inválidos:** hoy se registran y se descartan. Falta una cola de mensajes fallidos.\n- **Tópico de indicadores:** `indicadores-areas`, confirmado.\n- **Frescura:** 7 días por omisión; confirmar con Dirección.\n- **Órdenes de compra anteriores a V3:** reciben en V4 la fecha de aplicación de la migración, así que cuentan en ese mes (octubre 2026). Confirmar si el criterio es aceptable.\n\n## 21. Referencias\n\n- Diseño detallado: `docs/diseno.md`.\n- Orden de arranque: sección del README de la raíz.\n- Especificación del área: `area_md_specification_files/Reportes_Ejecutivos.md`.\n\n## Descubrimiento, gateway y monitoreo\n\n- Al arrancar, `reportes-ejecutivos-ms` se registra en `discovery-ms` (Eureka). Después queda accesible por el gateway en `http://localhost:8080/reportes-ejecutivos-ms/...`.\n- **Orden de arranque:** `discovery-ms` primero. Si este servicio arranca antes, se registra solo cuando el registro esté disponible.\n- Métricas Prometheus en `/actuator/prometheus`, sin token, solo lectura.\n- Variables `EUREKA_USUARIO` y `EUREKA_PASSWORD`: obligatorias en Docker; el Compose arma la URL de registro `http://USUARIO:CLAVE@discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://USUARIO:CLAVE@localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.\n\n## Lectura por área (JEFE_AREA)\n\n- `GET /v1/indicadores` acepta DIRECCION y JEFE_AREA.\n- DIRECCION consulta cualquier área, o todas si no envía `area`.\n- JEFE_AREA consulta solo el área del claim `area` de su token. Si no envía `area`, recibe la suya; si pide otra, recibe 403. Un token sin claim `area` válido recibe 403.\n- `GET /reportes/{periodo}` también acepta JEFE_AREA y solo incluye los indicadores de su área.\n- Carga, cierre y exportación siguen solo para DIRECCION.\n\n## Guías paso a paso\n\nProcedimientos de este servicio, publicados en HTML:\n\n- [Ejecutar las pruebas de un servicio](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/02-ejecutar-pruebas.html)\n- [Consultar indicadores y generar reportes](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/09-indicadores-y-reportes.html)\n- [Índice de todas las guías](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/README.html)\n", "permisos": [{"verbo": "POST", "ruta": "/v1/indicadores", "operacion": "Registrar indicador", "roles": "hasRole('DIRECCION')"}, {"verbo": "GET", "ruta": "/v1/indicadores", "operacion": "Consultar indicadores", "roles": "hasAnyRole('DIRECCION','JEFE_AREA')"}, {"verbo": "GET", "ruta": "/v1/reportes/{id}/exportacion", "operacion": "Exportar", "roles": "hasRole('DIRECCION')"}, {"verbo": "GET", "ruta": "/v1/reportes/{periodo}", "operacion": "Consultar reporte", "roles": "hasAnyRole('DIRECCION','JEFE_AREA')"}, {"verbo": "POST", "ruta": "/v1/reportes/{periodo}/cierre", "operacion": "Cerrar reporte", "roles": "hasRole('DIRECCION')"}], "diagramas": [{"titulo": "01 reglas de estado", "archivos": ["reportes-ejecutivos-ms/diagramas/01-reglas-de-estado.mmd", "reportes-ejecutivos-ms/diagramas/01-reglas-de-estado.png"], "imagen": "reportes-ejecutivos-ms/diagramas/01-reglas-de-estado.png", "codigo": "flowchart TD\n  A[\"<b>Periodo<\/b><br/>Formato AAAA<br/>Trimestre AAAA-Qn<br/>Mes AAAA-MM\"]:::actor --> B{\"<b>Formato válido?<\/b>\"}:::pendiente\n  B -- \"no\" --> C[\"<b>400<\/b><br/>Formato no soportado\"]:::alerta\n  B -- \"sí\" --> D[\"<b>Reporte BORRADOR<\/b><br/>Se abre con el primer indicador\"]:::servicio\n  D --> E[\"<b>Consolidado en vivo<\/b><br/>Se calcula al consultar\"]:::datos\n  D -- \"cerrar\" --> F{\"<b>Tiene indicadores?<\/b>\"}:::pendiente\n  F -- \"no\" --> G[\"<b>422<\/b><br/>Periodo sin indicadores\"]:::alerta\n  F -- \"sí\" --> H[\"<b>CERRADO<\/b><br/>Foto congelada del consolidado\"]:::datos\n  H -- \"cerrar otra vez o registrar indicadores\" --> I[\"<b>409<\/b><br/>Reporte cerrado\"]:::alerta\n  J[\"<b>Indicador<\/b><br/>Fuente sin actualizar\"]:::actor -- \"pasa REPORTES_FRESCURA_DIAS\" --> K[\"<b>Marcado como desactualizado<\/b>\"]:::pendiente\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "02 reglas de duplicados", "archivos": ["reportes-ejecutivos-ms/diagramas/02-reglas-de-duplicados.mmd", "reportes-ejecutivos-ms/diagramas/02-reglas-de-duplicados.png"], "imagen": "reportes-ejecutivos-ms/diagramas/02-reglas-de-duplicados.png", "codigo": "flowchart TD\n  A[\"<b>Indicador entrante<\/b><br/>Área, nombre y periodo\"]:::actor --> B{\"<b>Ya existe esa combinación?<\/b>\"}:::pendiente\n  B -- \"no\" --> C[\"<b>Crea el indicador<\/b>\"]:::servicio\n  B -- \"sí\" --> D[\"<b>Reemplaza el valor anterior<\/b><br/>Upsert, no duplica\"]:::servicio\n  D --> E{\"<b>Cargas simultáneas?<\/b>\"}:::pendiente\n  E -- \"sí\" --> F[\"<b>Control optimista<\/b><br/>409 por concurrencia\"]:::alerta\n  E -- \"no\" --> G[\"<b>Guarda el valor<\/b>\"]:::datos\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "03 lectura por area", "archivos": ["reportes-ejecutivos-ms/diagramas/03-lectura-por-area.mmd", "reportes-ejecutivos-ms/diagramas/03-lectura-por-area.png"], "imagen": "reportes-ejecutivos-ms/diagramas/03-lectura-por-area.png", "codigo": "flowchart TD\n  A[\"<b>GET /v1/indicadores<\/b><br/>Token con rol y claim area\"]:::actor --> B{\"<b>Rol DIRECCION?<\/b>\"}:::pendiente\n  B -- \"sí\" --> C[\"<b>Consulta cualquier área<\/b><br/>Sin área, todas\"]:::servicio\n  B -- \"no, es JEFE_AREA\" --> D{\"<b>Claim area válido?<\/b>\"}:::pendiente\n  D -- \"no\" --> E[\"<b>403<\/b><br/>Token sin área válida\"]:::alerta\n  D -- \"sí\" --> F{\"<b>Pide otra área?<\/b>\"}:::pendiente\n  F -- \"sí\" --> G[\"<b>403<\/b><br/>Solo su área\"]:::alerta\n  F -- \"no, o no envía área\" --> H[\"<b>Recibe su área<\/b><br/>Indicadores y reporte filtrados\"]:::servicio\n  A -. \"carga, cierre o exportación\" .-> I[\"<b>403<\/b><br/>Solo DIRECCION\"]:::alerta\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "arquitectura", "archivos": ["reportes-ejecutivos-ms/diagramas/arquitectura.mmd", "reportes-ejecutivos-ms/diagramas/arquitectura.png"], "imagen": "reportes-ejecutivos-ms/diagramas/arquitectura.png", "codigo": "flowchart LR\n  E([\"<b>Aplicaciones y gateway-ms<\/b>\"]):::actor\n  D[\"<b>discovery-ms<\/b><br/>Eureka\"]:::actor\n  K[[\"<b>Kafka<\/b>\"]]:::alerta\n  subgraph SVC[\"reportes-ejecutivos-ms · 8081 interno (8109 en tu Mac)\"]\n    LIS[\"<b>ListenerIndicadores<\/b><br/>consumidor Kafka\"]:::gateway\n    API[\"<b>API REST /v1<\/b><br/>ControladorREST\"]:::gateway\n    SEG[\"<b>Seguridad JWT<\/b><br/>roles por método\"]:::seguridad\n    APP[\"<b>Servicio de aplicación<\/b><br/>casos de uso\"]:::servicio\n    EXP[\"<b>Exportación<\/b><br/>CSV · PDF · XLSX\"]:::actor\n    OUT[\"<b>Outbox<\/b><br/>outbox_eventos\"]:::infra\n    REP[\"<b>Repositorios JPA<\/b><br/>migraciones Flyway\"]:::infra\n    subgraph DOM[\"Dominio DDD (agregados y reglas)\"]\n      DM1[\"Reporte\"]:::dominio\n      DM2[\"Indicador\"]:::dominio\n      DM3[\"IndicadorConsolidado\"]:::dominio\n      DM4[\"Periodo\"]:::dominio\n    end\n  end\n  DB[(\"<b>PostgreSQL<\/b><br/>base reportes\")]:::datos\n\n  E --> API\n  API --> APP\n  API -.- SEG\n  K -- \"indicadores-areas\" --> LIS\n  LIS --> APP\n  APP --> EXP\n  APP --> OUT\n  OUT --> K\n  APP --> REP\n  REP --> DB\n  APP --> DOM\n  D -. \"registro\" .-> APP\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef gateway fill:#EEEDFE,stroke:#7F77DD,color:#26215C\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n  classDef infra fill:#FFF8DC,stroke:#E0A800,color:#4A3800\n  classDef seguridad fill:#FDF0E1,stroke:#E8870E,color:#4A2A00\n  classDef cifrado fill:#FDEEF3,stroke:#D4537E,color:#4B1528\n  classDef dominio fill:#F6EEFB,stroke:#AF52DE,color:#3A1450\n"}], "api": true, "tecnologias": [{"id": "pruebas", "nombre": "Pruebas automatizadas", "resumen": "Pruebas unitarias y de integración con JUnit 5. Surefire ejecuta las unitarias y Failsafe las de integración.", "aplicado": true, "archivo": "reportes-ejecutivos-ms/tecnologias/pruebas.html"}, {"id": "checkstyle", "nombre": "Checkstyle", "resumen": "Revisa convenciones de estilo del código Java (nombres, tamaños de métodos, imports) contra un conjunto de reglas.", "aplicado": true, "archivo": "reportes-ejecutivos-ms/tecnologias/checkstyle.html"}, {"id": "pmd", "nombre": "PMD", "resumen": "Busca patrones problemáticos en el código: variables sin uso, bloques vacíos y complejidad excesiva.", "aplicado": true, "archivo": "reportes-ejecutivos-ms/tecnologias/pmd.html"}, {"id": "spotbugs", "nombre": "SpotBugs", "resumen": "Analiza el bytecode para detectar errores probables: referencias nulas, recursos sin cerrar y problemas de concurrencia.", "aplicado": true, "archivo": "reportes-ejecutivos-ms/tecnologias/spotbugs.html"}, {"id": "jacoco", "nombre": "JaCoCo", "resumen": "Mide la cobertura de pruebas (líneas y ramas) y puede fallar el build si no se alcanza el mínimo configurado.", "aplicado": true, "archivo": "reportes-ejecutivos-ms/tecnologias/jacoco.html"}, {"id": "javadoc", "nombre": "Javadoc", "resumen": "Genera documentación técnica a partir de los comentarios /** */.", "aplicado": true, "archivo": "reportes-ejecutivos-ms/tecnologias/javadoc.html"}, {"id": "cobertura", "nombre": "Cobertura", "resumen": "Alternativa a JaCoCo para medir la cobertura de pruebas.", "aplicado": true, "archivo": "reportes-ejecutivos-ms/tecnologias/cobertura.html"}]}</script>
+<script type="application/json" id="spec">{"openapi": "3.0.3", "info": {"title": "API reportes-ejecutivos-ms", "version": "0.1.0", "description": "- **Nombre:** reportes-ejecutivos-ms"}, "servers": [{"url": "/", "description": "Ruta relativa del servicio"}], "tags": [{"name": "ReportesControlador"}], "paths": {"/v1/indicadores": {"post": {"operationId": "reportes-ejecutivos-ms.ReportesControlador.registrarIndicador", "summary": "Registrar indicador", "tags": ["ReportesControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/IndicadorRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('DIRECCION')", "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RegistrarIndicadorPeticion"}}}}}, "get": {"operationId": "reportes-ejecutivos-ms.ReportesControlador.consultarIndicadores", "summary": "Consultar indicadores", "tags": ["ReportesControlador"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "array", "items": {"$ref": "#/components/schemas/IndicadorRespuesta"}}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasAnyRole('DIRECCION','JEFE_AREA')", "parameters": [{"name": "area", "in": "query", "required": true, "schema": {"$ref": "#/components/schemas/Area"}}, {"name": "periodo", "in": "query", "required": true, "schema": {"type": "string"}}]}}, "/v1/reportes/{id}/exportacion": {"get": {"operationId": "reportes-ejecutivos-ms.ReportesControlador.exportar", "summary": "Exportar", "tags": ["ReportesControlador"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "string", "description": "byte[]"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('DIRECCION')", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}, {"name": "formato", "in": "query", "required": false, "schema": {"type": "string"}}]}}, "/v1/reportes/{periodo}": {"get": {"operationId": "reportes-ejecutivos-ms.ReportesControlador.consultarReporte", "summary": "Consultar reporte", "tags": ["ReportesControlador"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ReporteRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasAnyRole('DIRECCION','JEFE_AREA')", "parameters": [{"name": "periodo", "in": "path", "required": true, "schema": {"type": "string"}}]}}, "/v1/reportes/{periodo}/cierre": {"post": {"operationId": "reportes-ejecutivos-ms.ReportesControlador.cerrarReporte", "summary": "Cerrar reporte", "tags": ["ReportesControlador"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ReporteRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "description": "Roles requeridos: hasRole('DIRECCION')", "parameters": [{"name": "periodo", "in": "path", "required": true, "schema": {"type": "string"}}]}}}, "components": {"securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}}, "schemas": {"RegistrarIndicadorPeticion": {"type": "object", "properties": {"area": {"$ref": "#/components/schemas/Area"}, "nombre": {"type": "string"}, "periodo": {"type": "string"}, "valor": {"type": "number"}, "fuenteActualizadaUtc": {"type": "string", "format": "date-time"}}}, "Area": {"type": "object", "properties": {"etiqueta": {"type": "string"}}}, "IndicadorRespuesta": {"type": "object", "properties": {"id": {"type": "string", "format": "uuid"}, "area": {"$ref": "#/components/schemas/Area"}, "nombre": {"type": "string"}, "valor": {"type": "number"}, "periodo": {"type": "string"}, "fuenteActualizadaUtc": {"type": "string", "format": "date-time"}, "desactualizado": {"type": "boolean"}}}, "ReporteRespuesta": {"type": "object", "properties": {"id": {"type": "string", "format": "uuid"}, "periodo": {"type": "string"}, "estatus": {"$ref": "#/components/schemas/EstatusReporte"}, "creadoUtc": {"type": "string", "format": "date-time"}, "cerradoUtc": {"type": "string", "format": "date-time"}, "indicadores": {"type": "array", "items": {"$ref": "#/components/schemas/IndicadorConsolidadoRespuesta"}}}}, "EstatusReporte": {"type": "object", "properties": {}}, "IndicadorConsolidadoRespuesta": {"type": "object", "properties": {"id": {"type": "string", "format": "uuid"}, "area": {"$ref": "#/components/schemas/Area"}, "nombre": {"type": "string"}, "valor": {"type": "number"}, "fuenteActualizadaUtc": {"type": "string", "format": "date-time"}, "desactualizado": {"type": "boolean"}}}}}}</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('datos').textContent);
+  const SPEC = JSON.parse(document.getElementById('spec').textContent);
+  const $ = (s) => document.querySelector(s);
+
+  function el(tag, attrs, hijos) {
+    const n = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (hijos || []).forEach(function (h) {
+      if (h === null || h === undefined || h === false) return;
+      n.append(h.nodeType ? h : document.createTextNode(String(h)));
+    });
+    return n;
+  }
+
+  function chips(lista, vacio) {
+    if (!lista || !lista.length) return [el('span', { class: 'aviso', text: vacio })];
+    return lista.map(function (r) { return el('span', { class: 'chip', text: r }); });
+  }
+
+  if (window.mermaid) {
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default'
+    });
+  }
+
+  function pintarInfo() {
+    const i = D.info;
+    $('#titulo').textContent = i.nombre;
+    $('#descr').textContent = i.descripcion || '';
+    const pild = $('#pildoras');
+    [
+      'Puerto ' + (i.puerto || '—'),
+      'Java ' + (i.java || '—'),
+      'Spring Boot ' + (i.spring_boot || '—'),
+      i.endpoints ? i.endpoints + ' endpoints' : 'Sin API REST'
+    ].forEach(function (t) { pild.append(el('span', { class: 'pildora', text: t })); });
+    const campos = [
+      ['Servicio', i.nombre],
+      ['Descripción', i.descripcion || '—'],
+      ['Puerto de la aplicación', i.puerto || '—'],
+      ['Java', i.java || '—'],
+      ['Spring Boot', i.spring_boot || '—'],
+      ['Endpoints REST', i.endpoints || 'Ninguno']
+    ];
+    const dl = el('dl', { class: 'datos' });
+    campos.forEach(function (c) {
+      dl.append(el('div', {}, [el('dt', { text: c[0] }), el('dd', { text: String(c[1]) })]));
+    });
+    dl.append(el('div', {}, [el('dt', { text: 'Roles detectados' }),
+      el('dd', {}, chips(i.roles, 'Ninguno detectado'))]));
+    $('[data-panel="info"]').append(dl);
+  }
+
+  function pintarReadme() {
+    const panel = $('[data-panel="readme"]');
+    if (!D.readme) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene README.md.' }));
+      return;
     }
-  ],
-  "tags": [
-    {
-      "name": "ReportesControlador"
+    const art = el('article', { class: 'md' });
+    if (window.marked) {
+      art.innerHTML = marked.parse(D.readme);
+    } else {
+      art.append(el('pre', { text: D.readme }));
     }
-  ],
-  "paths": {
-    "/v1/indicadores": {
-      "post": {
-        "operationId": "reportes-ejecutivos-ms.ReportesControlador.registrarIndicador",
-        "summary": "Registrar indicador",
-        "tags": [
-          "ReportesControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IndicadorRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('DIRECCION')",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegistrarIndicadorPeticion"
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "operationId": "reportes-ejecutivos-ms.ReportesControlador.consultarIndicadores",
-        "summary": "Consultar indicadores",
-        "tags": [
-          "ReportesControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IndicadorRespuesta"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasAnyRole('DIRECCION','JEFE_AREA')",
-        "parameters": [
-          {
-            "name": "area",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Area"
-            }
-          },
-          {
-            "name": "periodo",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/reportes/{id}/exportacion": {
-      "get": {
-        "operationId": "reportes-ejecutivos-ms.ReportesControlador.exportar",
-        "summary": "Exportar",
-        "tags": [
-          "ReportesControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "description": "byte[]"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('DIRECCION')",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "formato",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/reportes/{periodo}": {
-      "get": {
-        "operationId": "reportes-ejecutivos-ms.ReportesControlador.consultarReporte",
-        "summary": "Consultar reporte",
-        "tags": [
-          "ReportesControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReporteRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasAnyRole('DIRECCION','JEFE_AREA')",
-        "parameters": [
-          {
-            "name": "periodo",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/reportes/{periodo}/cierre": {
-      "post": {
-        "operationId": "reportes-ejecutivos-ms.ReportesControlador.cerrarReporte",
-        "summary": "Cerrar reporte",
-        "tags": [
-          "ReportesControlador"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReporteRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "description": "Roles requeridos: hasRole('DIRECCION')",
-        "parameters": [
-          {
-            "name": "periodo",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
+    art.querySelectorAll('pre > code.language-mermaid').forEach(function (code) {
+      const m = el('div', { class: 'mermaid' });
+      m.dataset.src = code.textContent;
+      code.parentElement.replaceWith(m);
+    });
+    panel.append(art);
+  }
+
+  function pintarPermisos() {
+    const panel = $('[data-panel="permisos"]');
+    panel.append(el('h2', { class: 'subtitulo', text: 'Roles detectados' }));
+    panel.append(el('p', {}, chips(D.info.roles, 'Ninguno detectado')));
+    if (!D.permisos.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene reglas de acceso por endpoint.' }));
+      return;
     }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+    const cabeza = el('tr', {}, ['Método', 'Ruta', 'Operación', 'Regla de acceso'].map(function (t) {
+      return el('th', { text: t });
+    }));
+    const cuerpo = el('tbody');
+    D.permisos.forEach(function (p) {
+      cuerpo.append(el('tr', {}, [
+        el('td', {}, [el('span', { class: 'verbo', text: p.verbo })]),
+        el('td', { text: p.ruta }),
+        el('td', { text: p.operacion }),
+        el('td', { text: p.roles || 'Solo autenticación (sin @PreAuthorize)' })
+      ]));
+    });
+    const tabla = el('table', {}, [el('thead', {}, [cabeza]), cuerpo]);
+    panel.append(el('div', { class: 'tabla-wrap' }, [tabla]));
+  }
+
+  function pintarDiagramas() {
+    const panel = $('[data-panel="diagramas"]');
+    if (!D.diagramas.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene carpeta docs/diagramas.' }));
+      return;
+    }
+    const grid = el('div', { class: 'grid-diag' });
+    D.diagramas.forEach(function (d) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: d.titulo }));
+      if (d.imagen) {
+        const img = el('img', { src: d.imagen, alt: d.titulo, loading: 'lazy' });
+        img.onerror = function () {
+          img.replaceWith(el('p', { class: 'aviso', text: 'No se pudo mostrar la imagen. Usa el enlace de abajo para abrir el archivo.' }));
+        };
+        tarjeta.append(el('a', { href: d.imagen, target: '_blank', rel: 'noopener', class: 'abrir', title: 'Abrir archivo' }, [img]));
+      } else if (d.codigo) {
+        const m = el('div', { class: 'mermaid' });
+        m.dataset.src = d.codigo;
+        tarjeta.append(m);
       }
-    },
-    "schemas": {
-      "RegistrarIndicadorPeticion": {
-        "type": "object",
-        "properties": {
-          "area": {
-            "$ref": "#/components/schemas/Area"
-          },
-          "nombre": {
-            "type": "string"
-          },
-          "periodo": {
-            "type": "string"
-          },
-          "valor": {
-            "type": "number"
-          },
-          "fuenteActualizadaUtc": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "Area": {
-        "type": "object",
-        "properties": {
-          "etiqueta": {
-            "type": "string"
-          }
-        }
-      },
-      "IndicadorRespuesta": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "area": {
-            "$ref": "#/components/schemas/Area"
-          },
-          "nombre": {
-            "type": "string"
-          },
-          "valor": {
-            "type": "number"
-          },
-          "periodo": {
-            "type": "string"
-          },
-          "fuenteActualizadaUtc": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "desactualizado": {
-            "type": "boolean"
-          }
-        }
-      },
-      "ReporteRespuesta": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "periodo": {
-            "type": "string"
-          },
-          "estatus": {
-            "$ref": "#/components/schemas/EstatusReporte"
-          },
-          "creadoUtc": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "cerradoUtc": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "indicadores": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/IndicadorConsolidadoRespuesta"
-            }
-          }
-        }
-      },
-      "EstatusReporte": {
-        "type": "object",
-        "properties": {}
-      },
-      "IndicadorConsolidadoRespuesta": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "area": {
-            "$ref": "#/components/schemas/Area"
-          },
-          "nombre": {
-            "type": "string"
-          },
-          "valor": {
-            "type": "number"
-          },
-          "fuenteActualizadaUtc": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "desactualizado": {
-            "type": "boolean"
-          }
-        }
+      const pie = el('div', { class: 'pie' });
+      d.archivos.forEach(function (a, idx) {
+        if (idx) pie.append(' · ');
+        pie.append(el('a', { href: a, target: '_blank', rel: 'noopener', text: a.split('/').pop() }));
+      });
+      tarjeta.append(pie);
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
+  async function renderMermaidIn(raiz) {
+    if (!raiz) return;
+    for (const nodo of raiz.querySelectorAll('.mermaid')) {
+      if (nodo.dataset.ok) continue;
+      const src = nodo.dataset.src || '';
+      if (!window.mermaid) {
+        nodo.replaceChildren(el('pre', { text: src }));
+        continue;
+      }
+      try {
+        const salida = await mermaid.render('m' + Math.random().toString(36).slice(2), src);
+        nodo.innerHTML = salida.svg;
+        nodo.dataset.ok = '1';
+      } catch (e) {
+        nodo.replaceChildren(
+          el('p', { class: 'aviso', text: 'No se pudo renderizar este diagrama. Se muestra el código fuente:' }),
+          el('pre', { text: src }));
       }
     }
   }
-}
-</script>
-<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
-<script>
-window.onload = function () {
-  window.ui = SwaggerUIBundle({
-    spec: JSON.parse(document.getElementById("spec").textContent),
-    dom_id: "#swagger-ui",
-    deepLinking: true,
-    persistAuthorization: true
-  });
-};
+
+  function pintarTecnologias() {
+    const panel = $('[data-panel="tecnologias"]');
+    panel.append(el('p', { class: 'aviso', text: 'Herramientas de calidad y pruebas que el pom.xml de este servicio aplica. Las marcadas como no aplicadas no están configuradas.' }));
+    const grid = el('div', { class: 'grid-diag' });
+    D.tecnologias.forEach(function (t) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: t.nombre }));
+      tarjeta.append(el('p', { class: 'aviso', text: t.resumen }));
+      if (t.aplicado) {
+        tarjeta.append(el('a', { href: t.archivo, class: 'chip', text: 'Ver detalle →' }));
+      } else {
+        tarjeta.append(el('span', { class: 'chip', text: 'No aplicado' }));
+      }
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
+  let swaggerListo = false;
+  function iniciarSwagger() {
+    if (swaggerListo || !SPEC || !window.SwaggerUIBundle) return;
+    swaggerListo = true;
+    window.ui = SwaggerUIBundle({ spec: SPEC, dom_id: '#swagger-ui', deepLinking: false, persistAuthorization: true });
+  }
+
+  function pintarApi() {
+    if (SPEC) return;
+    $('[data-panel="api"]').replaceChildren(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene Swagger.' }));
+    $('[data-tab="api"]').hidden = true;
+  }
+
+  const botones = Array.from(document.querySelectorAll('[role="tab"]'));
+  function activar(nombre, cambiarHash) {
+    if (nombre === 'api' && !SPEC) nombre = 'info';
+    botones.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === nombre)); });
+    document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== nombre; });
+    if (nombre === 'readme' || nombre === 'diagramas') renderMermaidIn(document.querySelector('[data-panel="' + nombre + '"]'));
+    if (nombre === 'api') iniciarSwagger();
+    if (cambiarHash) { try { history.replaceState(null, '', '#' + nombre); } catch (e) {} }
+  }
+  botones.forEach(function (b) { b.addEventListener('click', function () { activar(b.dataset.tab, true); }); });
+
+  pintarInfo();
+  pintarReadme();
+  pintarPermisos();
+  pintarDiagramas();
+  pintarApi();
+  pintarTecnologias();
+  const inicial = location.hash.slice(1);
+  activar(['info', 'readme', 'permisos', 'diagramas', 'tecnologias', 'api'].indexOf(inicial) >= 0 ? inicial : 'info', false);
+})();
 </script>
 </body>
 </html>

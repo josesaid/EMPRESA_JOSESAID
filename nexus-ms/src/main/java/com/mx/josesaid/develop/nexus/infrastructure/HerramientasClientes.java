@@ -34,6 +34,7 @@ public final class HerramientasClientes {
     private static final Pattern RFC = Pattern.compile("[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}");
     private static final Pattern MES = Pattern.compile("\\d{4}-\\d{2}");
     private static final Set<String> ROLES_CONTACTO = Set.of("COMPRAS", "PAGOS", "ASISTENCIA");
+    private static final Set<String> ESTATUS_CLIENTE = Set.of("ACTIVO", "SUSPENDIDO", "BAJA");
     private static final ObjectMapper JSON = new ObjectMapper();
 
     private final RestClient gateway;
@@ -232,6 +233,34 @@ public final class HerramientasClientes {
                 + (esPrincipal ? ", como principal" : "");
         return guardarAccion(AccionesPendientes.TIPO_CLIENTE_CONTACTO_AGREGAR, cuerpo, resumen,
                 "Alta de contacto preparada, no agregada.");
+    }
+
+    @Tool(name = "cambiar_estatus_cliente",
+          description = "Prepara el cambio de estatus de un cliente a ACTIVO, SUSPENDIDO o BAJA. NO lo cambia: "
+                  + "devuelve un resumen y un accion_id. El usuario debe confirmarlo en la aplicación. Solo ADMIN puede usarla.")
+    public String cambiarEstatusCliente(
+            @ToolParam(description = "Identificador UUID del cliente", required = true) String clienteId,
+            @ToolParam(description = "Nuevo estatus: ACTIVO, SUSPENDIDO o BAJA", required = true) String estatus) {
+        RegistroHerramientasUsadas.registrar("cambiar_estatus_cliente");
+        if (acciones == null) {
+            return NO_DISPONIBLE;
+        }
+        UUID id = identificador(clienteId);
+        if (id == null) {
+            return "El identificador del cliente no es válido.";
+        }
+        String nuevo = estatus == null ? "" : estatus.trim().toUpperCase();
+        if (!ESTATUS_CLIENTE.contains(nuevo)) {
+            return "El estatus debe ser ACTIVO, SUSPENDIDO o BAJA.";
+        }
+        if (!existeCliente(id)) {
+            return NO_ENCONTRADO_CLIENTE;
+        }
+        Map<String, Object> cuerpo = new LinkedHashMap<>();
+        cuerpo.put("clienteId", id.toString());
+        cuerpo.put("estatus", nuevo);
+        return guardarAccion(AccionesPendientes.TIPO_CLIENTE_ESTATUS, cuerpo,
+                "Cambiar estatus del cliente " + id + " a " + nuevo, "Cambio preparado, no ejecutado.");
     }
 
     private String guardarAccion(String tipo, Map<String, Object> cuerpo, String resumen, String encabezado) {

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${titulo} + ' · EMPRESA_JOSESAID'">EMPRESA_JOSESAID</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         .barra-lateral { width: 250px; min-height: 100vh; }
         .panel-ia { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); width: fit-content; min-width: min(336px, calc(100vw - 32px)); max-width: min(672px, calc(100vw - 32px)); max-height: 36vh; overflow-y: auto; z-index: 1030; }
@@ -16,6 +17,12 @@
         .barra-cafe { background-color: #7c4a2d; }
         .barra-rosa { background-color: #be185d; }
         .contenido { min-width: 0; }
+        .barra-lateral .item-menu { display: flex; align-items: center; gap: .65rem; padding: .5rem .75rem; border-radius: .6rem; transition: background-color .15s, transform .15s; }
+        .barra-lateral .item-menu:hover { background-color: rgba(255,255,255,.14); transform: translateX(2px); }
+        .barra-lateral .item-menu.active { background-color: rgba(255,255,255,.22); font-weight: 600; box-shadow: inset 3px 0 0 #fff; }
+        .barra-lateral .item-menu i { font-size: 1.05rem; width: 1.25rem; text-align: center; opacity: .92; }
+        .barra-lateral .titulo-seccion { display: flex; align-items: center; gap: .5rem; margin: 1.1rem .75rem .35rem; font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: rgba(255,255,255,.62); }
+        .barra-lateral .titulo-seccion i { font-size: .9rem; }
         .table-responsive { max-width: 100%; }
         @media (max-width: 767.98px) {
             .barra-lateral { width: 100%; min-height: 0; }
@@ -27,44 +34,44 @@
     <aside class="barra-lateral text-light p-3 flex-shrink-0" th:classappend="${'barra-' + colorBarra}">
         <a class="d-block fw-bold text-white text-decoration-none mb-3" th:href="@{/}">EMPRESA_JOSESAID</a>
         <nav class="nav flex-column gap-1 small">
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'inicio'} ? 'active' : ''" th:href="@{/}">Inicio</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'asistente'} ? 'active' : ''" th:href="@{/asistente}">Asistente Nexus</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'agiliza'} ? 'active' : ''" th:href="@{/agiliza-ia}">Agiliza con IA</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'inicio'} ? 'active' : ''" th:href="@{/}"><i class="bi bi-house" aria-hidden="true"></i>Inicio</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'asistente'} ? 'active' : ''" th:href="@{/asistente}"><i class="bi bi-robot" aria-hidden="true"></i>Asistente Nexus</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'agiliza'} ? 'active' : ''" th:href="@{/agiliza-ia}"><i class="bi bi-stars" aria-hidden="true"></i>Agiliza con IA</a>
 
-            <p class="text-uppercase text-secondary mt-3 mb-1">Comercial</p>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'clientes'} ? 'active' : ''" th:href="@{/clientes}">Clientes</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'pedidos'} ? 'active' : ''" th:href="@{/ventas/pedidos}">Pedidos</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'metricas'} ? 'active' : ''" th:href="@{/ventas/metricas}">Métricas de ventas</a>
+            <p class="titulo-seccion"><i class="bi bi-briefcase" aria-hidden="true"></i>Comercial</p>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'clientes'} ? 'active' : ''" th:href="@{/clientes}"><i class="bi bi-people" aria-hidden="true"></i>Clientes</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'pedidos'} ? 'active' : ''" th:href="@{/ventas/pedidos}"><i class="bi bi-bag" aria-hidden="true"></i>Pedidos</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'metricas'} ? 'active' : ''" th:href="@{/ventas/metricas}"><i class="bi bi-graph-up" aria-hidden="true"></i>Métricas de ventas</a>
 
-            <p class="text-uppercase text-secondary mt-3 mb-1">Compras</p>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'proveedores'} ? 'active' : ''" th:href="@{/compras/proveedores}">Proveedores</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'ordenes'} ? 'active' : ''" th:href="@{/compras/ordenes}">Órdenes de compra</a>
+            <p class="titulo-seccion"><i class="bi bi-cart3" aria-hidden="true"></i>Compras</p>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'proveedores'} ? 'active' : ''" th:href="@{/compras/proveedores}"><i class="bi bi-truck" aria-hidden="true"></i>Proveedores</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'ordenes'} ? 'active' : ''" th:href="@{/compras/ordenes}"><i class="bi bi-receipt" aria-hidden="true"></i>Órdenes de compra</a>
 
-            <p class="text-uppercase text-secondary mt-3 mb-1">Inventario</p>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'existencias'} ? 'active' : ''" th:href="@{/inventario/existencias}">Existencias</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'bajo-minimo'} ? 'active' : ''" th:href="@{/inventario/bajo-minimo}">Bajo mínimo</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'movimientos'} ? 'active' : ''" th:href="@{/inventario/movimientos}">Movimientos</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'trazabilidad'} ? 'active' : ''" th:href="@{/inventario/trazabilidad}">Trazabilidad de lote</a>
+            <p class="titulo-seccion"><i class="bi bi-box-seam" aria-hidden="true"></i>Inventario</p>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'existencias'} ? 'active' : ''" th:href="@{/inventario/existencias}"><i class="bi bi-boxes" aria-hidden="true"></i>Existencias</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'bajo-minimo'} ? 'active' : ''" th:href="@{/inventario/bajo-minimo}"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i>Bajo mínimo</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'movimientos'} ? 'active' : ''" th:href="@{/inventario/movimientos}"><i class="bi bi-arrow-left-right" aria-hidden="true"></i>Movimientos</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'trazabilidad'} ? 'active' : ''" th:href="@{/inventario/trazabilidad}"><i class="bi bi-qr-code-scan" aria-hidden="true"></i>Trazabilidad de lote</a>
 
-            <p class="text-uppercase text-secondary mt-3 mb-1">Finanzas</p>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'cuentas'} ? 'active' : ''" th:href="@{/cuentas}">Cuentas contables</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'polizas'} ? 'active' : ''" th:href="@{/polizas}">Pólizas</a>
-            <a class="nav-link text-light rounded" th:href="@{/polizas/nueva}">Proponer póliza</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'estados'} ? 'active' : ''" th:href="@{/contabilidad/estados-financieros}">Estados financieros</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'comprobantes'} ? 'active' : ''" th:href="@{/facturacion/comprobantes}">Comprobantes</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'pendientes-cobro'} ? 'active' : ''" th:href="@{/facturacion/pendientes-cobro}">Pendientes de cobro</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'pagos-proveedor'} ? 'active' : ''" th:href="@{/facturacion/pagos-proveedor}">Pagos a proveedores</a>
+            <p class="titulo-seccion"><i class="bi bi-cash-stack" aria-hidden="true"></i>Finanzas</p>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'cuentas'} ? 'active' : ''" th:href="@{/cuentas}"><i class="bi bi-journal-text" aria-hidden="true"></i>Cuentas contables</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'polizas'} ? 'active' : ''" th:href="@{/polizas}"><i class="bi bi-file-earmark-text" aria-hidden="true"></i>Pólizas</a>
+            <a class="nav-link text-light rounded item-menu" th:href="@{/polizas/nueva}"><i class="bi bi-plus-square" aria-hidden="true"></i>Proponer póliza</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'estados'} ? 'active' : ''" th:href="@{/contabilidad/estados-financieros}"><i class="bi bi-bar-chart-line" aria-hidden="true"></i>Estados financieros</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'comprobantes'} ? 'active' : ''" th:href="@{/facturacion/comprobantes}"><i class="bi bi-file-earmark-check" aria-hidden="true"></i>Comprobantes</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'pendientes-cobro'} ? 'active' : ''" th:href="@{/facturacion/pendientes-cobro}"><i class="bi bi-cash-coin" aria-hidden="true"></i>Pendientes de cobro</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'pagos-proveedor'} ? 'active' : ''" th:href="@{/facturacion/pagos-proveedor}"><i class="bi bi-credit-card" aria-hidden="true"></i>Pagos a proveedores</a>
 
-            <p class="text-uppercase text-secondary mt-3 mb-1">Cumplimiento</p>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'documentos'} ? 'active' : ''" th:href="@{/documentos}">Documentos</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'por-vencer'} ? 'active' : ''" th:href="@{/documentos/por-vencer}">Por vencer</a>
+            <p class="titulo-seccion"><i class="bi bi-shield-check" aria-hidden="true"></i>Cumplimiento</p>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'documentos'} ? 'active' : ''" th:href="@{/documentos}"><i class="bi bi-folder2-open" aria-hidden="true"></i>Documentos</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'por-vencer'} ? 'active' : ''" th:href="@{/documentos/por-vencer}"><i class="bi bi-hourglass-split" aria-hidden="true"></i>Por vencer</a>
 
-            <p class="text-uppercase text-secondary mt-3 mb-1">Dirección</p>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'indicadores'} ? 'active' : ''" th:href="@{/reportes/indicadores}">Indicadores</a>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'reporte'} ? 'active' : ''" th:href="@{/reportes/reporte}">Reporte por periodo</a>
+            <p class="titulo-seccion"><i class="bi bi-compass" aria-hidden="true"></i>Dirección</p>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'indicadores'} ? 'active' : ''" th:href="@{/reportes/indicadores}"><i class="bi bi-speedometer2" aria-hidden="true"></i>Indicadores</a>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'reporte'} ? 'active' : ''" th:href="@{/reportes/reporte}"><i class="bi bi-calendar-range" aria-hidden="true"></i>Reporte por periodo</a>
 
-            <p class="text-uppercase text-secondary mt-3 mb-1">Accesos</p>
-            <a class="nav-link text-light rounded" th:classappend="${seccion == 'usuarios'} ? 'active' : ''" th:href="@{/usuarios}">Usuarios</a>
+            <p class="titulo-seccion"><i class="bi bi-key" aria-hidden="true"></i>Accesos</p>
+            <a class="nav-link text-light rounded item-menu" th:classappend="${seccion == 'usuarios'} ? 'active' : ''" th:href="@{/usuarios}"><i class="bi bi-person-gear" aria-hidden="true"></i>Usuarios</a>
         </nav>
     </aside>
 

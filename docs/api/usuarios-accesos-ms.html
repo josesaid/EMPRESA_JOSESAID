@@ -3,707 +3,301 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>API usuarios-accesos-ms · Swagger</title>
+<title>usuarios-accesos-ms · EMPRESA_JOSESAID</title>
 <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
-<style>body{margin:0} .topbar{display:none}
-.volver{font:14px system-ui,sans-serif;padding:10px 16px;background:#1b1f24;color:#fff}
-.volver a{color:#9ecbff}</style>
+<style>
+:root{--bg:#f5f7fb;--superficie:#ffffff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:40px}
+a{color:hsl(var(--h) 70% 45%)}
+.cabecera{background:linear-gradient(135deg,hsl(var(--h) 72% 40%),hsl(calc(var(--h) + 30) 78% 26%));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 64px}
+.cabecera-in{max-width:1000px;margin:0 auto;min-width:0}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.etiqueta{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin:14px 0 10px}
+h1{margin:0 0 8px;font-size:30px;line-height:1.2;text-wrap:balance;overflow-wrap:anywhere}
+.lead{margin:0;opacity:.92;max-width:70ch}
+.pildoras{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pildora{background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;font-size:13px}
+main{max-width:1000px;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));min-width:0}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:6px;box-shadow:0 6px 20px var(--sombra)}
+nav.tabs button{flex:1 0 auto;border:0;background:transparent;color:var(--muted);font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:10px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:hsl(var(--h) 80% 50% / .14);color:hsl(var(--h) 70% 35%)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}}
+:root[data-theme="dark"] nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}
+.panel{margin-top:18px;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;box-shadow:0 6px 20px var(--sombra);min-width:0}
+[hidden]{display:none!important}
+dl.datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 24px;margin:0}
+dl.datos dt{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+dl.datos dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
+.chip{display:inline-block;font:600 12px ui-monospace,monospace;background:hsl(var(--h) 80% 50% / .16);color:hsl(var(--h) 70% 35%);border-radius:6px;padding:3px 8px;margin:2px 4px 2px 0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip{color:hsl(var(--h) 90% 78%)}}
+:root[data-theme="dark"] .chip{color:hsl(var(--h) 90% 78%)}
+.subtitulo{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--linea);vertical-align:top;overflow-wrap:anywhere}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.verbo{font:700 12px ui-monospace,monospace;border-radius:6px;padding:3px 7px;background:hsl(var(--h) 80% 50% / .18);color:hsl(var(--h) 70% 35%)}
+.md{overflow-wrap:anywhere;max-width:100%}
+.md img{max-width:100%;height:auto}
+.md pre{overflow-x:auto;background:rgba(127,127,127,.12);padding:12px;border-radius:10px}
+.md table{display:block;overflow-x:auto}
+.md h1,.md h2,.md h3{line-height:1.25}
+.grid-diag{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:16px}
+.diag{border:1px solid var(--linea);border-radius:12px;padding:12px;background:var(--bg);min-width:0}
+.diag h3{font-size:15px;margin:0 0 8px;overflow-wrap:anywhere}
+.diag a.abrir{display:block;text-align:center}
+.diag img{max-width:100%;height:auto;border-radius:8px;background:#fff}
+.diag .mermaid{overflow-x:auto;text-align:center}
+.diag .pie{font-size:13px;margin-top:8px;overflow-wrap:anywhere}
+.aviso{color:var(--muted)}
+#swagger-ui{max-width:100%;overflow-x:auto}
+.swagger-ui .topbar{display:none}
+</style>
 </head>
-<body>
-<div class="volver"><a href="index.html">← Índice de servicios</a> · usuarios-accesos-ms</div>
-<div id="swagger-ui"></div>
-<script type="application/json" id="spec">
-{
-  "openapi": "3.0.3",
-  "info": {
-    "title": "API usuarios-accesos-ms",
-    "version": "0.1.0",
-    "description": "Servicio de identidad de EMPRESA_JOSESAID. Autentica usuarios, emite tokens JWT, administra roles y permisos, y registra eventos de seguridad."
-  },
-  "servers": [
-    {
-      "url": "/",
-      "description": "Ruta relativa del servicio"
+<body style="--h:73">
+<header class="cabecera">
+  <div class="cabecera-in">
+    <a class="volver" href="index.html">← Todos los microservicios</a>
+    <div><span class="etiqueta">Microservicio</span></div>
+    <h1 id="titulo">usuarios-accesos-ms</h1>
+    <p class="lead" id="descr"></p>
+    <div class="pildoras" id="pildoras"></div>
+  </div>
+</header>
+<main>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" data-tab="info" aria-selected="true">Información</button>
+    <button role="tab" data-tab="readme" aria-selected="false">README</button>
+    <button role="tab" data-tab="permisos" aria-selected="false">Roles y permisos</button>
+    <button role="tab" data-tab="diagramas" aria-selected="false">Diagramas</button>
+    <button role="tab" data-tab="tecnologias" aria-selected="false">Calidad y tecnologías</button>
+    <button role="tab" data-tab="api" aria-selected="false">API (Swagger)</button>
+  </nav>
+  <section class="panel" data-panel="info"></section>
+  <section class="panel" data-panel="readme" hidden></section>
+  <section class="panel" data-panel="permisos" hidden></section>
+  <section class="panel" data-panel="diagramas" hidden></section>
+  <section class="panel" data-panel="tecnologias" hidden></section>
+  <section class="panel" data-panel="api" hidden><div id="swagger-ui"></div></section>
+</main>
+<script type="application/json" id="datos">{"svc": "usuarios-accesos-ms", "info": {"nombre": "usuarios-accesos-ms", "descripcion": "Identidad, autenticación JWT, roles y permisos para todo el sistema.", "puerto": "8081", "java": "21", "spring_boot": "4.1.2", "endpoints": 12, "roles": []}, "readme": "# usuarios-accesos-ms\n\nServicio de identidad de EMPRESA_JOSESAID. Autentica usuarios, emite tokens JWT, administra roles y permisos, y registra eventos de seguridad.\n\n## 1. Identidad\n| Campo | Valor |\n|---|---|\n| Nombre | usuarios-accesos-ms |\n| Artefacto Maven | com.mx.josesaid.develop:usuarios-accesos-ms:0.1.0-SNAPSHOT |\n| Paquete base | com.mx.josesaid.develop.usuarios_accesos |\n| Lenguaje | Java 21 |\n| Framework | Spring Boot 4.1.2 |\n| Base de datos | PostgreSQL 17 (esquema `usuarios_accesos`) |\n| Mensajería | Kafka, tópico `usuarios-accesos.eventos` |\n| Seguridad | OAuth2 resource server, JWT RS256 |\n| Puerto | 8081 interno. No se publica en el host; se accede por el gateway (8080) |\n\n## 2. Propósito y alcance\n- **Hace:** login, emisión de JWT, alta de usuarios, asignación de roles, baja, bloqueo por intentos fallidos.\n- **No hace:** lógica de negocio de otras áreas, ni acceso de clientes externos.\n- **Lo consumen:** todos los servicios de EMPRESA_JOSESAID, que validan el token que emite este servicio.\n\n## 3. Estructura del repositorio\n```\nusuarios-accesos-ms/\n├── pom.xml                  Dependencias y plugins Maven\n├── Dockerfile               Imagen multietapa (Maven + JRE 21), usuario no root\n├── docker-compose.yml       Servicio con comentarios; se incluye desde la raíz\n├── .env.example             Variables necesarias (copiar a .env)\n├── docs/diseno.md           Documento de diseño\n└── src/main/java/.../usuarios_accesos/\n    ├── domain/              Reglas de negocio, sin dependencias de Spring\n    ├── application/         Casos de uso y puertos\n    ├── infrastructure/      JPA, outbox, Kafka, JWT\n    ├── api/                 Controladores REST y errores\n    └── config/              Seguridad, reloj UTC, propiedades\n```\n**Reglas de dependencia:** `api` → `application` → `domain`. `infrastructure` implementa los puertos de `application` y `domain`. `domain` no importa nada de las otras capas.\n\n## 4. Requisitos\n- JDK 21 (verificado con 21.0.x).\n- Maven 3.9 o superior.\n- Docker 24 o superior y Docker Compose 2.20 o superior (para ejecutar con PostgreSQL y Kafka).\n\n## 5. Configuración\n| Variable | Obligatoria | Por defecto | Descripción |\n|---|---|---|---|\n| DB_URL | Sí | jdbc:postgresql://localhost:5432/usuarios_accesos | URL de PostgreSQL |\n| DB_USER | Sí | usuarios_accesos | Usuario de base de datos |\n| DB_PASSWORD | Sí | (vacío) | Contraseña de base de datos |\n| KAFKA_BOOTSTRAP | No | localhost:9092 | Servidores de Kafka |\n| `USUARIOS_JWT_CLAVE_PRIVADA` | Sí | Clave RSA privada (PKCS#8 en Base64) para firmar tokens |\n| JWT_DURACION | No | PT15M | Vida del token (ISO-8601) |\n| JWT_EMISOR | No | usuarios-accesos-ms | Claim `iss` |\n| OUTBOX_INTERVALO_MS | No | 5000 | Frecuencia de envío de eventos pendientes |\n| ADMIN_INICIAL_CORREO | No | (vacío) | Si se define, crea un ADMIN al arrancar si no existe |\n| ADMIN_INICIAL_PASSWORD | No | (vacío) | Contraseña del administrador inicial. Cámbiala después |\n| SERVER_PORT | No | 8081 | Puerto HTTP |\n\n**Generar una clave JWT:** `openssl rand -base64 48`.\n\n**Advertencia:** si cambias `JWT_CLAVE_PRIVADA`, los tokens emitidos quedan inválidos y la clave pública cambia en `/.well-known/jwks.json`. Al rotar, los servicios toman la nueva clave al reintentar la validación.\n\n## 6. Ejecución\n**Con todo el ecosistema (recomendado):** desde la raíz de EMPRESA_JOSESAID.\n```bash\ndocker network create empresa-net   # solo la primera vez\ndocker compose up -d postgres kafka  # 1) infraestructura primero\ndocker compose up -d usuarios-accesos-ms  # 2) luego este servicio\n```\n\n**Orden de arranque:** PostgreSQL y Kafka antes que usuarios-accesos-ms. Si el servicio arranca antes de que la base esté lista, falla y se reintenta solo por `restart: unless-stopped`.\n\n**Solo este servicio (con infraestructura ya levantada):**\n```bash\ndocker compose up -d --build\n```\n\n**Localmente, con Maven** (requiere PostgreSQL y Kafka accesibles):\n```bash\nexport DB_PASSWORD=... JWT_CLAVE_PRIVADA=...\nmvn spring-boot:run\n```\n\n**Verificar salud:**\n```bash\n# El gateway bloquea /actuator (404). Desde dentro de empresa-net:\ncurl -s http://usuarios-accesos-ms:8081/actuator/health\n```\n\n## 7. Modelo de datos\n| Tabla | Columna | Tipo | Restricción | Notas |\n|---|---|---|---|---|\n| usuarios | id | UUID | PK | |\n| usuarios | correo | VARCHAR(254) | UNIQUE, NOT NULL | Normalizado a minúsculas |\n| usuarios | nombre_completo | VARCHAR(200) | NOT NULL | Enmascarado en respuestas |\n| usuarios | password_hash | VARCHAR(100) | NOT NULL | BCrypt |\n| usuarios | estatus | VARCHAR(20) | CHECK ACTIVO, BLOQUEADO, BAJA | |\n| usuarios | intentos_fallidos | INTEGER | CHECK >= 0 | |\n| usuarios | bloqueado_hasta | TIMESTAMPTZ | | |\n| usuarios | version | BIGINT | | Concurrencia optimista |\n| usuarios | creado_utc, actualizado_utc | TIMESTAMPTZ | NOT NULL | UTC |\n| usuario_roles | (usuario_id, rol) | UUID, VARCHAR(30) | PK, FK a usuarios | CHECK sobre los 10 roles |\n| outbox_eventos | id | UUID | PK | |\n| outbox_eventos | payload | TEXT | NOT NULL | Sobre JSON del evento |\n| outbox_eventos | publicado_utc | TIMESTAMPTZ | | NULL = pendiente |\n\nÍndice parcial `idx_outbox_pendientes` sobre eventos pendientes.\n\n**Columnas cifradas:** `correo` y `nombre_completo` (ver sección 10). Al arrancar, `MigracionCifradoUsuarios` cifra los usuarios anteriores a la migración V5.\n\n## 8. Migraciones\n- Flyway ejecuta los scripts de `src/main/resources/db/migration` al arrancar.\n- Nombre: `V<n>__descripcion.sql`. Cada cambio es una migración nueva; no se editan las existentes.\n- Hibernate solo valida el esquema (`ddl-auto: validate`).\n\n## 9. Máquinas de estado\n**Estatus del usuario:**\n- `ACTIVO → BLOQUEADO` al quinto intento fallido consecutivo. El bloqueo dura 5 minutos y luego la cuenta vuelve a `ACTIVO`. Un login correcto reinicia el contador de intentos fallidos.\n- `ACTIVO` o `BLOQUEADO → BAJA` con el endpoint de baja.\n- `BAJA` es final. Transiciones prohibidas: cualquier cambio desde `BAJA`.\n\n**Idempotencia:** dar de baja un usuario ya dado de baja devuelve 422. Asignar los mismos roles de nuevo sí se acepta y genera un evento.\n\n## 10. Seguridad\n**Flujo:**\n1. El cliente envía correo y contraseña a `POST /v1/auth/login`.\n2. Si son correctos, recibe un JWT firmado con RS256 y válido por `JWT_DURACION`.\n3. Cada petición posterior envía `Authorization: Bearer <token>`.\n\n**Ejemplo de token (decodificado):**\n```json\n{ \"iss\": \"usuarios-accesos-ms\", \"sub\": \"7f3c...\", \"roles\": [\"ADMIN\"], \"exp\": 1761750000 }\n```\n\n**Roles:**\n\n| Rol | Permisos en este servicio |\n|---|---|\n| ADMIN | Crear, consultar, asignar roles y dar de baja usuarios |\n| Otros roles | Sin acceso a los endpoints de administración; su token es válido en otros servicios |\n\nRoles retirados y su reemplazo: VENDEDOR y GERENTE_VENTAS pasaron a VENTAS; ADMIN_CLIENTES a ADMIN; RESPONSABLE_PROTECCION_DATOS a LEGAL.\n\n**Respuestas:**\n- 401: token ausente, inválido o credenciales incorrectas.\n- 403: token válido sin el rol requerido.\n\n**Datos personales:** correo y nombre se enmascaran en las respuestas. Nunca se registran en logs.\n\n**Cifrado:** `correo` y `nombre_completo` se guardan con AES-256-GCM. El correo se busca por un índice HMAC-SHA256 en `correo_indice`. Claves: `USUARIOS_CIFRADO_CLAVE` y `USUARIOS_INDICE_CLAVE` (32 bytes en Base64). Los valores cifrados llevan prefijo `v<N>:` con la versión de la clave; los anteriores, sin prefijo, son la versión 1. Para rotar: `USUARIOS_CIFRADO_CLAVES` (`N:base64,N:base64`) y `USUARIOS_CIFRADO_VERSION_ACTIVA`.\n\n## 11. API\nDocumentación completa de endpoints en `docs/diseno.md`.\n\n**Ejemplo de login:**\n```bash\ncurl -s -X POST http://localhost:8080/usuarios-accesos-ms/v1/auth/login \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"correo\":\"admin@empresa.mx\",\"password\":\"tu-clave\"}'\n```\n\n**Ejemplo de alta (requiere token de ADMIN):**\n```bash\ncurl -s -X POST http://localhost:8080/usuarios-accesos-ms/v1/usuarios \\\n  -H \"Authorization: Bearer $TOKEN\" -H 'Content-Type: application/json' \\\n  -d '{\"correo\":\"ana@empresa.mx\",\"nombreCompleto\":\"Ana Ruiz\",\"password\":\"clave-nueva-1\",\"roles\":[\"VENTAS\"]}'\n```\n\n**Formato de error (RFC 9457):**\n```json\n{ \"type\": \"urn:josesaid:usuarios-accesos:error:credenciales-invalidas\", \"title\": \"Unauthorized\", \"status\": 401, \"detail\": \"Correo o contraseña incorrectos\" }\n```\nTipos: `credenciales-invalidas` (401), `cuenta-bloqueada` (423), `no-encontrado` (404), `conflicto` (409), `regla-de-negocio` (422), `datos-invalidos` (400).\n\n## 12. Reglas de duplicados\n- Un correo no puede repetirse. Se compara normalizado a minúsculas.\n- Si ya existe, la alta devuelve 409 con el mensaje \"Ya existe un usuario con ese correo\".\n\n## 13. Eventos\n| Evento | Cuándo | Tópico | Clave | Payload |\n|---|---|---|---|---|\n| usuario-bloqueado | Quinto intento fallido | usuarios-accesos.eventos | usuarioId | tipo, agregadoId, datos{usuarioId, intentosFallidos} |\n| rol-asignado | Cambio de roles | usuarios-accesos.eventos | usuarioId | tipo, agregadoId, datos{usuarioId, rolesAnteriores, rolesNuevos, motivo} |\n\n**Garantías:** al menos una vez (el consumidor debe ser idempotente). Orden por usuario, gracias a la clave.\n\n**Si Kafka cae:** los eventos quedan en `outbox_eventos` y se envían cuando Kafka regresa.\n\n**Ver pendientes:**\n```sql\nSELECT tipo, creado_utc, intentos FROM outbox_eventos WHERE publicado_utc IS NULL ORDER BY creado_utc;\n```\n\n## 14. Outbox\n- Intervalo: `OUTBOX_INTERVALO_MS` (5 s por defecto).\n- Lote: hasta 100 eventos por ciclo.\n- Reintentos: el evento fallido se reintenta en el siguiente ciclo. El envío se detiene en el primer fallo para conservar el orden.\n- Revisar eventos atascados: la consulta de la sección 13. Si `intentos` crece, revisar Kafka.\n\n## 15. Observabilidad\n**Endpoints de Actuator:** `/actuator/health` (público), `/actuator/info` y `/actuator/prometheus`.\n\n**Logs:** JSON en formato ECS.\n\n**Nunca se registra:** correo, nombre, contraseña, hash ni token.\n\n**Métricas:** las de Micrometer por defecto (HTTP, JVM, HikariCP) y las de Spring Kafka. Métricas de negocio: `usuarios_altas_total`, `usuarios_bajas_total`, `usuarios_login_exitosos_total`, `usuarios_login_fallidos_total` y `usuarios_bloqueos_total`.\n\n**Trazas:** OpenTelemetry exportado por OTLP a Jaeger (`TRAZAS_OTLP_ENDPOINT`), con muestreo al 100 %.\n\n## 16. Pruebas\n| Comando | Qué ejecuta | Requiere Docker |\n|---|---|---|\n| `mvn -B test` | 17 pruebas unitarias de dominio y aplicación | No |\n| `mvn -B verify` | Unitarias y `UsuariosAccesosIT` (PostgreSQL y Kafka reales) | Sí |\n\n**Cobertura:**\n- Unitarias: bloqueo, desbloqueo, baja, roles, normalización de correo, login correcto e incorrecto, eventos.\n- Integración: login real contra PostgreSQL con Flyway, y ruta protegida sin token.\n\n## 17. Despliegue\n1. Construir la imagen: `docker compose build usuarios-accesos-ms`.\n2. Levantar con la raíz: `docker compose up -d usuarios-accesos-ms`.\n3. Verificar `/actuator/health`.\n4. Criterio de éxito del canary: errores 5xx menores a 1% durante 30 minutos (anexo de la empresa).\n\nEste servicio se despliega primero, porque emite los tokens que usan los demás.\n\n## 18. Rollback\n- Revertir la imagen a la versión anterior.\n- Las migraciones de base de datos no se eliminan; se compensan con una nueva migración.\n- Un cambio de roles o una baja incorrecta se corrige con una nueva asignación; no hay borrado físico.\n\n## 19. Solución de problemas\n| Síntoma | Causa probable | Solución |\n|---|---|---|\n| 401 en todas las rutas | No se puede leer `JWT_JWKS_URI` | Verifique que usuarios-accesos-ms esté arriba y que `/.well-known/jwks.json` responda |\n| 401 con contraseña correcta | Cuenta bloqueada o dada de baja | Revisar `estatus` y `bloqueado_hasta` en la tabla usuarios |\n| 423 Locked | Cinco intentos fallidos | Esperar 5 minutos o desbloquear desde la base de datos |\n| 403 en endpoints de usuarios | El token no tiene rol ADMIN | Iniciar sesión con un usuario ADMIN |\n| Flyway falla al arrancar | Migración con error o base de datos inconsistente | Revisar `flyway_schema_history` y la migración indicada en el log |\n| Eventos pendientes no salen | Kafka no responde | Revisar `KAFKA_BOOTSTRAP` y el estado de Kafka |\n| Error de conexión a PostgreSQL | Contraseña distinta a la de init-databases.sh | Alinear DB_PASSWORD con USUARIOS_ACCESOS_DB_PASSWORD |\n\n## 20. Decisiones y pendientes\n**Decisiones tomadas:**\n- BCrypt para contraseñas. Motivo: disponible en Spring Security sin dependencias extra. Argon2 queda pendiente.\n- Bloqueo de 5 minutos tras 5 intentos (decisión de Said Olano, 2026-11-05).\n- Administrador inicial por variables de entorno, para resolver el arranque en frío.\n\n**Pendientes (responsable: equipo de identidad):**\n- Refresh de token y cierre de sesión: implementado (ver sección Sesiones).\n- Cifrado AES-256-GCM de columnas y HMAC para búsquedas.\n- Idempotency-Key en escrituras.\n- Métricas de negocio y trazas distribuidas.\n- Registro en service discovery y API gateway (se configuran al final de la plataforma).\n\n## 21. Referencias\n- Diseño: `docs/diseno.md`.\n- Especificación del área: `area_md_specification_files/Usuarios_Accesos.md`.\n- Infraestructura compartida y README de la raíz: `../README.md`.\n\n## Descubrimiento, gateway y monitoreo\n\n- Al arrancar, `usuarios-accesos-ms` se registra en `discovery-ms` (Eureka). Después queda accesible por el gateway en `http://localhost:8080/usuarios-accesos-ms/...`.\n- **Orden de arranque:** `discovery-ms` primero. Si este servicio arranca antes, se registra solo cuando el registro esté disponible.\n- Métricas Prometheus en `/actuator/prometheus`, sin token, solo lectura.\n- Variables `EUREKA_USUARIO` y `EUREKA_PASSWORD`: obligatorias en Docker; el Compose arma la URL de registro `http://USUARIO:CLAVE@discovery-ms:8761/eureka/`. Fuera de Docker use `EUREKA_URL=http://USUARIO:CLAVE@localhost:8761/eureka/` y `EUREKA_INSTANCIA_HOST=localhost`.\n\n\n## Indicadores para reportes ejecutivos\n\nPublica un indicador mensual al tópico `indicadores-areas`, que consume `reportes-ejecutivos-ms`.\n\n- **Indicador:** `usuarios_activos` (área `ADMINISTRACION_LEGAL`).\n- **Definición:** Usuarios activos: usuarios en estatus ACTIVO en este momento. Foto del mes actual.\n- **Clave del mensaje:** `ADMINISTRACION_LEGAL|usuarios_activos|AAAA-MM`. Reportes actualiza el valor por área, nombre y periodo (upsert).\n- **Ciclo:** cada 60 minutos (solo mes actual); el primer envío ocurre a los 30 segundos.\n- **Configuración:** `INDICADORES_TOPICO`, `INDICADORES_INTERVALO_MS`, `INDICADORES_INICIO_MS`.\n- **Entrega:** no pasa por el outbox. Es una foto; si un envío falla, el siguiente ciclo lo corrige.\n- **Clase:** `PublicadorIndicadoresUsuarios`. Prueba: `mvn verify -Dit.test='PublicadorIndicadores*IT'`.\n\n\n## Rotación de la clave RS256\n\nGuía completa con diagrama: [docs/guias/03-rotar-clave-rs256.md](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/03-rotar-clave-rs256.md).\n\nusuarios-accesos-ms firma con una clave RS256 identificada por `kid` (por defecto `empresa-usuarios-1`). La clave pública se publica en `/.well-known/jwks.json`. Los servicios validan por `kid` y recargan el JWKS cuando reciben un `kid` que no conocen, así que no hace falta reiniciarlos.\n\n**Procedimiento sin cortar sesiones (dos reinicios de usuarios-accesos-ms):**\n\n1. Obtener la parte pública de la clave actual, en X.509 Base64. Ese valor va en `USUARIOS_JWT_CLAVE_PUBLICA_ANTERIOR`, y el `kid` actual en `USUARIOS_JWT_KID_ANTERIOR`:\n   `echo \"$USUARIOS_JWT_CLAVE_PRIVADA\" | base64 -d | openssl pkey -inform DER -pubout -outform DER | base64`\n2. Generar la clave nueva en PKCS#8 DER Base64 y guardarla en el gestor de secretos, nunca en el repositorio:\n   `openssl genrsa 2048 | openssl pkcs8 -topk8 -nocrypt -outform DER | base64`\n3. En el `.env` de la raíz: `USUARIOS_JWT_CLAVE_PRIVADA` con la clave nueva, `USUARIOS_JWT_KID` con un valor nuevo (por ejemplo `empresa-usuarios-2`), y `USUARIOS_JWT_CLAVE_PUBLICA_ANTERIOR` y `USUARIOS_JWT_KID_ANTERIOR` con los valores del paso 1.\n4. Reiniciar: `docker compose up -d usuarios-accesos-ms`. Desde aquí el JWKS publica las dos claves y los tokens nuevos se firman con la clave nueva.\n5. Esperar al menos 15 minutos (`JWT_DURACION`, por defecto 15 minutos) para que expiren los tokens firmados con la anterior.\n6. Quitar `USUARIOS_JWT_CLAVE_PUBLICA_ANTERIOR` y `USUARIOS_JWT_KID_ANTERIOR` del `.env` y reiniciar otra vez. El JWKS deja de publicar la clave anterior.\n\n**Efecto:** durante los pasos 4 y 5 validan tanto los tokens anteriores como los nuevos, así que las sesiones no se cortan.\n\n**Si la clave se expone:** no esperar. Rotar y quitar la anterior de inmediato; los tokens firmados con ella dejan de validarse al recargar el JWKS.\n\n**Refresh tokens:** son opacos y no dependen de la clave RS256; no cambian con la rotación.\n\n**Calendario:** por definir. Se recomienda rotar al menos una vez al año.\n\n## Área por usuario y rol JEFE_AREA\n\nCada usuario puede tener un área (`area`, texto de hasta 40 caracteres, por ejemplo `VENTAS_ATENCION_CLIENTES`). El área se asigna con `PUT /v1/usuarios/{id}/area`, body `{\"area\": \"...\", \"motivo\": \"...\"}`, solo con rol ADMIN. El motivo es obligatorio.\n\n- El rol `JEFE_AREA` exige área. No se puede asignar sin ella (422), y no se puede crear un usuario con ese rol directamente: primero se crea, luego se asigna el área y después el rol.\n- El token incluye el claim `area` cuando el usuario tiene una. reportes-ejecutivos-ms lo usa para limitar la consulta de indicadores.\n- Un usuario que ya tenía sesión abierta antes de este cambio no trae el claim hasta volver a iniciar sesión.\n- El valor de `area` debe coincidir con los nombres del enum `Area` de reportes-ejecutivos-ms. Este servicio no lo valida; si no coincide, reportes responde 403.\n- Migración `V2__area_jefe.sql`: agrega la columna `area` y amplía la restricción de roles con `JEFE_AREA`.\n- `GET /v1/usuarios/{id}` devuelve el área del usuario.\n- El valor de `area` se valida contra la lista de áreas de reportes; un valor desconocido responde 422.\n- Cada cambio de área publica el evento `area-asignada` (área anterior, área nueva y motivo), igual que el cambio de roles.\n\n## Sesiones: refresh token y cierre de sesión\n\nEl login devuelve `accessToken` (15 minutos) y `refreshToken` (opaco, 7 días desde su último uso).\n\n- `POST /v1/auth/refresh` con `{\"refreshToken\": \"...\"}` devuelve un access token y un refresh token nuevos. El anterior queda invalidado.\n- Reusar un refresh token ya rotado revoca toda la sesión: el token nuevo también deja de servir. Es la señal de que el token se copió.\n- `POST /v1/auth/logout` con `{\"refreshToken\": \"...\"}` cierra esa sesión. Es público porque basta con tener el token. Responde 204.\n- `POST /v1/auth/logout-todas` requiere access token y cierra todas las sesiones del usuario. Responde 204.\n- `POST /v1/auth/cambiar-password-inicial` con `{\"correo\", \"passwordActual\", \"passwordNueva\"}` cambia la contraseña temporal por una definitiva (mínimo 12 caracteres). Es público y responde 204. Mientras la contraseña sea temporal, el login responde 403 `cambio-password-requerido`.\n- Solo se guarda el hash SHA-256 del refresh token, en la tabla `refresh_tokens` (migración `V3__refresh_tokens.sql`).\n- Bloqueo o baja: el refresh falla porque se vuelve a verificar la cuenta. El access token ya emitido sigue válido hasta 15 minutos.\n- Al cerrar sesión, el access token de esa sesión también se revoca en todos los servicios. Ver «Revocación de access tokens» más abajo.\n\n\n## Revocación de access tokens\n\nAl cerrar sesión, el access token de esa sesión deja de servir en todos los servicios, no solo en usuarios-accesos-ms. El claim `sid` del token es la familia del refresh token, así que basta con revocar ese identificador.\n\n- `POST /v1/auth/logout` revoca la sesión y escribe `sesion-cerrada` (`sid`, `usuarioId`, `ocurridoEn`) en el outbox, en la misma transacción.\n- `POST /v1/auth/logout-todas` escribe `sesiones-usuario-cerradas` (`usuarioId`, `ocurridoEn`). Los tokens emitidos antes de ese instante dejan de servir; un login posterior sí funciona.\n- Cada servicio mantiene su copia en memoria (`RevocacionSesiones`), alimentada por `ListenerRevocaciones` desde el topic `usuarios-accesos.eventos`. `ValidadorRevocacion` la consulta en cada petición, además de firma y vencimiento.\n- La copia conserva cada revocación 20 minutos, la vida del access token más un margen. Pasado ese tiempo, ningún token revocado sigue vigente.\n\n**Flujo al cerrar sesión**\n\n![Cierre de sesión: outbox, Kafka y rechazo en el servicio de área](usuarios-accesos-ms/diagramas/01-cierre-de-sesion.png)\n\n**Validación en cada servicio**\n\n![Orden de validación: firma, sid revocado y cierre de todas las sesiones](usuarios-accesos-ms/diagramas/02-validacion-token.png)\n\n**Cerrar todas las sesiones**\n\n![Cierre de todas las sesiones del usuario](usuarios-accesos-ms/diagramas/03-cerrar-todas.png)\n\n**Ventana de consistencia**\n\n![Ventana entre el logout y la llegada del evento al servicio](usuarios-accesos-ms/diagramas/04-ventana-consistencia.png)\n\nLímites conocidos:\n\n- Entre el logout y la llegada del evento a un servicio hay una ventana de segundos en la que el token todavía se acepta (diagrama 4).\n- Las copias viven en memoria. Al arrancar, cada servicio lee de nuevo el topic desde el inicio y reconstruye las revocaciones vigentes. Esto requiere que la retención del topic sea mayor a 20 minutos; la retención por defecto de Kafka es de 7 días.\n- El gateway no revisa revocación; la rechaza el servicio destino.\n\n\n## Contraseña temporal\n\nLas cuentas dadas de alta por `POST /v1/usuarios` reciben una contraseña temporal. Mientras esté pendiente de cambio, `POST /v1/auth/login` responde `403` (`cambio-password-requerido`) y no emite tokens.\n\nPara cambiarla: `POST /v1/auth/cambiar-password-inicial` con `correo`, `passwordActual` (la temporal) y `passwordNueva` (mínimo 12 caracteres, distinta a la temporal). Responde `204`; después el usuario inicia sesión normalmente. El endpoint es público y cuenta los intentos fallidos igual que el login.\n\n## Guías paso a paso\n\nProcedimientos de este servicio, publicados en HTML:\n\n- [Ejecutar las pruebas de un servicio](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/02-ejecutar-pruebas.html)\n- [Rotar la clave RS256 sin cortar sesiones](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/03-rotar-clave-rs256.html)\n- [Dar de alta un usuario y asignarle rol y área](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/05-dar-de-alta-usuario.html)\n- [Índice de todas las guías](https://github.com/josesaid/EMPRESA_JOSESAID/blob/main/docs/guias/README.html)\n", "permisos": [{"verbo": "GET", "ruta": "/.well-known/jwks.json", "operacion": "Jwks", "roles": ""}, {"verbo": "POST", "ruta": "/v1/auth/cambiar-password-inicial", "operacion": "Cambiar password inicial", "roles": ""}, {"verbo": "POST", "ruta": "/v1/auth/login", "operacion": "Login", "roles": ""}, {"verbo": "POST", "ruta": "/v1/auth/logout", "operacion": "Cerrar", "roles": ""}, {"verbo": "POST", "ruta": "/v1/auth/logout-todas", "operacion": "Cerrar todas", "roles": ""}, {"verbo": "POST", "ruta": "/v1/auth/refresh", "operacion": "Refrescar", "roles": ""}, {"verbo": "POST", "ruta": "/v1/usuarios", "operacion": "Crear", "roles": ""}, {"verbo": "GET", "ruta": "/v1/usuarios", "operacion": "Listar", "roles": ""}, {"verbo": "GET", "ruta": "/v1/usuarios/{id}", "operacion": "Obtener", "roles": ""}, {"verbo": "PUT", "ruta": "/v1/usuarios/{id}/area", "operacion": "Asignar area", "roles": ""}, {"verbo": "POST", "ruta": "/v1/usuarios/{id}/baja", "operacion": "Dar de baja", "roles": ""}, {"verbo": "PUT", "ruta": "/v1/usuarios/{id}/roles", "operacion": "Asignar roles", "roles": ""}], "diagramas": [{"titulo": "01 cierre de sesion", "archivos": ["usuarios-accesos-ms/diagramas/01-cierre-de-sesion.mmd", "usuarios-accesos-ms/diagramas/01-cierre-de-sesion.png"], "imagen": "usuarios-accesos-ms/diagramas/01-cierre-de-sesion.png", "codigo": "sequenceDiagram\n  autonumber\n  participant C as Cliente\n  participant U as usuarios-accesos-ms\n  participant DB as PostgreSQL\n  participant K as Kafka\n  participant A as Servicio de área\n  C->>U: POST /v1/auth/logout con refreshToken\n  U->>DB: Revocar la familia del refresh token\n  U->>DB: Outbox: sesion-cerrada (sid, usuarioId, ocurridoEn)\n  Note over U,DB: Misma transacción\n  U-->>C: 204 No Content\n  U->>K: Relay del outbox publica en usuarios-accesos.eventos\n  K->>A: Listener recibe el evento\n  A->>A: RevocacionSesiones guarda el sid cerrado\n  C->>A: Access token de la sesión cerrada\n  A-->>C: 401 invalid_token\n"}, {"titulo": "02 validacion token", "archivos": ["usuarios-accesos-ms/diagramas/02-validacion-token.mmd", "usuarios-accesos-ms/diagramas/02-validacion-token.png"], "imagen": "usuarios-accesos-ms/diagramas/02-validacion-token.png", "codigo": "flowchart TD\n  R[\"Petición con Authorization: Bearer\"]:::actor --> F{\"Firma RS256 válida y no vencido?\"}:::pendiente\n  F -- \"no\" --> E1[\"401 invalid_token\"]:::alerta\n  F -- \"sí\" --> S{\"El sid pertenece a una sesión cerrada?\"}:::pendiente\n  S -- \"sí\" --> E1\n  S -- \"no\" --> T{\"Emitido antes de cerrar todas las sesiones del usuario?\"}:::pendiente\n  T -- \"sí\" --> E1\n  T -- \"no\" --> P[\"Roles convertidos en ROLE_* y evaluación de @PreAuthorize\"]:::servicio\n  P --> OK[\"Operación ejecutada\"]:::servicio\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "03 cerrar todas", "archivos": ["usuarios-accesos-ms/diagramas/03-cerrar-todas.mmd", "usuarios-accesos-ms/diagramas/03-cerrar-todas.png"], "imagen": "usuarios-accesos-ms/diagramas/03-cerrar-todas.png", "codigo": "flowchart LR\n  A[\"POST /v1/auth/logout-todas con access token\"]:::actor --> B[\"Revocar todas las familias del usuario\"]:::servicio\n  B --> C[\"Outbox: sesiones-usuario-cerradas (usuarioId, ocurridoEn)\"]:::datos\n  C --> D[\"Kafka entrega el evento a los servicios de área\"]:::datos\n  D --> E[\"Cada servicio guarda usuarioId con ocurridoEn\"]:::servicio\n  E --> F{\"Token emitido antes de ocurridoEn?\"}:::pendiente\n  F -- \"sí\" --> X[\"401: rechazado\"]:::alerta\n  F -- \"no, login posterior\" --> OK[\"Aceptado: sesión nueva\"]:::servicio\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "04 ventana consistencia", "archivos": ["usuarios-accesos-ms/diagramas/04-ventana-consistencia.mmd", "usuarios-accesos-ms/diagramas/04-ventana-consistencia.png"], "imagen": "usuarios-accesos-ms/diagramas/04-ventana-consistencia.png", "codigo": "sequenceDiagram\n  autonumber\n  participant C as Cliente\n  participant U as usuarios-accesos-ms\n  participant K as Kafka\n  participant A as Servicio de área\n  C->>U: Logout de la sesión\n  U-->>C: 204 No Content\n  Note over U,K: El evento viaja por el outbox y Kafka en segundos\n  C->>A: Token viejo antes de que llegue el evento\n  A-->>C: 200 OK (ventana de consistencia)\n  U->>K: sesion-cerrada publicado\n  K->>A: Evento entregado al listener\n  Note over A: A partir de aquí el sid está revocado localmente\n  C->>A: Token viejo después de la entrega\n  A-->>C: 401 invalid_token\n"}, {"titulo": "05 maquina de estados usuario", "archivos": ["usuarios-accesos-ms/diagramas/05-maquina-de-estados-usuario.mmd", "usuarios-accesos-ms/diagramas/05-maquina-de-estados-usuario.png"], "imagen": "usuarios-accesos-ms/diagramas/05-maquina-de-estados-usuario.png", "codigo": "flowchart LR\n  A[\"<b>Alta por ADMIN<\/b><br/>Contraseña temporal\"]:::actor --> B[\"<b>ACTIVO<\/b>\"]:::servicio\n  B -- \"quinto intento fallido\" --> C[\"<b>BLOQUEADO<\/b><br/>Dura 5 minutos\"]:::alerta\n  C -- \"pasan 5 minutos\" --> B\n  B -- \"baja\" --> D[\"<b>BAJA<\/b><br/>Estado final\"]:::datos\n  C -- \"baja\" --> D\n  D -- \"cualquier cambio\" --> X[\"<b>422<\/b><br/>Transición prohibida\"]:::alerta\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "06 reglas de duplicados", "archivos": ["usuarios-accesos-ms/diagramas/06-reglas-de-duplicados.mmd", "usuarios-accesos-ms/diagramas/06-reglas-de-duplicados.png"], "imagen": "usuarios-accesos-ms/diagramas/06-reglas-de-duplicados.png", "codigo": "flowchart TD\n  A[\"<b>POST /v1/usuarios<\/b><br/>Alta con correo\"]:::actor --> B[\"<b>Normaliza el correo<\/b><br/>Compara en minúsculas\"]:::servicio\n  B --> C{\"<b>Ya existe un usuario con ese correo?<\/b>\"}:::pendiente\n  C -- \"no\" --> D[\"<b>Crea el usuario<\/b><br/>Con contraseña temporal\"]:::servicio\n  C -- \"sí\" --> E[\"<b>409<\/b><br/>Ya existe un usuario con ese correo\"]:::alerta\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "07 idempotency key en altas", "archivos": ["usuarios-accesos-ms/diagramas/07-idempotency-key-en-altas.mmd", "usuarios-accesos-ms/diagramas/07-idempotency-key-en-altas.png"], "imagen": "usuarios-accesos-ms/diagramas/07-idempotency-key-en-altas.png", "codigo": "flowchart TD\n  A[\"<b>POST /v1/usuarios<\/b><br/>Sin Idempotency-Key\"]:::actor --> B{\"<b>Ya existe un usuario con ese correo?<\/b>\"}:::pendiente\n  B -- \"no\" --> C[\"<b>Crea el usuario<\/b><br/>Con contraseña temporal\"]:::servicio\n  B -- \"sí\" --> D[\"<b>409<\/b><br/>Ya existe un usuario con ese correo\"]:::alerta\n  P[\"<b>Pendiente<\/b><br/>Idempotency-Key en escrituras no está implementado.<br/>Un reintento no devuelve la respuesta original.\"]:::pendiente\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "08 rotacion clave rs256", "archivos": ["usuarios-accesos-ms/diagramas/08-rotacion-clave-rs256.mmd", "usuarios-accesos-ms/diagramas/08-rotacion-clave-rs256.png"], "imagen": "usuarios-accesos-ms/diagramas/08-rotacion-clave-rs256.png", "codigo": "flowchart TD\n  A[\"<b>Clave actual<\/b><br/>kid empresa-usuarios-1\"]:::datos --> B[\"<b>Pasos 1 y 2<\/b><br/>Guardar la pública anterior<br/>Generar la clave nueva\"]:::servicio\n  B --> C[\"<b>Pasos 3 y 4 · Reinicio 1<\/b><br/>JWKS publica las dos claves<br/>Tokens nuevos con la clave nueva\"]:::servicio\n  C --> D[\"<b>Paso 5<\/b><br/>Esperar 15 minutos<br/>Expiran los tokens de la clave anterior\"]:::pendiente\n  D --> E[\"<b>Paso 6 · Reinicio 2<\/b><br/>Quitar la clave anterior del JWKS\"]:::servicio\n  C -- \"si la clave se expuso, no esperar\" --> E\n  E --> F[\"<b>Listo<\/b><br/>Solo se valida la clave nueva\"]:::datos\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "09 area y rol jefe area", "archivos": ["usuarios-accesos-ms/diagramas/09-area-y-rol-jefe-area.mmd", "usuarios-accesos-ms/diagramas/09-area-y-rol-jefe-area.png"], "imagen": "usuarios-accesos-ms/diagramas/09-area-y-rol-jefe-area.png", "codigo": "flowchart TD\n  A[\"<b>ADMIN<\/b><br/>PUT /v1/usuarios/id/area<br/>Motivo obligatorio\"]:::actor --> B{\"<b>El área existe en reportes?<\/b>\"}:::pendiente\n  B -- \"no\" --> E1[\"<b>422<\/b><br/>Área desconocida\"]:::alerta\n  B -- \"sí\" --> C[\"<b>Guarda el área<\/b><br/>Publica area-asignada\"]:::datos\n  C --> D{\"<b>Se asigna el rol JEFE_AREA?<\/b>\"}:::pendiente\n  D -- \"sí, el usuario ya tiene área\" --> F[\"<b>Rol JEFE_AREA asignado<\/b>\"]:::servicio\n  D -- \"no tiene área\" --> E2[\"<b>422<\/b><br/>JEFE_AREA exige área\"]:::alerta\n  F --> G[\"<b>Token con claim area<\/b><br/>reportes-ejecutivos-ms limita la consulta\"]:::datos\n  H[\"<b>Alta directa con JEFE_AREA<\/b>\"]:::actor -. \"no permitido\" .-> E2\n  G -. \"sesión abierta antes del cambio\" .-> I[\"<b>Sin claim area<\/b><br/>Hasta volver a iniciar sesión\"]:::pendiente\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "10 contrasena temporal", "archivos": ["usuarios-accesos-ms/diagramas/10-contrasena-temporal.mmd", "usuarios-accesos-ms/diagramas/10-contrasena-temporal.png"], "imagen": "usuarios-accesos-ms/diagramas/10-contrasena-temporal.png", "codigo": "flowchart TD\n  A[\"<b>POST /v1/usuarios<\/b><br/>Alta por ADMIN\"]:::actor --> B[\"<b>Contraseña temporal<\/b><br/>Cuenta pendiente de cambio\"]:::servicio\n  B --> C[\"<b>POST /v1/auth/login<\/b>\"]:::actor\n  C --> D[\"<b>403<\/b> cambio-password-requerido<br/>No emite tokens\"]:::alerta\n  D --> E[\"<b>POST /v1/auth/cambiar-password-inicial<\/b><br/>correo, passwordActual, passwordNueva\"]:::actor\n  E --> F{\"<b>Nueva de 12 o más caracteres y distinta de la temporal?<\/b>\"}:::pendiente\n  F -- \"no\" --> G[\"<b>Rechazado<\/b><br/>La contraseña no cambia\"]:::alerta\n  F -- \"sí\" --> H[\"<b>204<\/b><br/>Contraseña definitiva\"]:::servicio\n  E -. \"temporal incorrecta\" .-> I[\"<b>Cuenta intentos fallidos<\/b><br/>Igual que el login\"]:::alerta\n  H --> J[\"<b>Login normal<\/b><br/>Emite tokens\"]:::datos\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n"}, {"titulo": "arquitectura", "archivos": ["usuarios-accesos-ms/diagramas/arquitectura.mmd", "usuarios-accesos-ms/diagramas/arquitectura.png"], "imagen": "usuarios-accesos-ms/diagramas/arquitectura.png", "codigo": "flowchart LR\n  E([\"<b>Aplicaciones y gateway-ms<\/b>\"]):::actor\n  D[\"<b>discovery-ms<\/b><br/>Eureka\"]:::actor\n  subgraph SVC[\"usuarios-accesos-ms · 8081 interno (8102 en tu Mac)\"]\n    API[\"<b>API REST /v1<\/b><br/>ControladorREST\"]:::gateway\n    SEG[\"<b>Seguridad JWT<\/b><br/>roles por método\"]:::seguridad\n    APP[\"<b>Servicio de aplicación<\/b><br/>casos de uso\"]:::servicio\n    REP[\"<b>Repositorios JPA<\/b><br/>migraciones Flyway\"]:::infra\n    OUT[\"<b>Outbox<\/b><br/>outbox_eventos\"]:::infra\n    subgraph DOM[\"Dominio DDD (agregados y reglas)\"]\n      DM1[\"Usuario\"]:::dominio\n      DM2[\"Rol\"]:::dominio\n    end\n  end\n  DB[(\"<b>PostgreSQL<\/b><br/>base usuarios_accesos\")]:::datos\n  K[[\"<b>Kafka<\/b>\"]]:::alerta\n\n  E --> API\n  API --> APP\n  API -.- SEG\n  APP --> REP\n  REP --> DB\n  APP --> OUT\n  OUT --> K\n  APP --> DOM\n  D -. \"registro\" .-> APP\n\n  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A\n  classDef gateway fill:#EEEDFE,stroke:#7F77DD,color:#26215C\n  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C\n  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53\n  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313\n  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402\n  classDef infra fill:#FFF8DC,stroke:#E0A800,color:#4A3800\n  classDef seguridad fill:#FDF0E1,stroke:#E8870E,color:#4A2A00\n  classDef cifrado fill:#FDEEF3,stroke:#D4537E,color:#4B1528\n  classDef dominio fill:#F6EEFB,stroke:#AF52DE,color:#3A1450\n"}], "api": true, "tecnologias": [{"id": "pruebas", "nombre": "Pruebas automatizadas", "resumen": "Pruebas unitarias y de integración con JUnit 5. Surefire ejecuta las unitarias y Failsafe las de integración.", "aplicado": true, "archivo": "usuarios-accesos-ms/tecnologias/pruebas.html"}, {"id": "checkstyle", "nombre": "Checkstyle", "resumen": "Revisa convenciones de estilo del código Java (nombres, tamaños de métodos, imports) contra un conjunto de reglas.", "aplicado": true, "archivo": "usuarios-accesos-ms/tecnologias/checkstyle.html"}, {"id": "pmd", "nombre": "PMD", "resumen": "Busca patrones problemáticos en el código: variables sin uso, bloques vacíos y complejidad excesiva.", "aplicado": true, "archivo": "usuarios-accesos-ms/tecnologias/pmd.html"}, {"id": "spotbugs", "nombre": "SpotBugs", "resumen": "Analiza el bytecode para detectar errores probables: referencias nulas, recursos sin cerrar y problemas de concurrencia.", "aplicado": true, "archivo": "usuarios-accesos-ms/tecnologias/spotbugs.html"}, {"id": "jacoco", "nombre": "JaCoCo", "resumen": "Mide la cobertura de pruebas (líneas y ramas) y puede fallar el build si no se alcanza el mínimo configurado.", "aplicado": true, "archivo": "usuarios-accesos-ms/tecnologias/jacoco.html"}, {"id": "javadoc", "nombre": "Javadoc", "resumen": "Genera documentación técnica a partir de los comentarios /** */.", "aplicado": true, "archivo": "usuarios-accesos-ms/tecnologias/javadoc.html"}, {"id": "cobertura", "nombre": "Cobertura", "resumen": "Alternativa a JaCoCo para medir la cobertura de pruebas.", "aplicado": true, "archivo": "usuarios-accesos-ms/tecnologias/cobertura.html"}]}</script>
+<script type="application/json" id="spec">{"openapi": "3.0.3", "info": {"title": "API usuarios-accesos-ms", "version": "0.1.0", "description": "Servicio de identidad de EMPRESA_JOSESAID. Autentica usuarios, emite tokens JWT, administra roles y permisos, y registra eventos de seguridad."}, "servers": [{"url": "/", "description": "Ruta relativa del servicio"}], "tags": [{"name": "Auth"}, {"name": "Jwks"}, {"name": "Usuario"}], "paths": {"/.well-known/jwks.json": {"get": {"operationId": "usuarios-accesos-ms.JwksController.jwks", "summary": "Jwks", "tags": ["Jwks"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "object", "additionalProperties": true}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}}}, "/v1/auth/cambiar-password-inicial": {"post": {"operationId": "usuarios-accesos-ms.AuthController.cambiarPasswordInicial", "summary": "Cambiar password inicial", "tags": ["Auth"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa"}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CambioPasswordSolicitud"}}}}}}, "/v1/auth/login": {"post": {"operationId": "usuarios-accesos-ms.AuthController.login", "summary": "Login", "tags": ["Auth"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TokenRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LoginSolicitud"}}}}}}, "/v1/auth/logout": {"post": {"operationId": "usuarios-accesos-ms.AuthController.cerrar", "summary": "Cerrar", "tags": ["Auth"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa"}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RefrescoSolicitud"}}}}}}, "/v1/auth/logout-todas": {"post": {"operationId": "usuarios-accesos-ms.AuthController.cerrarTodas", "summary": "Cerrar todas", "tags": ["Auth"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa"}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}}}, "/v1/auth/refresh": {"post": {"operationId": "usuarios-accesos-ms.AuthController.refrescar", "summary": "Refrescar", "tags": ["Auth"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TokenRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RefrescoSolicitud"}}}}}}, "/v1/usuarios": {"post": {"operationId": "usuarios-accesos-ms.UsuarioController.crear", "summary": "Crear", "tags": ["Usuario"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/UsuarioRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CrearUsuarioSolicitud"}}}}}, "get": {"operationId": "usuarios-accesos-ms.UsuarioController.listar", "summary": "Listar", "tags": ["Usuario"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"type": "array", "items": {"$ref": "#/components/schemas/UsuarioRespuesta"}}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}}}, "/v1/usuarios/{id}": {"get": {"operationId": "usuarios-accesos-ms.UsuarioController.obtener", "summary": "Obtener", "tags": ["Usuario"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/UsuarioRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}]}}, "/v1/usuarios/{id}/area": {"put": {"operationId": "usuarios-accesos-ms.UsuarioController.asignarArea", "summary": "Asignar area", "tags": ["Usuario"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/UsuarioRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AsignarAreaSolicitud"}}}}}}, "/v1/usuarios/{id}/baja": {"post": {"operationId": "usuarios-accesos-ms.UsuarioController.darDeBaja", "summary": "Dar de baja", "tags": ["Usuario"], "security": [{"bearerAuth": []}], "responses": {"201": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/UsuarioRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}]}}, "/v1/usuarios/{id}/roles": {"put": {"operationId": "usuarios-accesos-ms.UsuarioController.asignarRoles", "summary": "Asignar roles", "tags": ["Usuario"], "security": [{"bearerAuth": []}], "responses": {"200": {"description": "Respuesta exitosa", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/UsuarioRespuesta"}}}}, "400": {"description": "Solicitud inválida"}, "401": {"description": "Token ausente o inválido"}, "403": {"description": "Sin permiso para esta operación"}}, "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AsignarRolesSolicitud"}}}}}}}, "components": {"securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}}, "schemas": {"LoginSolicitud": {"type": "object", "properties": {"correo": {"type": "string"}, "password": {"type": "string"}}}, "TokenRespuesta": {"type": "object", "properties": {"accessToken": {"type": "string"}, "tokenType": {"type": "string"}, "expiresIn": {"type": "integer", "format": "int64"}, "refreshToken": {"type": "string"}}}, "RefrescoSolicitud": {"type": "object", "properties": {"refreshToken": {"type": "string"}}}, "CambioPasswordSolicitud": {"type": "object", "properties": {"correo": {"type": "string"}, "passwordActual": {"type": "string"}, "passwordNueva": {"type": "string"}}}, "CrearUsuarioSolicitud": {"type": "object", "properties": {"correo": {"type": "string"}, "nombreCompleto": {"type": "string"}, "password": {"type": "string"}, "roles": {"type": "array", "items": {"$ref": "#/components/schemas/Rol"}}}}, "Rol": {"type": "object", "properties": {}}, "UsuarioRespuesta": {"type": "object", "properties": {"id": {"type": "string", "format": "uuid"}, "correo": {"type": "string"}, "nombreCompleto": {"type": "string"}, "estatus": {"type": "string"}, "roles": {"type": "array", "items": {"$ref": "#/components/schemas/Rol"}}, "area": {"type": "string"}}}, "AsignarRolesSolicitud": {"type": "object", "properties": {"roles": {"type": "array", "items": {"$ref": "#/components/schemas/Rol"}}, "motivo": {"type": "string"}}}, "AsignarAreaSolicitud": {"type": "object", "properties": {"area": {"type": "string"}, "motivo": {"type": "string"}}}}}}</script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('datos').textContent);
+  const SPEC = JSON.parse(document.getElementById('spec').textContent);
+  const $ = (s) => document.querySelector(s);
+
+  function el(tag, attrs, hijos) {
+    const n = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (hijos || []).forEach(function (h) {
+      if (h === null || h === undefined || h === false) return;
+      n.append(h.nodeType ? h : document.createTextNode(String(h)));
+    });
+    return n;
+  }
+
+  function chips(lista, vacio) {
+    if (!lista || !lista.length) return [el('span', { class: 'aviso', text: vacio })];
+    return lista.map(function (r) { return el('span', { class: 'chip', text: r }); });
+  }
+
+  if (window.mermaid) {
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default'
+    });
+  }
+
+  function pintarInfo() {
+    const i = D.info;
+    $('#titulo').textContent = i.nombre;
+    $('#descr').textContent = i.descripcion || '';
+    const pild = $('#pildoras');
+    [
+      'Puerto ' + (i.puerto || '—'),
+      'Java ' + (i.java || '—'),
+      'Spring Boot ' + (i.spring_boot || '—'),
+      i.endpoints ? i.endpoints + ' endpoints' : 'Sin API REST'
+    ].forEach(function (t) { pild.append(el('span', { class: 'pildora', text: t })); });
+    const campos = [
+      ['Servicio', i.nombre],
+      ['Descripción', i.descripcion || '—'],
+      ['Puerto de la aplicación', i.puerto || '—'],
+      ['Java', i.java || '—'],
+      ['Spring Boot', i.spring_boot || '—'],
+      ['Endpoints REST', i.endpoints || 'Ninguno']
+    ];
+    const dl = el('dl', { class: 'datos' });
+    campos.forEach(function (c) {
+      dl.append(el('div', {}, [el('dt', { text: c[0] }), el('dd', { text: String(c[1]) })]));
+    });
+    dl.append(el('div', {}, [el('dt', { text: 'Roles detectados' }),
+      el('dd', {}, chips(i.roles, 'Ninguno detectado'))]));
+    $('[data-panel="info"]').append(dl);
+  }
+
+  function pintarReadme() {
+    const panel = $('[data-panel="readme"]');
+    if (!D.readme) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene README.md.' }));
+      return;
     }
-  ],
-  "tags": [
-    {
-      "name": "Auth"
-    },
-    {
-      "name": "Jwks"
-    },
-    {
-      "name": "Usuario"
+    const art = el('article', { class: 'md' });
+    if (window.marked) {
+      art.innerHTML = marked.parse(D.readme);
+    } else {
+      art.append(el('pre', { text: D.readme }));
     }
-  ],
-  "paths": {
-    "/.well-known/jwks.json": {
-      "get": {
-        "operationId": "usuarios-accesos-ms.JwksController.jwks",
-        "summary": "Jwks",
-        "tags": [
-          "Jwks"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": true
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        }
-      }
-    },
-    "/v1/auth/cambiar-password-inicial": {
-      "post": {
-        "operationId": "usuarios-accesos-ms.AuthController.cambiarPasswordInicial",
-        "summary": "Cambiar password inicial",
-        "tags": [
-          "Auth"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa"
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CambioPasswordSolicitud"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/auth/login": {
-      "post": {
-        "operationId": "usuarios-accesos-ms.AuthController.login",
-        "summary": "Login",
-        "tags": [
-          "Auth"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TokenRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginSolicitud"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/auth/logout": {
-      "post": {
-        "operationId": "usuarios-accesos-ms.AuthController.cerrar",
-        "summary": "Cerrar",
-        "tags": [
-          "Auth"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa"
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefrescoSolicitud"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/auth/logout-todas": {
-      "post": {
-        "operationId": "usuarios-accesos-ms.AuthController.cerrarTodas",
-        "summary": "Cerrar todas",
-        "tags": [
-          "Auth"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa"
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        }
-      }
-    },
-    "/v1/auth/refresh": {
-      "post": {
-        "operationId": "usuarios-accesos-ms.AuthController.refrescar",
-        "summary": "Refrescar",
-        "tags": [
-          "Auth"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TokenRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefrescoSolicitud"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/usuarios": {
-      "post": {
-        "operationId": "usuarios-accesos-ms.UsuarioController.crear",
-        "summary": "Crear",
-        "tags": [
-          "Usuario"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UsuarioRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CrearUsuarioSolicitud"
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "operationId": "usuarios-accesos-ms.UsuarioController.listar",
-        "summary": "Listar",
-        "tags": [
-          "Usuario"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UsuarioRespuesta"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        }
-      }
-    },
-    "/v1/usuarios/{id}": {
-      "get": {
-        "operationId": "usuarios-accesos-ms.UsuarioController.obtener",
-        "summary": "Obtener",
-        "tags": [
-          "Usuario"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UsuarioRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/usuarios/{id}/area": {
-      "put": {
-        "operationId": "usuarios-accesos-ms.UsuarioController.asignarArea",
-        "summary": "Asignar area",
-        "tags": [
-          "Usuario"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UsuarioRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AsignarAreaSolicitud"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/usuarios/{id}/baja": {
-      "post": {
-        "operationId": "usuarios-accesos-ms.UsuarioController.darDeBaja",
-        "summary": "Dar de baja",
-        "tags": [
-          "Usuario"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UsuarioRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/usuarios/{id}/roles": {
-      "put": {
-        "operationId": "usuarios-accesos-ms.UsuarioController.asignarRoles",
-        "summary": "Asignar roles",
-        "tags": [
-          "Usuario"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta exitosa",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UsuarioRespuesta"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "Token ausente o inválido"
-          },
-          "403": {
-            "description": "Sin permiso para esta operación"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AsignarRolesSolicitud"
-              }
-            }
-          }
-        }
-      }
+    art.querySelectorAll('pre > code.language-mermaid').forEach(function (code) {
+      const m = el('div', { class: 'mermaid' });
+      m.dataset.src = code.textContent;
+      code.parentElement.replaceWith(m);
+    });
+    panel.append(art);
+  }
+
+  function pintarPermisos() {
+    const panel = $('[data-panel="permisos"]');
+    panel.append(el('h2', { class: 'subtitulo', text: 'Roles detectados' }));
+    panel.append(el('p', {}, chips(D.info.roles, 'Ninguno detectado')));
+    if (!D.permisos.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene reglas de acceso por endpoint.' }));
+      return;
     }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+    const cabeza = el('tr', {}, ['Método', 'Ruta', 'Operación', 'Regla de acceso'].map(function (t) {
+      return el('th', { text: t });
+    }));
+    const cuerpo = el('tbody');
+    D.permisos.forEach(function (p) {
+      cuerpo.append(el('tr', {}, [
+        el('td', {}, [el('span', { class: 'verbo', text: p.verbo })]),
+        el('td', { text: p.ruta }),
+        el('td', { text: p.operacion }),
+        el('td', { text: p.roles || 'Solo autenticación (sin @PreAuthorize)' })
+      ]));
+    });
+    const tabla = el('table', {}, [el('thead', {}, [cabeza]), cuerpo]);
+    panel.append(el('div', { class: 'tabla-wrap' }, [tabla]));
+  }
+
+  function pintarDiagramas() {
+    const panel = $('[data-panel="diagramas"]');
+    if (!D.diagramas.length) {
+      panel.append(el('p', { class: 'aviso', text: 'Este servicio no tiene carpeta docs/diagramas.' }));
+      return;
+    }
+    const grid = el('div', { class: 'grid-diag' });
+    D.diagramas.forEach(function (d) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: d.titulo }));
+      if (d.imagen) {
+        const img = el('img', { src: d.imagen, alt: d.titulo, loading: 'lazy' });
+        img.onerror = function () {
+          img.replaceWith(el('p', { class: 'aviso', text: 'No se pudo mostrar la imagen. Usa el enlace de abajo para abrir el archivo.' }));
+        };
+        tarjeta.append(el('a', { href: d.imagen, target: '_blank', rel: 'noopener', class: 'abrir', title: 'Abrir archivo' }, [img]));
+      } else if (d.codigo) {
+        const m = el('div', { class: 'mermaid' });
+        m.dataset.src = d.codigo;
+        tarjeta.append(m);
       }
-    },
-    "schemas": {
-      "LoginSolicitud": {
-        "type": "object",
-        "properties": {
-          "correo": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        }
-      },
-      "TokenRespuesta": {
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string"
-          },
-          "tokenType": {
-            "type": "string"
-          },
-          "expiresIn": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "refreshToken": {
-            "type": "string"
-          }
-        }
-      },
-      "RefrescoSolicitud": {
-        "type": "object",
-        "properties": {
-          "refreshToken": {
-            "type": "string"
-          }
-        }
-      },
-      "CambioPasswordSolicitud": {
-        "type": "object",
-        "properties": {
-          "correo": {
-            "type": "string"
-          },
-          "passwordActual": {
-            "type": "string"
-          },
-          "passwordNueva": {
-            "type": "string"
-          }
-        }
-      },
-      "CrearUsuarioSolicitud": {
-        "type": "object",
-        "properties": {
-          "correo": {
-            "type": "string"
-          },
-          "nombreCompleto": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Rol"
-            }
-          }
-        }
-      },
-      "Rol": {
-        "type": "object",
-        "properties": {}
-      },
-      "UsuarioRespuesta": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "correo": {
-            "type": "string"
-          },
-          "nombreCompleto": {
-            "type": "string"
-          },
-          "estatus": {
-            "type": "string"
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Rol"
-            }
-          },
-          "area": {
-            "type": "string"
-          }
-        }
-      },
-      "AsignarRolesSolicitud": {
-        "type": "object",
-        "properties": {
-          "roles": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Rol"
-            }
-          },
-          "motivo": {
-            "type": "string"
-          }
-        }
-      },
-      "AsignarAreaSolicitud": {
-        "type": "object",
-        "properties": {
-          "area": {
-            "type": "string"
-          },
-          "motivo": {
-            "type": "string"
-          }
-        }
+      const pie = el('div', { class: 'pie' });
+      d.archivos.forEach(function (a, idx) {
+        if (idx) pie.append(' · ');
+        pie.append(el('a', { href: a, target: '_blank', rel: 'noopener', text: a.split('/').pop() }));
+      });
+      tarjeta.append(pie);
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
+  async function renderMermaidIn(raiz) {
+    if (!raiz) return;
+    for (const nodo of raiz.querySelectorAll('.mermaid')) {
+      if (nodo.dataset.ok) continue;
+      const src = nodo.dataset.src || '';
+      if (!window.mermaid) {
+        nodo.replaceChildren(el('pre', { text: src }));
+        continue;
+      }
+      try {
+        const salida = await mermaid.render('m' + Math.random().toString(36).slice(2), src);
+        nodo.innerHTML = salida.svg;
+        nodo.dataset.ok = '1';
+      } catch (e) {
+        nodo.replaceChildren(
+          el('p', { class: 'aviso', text: 'No se pudo renderizar este diagrama. Se muestra el código fuente:' }),
+          el('pre', { text: src }));
       }
     }
   }
-}
-</script>
-<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
-<script>
-window.onload = function () {
-  window.ui = SwaggerUIBundle({
-    spec: JSON.parse(document.getElementById("spec").textContent),
-    dom_id: "#swagger-ui",
-    deepLinking: true,
-    persistAuthorization: true
-  });
-};
+
+  function pintarTecnologias() {
+    const panel = $('[data-panel="tecnologias"]');
+    panel.append(el('p', { class: 'aviso', text: 'Herramientas de calidad y pruebas que el pom.xml de este servicio aplica. Las marcadas como no aplicadas no están configuradas.' }));
+    const grid = el('div', { class: 'grid-diag' });
+    D.tecnologias.forEach(function (t) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: t.nombre }));
+      tarjeta.append(el('p', { class: 'aviso', text: t.resumen }));
+      if (t.aplicado) {
+        tarjeta.append(el('a', { href: t.archivo, class: 'chip', text: 'Ver detalle →' }));
+      } else {
+        tarjeta.append(el('span', { class: 'chip', text: 'No aplicado' }));
+      }
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
+  let swaggerListo = false;
+  function iniciarSwagger() {
+    if (swaggerListo || !SPEC || !window.SwaggerUIBundle) return;
+    swaggerListo = true;
+    window.ui = SwaggerUIBundle({ spec: SPEC, dom_id: '#swagger-ui', deepLinking: false, persistAuthorization: true });
+  }
+
+  function pintarApi() {
+    if (SPEC) return;
+    $('[data-panel="api"]').replaceChildren(el('p', { class: 'aviso', text: 'Este servicio no expone endpoints REST, así que no tiene Swagger.' }));
+    $('[data-tab="api"]').hidden = true;
+  }
+
+  const botones = Array.from(document.querySelectorAll('[role="tab"]'));
+  function activar(nombre, cambiarHash) {
+    if (nombre === 'api' && !SPEC) nombre = 'info';
+    botones.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === nombre)); });
+    document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== nombre; });
+    if (nombre === 'readme' || nombre === 'diagramas') renderMermaidIn(document.querySelector('[data-panel="' + nombre + '"]'));
+    if (nombre === 'api') iniciarSwagger();
+    if (cambiarHash) { try { history.replaceState(null, '', '#' + nombre); } catch (e) {} }
+  }
+  botones.forEach(function (b) { b.addEventListener('click', function () { activar(b.dataset.tab, true); }); });
+
+  pintarInfo();
+  pintarReadme();
+  pintarPermisos();
+  pintarDiagramas();
+  pintarApi();
+  pintarTecnologias();
+  const inicial = location.hash.slice(1);
+  activar(['info', 'readme', 'permisos', 'diagramas', 'tecnologias', 'api'].indexOf(inicial) >= 0 ? inicial : 'info', false);
+})();
 </script>
 </body>
 </html>

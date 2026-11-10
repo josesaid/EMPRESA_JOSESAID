@@ -26,7 +26,7 @@ public class ConsentimientoController {
     }
 
     @PostMapping("/v1/contactos/{contactoId}/consentimientos")
-    @PreAuthorize("hasRole('LEGAL')")
+    @PreAuthorize("hasAnyRole('LEGAL', 'ADMIN')")
     public ResponseEntity<ConsentimientoResponse> otorgar(@PathVariable UUID contactoId,
                                                           @Valid @RequestBody NuevoConsentimientoRequest req) {
         Consentimiento otorgado = servicio.otorgar(contactoId, new Comandos.NuevoConsentimiento(
@@ -35,7 +35,7 @@ public class ConsentimientoController {
     }
 
     @PostMapping("/v1/consentimientos/{id}/revocacion")
-    @PreAuthorize("hasRole('LEGAL')")
+    @PreAuthorize("hasAnyRole('LEGAL', 'ADMIN')")
     public ConsentimientoResponse revocar(@PathVariable UUID id) {
         return ConsentimientoResponse.de(servicio.revocar(id), presentacion);
     }

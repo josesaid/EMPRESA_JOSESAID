@@ -1,0 +1,17 @@
+flowchart TD
+  A["<b>POST /pagos</b><br/>Solo FINANZAS"]:::actor --> B{"<b>Monto mayor al saldo?</b>"}:::pendiente
+  B -- "sí" --> E1["<b>422</b><br/>El pago no puede exceder el saldo"]:::alerta
+  B -- "no" --> C{"<b>Monto redondea a cero?</b>"}:::pendiente
+  C -- "sí" --> E2["<b>Rechazo</b>"]:::alerta
+  C -- "no" --> D{"<b>Fecha enviada?</b>"}:::pendiente
+  D -- "no" --> E3["<b>Usa la fecha del reloj del servicio</b>"]:::actor
+  D -- "sí" --> F["<b>Registra el pago</b>"]:::servicio
+  E3 --> F
+  F --> G["<b>Saldo y estatus recalculados</b><br/>PENDIENTE, PARCIAL o PAGADO"]:::datos
+  G --> H["<b>Evento pago-registrado</b><br/>facturacion-pagos.eventos, por outbox"]:::datos
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

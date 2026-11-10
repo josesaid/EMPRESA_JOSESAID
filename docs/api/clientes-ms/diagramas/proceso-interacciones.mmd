@@ -1,0 +1,13 @@
+flowchart TD
+  A["<b>Vendedor</b><br/>POST /v1/clientes/id/interacciones"]:::actor --> B{"<b>Cliente existe?</b>"}:::pendiente
+  B -- "no" --> E1["<b>404 recurso-no-encontrado</b>"]:::alerta
+  B -- "sí" --> C["<b>Guardar interacción</b><br/>Fecha en UTC, resumen cifrado"]:::servicio
+  C --> D["<b>201 Created</b><br/>Fecha devuelta en America/Mexico_City"]:::servicio
+  X["<b>Vendedor o gerente</b><br/>GET /v1/clientes/id/interacciones"]:::actor --> Y{"<b>Cliente existe?</b>"}:::pendiente
+  Y -- "no" --> E1
+  Y -- "sí" --> Z["<b>200 OK</b><br/>Paginado, orden fecha descendente"]:::servicio
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

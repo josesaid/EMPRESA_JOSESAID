@@ -1,0 +1,19 @@
+flowchart TD
+  A["<b>Documento</b><br/>Tipo y retencion_hasta"]:::actor --> B{"<b>Tipo</b>"}:::pendiente
+  B -- "CONTRATO" --> C["<b>Retención 10 años</b>"]:::servicio
+  B -- "PERMISO" --> D["<b>Retención 5 años</b>"]:::servicio
+  B -- "REGISTRO_LEGAL" --> E["<b>Retención 10 años</b>"]:::servicio
+  C --> F{"<b>Eliminado?</b>"}:::pendiente
+  D --> F
+  E --> F
+  F -- "no" --> G["<b>Activo</b>"]:::datos
+  F -- "sí, eliminación lógica" --> H{"<b>Purga física?</b>"}:::pendiente
+  H -- "fuera de retención, confirma con el identificador" --> I["<b>Purga</b><br/>Borra archivos de todas las versiones"]:::alerta
+  H -- "dentro de retención" --> J["<b>409</b><br/>No se puede purgar"]:::alerta
+  I --> K["<b>Conserva metadatos y hashes</b><br/>Descarga responde 409"]:::datos
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

@@ -1,0 +1,14 @@
+flowchart TD
+  A["<b>sugerir_poliza</b><br/>Rol CONTADOR, no registra"]:::actor --> B["<b>Devuelve accion_id y código de 8 dígitos</b><br/>Código de un solo uso"]:::servicio
+  B --> C{"<b>confirmar_accion</b><br/>Mismo usuario y dentro de 10 minutos?"}:::pendiente
+  C -- "código incorrecto" --> D["<b>Acción cancelada</b>"]:::alerta
+  C -- "sí, código correcto" --> E["<b>Registra la póliza</b>"]:::datos
+  C -- "no es quien la preparó o venció" --> F["<b>No se ejecuta</b>"]:::alerta
+  B -- "cancelar_accion" --> G["<b>Cancelada sin ejecutar</b>"]:::alerta
+  H["<b>Código</b><br/>HMAC-SHA256 del id y del usuario"]:::pendiente -. "secreto NEXUS_CONFIRMACION_SECRETO" .-> B
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

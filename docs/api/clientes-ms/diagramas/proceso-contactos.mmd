@@ -1,0 +1,13 @@
+flowchart TD
+  A["<b>Administrador de clientes</b><br/>POST /v1/clientes/id/contactos"]:::actor --> B{"<b>Cliente existe?</b>"}:::pendiente
+  B -- "no" --> E1["<b>404 recurso-no-encontrado</b>"]:::alerta
+  B -- "sí" --> C{"<b>El contacto es principal?</b>"}:::pendiente
+  C -- "sí" --> D["<b>Desmarcar el principal anterior</b><br/>Flush inmediato para respetar el índice único"]:::servicio
+  C -- "no" --> F["<b>Guardar contacto</b>"]:::servicio
+  D --> F
+  F --> G["<b>201 Created</b><br/>Devuelve el contacto con datos enmascarados"]:::servicio
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

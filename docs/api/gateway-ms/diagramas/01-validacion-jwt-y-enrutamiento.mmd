@@ -1,0 +1,17 @@
+flowchart TD
+  A["<b>Cliente</b><br/>Petición a /{servicio}/**"]:::actor --> B{"<b>Ruta pública?</b><br/>login, refresh, logout, cambiar-password-inicial, jwks.json"}:::pendiente
+  B -- "sí" --> D["<b>Reenvía sin token</b>"]:::servicio
+  B -- "no" --> C{"<b>JWT válido?</b><br/>Resource server con firma"}:::pendiente
+  C -- "ausente o inválido" --> E1["<b>401</b><br/>Sin reenvío"]:::alerta
+  C -- "válido" --> D
+  D --> F{"<b>Servicio registrado en discovery-ms?</b>"}:::pendiente
+  F -- "no" --> E2["<b>404</b><br/>Servicio no encontrado"]:::alerta
+  F -- "sí" --> G["<b>Quita el prefijo y reenvía</b><br/>/usuarios-accesos-ms/v1/x llega como /v1/x"]:::servicio
+  G --> H["<b>El servicio destino</b><br/>Vuelve a validar el token y los roles"]:::datos
+  I["<b>/actuator</b>"]:::actor -. "pendiente: confirmar; README dice 404" .-> J["<b>Bloqueo de rutas internas</b>"]:::pendiente
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402

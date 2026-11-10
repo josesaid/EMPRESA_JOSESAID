@@ -1,0 +1,25 @@
+flowchart LR
+  CL["<b>clientes-ms</b>"]:::servicio
+  US["<b>usuarios-accesos-ms</b>"]:::servicio
+  DA["<b>demás servicios de área</b>"]:::servicio
+  GW["<b>gateway-ms</b>"]:::gateway
+  subgraph DS["discovery-ms · Eureka · 8761"]
+    REG["<b>Registro de instancias</b><br/>en memoria"]:::actor
+    PAN["<b>Panel web</b> /"]:::actor
+  end
+
+  CL -. "registra y renueva" .-> REG
+  US -. "se registra" .-> REG
+  DA -. "se registra" .-> REG
+  GW -. "consulta" .-> REG
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef gateway fill:#EEEDFE,stroke:#7F77DD,color:#26215C
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
+  classDef infra fill:#FFF8DC,stroke:#E0A800,color:#4A3800
+  classDef seguridad fill:#FDF0E1,stroke:#E8870E,color:#4A2A00
+  classDef cifrado fill:#FDEEF3,stroke:#D4537E,color:#4B1528
+  classDef dominio fill:#F6EEFB,stroke:#AF52DE,color:#3A1450

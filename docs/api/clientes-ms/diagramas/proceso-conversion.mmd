@@ -1,0 +1,17 @@
+flowchart TD
+  A["<b>Vendedor o Administrador</b><br/>POST /v1/prospectos/id/conversion"]:::actor --> B{"<b>Prospecto ya CONVERTIDO?</b>"}:::pendiente
+  B -- "sí" --> R1["<b>201 Created</b><br/>Devuelve el cliente existente"]:::servicio
+  B -- "no" --> C{"<b>Prospecto CALIFICADO?</b>"}:::pendiente
+  C -- "no" --> E1["<b>409 transicion-invalida</b><br/>Solo CALIFICADO puede convertirse"]:::alerta
+  C -- "sí" --> D{"<b>RFC igual a un cliente activo?</b>"}:::pendiente
+  D -- "sí" --> E2["<b>409 rfc-duplicado</b>"]:::alerta
+  D -- "no" --> F["<b>Crear cliente ACTIVO</b><br/>Contacto principal obligatorio"]:::servicio
+  F --> G["<b>Marcar prospecto CONVERTIDO</b><br/>fecha_conversion en UTC"]:::servicio
+  G --> H["<b>Escribir outbox ClienteCreado</b><br/>Misma transacción"]:::datos
+  H --> R2["<b>201 Created</b><br/>Location: /v1/clientes/id"]:::servicio
+
+  classDef actor fill:#F1EFE8,stroke:#888780,color:#2C2C2A
+  classDef servicio fill:#E1F5EE,stroke:#1D9E75,color:#04342C
+  classDef datos fill:#E6F1FB,stroke:#378ADD,color:#042C53
+  classDef alerta fill:#FCEBEB,stroke:#E24B4A,color:#501313
+  classDef pendiente fill:#FAEEDA,stroke:#BA7517,color:#412402
