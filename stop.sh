@@ -6,50 +6,71 @@
 set -u
 cd "$(dirname "$0")" || exit 1
 
+# Colores solo si la salida es una terminal
+if [ -t 1 ]; then
+  RST=$'\033[0m'; NEG=$'\033[1m'; TENUE=$'\033[2m'
+  ROJO=$'\033[1;31m'; VERDE=$'\033[1;32m'; AMARILLO=$'\033[1;33m'
+  AZUL=$'\033[1;34m'; MAGENTA=$'\033[1;35m'; CIAN=$'\033[1;36m'
+else
+  RST=""; NEG=""; TENUE=""; ROJO=""; VERDE=""; AMARILLO=""; AZUL=""; MAGENTA=""; CIAN=""
+fi
+
 inicio=$(date +%s)
+
 formatear() {
   local s=$1
   printf "%02d:%02d:%02d" $((s/3600)) $(((s%3600)/60)) $((s%60))
 }
+transcurrido() { formatear $(( $(date +%s) - inicio )); }
 
-hecho=()
-pendientes=()
+linea() { echo "${MAGENTA}────────────────────────────────────────────────────────────${RST}"; }
 
-echo "🛑 Iniciando apagado de EMPRESA_JOSESAID..."
-
-echo "🔎 1/3 Revisando contenedores activos..."
-activos=$(docker compose ps -q 2>/dev/null | wc -l | tr -d ' ')
-if [ "$activos" = "0" ]; then
-  echo "   ℹ️  No hay contenedores activos del proyecto."
-else
-  echo "   📦 Contenedores activos: $activos"
-fi
-hecho+=("Revisados $activos contenedores activos")
-
-echo "⏹️  2/3 Deteniendo y quitando contenedores y redes (los volúmenes se conservan)..."
-if docker compose down --remove-orphans; then
-  echo "   ✅ Servicios detenidos."
-  hecho+=("Servicios, infraestructura y monitoreo detenidos")
-else
-  echo "   ❌ docker compose down falló. Revisa el mensaje anterior."
-  pendientes+=("docker compose down falló")
-fi
-
-echo "🧪 3/3 Verificando que no quede nada del proyecto..."
-restantes_proyecto=$(docker ps -q --filter "label=com.docker.compose.project" 2>/dev/null | wc -l | tr -d ' ')
-if [ "$restantes_proyecto" = "0" ]; then
-  echo "   ✅ No quedan contenedores de Compose corriendo."
-  hecho+=("Verificado: no quedan contenedores de Compose")
-else
-  echo "   ⚠️  Quedan $restantes_proyecto contenedores de Compose. Revisa con: docker ps"
-  pendientes+=("Quedan $restantes_proyecto contenedores de Compose")
-fi
+paso() {
+  echo ""
+  linea
+  echo "${NEG}${CIAN}$1${RST}"
+  linea
+}
 
 echo ""
-echo "📋 Resumen"
-for item in "${hecho[@]}"; do echo "   ✅ $item"; done
-for item in "${pendientes[@]:-}"; do [ -n "$item" ] && echo "   ⚠️  Pendiente: $item"; done
-echo "   💾 Volúmenes conservados (datos intactos)."
+echo "${NEG}${ROJO}🛑 Iniciando apagado de EMPRESA_JOSESAID${RST}"
+
+paso "🔎 Paso 1/3 · Revisando contenedores activos"
+activos=$(docker compose ps -q 2>/dev/null | wc -l | tr -d ' ')
+if [ "$activos" = "0" ]; then
+  echo "   ${TENUE}ℹ️  No hay contenedores activos del proyecto${RST}"
+else
+  echo "   ${AMARILLO}📦 Contenedores activos: ${NEG}$activos${RST}"
+fi
+
+paso "⏹️  Paso 2/3 · Deteniendo y quitando contenedores y redes (los volúmenes se conservan)"
+hecho_servicios=0
+if docker compose down --remove-orphans; then
+  echo "   ${VERDE}✅ Servicios detenidos${RST}"
+  hecho_servicios=1
+else
+  echo "   ${ROJO}❌ docker compose down falló. Revisa el mensaje anterior${RST}"
+fi
+
+paso "🧪 Paso 3/3 · Verificando que no quede nada del proyecto"
+restantes=$(docker ps -q --filter "label=com.docker.compose.project" 2>/dev/null | wc -l | tr -d ' ')
+if [ "$restantes" = "0" ]; then
+  echo "   ${VERDE}✅ No quedan contenedores de Compose corriendo${RST}"
+else
+  echo "   ${AMARILLO}⚠️  Quedan ${NEG}$restantes${RST}${AMARILLO} contenedores de Compose${RST}"
+  echo "   ${TENUE}Revisa con: docker ps${RST}"
+fi
+
 duracion=$(( $(date +%s) - inicio ))
-echo "⏱️  Tiempo total de ejecución: $(formatear "$duracion") ($duracion s)"
-echo "🏁 Apagado terminado."
+echo ""
+linea
+echo "${NEG}📋 Resumen${RST}"
+if [ "$hecho_servicios" = "1" ] && [ "$restantes" = "0" ]; then
+  echo "   ${VERDE}✅ Todo apagado${RST}"
+else
+  echo "   ${AMARILLO}⚠️  Hubo pendientes, revisa los pasos anteriores${RST}"
+fi
+echo "   ${AZUL}💾 Volúmenes conservados (datos intactos)${RST}"
+echo "   ${AZUL}⏱️  Tiempo total: ${NEG}$(formatear "$duracion")${RST}${AZUL}  ($duracion s)${RST}"
+echo "${NEG}${ROJO}🏁 Apagado terminado${RST}"
+linea
