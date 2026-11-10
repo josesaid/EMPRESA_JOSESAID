@@ -446,12 +446,14 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
     <button role="tab" data-tab="readme" aria-selected="false">README</button>
     <button role="tab" data-tab="permisos" aria-selected="false">Roles y permisos</button>
     <button role="tab" data-tab="diagramas" aria-selected="false">Diagramas</button>
+    <button role="tab" data-tab="tecnologias" aria-selected="false">Calidad y tecnologías</button>
     <button role="tab" data-tab="api" aria-selected="false">API (Swagger)</button>
   </nav>
   <section class="panel" data-panel="info"></section>
   <section class="panel" data-panel="readme" hidden></section>
   <section class="panel" data-panel="permisos" hidden></section>
   <section class="panel" data-panel="diagramas" hidden></section>
+  <section class="panel" data-panel="tecnologias" hidden></section>
   <section class="panel" data-panel="api" hidden><div id="swagger-ui"></div></section>
 </main>
 <script type="application/json" id="datos">__DATOS__</script>
@@ -618,6 +620,24 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
     }
   }
 
+  function pintarTecnologias() {
+    const panel = $('[data-panel="tecnologias"]');
+    panel.append(el('p', { class: 'aviso', text: 'Herramientas de calidad y pruebas que el pom.xml de este servicio aplica. Las marcadas como no aplicadas no están configuradas.' }));
+    const grid = el('div', { class: 'grid-diag' });
+    D.tecnologias.forEach(function (t) {
+      const tarjeta = el('article', { class: 'diag' });
+      tarjeta.append(el('h3', { text: t.nombre }));
+      tarjeta.append(el('p', { class: 'aviso', text: t.resumen }));
+      if (t.aplicado) {
+        tarjeta.append(el('a', { href: t.archivo, class: 'chip', text: 'Ver detalle →' }));
+      } else {
+        tarjeta.append(el('span', { class: 'chip', text: 'No aplicado' }));
+      }
+      grid.append(tarjeta);
+    });
+    panel.append(grid);
+  }
+
   let swaggerListo = false;
   function iniciarSwagger() {
     if (swaggerListo || !SPEC || !window.SwaggerUIBundle) return;
@@ -647,8 +667,9 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
   pintarPermisos();
   pintarDiagramas();
   pintarApi();
+  pintarTecnologias();
   const inicial = location.hash.slice(1);
-  activar(['info', 'readme', 'permisos', 'diagramas', 'api'].indexOf(inicial) >= 0 ? inicial : 'info', false);
+  activar(['info', 'readme', 'permisos', 'diagramas', 'tecnologias', 'api'].indexOf(inicial) >= 0 ? inicial : 'info', false);
 })();
 </script>
 </body>
@@ -665,6 +686,141 @@ def pagina_ficha(svc, datos, spec, hue):
             .replace("__SWV__", SWAGGER_VERSION)
             .replace("__DATOS__", json_datos)
             .replace("__SPEC__", json_spec))
+
+
+TECNOLOGIAS = [
+    {"id": "pruebas", "nombre": "Pruebas automatizadas", "plugin": None,
+     "que": "Pruebas unitarias y de integración con JUnit 5. Surefire ejecuta las unitarias y Failsafe las de integración.",
+     "comando": "mvn -f {svc}/pom.xml verify",
+     "reportes": "target/surefire-reports y target/failsafe-reports"},
+    {"id": "checkstyle", "nombre": "Checkstyle", "plugin": "maven-checkstyle-plugin",
+     "que": "Revisa convenciones de estilo del código Java (nombres, tamaños de métodos, imports) contra un conjunto de reglas.",
+     "comando": "mvn -f {svc}/pom.xml checkstyle:check",
+     "reportes": "target/checkstyle-result.xml"},
+    {"id": "pmd", "nombre": "PMD", "plugin": "maven-pmd-plugin",
+     "que": "Busca patrones problemáticos en el código: variables sin uso, bloques vacíos y complejidad excesiva.",
+     "comando": "mvn -f {svc}/pom.xml pmd:check",
+     "reportes": "target/pmd.xml"},
+    {"id": "spotbugs", "nombre": "SpotBugs", "plugin": "spotbugs-maven-plugin",
+     "que": "Analiza el bytecode para detectar errores probables: referencias nulas, recursos sin cerrar y problemas de concurrencia.",
+     "comando": "mvn -f {svc}/pom.xml spotbugs:check",
+     "reportes": "target/spotbugsXml.xml"},
+    {"id": "jacoco", "nombre": "JaCoCo", "plugin": "jacoco-maven-plugin",
+     "que": "Mide la cobertura de pruebas (líneas y ramas) y puede fallar el build si no se alcanza el mínimo configurado.",
+     "comando": "mvn -f {svc}/pom.xml verify",
+     "reportes": "target/site/jacoco/index.html"},
+    {"id": "javadoc", "nombre": "Javadoc", "plugin": "maven-javadoc-plugin",
+     "que": "Genera documentación técnica a partir de los comentarios /** */.",
+     "comando": "mvn -f {svc}/pom.xml javadoc:javadoc",
+     "reportes": "target/site/apidocs/index.html"},
+    {"id": "cobertura", "nombre": "Cobertura", "plugin": "cobertura-maven-plugin",
+     "que": "Alternativa a JaCoCo para medir la cobertura de pruebas.",
+     "comando": "mvn -f {svc}/pom.xml cobertura:cobertura",
+     "reportes": "target/site/cobertura/index.html"},
+]
+
+CSS_TEC = (
+    ":root{--bg:#f5f7fb;--superficie:#fff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;color-scheme:light}"
+    "@media (prefers-color-scheme: dark){:root:not([data-theme=\"light\"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;color-scheme:dark}}"
+    "*{box-sizing:border-box}"
+    "body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,'Segoe UI',sans-serif;padding-bottom:40px}"
+    "a{color:hsl(var(--h) 70% 45%)}"
+    ".cab{background:linear-gradient(135deg,hsl(var(--h) 72% 40%),hsl(calc(var(--h) + 30) 78% 26%));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 56px}"
+    ".in{max-width:900px;margin:0 auto;min-width:0}"
+    ".volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}"
+    ".etq{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin:14px 0 10px}"
+    "h1{margin:0 0 8px;font-size:28px;line-height:1.2;overflow-wrap:anywhere}"
+    ".lead{margin:0;opacity:.92;max-width:70ch}"
+    "main{max-width:900px;margin:-32px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px))}"
+    ".panel{background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;margin-bottom:16px;min-width:0;overflow-wrap:anywhere}"
+    "h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}"
+    "pre{overflow-x:auto;background:rgba(127,127,127,.12);padding:12px;border-radius:10px;font-size:13px}"
+    "table{width:100%;border-collapse:collapse;font-size:14px}"
+    "th,td{text-align:left;padding:8px;border-bottom:1px solid var(--linea);vertical-align:top}"
+    "th{color:var(--muted);font-size:12px;text-transform:uppercase}"
+    ".chip{display:inline-block;font:600 12px ui-monospace,monospace;background:hsl(var(--h) 80% 50% / .16);color:hsl(var(--h) 70% 35%);border-radius:6px;padding:3px 8px;margin:2px 4px 2px 0}"
+)
+
+
+def bloque_plugin(texto, artefacto):
+    for bloque in re.findall(r"<plugin>[\s\S]*?</plugin>", texto):
+        if f"<artifactId>{artefacto}</artifactId>" in bloque:
+            return bloque
+    return None
+
+
+def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs):
+    e = html.escape
+    comando = t["comando"].replace("{svc}", svc)
+    if t["id"] == "pruebas":
+        secciones = (
+            f"<section class='panel'><h2>Clases de prueba ({len(pruebas)})</h2><ul>"
+            + "".join(f"<li><code>{e(n)}</code></li>" for n in pruebas) + "</ul></section>"
+            + ("<section class='panel'><h2>Librerías de prueba</h2><ul>"
+               + "".join(f"<li><code>{e(l)}</code></li>" for l in libs) + "</ul></section>" if libs else "")
+        )
+        config = "<p>Surefire y Failsafe vienen configurados por el parent de Spring Boot; el pom del servicio solo declara Failsafe.</p>"
+    else:
+        version = re.search(r"<version>([^<]+)</version>", bloque)
+        goals = re.findall(r"<goal>([^<]+)</goal>", bloque)
+        conf = re.search(r"<configuration>[\s\S]*?</configuration>", bloque)
+        filas = (
+            f"<tr><th>Plugin</th><td><code>{e(t['plugin'])}</code></td></tr>"
+            f"<tr><th>Versión</th><td>{e(version.group(1)) if version else 'Heredada del parent'}</td></tr>"
+            f"<tr><th>Goals</th><td>{e(', '.join(goals)) if goals else 'Por defecto del plugin'}</td></tr>"
+        )
+        config = f"<table>{filas}</table>"
+        secciones = ""
+        if conf:
+            secciones = (f"<section class='panel'><h2>Configuración en pom.xml</h2><pre><code>"
+                         f"{e(conf.group(0))}</code></pre></section>")
+    cuerpo = (
+        f"<section class='panel'><h2>Qué hace</h2><p>{e(t['que'])}</p></section>"
+        f"<section class='panel'><h2>Plugin y versión</h2>{config}</section>"
+        f"{secciones}"
+        f"<section class='panel'><h2>Cómo ejecutarlo</h2><pre><code>{e(comando)}</code></pre></section>"
+        f"<section class='panel'><h2>Reportes</h2><p><code>{e(t['reportes'])}</code></p></section>"
+    )
+    return (
+        "<!doctype html><html lang='es'><head><meta charset='utf-8'>"
+        "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+        f"<title>{e(t['nombre'])} · {e(svc)}</title><style>{CSS_TEC}</style></head>"
+        f"<body style='--h:{hue:.0f}'>"
+        f"<header class='cab'><div class='in'><a class='volver' href='../../{e(svc)}.html#tecnologias'>← Ficha de {e(svc)}</a>"
+        f"<div><span class='etq'>Tecnología</span></div><h1>{e(t['nombre'])}</h1>"
+        f"<p class='lead'>{e(svc)}</p></div></header>"
+        f"<main>{cuerpo}</main></body></html>"
+    )
+
+
+def generar_tecnologias(svc, svc_dir, hue):
+    import shutil
+    texto = leer(os.path.join(svc_dir, "pom.xml"))
+    destino = os.path.join(SALIDA, svc, "tecnologias")
+    if os.path.isdir(destino):
+        shutil.rmtree(destino)
+    clases = sorted(glob.glob(os.path.join(svc_dir, "src", "test", "java", "**", "*.java"), recursive=True))
+    nombres = [os.path.basename(c)[:-5] for c in clases]
+    libs = sorted(set(re.findall(
+        r"<artifactId>([^<]*(?:junit|mockito|testcontainers|assertj|archunit|rest-assured)[^<]*)</artifactId>", texto)))
+    resultado = []
+    for t in TECNOLOGIAS:
+        if t["id"] == "pruebas":
+            bloque = None
+            aplicado = bool(clases)
+        else:
+            bloque = bloque_plugin(texto, t["plugin"])
+            aplicado = bloque is not None
+        if aplicado:
+            os.makedirs(destino, exist_ok=True)
+            with open(os.path.join(destino, t["id"] + ".html"), "w", encoding="utf-8") as f:
+                f.write(pagina_tecnologia(svc, hue, t, bloque, nombres, libs))
+        resultado.append({"id": t["id"], "nombre": t["nombre"], "resumen": t["que"],
+                          "aplicado": aplicado,
+                          "archivo": f"{svc}/tecnologias/{t['id']}.html" if aplicado else None})
+    return resultado
+
+
 
 
 def main():
@@ -685,6 +841,7 @@ def main():
         roles = sorted({r for f in filas for r in re.findall(r"'([A-Z_]+)'", f["roles"])})
         hue = (len(resumen) * 137.508) % 360
         diagramas = copiar_diagramas(svc)
+        tecnologias = generar_tecnologias(svc, svc_dir, hue)
         datos = {
             "svc": svc,
             "info": {"nombre": svc, "descripcion": descripcion, "puerto": puerto_de(svc_dir),
@@ -694,6 +851,7 @@ def main():
             "permisos": filas,
             "diagramas": diagramas,
             "api": bool(n),
+            "tecnologias": tecnologias,
         }
         ruta_json = os.path.join(SALIDA, svc + ".json")
         if n:
