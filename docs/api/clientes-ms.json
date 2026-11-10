@@ -1,0 +1,1208 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API clientes-ms",
+    "version": "0.1.0",
+    "description": "Microservicio de Clientes del área comercial. Gestiona prospectos, clientes, contactos, interacciones con clientes y consentimientos de protección de datos. Lo consumen Pedidos, Facturación y la interfaz de ventas."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Ruta relativa del servicio"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Cliente"
+    },
+    {
+      "name": "Consentimiento"
+    },
+    {
+      "name": "Interaccion"
+    },
+    {
+      "name": "Metricas"
+    },
+    {
+      "name": "Prospecto"
+    }
+  ],
+  "paths": {
+    "/v1/clientes": {
+      "post": {
+        "operationId": "clientes-ms.ClienteController.crear",
+        "summary": "Crear",
+        "tags": [
+          "Cliente"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClienteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('ADMIN')",
+        "parameters": [
+          {
+            "name": "confirmarDuplicado",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoClienteRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "clientes-ms.ClienteController.buscar",
+        "summary": "Buscar",
+        "tags": [
+          "Cliente"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "PagedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('VENTAS', 'ADMIN')",
+        "parameters": [
+          {
+            "name": "rfc",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nombre",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/clientes/{clienteId}/interacciones": {
+      "post": {
+        "operationId": "clientes-ms.InteraccionController.registrar",
+        "summary": "Registrar",
+        "tags": [
+          "Interaccion"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InteraccionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('VENTAS')",
+        "parameters": [
+          {
+            "name": "clienteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevaInteraccionRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "clientes-ms.InteraccionController.listar",
+        "summary": "Listar",
+        "tags": [
+          "Interaccion"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "PagedModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('VENTAS')",
+        "parameters": [
+          {
+            "name": "clienteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/clientes/{id}": {
+      "get": {
+        "operationId": "clientes-ms.ClienteController.obtener",
+        "summary": "Obtener",
+        "tags": [
+          "Cliente"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClienteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('VENTAS', 'ADMIN')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "clientes-ms.ClienteController.actualizar",
+        "summary": "Actualizar",
+        "tags": [
+          "Cliente"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClienteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('ADMIN')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarClienteRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clientes/{id}/contactos": {
+      "post": {
+        "operationId": "clientes-ms.ClienteController.agregarContacto",
+        "summary": "Agregar contacto",
+        "tags": [
+          "Cliente"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('ADMIN')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactoRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clientes/{id}/estatus": {
+      "patch": {
+        "operationId": "clientes-ms.ClienteController.cambiarEstatus",
+        "summary": "Cambiar estatus",
+        "tags": [
+          "Cliente"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClienteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('ADMIN')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambioEstatusClienteRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/consentimientos/{id}/revocacion": {
+      "post": {
+        "operationId": "clientes-ms.ConsentimientoController.revocar",
+        "summary": "Revocar",
+        "tags": [
+          "Consentimiento"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentimientoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('LEGAL')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/contactos/{contactoId}/consentimientos": {
+      "post": {
+        "operationId": "clientes-ms.ConsentimientoController.otorgar",
+        "summary": "Otorgar",
+        "tags": [
+          "Consentimiento"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentimientoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('LEGAL')",
+        "parameters": [
+          {
+            "name": "contactoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoConsentimientoRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/metricas/conversion": {
+      "get": {
+        "operationId": "clientes-ms.MetricasController.conversion",
+        "summary": "Conversion",
+        "tags": [
+          "Metricas"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricaConversionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('VENTAS')",
+        "parameters": [
+          {
+            "name": "mes",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "YearMonth"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/prospectos": {
+      "post": {
+        "operationId": "clientes-ms.ProspectoController.crear",
+        "summary": "Crear",
+        "tags": [
+          "Prospecto"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProspectoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('VENTAS')",
+        "parameters": [
+          {
+            "name": "confirmarDuplicado",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoProspectoRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/prospectos/{id}": {
+      "get": {
+        "operationId": "clientes-ms.ProspectoController.obtener",
+        "summary": "Obtener",
+        "tags": [
+          "Prospecto"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProspectoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('VENTAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/prospectos/{id}/conversion": {
+      "post": {
+        "operationId": "clientes-ms.ProspectoController.convertir",
+        "summary": "Convertir",
+        "tags": [
+          "Prospecto"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClienteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('VENTAS', 'ADMIN')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConvertirProspectoRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/prospectos/{id}/estatus": {
+      "patch": {
+        "operationId": "clientes-ms.ProspectoController.cambiarEstatus",
+        "summary": "Cambiar estatus",
+        "tags": [
+          "Prospecto"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProspectoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('VENTAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambioEstatusProspectoRequest"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "NuevoClienteRequest": {
+        "type": "object",
+        "properties": {
+          "razonSocial": {
+            "type": "string"
+          },
+          "rfc": {
+            "type": "string"
+          },
+          "contactoPrincipal": {
+            "$ref": "#/components/schemas/DatosContactoRequest"
+          }
+        }
+      },
+      "DatosContactoRequest": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          },
+          "rol": {
+            "$ref": "#/components/schemas/RolContacto"
+          }
+        }
+      },
+      "RolContacto": {
+        "type": "object",
+        "properties": {}
+      },
+      "ClienteResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "razonSocial": {
+            "type": "string"
+          },
+          "rfc": {
+            "type": "string"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusCliente"
+          },
+          "prospectoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fechaAlta": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "EstatusCliente": {
+        "type": "object",
+        "properties": {}
+      },
+      "ActualizarClienteRequest": {
+        "type": "object",
+        "properties": {
+          "razonSocial": {
+            "type": "string"
+          }
+        }
+      },
+      "CambioEstatusClienteRequest": {
+        "type": "object",
+        "properties": {
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusCliente"
+          }
+        }
+      },
+      "ContactoRequest": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          },
+          "rol": {
+            "$ref": "#/components/schemas/RolContacto"
+          },
+          "principal": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ContactoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clienteId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          },
+          "rol": {
+            "$ref": "#/components/schemas/RolContacto"
+          },
+          "principal": {
+            "type": "boolean"
+          }
+        }
+      },
+      "NuevoConsentimientoRequest": {
+        "type": "object",
+        "properties": {
+          "finalidad": {
+            "type": "string"
+          },
+          "fechaOtorgado": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "medio": {
+            "$ref": "#/components/schemas/MedioConsentimiento"
+          },
+          "vigencia": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "MedioConsentimiento": {
+        "type": "object",
+        "properties": {}
+      },
+      "ConsentimientoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "contactoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "finalidad": {
+            "type": "string"
+          },
+          "fechaOtorgado": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "medio": {
+            "$ref": "#/components/schemas/MedioConsentimiento"
+          },
+          "vigencia": {
+            "type": "string",
+            "format": "date"
+          },
+          "revocadoEn": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "NuevaInteraccionRequest": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "$ref": "#/components/schemas/TipoInteraccion"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "resumen": {
+            "type": "string"
+          }
+        }
+      },
+      "TipoInteraccion": {
+        "type": "object",
+        "properties": {}
+      },
+      "InteraccionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clienteId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoInteraccion"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "responsableId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resumen": {
+            "type": "string"
+          }
+        }
+      },
+      "MetricaConversionResponse": {
+        "type": "object",
+        "properties": {
+          "mes": {
+            "type": "string"
+          },
+          "conversiones": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "NuevoProspectoRequest": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          },
+          "rfc": {
+            "type": "string"
+          },
+          "fuente": {
+            "$ref": "#/components/schemas/Fuente"
+          }
+        }
+      },
+      "Fuente": {
+        "type": "object",
+        "properties": {}
+      },
+      "ProspectoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          },
+          "rfc": {
+            "type": "string"
+          },
+          "fuente": {
+            "$ref": "#/components/schemas/Fuente"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusProspecto"
+          },
+          "fechaRegistro": {
+            "type": "string",
+            "format": "date"
+          },
+          "fechaConversion": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EstatusProspecto": {
+        "type": "object",
+        "properties": {
+          "ABIERTOS": {
+            "type": "string",
+            "description": "static Set<EstatusProspecto>"
+          }
+        }
+      },
+      "CambioEstatusProspectoRequest": {
+        "type": "object",
+        "properties": {
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusProspecto"
+          }
+        }
+      },
+      "ConvertirProspectoRequest": {
+        "type": "object",
+        "properties": {
+          "razonSocial": {
+            "type": "string"
+          },
+          "rfc": {
+            "type": "string"
+          },
+          "contactoPrincipal": {
+            "$ref": "#/components/schemas/DatosContactoRequest"
+          }
+        }
+      }
+    }
+  }
+}

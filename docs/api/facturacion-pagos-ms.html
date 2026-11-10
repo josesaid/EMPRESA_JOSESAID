@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API facturacion-pagos-ms · Swagger</title>
+<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
+<style>body{margin:0} .topbar{display:none}
+.volver{font:14px system-ui,sans-serif;padding:10px 16px;background:#1b1f24;color:#fff}
+.volver a{color:#9ecbff}</style>
+</head>
+<body>
+<div class="volver"><a href="index.html">← Índice de servicios</a> · facturacion-pagos-ms</div>
+<div id="swagger-ui"></div>
+<script type="application/json" id="spec">
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API facturacion-pagos-ms",
+    "version": "0.1.0",
+    "description": "Microservicio del área **Facturación y pagos** de EMPRESA_JOSESAID. Emite comprobantes a partir de órdenes, registra cobros y gestiona cancelaciones."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Ruta relativa del servicio"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ComprobanteControlador"
+    },
+    {
+      "name": "CuentasPorPagarControlador"
+    }
+  ],
+  "paths": {
+    "/v1/comprobantes": {
+      "post": {
+        "operationId": "facturacion-pagos-ms.ComprobanteControlador.crear",
+        "summary": "Crear",
+        "tags": [
+          "ComprobanteControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComprobanteRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('FINANZAS')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearComprobanteSolicitud"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "facturacion-pagos-ms.ComprobanteControlador.buscarPorFolio",
+        "summary": "Buscar por folio",
+        "tags": [
+          "ComprobanteControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComprobanteRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('FINANZAS','VENTAS')",
+        "parameters": [
+          {
+            "name": "folio",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/comprobantes/pendientes-cobro": {
+      "get": {
+        "operationId": "facturacion-pagos-ms.ComprobanteControlador.listarPendientesCobro",
+        "summary": "Listar pendientes cobro",
+        "tags": [
+          "ComprobanteControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ComprobantePendienteRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('FINANZAS','VENTAS')"
+      }
+    },
+    "/v1/comprobantes/{id}": {
+      "get": {
+        "operationId": "facturacion-pagos-ms.ComprobanteControlador.obtener",
+        "summary": "Obtener",
+        "tags": [
+          "ComprobanteControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComprobanteRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('FINANZAS','VENTAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/comprobantes/{id}/cancelacion": {
+      "post": {
+        "operationId": "facturacion-pagos-ms.ComprobanteControlador.cancelar",
+        "summary": "Cancelar",
+        "tags": [
+          "ComprobanteControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComprobanteRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('FINANZAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelarSolicitud"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/comprobantes/{id}/emision": {
+      "post": {
+        "operationId": "facturacion-pagos-ms.ComprobanteControlador.emitir",
+        "summary": "Emitir",
+        "tags": [
+          "ComprobanteControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComprobanteRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('FINANZAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/comprobantes/{id}/pagos": {
+      "post": {
+        "operationId": "facturacion-pagos-ms.ComprobanteControlador.registrarPago",
+        "summary": "Registrar pago",
+        "tags": [
+          "ComprobanteControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "?"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('FINANZAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrarPagoSolicitud"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/cuentas-por-pagar/pagos": {
+      "get": {
+        "operationId": "facturacion-pagos-ms.CuentasPorPagarControlador.listarPagos",
+        "summary": "Listar pagos",
+        "tags": [
+          "CuentasPorPagarControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PagoListadoRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('FINANZAS')"
+      }
+    },
+    "/v1/cuentas-por-pagar/{id}": {
+      "get": {
+        "operationId": "facturacion-pagos-ms.CuentasPorPagarControlador.obtener",
+        "summary": "Obtener",
+        "tags": [
+          "CuentasPorPagarControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('FINANZAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/cuentas-por-pagar/{id}/pagos": {
+      "post": {
+        "operationId": "facturacion-pagos-ms.CuentasPorPagarControlador.registrarPago",
+        "summary": "Registrar pago",
+        "tags": [
+          "CuentasPorPagarControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "?"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('FINANZAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrarPagoSolicitud"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "CrearComprobanteSolicitud": {
+        "type": "object",
+        "properties": {
+          "ordenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "moneda": {
+            "type": "string"
+          },
+          "subtotal": {
+            "type": "number"
+          }
+        }
+      },
+      "ComprobanteRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ordenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "folio": {
+            "type": "string"
+          },
+          "moneda": {
+            "type": "string"
+          },
+          "subtotal": {
+            "type": "number"
+          },
+          "iva": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "tasaIva": {
+            "type": "number"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusComprobante"
+          },
+          "motivoCancelacion": {
+            "type": "string"
+          },
+          "estatusCobro": {
+            "$ref": "#/components/schemas/EstatusCobro"
+          },
+          "pagado": {
+            "type": "number"
+          },
+          "saldo": {
+            "type": "number"
+          },
+          "pagos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PagoRespuesta"
+            }
+          }
+        }
+      },
+      "EstatusComprobante": {
+        "type": "object",
+        "properties": {}
+      },
+      "EstatusCobro": {
+        "type": "object",
+        "properties": {}
+      },
+      "PagoRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monto": {
+            "type": "number"
+          },
+          "fechaPago": {
+            "type": "string",
+            "format": "date"
+          },
+          "referencia": {
+            "type": "string"
+          }
+        }
+      },
+      "ComprobantePendienteRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "folio": {
+            "type": "string"
+          },
+          "moneda": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number"
+          },
+          "saldo": {
+            "type": "number"
+          },
+          "estatusCobro": {
+            "$ref": "#/components/schemas/EstatusCobro"
+          }
+        }
+      },
+      "CancelarSolicitud": {
+        "type": "object",
+        "properties": {
+          "motivo": {
+            "type": "string"
+          }
+        }
+      },
+      "RegistrarPagoSolicitud": {
+        "type": "object",
+        "properties": {
+          "monto": {
+            "type": "number"
+          },
+          "fechaPago": {
+            "type": "string",
+            "format": "date"
+          },
+          "referencia": {
+            "type": "string"
+          }
+        }
+      },
+      "PagoListadoRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cuentaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monto": {
+            "type": "number"
+          },
+          "fechaPago": {
+            "type": "string",
+            "format": "date"
+          },
+          "referencia": {
+            "type": "string"
+          }
+        }
+      },
+      "CuentaRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ordenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "proveedorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "moneda": {
+            "type": "string"
+          },
+          "monto": {
+            "type": "number"
+          },
+          "saldo": {
+            "type": "number"
+          },
+          "estatus": {
+            "type": "string"
+          },
+          "pagos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PagoRespuesta"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script>
+window.onload = function () {
+  window.ui = SwaggerUIBundle({
+    spec: JSON.parse(document.getElementById("spec").textContent),
+    dom_id: "#swagger-ui",
+    deepLinking: true,
+    persistAuthorization: true
+  });
+};
+</script>
+</body>
+</html>

@@ -27,7 +27,6 @@ BUILD=""
 if [ "${1:-}" = "--build" ]; then BUILD="--build"; fi
 
 inicio=$(date +%s)
-LOGS_INICIO=$(mktemp -d)
 
 formatear() {
   local s=$1
@@ -108,14 +107,7 @@ if [ -n "$BUILD" ]; then
 else
   paso "⬆️  Paso 4/6 · Levantando contenedores"
 fi
-echo "   ⬇️  Descargando imágenes de terceros que falten (Kafka, Redis, Grafana, etc.)..."
-if ! docker compose pull --ignore-pull-failures > "$LOGS_INICIO/pull.log" 2>&1; then
-  echo "   ${AMARILLO}⚠️  Algunas descargas fallaron. Se intentará con las imágenes que ya existan${RST}"
-fi
-echo "   ⬆️  Creando y arrancando contenedores (las imágenes propias se toman de build.sh)..."
-if ! docker compose up -d --pull never; then
-  fallo "docker compose up falló. Si el error dice que falta una imagen (por ejemplo pedidos-ventas-ms), corre primero ./configuration_scripts/build.sh"
-fi
+docker compose up -d $BUILD || fallo "docker compose up falló. Revisa el mensaje anterior."
 echo "   ${VERDE}✅ Contenedores creados${RST}"
 echo "   ${TENUE}⏸️  Pausa de 10 s para que PostgreSQL, Kafka y Redis arranquen...${RST}"
 sleep 10
@@ -184,7 +176,7 @@ paso "🖥️  Paso 7/7 · Levantando la UI (ui-ms)"
 LOGIN_URL=${LOGIN_URL:-http://localhost:8098/login}
 SALUD_UI=${SALUD_UI:-http://localhost:8098/actuator/health}
 echo "   ⬆️  Levantando el contenedor de ui-ms..."
-docker compose --env-file .env -f ui-ms/docker-compose.yml up -d --pull never || fallo "No se pudo levantar ui-ms. Si falta la imagen, corre primero ./configuration_scripts/build.sh"
+docker compose --env-file .env -f ui-ms/docker-compose.yml up -d || fallo "No se pudo levantar ui-ms. Revisa el mensaje anterior."
 echo "   ✅ Contenedor de ui-ms creado"
 espera_ui=$(date +%s)
 while ! curl -fsS "$SALUD_UI" >/dev/null 2>&1; do

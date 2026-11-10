@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API reportes-ejecutivos-ms · Swagger</title>
+<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
+<style>body{margin:0} .topbar{display:none}
+.volver{font:14px system-ui,sans-serif;padding:10px 16px;background:#1b1f24;color:#fff}
+.volver a{color:#9ecbff}</style>
+</head>
+<body>
+<div class="volver"><a href="index.html">← Índice de servicios</a> · reportes-ejecutivos-ms</div>
+<div id="swagger-ui"></div>
+<script type="application/json" id="spec">
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API reportes-ejecutivos-ms",
+    "version": "0.1.0",
+    "description": "- **Nombre:** reportes-ejecutivos-ms"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Ruta relativa del servicio"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ReportesControlador"
+    }
+  ],
+  "paths": {
+    "/v1/indicadores": {
+      "post": {
+        "operationId": "reportes-ejecutivos-ms.ReportesControlador.registrarIndicador",
+        "summary": "Registrar indicador",
+        "tags": [
+          "ReportesControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndicadorRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('DIRECCION')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrarIndicadorPeticion"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "reportes-ejecutivos-ms.ReportesControlador.consultarIndicadores",
+        "summary": "Consultar indicadores",
+        "tags": [
+          "ReportesControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IndicadorRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('DIRECCION','JEFE_AREA')",
+        "parameters": [
+          {
+            "name": "area",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Area"
+            }
+          },
+          {
+            "name": "periodo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/reportes/{id}/exportacion": {
+      "get": {
+        "operationId": "reportes-ejecutivos-ms.ReportesControlador.exportar",
+        "summary": "Exportar",
+        "tags": [
+          "ReportesControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "byte[]"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('DIRECCION')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "formato",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/reportes/{periodo}": {
+      "get": {
+        "operationId": "reportes-ejecutivos-ms.ReportesControlador.consultarReporte",
+        "summary": "Consultar reporte",
+        "tags": [
+          "ReportesControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReporteRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('DIRECCION','JEFE_AREA')",
+        "parameters": [
+          {
+            "name": "periodo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/reportes/{periodo}/cierre": {
+      "post": {
+        "operationId": "reportes-ejecutivos-ms.ReportesControlador.cerrarReporte",
+        "summary": "Cerrar reporte",
+        "tags": [
+          "ReportesControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReporteRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('DIRECCION')",
+        "parameters": [
+          {
+            "name": "periodo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "RegistrarIndicadorPeticion": {
+        "type": "object",
+        "properties": {
+          "area": {
+            "$ref": "#/components/schemas/Area"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "periodo": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "number"
+          },
+          "fuenteActualizadaUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Area": {
+        "type": "object",
+        "properties": {
+          "etiqueta": {
+            "type": "string"
+          }
+        }
+      },
+      "IndicadorRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "area": {
+            "$ref": "#/components/schemas/Area"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "number"
+          },
+          "periodo": {
+            "type": "string"
+          },
+          "fuenteActualizadaUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "desactualizado": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ReporteRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "periodo": {
+            "type": "string"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusReporte"
+          },
+          "creadoUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "cerradoUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "indicadores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IndicadorConsolidadoRespuesta"
+            }
+          }
+        }
+      },
+      "EstatusReporte": {
+        "type": "object",
+        "properties": {}
+      },
+      "IndicadorConsolidadoRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "area": {
+            "$ref": "#/components/schemas/Area"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "number"
+          },
+          "fuenteActualizadaUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "desactualizado": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
+</script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script>
+window.onload = function () {
+  window.ui = SwaggerUIBundle({
+    spec: JSON.parse(document.getElementById("spec").textContent),
+    dom_id: "#swagger-ui",
+    deepLinking: true,
+    persistAuthorization: true
+  });
+};
+</script>
+</body>
+</html>
