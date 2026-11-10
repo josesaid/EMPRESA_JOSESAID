@@ -107,7 +107,7 @@ if [ -n "$BUILD" ]; then
 else
   paso "⬆️  Paso 4/6 · Levantando contenedores"
 fi
-docker compose up -d $BUILD || fallo "docker compose up falló. Revisa el mensaje anterior."
+docker compose up -d --pull never $BUILD || fallo "docker compose up falló. Revisa el mensaje anterior."
 echo "   ${VERDE}✅ Contenedores creados${RST}"
 echo "   ${TENUE}⏸️  Pausa de 10 s para que PostgreSQL, Kafka y Redis arranquen...${RST}"
 sleep 10
@@ -176,7 +176,7 @@ paso "🖥️  Paso 7/7 · Levantando la UI (ui-ms)"
 LOGIN_URL=${LOGIN_URL:-http://localhost:8098/login}
 SALUD_UI=${SALUD_UI:-http://localhost:8098/actuator/health}
 echo "   ⬆️  Levantando el contenedor de ui-ms..."
-docker compose --env-file .env -f ui-ms/docker-compose.yml up -d || fallo "No se pudo levantar ui-ms. Revisa el mensaje anterior."
+docker compose --env-file .env -f ui-ms/docker-compose.yml up -d --pull never || fallo "No se pudo levantar ui-ms. Revisa el mensaje anterior."
 echo "   ✅ Contenedor de ui-ms creado"
 espera_ui=$(date +%s)
 while ! curl -fsS "$SALUD_UI" >/dev/null 2>&1; do
