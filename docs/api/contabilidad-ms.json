@@ -1,0 +1,587 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API contabilidad-ms",
+    "version": "0.1.0",
+    "description": "Microservicio del área **Finanzas y contabilidad** de EMPRESA_JOSESAID. Lleva el libro contable: catálogo de cuentas, pólizas balanceadas, reversas, cierres de periodo y balanza de comprobación."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Ruta relativa del servicio"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ContabilidadControlador"
+    }
+  ],
+  "paths": {
+    "/v1/cuentas": {
+      "post": {
+        "operationId": "contabilidad-ms.ContabilidadControlador.crearCuenta",
+        "summary": "Crear cuenta",
+        "tags": [
+          "ContabilidadControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('CONTADOR')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearCuentaSolicitud"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "contabilidad-ms.ContabilidadControlador.listarCuentas",
+        "summary": "Listar cuentas",
+        "tags": [
+          "ContabilidadControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CuentaRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')"
+      }
+    },
+    "/v1/estados-financieros": {
+      "get": {
+        "operationId": "contabilidad-ms.ContabilidadControlador.estadosFinancieros",
+        "summary": "Estados financieros",
+        "tags": [
+          "ContabilidadControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Balanza"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')",
+        "parameters": [
+          {
+            "name": "periodo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/periodos/{anioMes}/cierre": {
+      "post": {
+        "operationId": "contabilidad-ms.ContabilidadControlador.cerrarPeriodo",
+        "summary": "Cerrar periodo",
+        "tags": [
+          "ContabilidadControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeriodoRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('CONTADOR')",
+        "parameters": [
+          {
+            "name": "anioMes",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/polizas": {
+      "post": {
+        "operationId": "contabilidad-ms.ContabilidadControlador.registrarPoliza",
+        "summary": "Registrar poliza",
+        "tags": [
+          "ContabilidadControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "?"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('CONTADOR')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrarPolizaSolicitud"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "contabilidad-ms.ContabilidadControlador.listarPolizas",
+        "summary": "Listar polizas",
+        "tags": [
+          "ContabilidadControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PolizaRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')",
+        "parameters": [
+          {
+            "name": "periodo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/polizas/{id}": {
+      "get": {
+        "operationId": "contabilidad-ms.ContabilidadControlador.obtenerPoliza",
+        "summary": "Obtener poliza",
+        "tags": [
+          "ContabilidadControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolizaRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('CONTADOR','DIRECCION')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/polizas/{id}/reversa": {
+      "post": {
+        "operationId": "contabilidad-ms.ContabilidadControlador.reversarPoliza",
+        "summary": "Reversar poliza",
+        "tags": [
+          "ContabilidadControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolizaRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('CONTADOR')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "CrearCuentaSolicitud": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "naturaleza": {
+            "$ref": "#/components/schemas/Naturaleza"
+          }
+        }
+      },
+      "Naturaleza": {
+        "type": "object",
+        "properties": {}
+      },
+      "CuentaRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "naturaleza": {
+            "$ref": "#/components/schemas/Naturaleza"
+          },
+          "activa": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RegistrarPolizaSolicitud": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "$ref": "#/components/schemas/TipoPoliza"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date"
+          },
+          "movimientos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MovimientoSolicitud"
+            }
+          }
+        }
+      },
+      "TipoPoliza": {
+        "type": "object",
+        "properties": {}
+      },
+      "MovimientoSolicitud": {
+        "type": "object",
+        "properties": {
+          "cuentaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cargo": {
+            "type": "number"
+          },
+          "abono": {
+            "type": "number"
+          }
+        }
+      },
+      "PolizaRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "periodo": {
+            "type": "string"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoPoliza"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusPoliza"
+          },
+          "reversaDe": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "total": {
+            "type": "number"
+          },
+          "movimientos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MovimientoRespuesta"
+            }
+          }
+        }
+      },
+      "EstatusPoliza": {
+        "type": "object",
+        "properties": {}
+      },
+      "MovimientoRespuesta": {
+        "type": "object",
+        "properties": {
+          "cuentaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cargo": {
+            "type": "number"
+          },
+          "abono": {
+            "type": "number"
+          }
+        }
+      },
+      "PeriodoRespuesta": {
+        "type": "object",
+        "properties": {
+          "anioMes": {
+            "type": "string"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusPeriodo"
+          }
+        }
+      },
+      "EstatusPeriodo": {
+        "type": "object",
+        "properties": {}
+      },
+      "Balanza": {
+        "type": "object",
+        "properties": {
+          "periodo": {
+            "type": "string"
+          },
+          "lineas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Linea"
+            }
+          },
+          "totalCargos": {
+            "type": "number"
+          },
+          "totalAbonos": {
+            "type": "number"
+          },
+          "cuadra": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Linea": {
+        "type": "object",
+        "properties": {
+          "cuentaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "cargos": {
+            "type": "number"
+          },
+          "abonos": {
+            "type": "number"
+          },
+          "saldo": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

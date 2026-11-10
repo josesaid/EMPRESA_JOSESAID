@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API compras-proveedores-ms · Swagger</title>
+<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
+<style>body{margin:0} .topbar{display:none}
+.volver{font:14px system-ui,sans-serif;padding:10px 16px;background:#1b1f24;color:#fff}
+.volver a{color:#9ecbff}</style>
+</head>
+<body>
+<div class="volver"><a href="index.html">← Índice de servicios</a> · compras-proveedores-ms</div>
+<div id="swagger-ui"></div>
+<script type="application/json" id="spec">
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API compras-proveedores-ms",
+    "version": "0.1.0",
+    "description": "Microservicio del área **Compras y proveedores**. Administra proveedores con datos fiscales cifrados, órdenes de compra, su aprobación, la recepción de insumos y su cancelación."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Ruta relativa del servicio"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ComprasControlador"
+    }
+  ],
+  "paths": {
+    "/v1/ordenes-compra": {
+      "post": {
+        "operationId": "compras-proveedores-ms.ComprasControlador.crearOrden",
+        "summary": "Crear orden",
+        "tags": [
+          "ComprasControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "?"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('COMPRAS')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearOrdenSolicitud"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "compras-proveedores-ms.ComprasControlador.listarOrdenes",
+        "summary": "Listar ordenes",
+        "tags": [
+          "ComprasControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResumenOrdenRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('COMPRAS','ALMACEN','DIRECCION')",
+        "parameters": [
+          {
+            "name": "estatus",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/EstatusOrdenCompra"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/ordenes-compra/{id}": {
+      "get": {
+        "operationId": "compras-proveedores-ms.ComprasControlador.obtenerOrden",
+        "summary": "Obtener orden",
+        "tags": [
+          "ComprasControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdenRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('COMPRAS','ALMACEN','DIRECCION')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/ordenes-compra/{id}/aprobacion": {
+      "post": {
+        "operationId": "compras-proveedores-ms.ComprasControlador.aprobarOrden",
+        "summary": "Aprobar orden",
+        "tags": [
+          "ComprasControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdenRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('COMPRAS','DIRECCION')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/ordenes-compra/{id}/cancelacion": {
+      "post": {
+        "operationId": "compras-proveedores-ms.ComprasControlador.cancelarOrden",
+        "summary": "Cancelar orden",
+        "tags": [
+          "ComprasControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdenRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('COMPRAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelarSolicitud"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ordenes-compra/{id}/recepciones": {
+      "post": {
+        "operationId": "compras-proveedores-ms.ComprasControlador.registrarRecepcion",
+        "summary": "Registrar recepcion",
+        "tags": [
+          "ComprasControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdenRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('ALMACEN')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecepcionSolicitud"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/proveedores": {
+      "post": {
+        "operationId": "compras-proveedores-ms.ComprasControlador.crearProveedor",
+        "summary": "Crear proveedor",
+        "tags": [
+          "ComprasControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProveedorRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasRole('COMPRAS')",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearProveedorSolicitud"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "compras-proveedores-ms.ComprasControlador.buscarProveedores",
+        "summary": "Buscar proveedores",
+        "tags": [
+          "ComprasControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProveedorRespuesta"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('COMPRAS','FINANZAS')",
+        "parameters": [
+          {
+            "name": "razonSocial",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/proveedores/{id}": {
+      "get": {
+        "operationId": "compras-proveedores-ms.ComprasControlador.obtenerProveedor",
+        "summary": "Obtener proveedor",
+        "tags": [
+          "ComprasControlador"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProveedorRespuesta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Solicitud inválida"
+          },
+          "401": {
+            "description": "Token ausente o inválido"
+          },
+          "403": {
+            "description": "Sin permiso para esta operación"
+          }
+        },
+        "description": "Roles requeridos: hasAnyRole('COMPRAS','FINANZAS')",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "CrearProveedorSolicitud": {
+        "type": "object",
+        "properties": {
+          "razonSocial": {
+            "type": "string"
+          },
+          "rfc": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          }
+        }
+      },
+      "ProveedorRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "razonSocial": {
+            "type": "string"
+          },
+          "rfc": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusProveedor"
+          }
+        }
+      },
+      "EstatusProveedor": {
+        "type": "object",
+        "properties": {}
+      },
+      "CrearOrdenSolicitud": {
+        "type": "object",
+        "properties": {
+          "proveedorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "moneda": {
+            "type": "string"
+          },
+          "lineas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineaSolicitud"
+            }
+          }
+        }
+      },
+      "LineaSolicitud": {
+        "type": "object",
+        "properties": {
+          "articuloSku": {
+            "type": "string"
+          },
+          "cantidad": {
+            "type": "number"
+          },
+          "precioUnitario": {
+            "type": "number"
+          }
+        }
+      },
+      "EstatusOrdenCompra": {
+        "type": "object",
+        "properties": {}
+      },
+      "ResumenOrdenRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusOrdenCompra"
+          },
+          "razonSocialProveedor": {
+            "type": "string"
+          },
+          "creadaUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "OrdenRespuesta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "proveedorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "estatus": {
+            "$ref": "#/components/schemas/EstatusOrdenCompra"
+          },
+          "moneda": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number"
+          },
+          "motivoCancelacion": {
+            "type": "string"
+          },
+          "lineas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineaRespuesta"
+            }
+          }
+        }
+      },
+      "LineaRespuesta": {
+        "type": "object",
+        "properties": {
+          "articuloSku": {
+            "type": "string"
+          },
+          "cantidadOrdenada": {
+            "type": "number"
+          },
+          "cantidadRecibida": {
+            "type": "number"
+          },
+          "precioUnitario": {
+            "type": "number"
+          },
+          "subtotal": {
+            "type": "number"
+          }
+        }
+      },
+      "RecepcionSolicitud": {
+        "type": "object",
+        "properties": {
+          "lineas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineaRecepcionSolicitud"
+            }
+          }
+        }
+      },
+      "LineaRecepcionSolicitud": {
+        "type": "object",
+        "properties": {
+          "articuloSku": {
+            "type": "string"
+          },
+          "cantidad": {
+            "type": "number"
+          }
+        }
+      },
+      "CancelarSolicitud": {
+        "type": "object",
+        "properties": {
+          "motivo": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+</script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script>
+window.onload = function () {
+  window.ui = SwaggerUIBundle({
+    spec: JSON.parse(document.getElementById("spec").textContent),
+    dom_id: "#swagger-ui",
+    deepLinking: true,
+    persistAuthorization: true
+  });
+};
+</script>
+</body>
+</html>
