@@ -2,7 +2,8 @@ name: Escaneo de imágenes de contenedor
 
 # Construye la imagen de cada microservicio y la escanea con Trivy.
 # Falla si encuentra vulnerabilidades HIGH o CRITICAL que ya tengan parche.
-# El contexto de build es la raíz del repo, como en docker-compose.yml.
+# El contexto de build sigue a docker-compose.yml de cada servicio: la carpeta del
+# servicio, salvo nexus-ms y ui-ms, que usan la raíz del repo (context: ..).
 on:
   push:
     branches: [main]
@@ -34,7 +35,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Construir imagen
-        run: docker build -f ${{ matrix.servicio }}/Dockerfile -t ${{ matrix.servicio }}:ci .
+        run: |
+          if [ "${{ matrix.servicio }}" = "nexus-ms" ] || [ "${{ matrix.servicio }}" = "ui-ms" ]; then
+            CONTEXTO=.
+          else
+            CONTEXTO=${{ matrix.servicio }}
+          fi
+          docker build -f ${{ matrix.servicio }}/Dockerfile -t ${{ matrix.servicio }}:ci "$CONTEXTO"
       - name: Escanear con Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
