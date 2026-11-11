@@ -33,9 +33,11 @@ public class OutboxEvento {
     @Column(name = "enviado_at")
     private Instant enviadoAt;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected OutboxEvento() {
     }
 
+    /** Crea un evento pendiente de publicar en el outbox. */
     public OutboxEvento(UUID id, String tipoAgregado, UUID agregadoId, String tipoEvento, String payload, Instant createdAt) {
         this.id = id;
         this.tipoAgregado = tipoAgregado;
@@ -45,22 +47,27 @@ public class OutboxEvento {
         this.createdAt = createdAt;
     }
 
+    /** Marca el evento como enviado en la fecha indicada. */
     public void marcarEnviado(Instant ahora) {
         this.enviadoAt = ahora;
     }
 
+    /** Devuelve el identificador del evento. */
     public UUID getId() {
         return id;
     }
 
+    /** Devuelve el id del agregado al que pertenece el evento. */
     public UUID getAgregadoId() {
         return agregadoId;
     }
 
+    /** Devuelve el tipo del evento. */
     public String getTipoEvento() {
         return tipoEvento;
     }
 
+    /** Devuelve el contenido JSON del evento. */
     public String getPayload() {
         return payload;
     }

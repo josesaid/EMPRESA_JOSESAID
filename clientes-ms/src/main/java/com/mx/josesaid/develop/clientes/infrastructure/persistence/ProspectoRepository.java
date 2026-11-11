@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/** Acceso a la tabla de prospectos con Spring Data JPA. */
 public interface ProspectoRepository extends JpaRepository<Prospecto, UUID> {
 
     List<Prospecto> findByCorreoHash(String correoHash);
 
     List<Prospecto> findByNombreHash(String nombreHash);
 
+    /** Cuenta los prospectos convertidos en un rango de fechas. */
     long countByEstatusAndFechaConversionGreaterThanEqualAndFechaConversionLessThan(
             EstatusProspecto estatus, Instant desde, Instant hasta);
 }

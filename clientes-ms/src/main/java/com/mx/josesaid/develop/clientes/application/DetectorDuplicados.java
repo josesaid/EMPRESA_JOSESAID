@@ -25,6 +25,7 @@ public class DetectorDuplicados {
     private final ContactoRepository contactos;
     private final MeterRegistry metricas;
 
+    /** Recibe los repositorios y las métricas de duplicados. */
     public DetectorDuplicados(ClienteRepository clientes, ProspectoRepository prospectos,
                               ContactoRepository contactos, MeterRegistry metricas) {
         this.clientes = clientes;
@@ -33,6 +34,7 @@ public class DetectorDuplicados {
         this.metricas = metricas;
     }
 
+    /** Rechaza el RFC si ya pertenece a un cliente que no está dado de baja. Cuenta el hallazgo en la métrica. */
     public void validarRfcUnico(String rfc) {
         if (rfc == null) {
             return;

@@ -15,6 +15,7 @@ public class CryptoConfig {
     private static final int LONGITUD_CLAVE = 32;
     private static final int VERSION_UNICA = 1;
 
+    /** Carga las claves de cifrado al arrancar, antes de que Hibernate use los convertidores. */
     public CryptoConfig(CryptoProperties propiedades) {
         Map<Integer, byte[]> claves = clavesCifrado(propiedades);
         int version = propiedades.versionActiva() == null ? VERSION_UNICA : propiedades.versionActiva();
@@ -24,6 +25,7 @@ public class CryptoConfig {
                 decodificar("app.crypto.clave-indice (CRYPTO_CLAVE_INDICE)", propiedades.claveIndice()));
     }
 
+    /** Convierte las claves configuradas en bytes, verificando que cada una tenga 32 bytes. */
     private static Map<Integer, byte[]> clavesCifrado(CryptoProperties propiedades) {
         Map<Integer, byte[]> claves = new HashMap<>();
         if (propiedades.clavesCifrado() != null && !propiedades.clavesCifrado().isBlank()) {
@@ -44,6 +46,7 @@ public class CryptoConfig {
         return claves;
     }
 
+    /** Decodifica una clave en Base64 y verifica su longitud. Si no es válida, el arranque falla. */
     private static byte[] decodificar(String nombre, String valor) {
         if (valor == null || valor.isBlank()) {
             throw new IllegalStateException("Falta " + nombre);

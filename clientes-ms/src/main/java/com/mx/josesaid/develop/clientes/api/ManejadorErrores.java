@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ManejadorErrores {
 
+    /** Convierte un recurso inexistente en un problema HTTP. */
     @ExceptionHandler(EntidadNoEncontradaException.class)
     ProblemDetail noEncontrado(EntidadNoEncontradaException e) {
         return problema(HttpStatus.NOT_FOUND, "recurso-no-encontrado", "Recurso no encontrado", e.getMessage());
     }
 
+    /** Convierte un RFC ya registrado en un problema HTTP, con el id del cliente existente. */
     @ExceptionHandler(ConflictoRfcException.class)
     ProblemDetail rfcDuplicado(ConflictoRfcException e) {
         ProblemDetail pd = problema(HttpStatus.CONFLICT, "rfc-duplicado", "Conflicto de RFC", e.getMessage());
@@ -35,6 +37,7 @@ public class ManejadorErrores {
         return pd;
     }
 
+    /** Convierte un posible duplicado en un problema HTTP con las coincidencias encontradas. */
     @ExceptionHandler(DuplicadoPosibleException.class)
     ProblemDetail posibleDuplicado(DuplicadoPosibleException e) {
         ProblemDetail pd = problema(HttpStatus.CONFLICT, "posible-duplicado", "Posible duplicado",
@@ -43,22 +46,26 @@ public class ManejadorErrores {
         return pd;
     }
 
+    /** Convierte una transición de estatus no permitida en un problema HTTP. */
     @ExceptionHandler(TransicionInvalidaException.class)
     ProblemDetail transicionInvalida(TransicionInvalidaException e) {
         return problema(HttpStatus.CONFLICT, "transicion-invalida", "Transición no permitida", e.getMessage());
     }
 
+    /** Convierte una regla de negocio incumplida en un problema HTTP. */
     @ExceptionHandler(ReglaNegocioException.class)
     ProblemDetail reglaDeNegocio(ReglaNegocioException e) {
         return problema(HttpStatus.UNPROCESSABLE_ENTITY, "regla-de-negocio", "Regla de negocio", e.getMessage());
     }
 
+    /** Convierte una violación de integridad de la base en un problema HTTP, sin revelar detalles internos. */
     @ExceptionHandler(DataIntegrityViolationException.class)
     ProblemDetail integridad(DataIntegrityViolationException e) {
         return problema(HttpStatus.CONFLICT, "conflicto-de-integridad", "Conflicto de integridad",
                 "La operación viola una restricción única; reintente consultando el registro existente");
     }
 
+    /** Convierte errores de validación de los datos recibidos en un problema HTTP con el detalle de cada campo. */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ProblemDetail validacion(MethodArgumentNotValidException e) {
         List<Map<String, String>> errores = e.getBindingResult().getFieldErrors().stream()
@@ -70,6 +77,7 @@ public class ManejadorErrores {
         return pd;
     }
 
+    /** Convierte parámetros inválidos en un problema HTTP. */
     @ExceptionHandler(ConstraintViolationException.class)
     ProblemDetail parametrosInvalidos(ConstraintViolationException e) {
         List<Map<String, String>> errores = e.getConstraintViolations().stream()
@@ -81,6 +89,7 @@ public class ManejadorErrores {
         return pd;
     }
 
+    /** Construye la respuesta de error con su código, título y detalle. */
     private static ProblemDetail problema(HttpStatus estado, String codigo, String titulo, String detalle) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(estado, detalle);
         pd.setType(URI.create("urn:clientes:error:" + codigo));

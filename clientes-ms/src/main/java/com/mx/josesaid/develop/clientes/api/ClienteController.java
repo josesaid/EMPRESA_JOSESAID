@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Endpoints de clientes: alta, búsqueda, detalle, cambios de razón social y estatus, y contactos. */
 @RestController
 @Validated
 @RequestMapping("/v1/clientes")
@@ -45,12 +46,14 @@ public class ClienteController {
     private final Auditoria auditoria;
     private final Presentacion presentacion;
 
+    /** Recibe el servicio de clientes, la auditoría y la zona de presentación. */
     public ClienteController(ClienteService servicio, Auditoria auditoria, Presentacion presentacion) {
         this.servicio = servicio;
         this.auditoria = auditoria;
         this.presentacion = presentacion;
     }
 
+    /** Da de alta un cliente directo con su contacto principal. Registra la acción en la auditoría. */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClienteResponse> crear(@Valid @RequestBody NuevoClienteRequest req,
@@ -62,6 +65,7 @@ public class ClienteController {
                 .body(ClienteResponse.de(creado));
     }
 
+    /** Busca clientes por RFC exacto o por nombre parcial. Requiere al menos uno de los dos. */
     @GetMapping
     @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public PagedModel<ClienteResumenResponse> buscar(
@@ -78,6 +82,7 @@ public class ClienteController {
                         .orElse(null))));
     }
 
+    /** Devuelve el detalle de un cliente. Registra en la auditoría quién lo consultó. */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public ClienteResponse obtener(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
@@ -86,18 +91,21 @@ public class ClienteController {
         return ClienteResponse.de(cliente);
     }
 
+    /** Cambia la razón social de un cliente. */
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ClienteResponse actualizar(@PathVariable UUID id, @Valid @RequestBody ActualizarClienteRequest req) {
         return ClienteResponse.de(servicio.actualizarRazonSocial(id, req.razonSocial()));
     }
 
+    /** Cambia el estatus de un cliente. Las transiciones no permitidas se rechazan. */
     @PatchMapping("/{id}/estatus")
     @PreAuthorize("hasRole('ADMIN')")
     public ClienteResponse cambiarEstatus(@PathVariable UUID id, @Valid @RequestBody CambioEstatusClienteRequest req) {
         return ClienteResponse.de(servicio.cambiarEstatus(id, req.estatus()));
     }
 
+    /** Agrega un contacto al cliente. Si es principal, desmarca el anterior. */
     @PostMapping("/{id}/contactos")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ContactoResponse> agregarContacto(@PathVariable UUID id,

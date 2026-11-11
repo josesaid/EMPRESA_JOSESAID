@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 
+/** Contacto o evento comercial registrado con un cliente: llamada, correo, reunión, etc. */
 @Entity
 @Table(name = "interaccion")
 public class Interaccion {
@@ -38,9 +39,11 @@ public class Interaccion {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected Interaccion() {
     }
 
+    /** Crea una interacción con su tipo, fecha y resumen. */
     public static Interaccion nueva(UUID id, UUID clienteId, TipoInteraccion tipo, Instant fecha,
                                     UUID responsableId, String resumen, Instant ahora) {
         Interaccion i = new Interaccion();
@@ -54,26 +57,32 @@ public class Interaccion {
         return i;
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() {
         return id;
     }
 
+    /** Devuelve el id del cliente. */
     public UUID getClienteId() {
         return clienteId;
     }
 
+    /** Devuelve el tipo de interacción. */
     public TipoInteraccion getTipo() {
         return tipo;
     }
 
+    /** Devuelve la fecha y hora de la interacción en UTC. */
     public Instant getFecha() {
         return fecha;
     }
 
+    /** Devuelve el id del usuario que la registró. */
     public UUID getResponsableId() {
         return responsableId;
     }
 
+    /** Devuelve el resumen. */
     public String getResumen() {
         return resumen;
     }

@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/** Cliente activo de la empresa. Se crea desde un prospecto convertido o con alta directa. */
 @Entity
 @Table(name = "cliente")
 public class Cliente {
@@ -51,9 +52,11 @@ public class Cliente {
     @Column(name = "version", nullable = false)
     private long version;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected Cliente() {
     }
 
+    /** Crea un cliente en estatus ACTIVO. */
     public static Cliente nuevo(UUID id, String razonSocial, String rfc, UUID prospectoId,
                                 LocalDate fechaAlta, Instant ahora) {
         Cliente c = new Cliente();
@@ -69,11 +72,13 @@ public class Cliente {
         return c;
     }
 
+    /** Cambia la razón social tras validar que no esté vacía. */
     public void actualizarRazonSocial(String nuevaRazonSocial, Instant ahora) {
         this.razonSocial = nuevaRazonSocial.trim();
         this.updatedAt = ahora;
     }
 
+    /** Cambia el estatus si la transición está permitida. */
     public void cambiarEstatus(EstatusCliente destino, Instant ahora) {
         if (estatus == destino) {
             return;
@@ -85,30 +90,37 @@ public class Cliente {
         updatedAt = ahora;
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() {
         return id;
     }
 
+    /** Devuelve la razón social. */
     public String getRazonSocial() {
         return razonSocial;
     }
 
+    /** Devuelve el RFC. */
     public String getRfc() {
         return rfc;
     }
 
+    /** Devuelve el estatus. */
     public EstatusCliente getEstatus() {
         return estatus;
     }
 
+    /** Devuelve el id del prospecto del que se originó, si aplica. */
     public UUID getProspectoId() {
         return prospectoId;
     }
 
+    /** Devuelve la fecha de alta. */
     public LocalDate getFechaAlta() {
         return fechaAlta;
     }
 
+    /** Devuelve la versión para control de concurrencia optimista. */
     public long getVersion() {
         return version;
     }

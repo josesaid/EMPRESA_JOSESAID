@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Endpoints de interacciones comerciales de un cliente. */
 @RestController
 @RequestMapping("/v1/clientes/{clienteId}/interacciones")
 public class InteraccionController {
@@ -33,12 +34,14 @@ public class InteraccionController {
     private final Auditoria auditoria;
     private final Presentacion presentacion;
 
+    /** Recibe el servicio de interacciones, la auditoría y la zona de presentación. */
     public InteraccionController(InteraccionService servicio, Auditoria auditoria, Presentacion presentacion) {
         this.servicio = servicio;
         this.auditoria = auditoria;
         this.presentacion = presentacion;
     }
 
+    /** Registra una interacción con el cliente. El responsable es el usuario autenticado. */
     @PostMapping
     @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public ResponseEntity<InteraccionResponse> registrar(@PathVariable UUID clienteId,
@@ -50,6 +53,7 @@ public class InteraccionController {
                 .body(InteraccionResponse.de(creada, presentacion));
     }
 
+    /** Lista las interacciones de un cliente, paginadas. */
     @GetMapping
     @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public PagedModel<InteraccionResponse> listar(

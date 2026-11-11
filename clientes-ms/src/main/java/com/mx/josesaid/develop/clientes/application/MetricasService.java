@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Calcula métricas comerciales a partir de los prospectos convertidos. */
 @Service
 public class MetricasService {
 
     private final ProspectoRepository prospectos;
     private final ZoneId zona;
 
+    /** Recibe el repositorio de prospectos y la zona horaria del negocio. */
     public MetricasService(ProspectoRepository prospectos, @Value("${app.zona-presentacion}") String zona) {
         this.prospectos = prospectos;
         this.zona = ZoneId.of(zona);

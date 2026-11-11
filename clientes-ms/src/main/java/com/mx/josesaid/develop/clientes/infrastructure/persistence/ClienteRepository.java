@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/** Acceso a la tabla de clientes con Spring Data JPA. */
 public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
 
     Optional<Cliente> findFirstByRfcHashAndEstatusNot(String rfcHash, EstatusCliente estatus);

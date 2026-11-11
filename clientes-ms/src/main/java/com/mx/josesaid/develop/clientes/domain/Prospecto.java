@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/** Posible cliente que aún no se ha convertido. Pasa por estatus hasta convertirse en cliente. */
 @Entity
 @Table(name = "prospecto")
 public class Prospecto {
@@ -66,9 +67,11 @@ public class Prospecto {
     @Column(name = "version", nullable = false)
     private long version;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected Prospecto() {
     }
 
+    /** Crea un prospecto en estatus inicial y guarda huellas de búsqueda de su correo, nombre y RFC. */
     public static Prospecto nuevo(UUID id, String nombre, String correo, String rfc, Fuente fuente,
                                   LocalDate hoy, Instant ahora) {
         Prospecto p = new Prospecto();
@@ -109,46 +112,57 @@ public class Prospecto {
         updatedAt = ahora;
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() {
         return id;
     }
 
+    /** Devuelve el nombre. */
     public String getNombre() {
         return nombre;
     }
 
+    /** Devuelve el correo. */
     public String getCorreo() {
         return correo;
     }
 
+    /** Devuelve el RFC. */
     public String getRfc() {
         return rfc;
     }
 
+    /** Devuelve la fuente por la que llegó el prospecto. */
     public Fuente getFuente() {
         return fuente;
     }
 
+    /** Devuelve el estatus. */
     public EstatusProspecto getEstatus() {
         return estatus;
     }
 
+    /** Devuelve la fecha de registro. */
     public LocalDate getFechaRegistro() {
         return fechaRegistro;
     }
 
+    /** Devuelve la fecha de conversión, o nula si no se ha convertido. */
     public Instant getFechaConversion() {
         return fechaConversion;
     }
 
+    /** Devuelve la huella de búsqueda del correo, sin el correo en claro. */
     public String getCorreoHash() {
         return correoHash;
     }
 
+    /** Devuelve la huella de búsqueda del nombre. */
     public String getNombreHash() {
         return nombreHash;
     }
 
+    /** Devuelve la versión para control de concurrencia optimista. */
     public long getVersion() {
         return version;
     }

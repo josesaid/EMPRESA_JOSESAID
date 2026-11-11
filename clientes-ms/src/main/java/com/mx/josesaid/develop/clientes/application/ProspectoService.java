@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Lógica de negocio de prospectos: registro, cambios de estatus y conversión a cliente. */
 @Service
 @Transactional
 public class ProspectoService {
@@ -30,6 +31,7 @@ public class ProspectoService {
     private final MeterRegistry metricas;
     private final Clock reloj;
 
+    /** Recibe los repositorios, el detector de duplicados, el registrador de eventos, las métricas y el reloj. */
     public ProspectoService(ProspectoRepository prospectos, ClienteRepository clientes, ContactoRepository contactos,
                             DetectorDuplicados duplicados, RegistradorEventos eventos,
                             MeterRegistry metricas, Clock reloj) {
@@ -42,6 +44,7 @@ public class ProspectoService {
         this.reloj = reloj;
     }
 
+    /** Registra un prospecto. Valida el RFC y los posibles duplicados antes de guardarlo. */
     public Prospecto crear(NuevoProspecto cmd) {
         String rfc = Normalizacion.rfc(cmd.rfc());
         duplicados.validarRfcUnico(rfc);
@@ -54,6 +57,7 @@ public class ProspectoService {
         return guardado;
     }
 
+    /** Devuelve un prospecto por id o lanza EntidadNoEncontradaException. */
     @Transactional(readOnly = true)
     public Prospecto obtener(UUID id) {
         return prospectos.findById(id).orElseThrow(() -> new EntidadNoEncontradaException("prospecto", id));

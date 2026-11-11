@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/** Consentimiento de un contacto para una finalidad concreta. Se conserva aunque se revoque. */
 @Entity
 @Table(name = "consentimiento")
 public class Consentimiento {
@@ -39,9 +40,11 @@ public class Consentimiento {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected Consentimiento() {
     }
 
+    /** Crea un consentimiento otorgado, con su vigencia. */
     public static Consentimiento otorgado(UUID id, UUID contactoId, String finalidad, Instant fechaOtorgado,
                                           MedioConsentimiento medio, LocalDate vigencia, Instant ahora) {
         Consentimiento c = new Consentimiento();
@@ -71,30 +74,37 @@ public class Consentimiento {
         return revocadoAt == null && (vigencia == null || !hoy.isAfter(vigencia));
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() {
         return id;
     }
 
+    /** Devuelve el id del contacto. */
     public UUID getContactoId() {
         return contactoId;
     }
 
+    /** Devuelve la finalidad. */
     public String getFinalidad() {
         return finalidad;
     }
 
+    /** Devuelve la fecha en que se otorgó. */
     public Instant getFechaOtorgado() {
         return fechaOtorgado;
     }
 
+    /** Devuelve el medio por el que se otorgó. */
     public MedioConsentimiento getMedio() {
         return medio;
     }
 
+    /** Devuelve la fecha hasta la que es vigente. */
     public LocalDate getVigencia() {
         return vigencia;
     }
 
+    /** Devuelve el momento de la revocación, o nulo si sigue vigente. */
     public Instant getRevocadoAt() {
         return revocadoAt;
     }

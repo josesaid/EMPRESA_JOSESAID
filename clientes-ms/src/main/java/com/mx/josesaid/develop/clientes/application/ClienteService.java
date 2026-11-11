@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Lógica de negocio de clientes: alta, búsqueda, cambios de estatus y contactos. */
 @Service
 @Transactional
 public class ClienteService {
@@ -34,6 +35,7 @@ public class ClienteService {
     private final MeterRegistry metricas;
     private final Clock reloj;
 
+    /** Recibe los repositorios, el detector de duplicados, el registrador de eventos, las métricas y el reloj. */
     public ClienteService(ClienteRepository clientes, ContactoRepository contactos, InteraccionRepository interacciones,
                           DetectorDuplicados duplicados, RegistradorEventos eventos,
                           MeterRegistry metricas, Clock reloj) {
@@ -80,16 +82,19 @@ public class ClienteService {
         return clientes.findByRazonSocialContainingIgnoreCase(nombre.trim(), pageable);
     }
 
+    /** Devuelve un cliente por id o lanza EntidadNoEncontradaException. */
     @Transactional(readOnly = true)
     public Cliente obtener(UUID id) {
         return clientes.findById(id).orElseThrow(() -> new EntidadNoEncontradaException("cliente", id));
     }
 
+    /** Devuelve la interacción más reciente de un cliente, si existe. */
     @Transactional(readOnly = true)
     public Optional<Interaccion> ultimaInteraccion(UUID clienteId) {
         return interacciones.findFirstByClienteIdOrderByFechaDesc(clienteId);
     }
 
+    /** Cambia la razón social de un cliente tras validar que no esté vacía. */
     public Cliente actualizarRazonSocial(UUID id, String razonSocial) {
         Cliente cliente = obtener(id);
         cliente.actualizarRazonSocial(razonSocial, Instant.now(reloj));
