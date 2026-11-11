@@ -398,6 +398,8 @@ main{max-width:1400px;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset
 nav.tabs{display:flex;gap:4px;overflow-x:auto;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:6px;box-shadow:0 6px 20px var(--sombra)}
 nav.tabs button{flex:1 0 auto;border:0;background:transparent;color:var(--muted);font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:10px;cursor:pointer}
 nav.tabs button[aria-selected="true"]{background:hsl(var(--h) 80% 50% / .14);color:hsl(var(--h) 70% 35%)}
+.jd-boton{display:inline-block;margin-top:10px;padding:10px 16px;border-radius:10px;background:hsl(var(--h) 70% 42%);color:#fff;font-weight:600;text-decoration:none}
+.jd-boton:hover{filter:brightness(1.08)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}}
 :root[data-theme="dark"] nav.tabs button[aria-selected="true"]{color:hsl(var(--h) 90% 75%)}
 .panel{margin-top:18px;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;box-shadow:0 6px 20px var(--sombra);min-width:0}
@@ -449,6 +451,7 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
     <button role="tab" data-tab="diagramas" aria-selected="false">Diagramas</button>
     <button role="tab" data-tab="tecnologias" aria-selected="false">Calidad y tecnologías</button>
     <button role="tab" data-tab="api" aria-selected="false">API (Swagger)</button>
+    <button role="tab" data-tab="javadoc" aria-selected="false">Java Docs</button>
   </nav>
   <section class="panel" data-panel="info"></section>
   <section class="panel" data-panel="readme" hidden></section>
@@ -456,6 +459,7 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
   <section class="panel" data-panel="diagramas" hidden></section>
   <section class="panel" data-panel="tecnologias" hidden></section>
   <section class="panel" data-panel="api" hidden><div id="swagger-ui"></div></section>
+  <section class="panel" data-panel="javadoc" hidden></section>
 </main>
 <script type="application/json" id="datos">__DATOS__</script>
 <script type="application/json" id="spec">__SPEC__</script>
@@ -653,6 +657,11 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
   }
 
   const botones = Array.from(document.querySelectorAll('[role="tab"]'));
+  const javadoc = $('[data-panel="javadoc"]');
+  javadoc.append(el('h2', { text: 'Javadoc' }));
+  javadoc.append(el('p', { text: 'Documentación técnica generada desde los comentarios /** */ del código. Se abre desde tu equipo después de generarla con build.sh.' }));
+  javadoc.append(el('a', { class: 'jd-boton', href: '../../' + D.info.nombre + '/target/reports/apidocs/index.html', text: 'Abrir Javadoc de ' + D.info.nombre }));
+
   function activar(nombre, cambiarHash) {
     if (nombre === 'api' && !SPEC) nombre = 'info';
     botones.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === nombre)); });
@@ -670,7 +679,7 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
   pintarApi();
   pintarTecnologias();
   const inicial = location.hash.slice(1);
-  activar(['info', 'readme', 'permisos', 'diagramas', 'tecnologias', 'api'].indexOf(inicial) >= 0 ? inicial : 'info', false);
+  activar(['info', 'readme', 'permisos', 'diagramas', 'tecnologias', 'api', 'javadoc'].indexOf(inicial) >= 0 ? inicial : 'info', false);
 })();
 </script>
 </body>
