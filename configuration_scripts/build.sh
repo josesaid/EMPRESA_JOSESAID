@@ -288,7 +288,26 @@ while IFS= read -r img; do
   fi
 done <<< "$imagenes"
 
-paso "📚 Paso 6/6 · Generando documentación Swagger (docs/api)"
+paso "📚 Paso 6/6 · Generando reportes de calidad y documentación (docs/api)"
+# Reportes de calidad y pruebas: el paso 2 los omite (-Dxxx.skip) para compilar rápido, así que se generan aquí.
+# Ninguno bloquea el build: si una herramienta falla, la ficha solo queda sin resultados para ella.
+if [ "$SIN_MAVEN" != "1" ] && command -v mvn >/dev/null 2>&1; then
+  for d in */; do
+    d="${d%/}"
+    [ -f "$d/pom.xml" ] || continue
+    echo "   ⏳ Reportes de calidad en $d..."
+    if (cd "$d" && mvn -B -q test jacoco:report checkstyle:checkstyle pmd:pmd spotbugs:spotbugs javadoc:javadoc) > "$LOGS/reportes-$d.log" 2>&1; then
+      echo "      ${VERDE}✅ pruebas, JaCoCo, Checkstyle, PMD, SpotBugs y Javadoc: $d${RST}"
+    else
+      echo "      ${AMARILLO}⚠️  Algún reporte falló en $d (log: $LOGS/reportes-$d.log)${RST}"
+    fi
+    if (cd "$d" && mvn -B -q cobertura:cobertura) > "$LOGS/cobertura-$d.log" 2>&1; then
+      echo "      ${VERDE}✅ cobertura: $d${RST}"
+    else
+      echo "      ${AMARILLO}⚠️  Cobertura falló en $d (log: $LOGS/cobertura-$d.log)${RST}"
+    fi
+  done
+fi
 if command -v python3 >/dev/null 2>&1; then
   if PYTHONDONTWRITEBYTECODE=1 python3 configuration_scripts/generar-docs-api.py > "$LOGS/swagger.log" 2>&1; then
     echo "   ${VERDE}✅ Documentación generada en docs/api/index.html${RST}"

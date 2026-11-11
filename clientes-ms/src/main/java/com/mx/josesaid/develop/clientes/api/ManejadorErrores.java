@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * Convierte excepciones en respuestas RFC 9457 (application/problem+json).
- * Los tipos son URN estables: urn:clientes:error:<codigo>.
+ * Los tipos son URN estables: {@code urn:clientes:error:<codigo>}.
  */
 @RestControllerAdvice
 public class ManejadorErrores {
