@@ -14,10 +14,12 @@ public record Periodo(String clave) {
         }
     }
 
+    /** Crea un periodo a partir de su clave: AAAA-MM, AAAA-Qn o AAAA. Lanza excepción si el formato es inválido. */
     public static Periodo de(String clave) {
         return new Periodo(clave);
     }
 
+    /** Devuelve la clave del periodo, por ejemplo 2026-09. */
     @Override
     public String toString() {
         return clave;

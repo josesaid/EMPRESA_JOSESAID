@@ -43,10 +43,12 @@ public class ReportesControlador {
 
     private final ReportesService servicio;
 
+    /** Recibe el servicio de reportes. El controlador no contiene reglas de negocio. */
     public ReportesControlador(ReportesService servicio) {
         this.servicio = servicio;
     }
 
+    /** Registra un indicador de un área para un periodo. Si el periodo no existe, lo abre. Un periodo cerrado responde 409. Solo puede hacerlo DIRECCION. */
     @PostMapping("/indicadores")
     @PreAuthorize("hasRole('DIRECCION')")
     public ResponseEntity<IndicadorRespuesta> registrarIndicador(@Valid @RequestBody RegistrarIndicadorPeticion p) {
@@ -66,6 +68,7 @@ public class ReportesControlador {
                 .toList();
     }
 
+    /** Limita el área consultada a la del usuario, salvo que sea de dirección. Así cada área solo ve sus indicadores. */
     private static Area alcance(Area solicitada, Authentication autenticacion) {
         boolean direccion = autenticacion.getAuthorities().stream()
                 .anyMatch(a -> "ROLE_DIRECCION".equals(a.getAuthority()));
@@ -100,6 +103,7 @@ public class ReportesControlador {
         return ReporteRespuesta.de(v.reporte(), indicadores);
     }
 
+    /** Cierra el reporte del periodo: consolida los indicadores y no admite más cambios. Solo puede hacerlo DIRECCION. */
     @PostMapping("/reportes/{periodo}/cierre")
     @PreAuthorize("hasRole('DIRECCION')")
     public ReporteRespuesta cerrarReporte(@PathVariable String periodo) {
@@ -108,6 +112,7 @@ public class ReportesControlador {
         return ReporteRespuesta.de(v.reporte(), v.indicadores());
     }
 
+    /** Exporta el reporte en CSV, PDF o XLSX. Devuelve el archivo con su nombre y tipo MIME. */
     @GetMapping("/reportes/{id}/exportacion")
     @PreAuthorize("hasRole('DIRECCION')")
     public ResponseEntity<byte[]> exportar(@PathVariable UUID id, @RequestParam(defaultValue = "CSV") @Size(max = 10) String formato) {
@@ -120,6 +125,7 @@ public class ReportesControlador {
 
     // ---- Peticiones ----
 
+    /** Cuerpo para registrar un indicador: área, nombre, periodo, valor y fecha de la fuente. */
     public record RegistrarIndicadorPeticion(
             @NotNull Area area,
             @NotBlank String nombre,
@@ -130,24 +136,30 @@ public class ReportesControlador {
 
     // ---- Respuestas ----
 
+    /** Indicador tal como lo ve el cliente. Marca si la fuente está desactualizada. */
     public record IndicadorRespuesta(UUID id, Area area, String nombre, BigDecimal valor, String periodo,
                                      Instant fuenteActualizadaUtc, boolean desactualizado) {
+        /** Convierte un indicador del dominio en su respuesta. */
         static IndicadorRespuesta de(Indicador i, boolean desactualizado) {
             return new IndicadorRespuesta(i.id(), i.area(), i.nombre(), i.valor(), i.periodo().clave(),
                     i.fuenteActualizadaUtc(), desactualizado);
         }
     }
 
+    /** Indicador consolidado de un reporte cerrado. */
     public record IndicadorConsolidadoRespuesta(UUID id, Area area, String nombre, BigDecimal valor,
                                                 Instant fuenteActualizadaUtc, boolean desactualizado) {
+        /** Convierte un indicador consolidado del dominio en su respuesta. */
         static IndicadorConsolidadoRespuesta de(IndicadorConsolidado c) {
             return new IndicadorConsolidadoRespuesta(c.id(), c.area(), c.nombre(), c.valor(),
                     c.fuenteActualizadaUtc(), c.desactualizado());
         }
     }
 
+    /** Reporte con sus indicadores. Si está cerrado, incluye los consolidados. */
     public record ReporteRespuesta(UUID id, String periodo, EstatusReporte estatus, Instant creadoUtc,
                                    Instant cerradoUtc, List<IndicadorConsolidadoRespuesta> indicadores) {
+        /** Convierte un reporte del dominio en su respuesta. */
         static ReporteRespuesta de(Reporte r, List<IndicadorConsolidado> indicadores) {
             return new ReporteRespuesta(r.getId(), r.getPeriodo().clave(), r.getEstatus(), r.getCreadoUtc(),
                     r.getCerradoUtc(), indicadores.stream().map(IndicadorConsolidadoRespuesta::de).toList());

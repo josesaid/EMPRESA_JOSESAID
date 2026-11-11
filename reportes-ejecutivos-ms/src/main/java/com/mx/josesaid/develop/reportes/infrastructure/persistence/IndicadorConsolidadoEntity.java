@@ -46,6 +46,7 @@ public class IndicadorConsolidadoEntity {
     @Column(nullable = false)
     private boolean desactualizado;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected IndicadorConsolidadoEntity() {
     }
 
@@ -60,10 +61,12 @@ public class IndicadorConsolidadoEntity {
         this.desactualizado = c.desactualizado();
     }
 
+    /** Devuelve el identificador del indicador consolidado. */
     UUID getId() {
         return id;
     }
 
+    /** Convierte la fila en el objeto del dominio. */
     IndicadorConsolidado aDominio() {
         return new IndicadorConsolidado(id, area, nombre, valor, fuenteActualizadaUtc, desactualizado);
     }

@@ -24,12 +24,14 @@ public class RetransmisorOutbox {
     private final KafkaTemplate<String, String> kafka;
     private final Clock reloj;
 
+    /** Recibe el repositorio del outbox, el productor de Kafka y el reloj. */
     public RetransmisorOutbox(OutboxJpaRepository outbox, KafkaTemplate<String, String> kafka, Clock reloj) {
         this.outbox = outbox;
         this.kafka = kafka;
         this.reloj = reloj;
     }
 
+    /** Envía a Kafka los eventos pendientes. Si el envío falla, deja el evento para el siguiente intento. */
     @Scheduled(fixedDelayString = "${documentos.outbox.intervalo-ms:5000}")
     @Transactional
     public void transmitir() {

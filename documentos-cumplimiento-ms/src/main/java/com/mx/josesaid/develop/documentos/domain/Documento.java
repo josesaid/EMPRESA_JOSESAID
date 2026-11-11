@@ -30,6 +30,7 @@ public class Documento {
     private boolean purgado;
     private Instant purgadoUtc;
 
+    /** Constructor privado: los documentos se crean con sus fábricas y no con new. */
     private Documento(UUID id, TipoDocumento tipo, String titulo, String area, LocalDate venceEn,
                       LocalDate retencionHasta, List<VersionDocumento> versiones, boolean eliminado,
                       String motivoEliminacion, Instant eliminadoUtc, boolean revisionRetencion,
@@ -73,6 +74,7 @@ public class Documento {
                 primera, false, null, null, false, false, false, null);
     }
 
+    /** Reconstruye un documento desde la base de datos sin aplicar reglas de negocio. */
     public static Documento reconstruir(UUID id, TipoDocumento tipo, String titulo, String area, LocalDate venceEn,
                                         LocalDate retencionHasta, List<VersionDocumento> versiones, boolean eliminado,
                                         String motivoEliminacion, Instant eliminadoUtc, boolean revisionRetencion,
@@ -94,6 +96,7 @@ public class Documento {
         }
     }
 
+    /** Agrega una versión nueva con su huella y su referencia de almacenamiento. Devuelve la versión creada. */
     public VersionDocumento agregarVersion(String hashSha256, String ref, LocalDate hoy, Instant ahora) {
         validarNuevaVersion(hashSha256, hoy);
         VersionDocumento nueva = new VersionDocumento(UUID.randomUUID(), getVersionActual() + 1, hashSha256, ref, ahora);
@@ -101,6 +104,7 @@ public class Documento {
         return nueva;
     }
 
+    /** Elimina el documento de forma lógica. El motivo es obligatorio, no puede eliminarse dos veces y no se permite dentro de la retención. */
     public void eliminar(String motivo, LocalDate hoy, Instant ahora) {
         if (motivo == null || motivo.isBlank()) {
             throw new SolicitudInvalidaException("El motivo de eliminación es obligatorio");
@@ -137,6 +141,7 @@ public class Documento {
         this.purgadoUtc = ahora;
     }
 
+    /** Indica si el documento ya venció a la fecha indicada. */
     public boolean vencido(LocalDate hoy) {
         return venceEn != null && venceEn.isBefore(hoy);
     }
@@ -149,39 +154,59 @@ public class Documento {
         return !venceEn.isBefore(hoy) && !venceEn.isAfter(hoy.plusDays(umbralDias));
     }
 
+    /** Marca que la alerta de vencimiento ya se emitió, para no repetirla. */
     public void registrarAlertaVencimiento() {
         this.alertaVencimientoEmitida = true;
     }
 
+    /** Indica si el documento ya cumplió su retención y debe revisarse. */
     public boolean necesitaRevisionRetencion(LocalDate hoy) {
         return !eliminado && !revisionRetencion && hoy.isAfter(retencionHasta);
     }
 
+    /** Marca que la revisión de retención ya se hizo. */
     public void marcarRevisionRetencion() {
         this.revisionRetencion = true;
     }
 
+    /** Devuelve la versión con ese número, si existe. */
     public Optional<VersionDocumento> version(int numero) {
         return versiones.stream().filter(v -> v.numero() == numero).findFirst();
     }
 
+    /** Devuelve la versión más reciente. */
     private VersionDocumento ultimaVersion() {
         return versiones.get(versiones.size() - 1);
     }
 
+    /** Devuelve el identificador del documento. */
     public UUID getId() { return id; }
+    /** Devuelve el tipo de documento. */
     public TipoDocumento getTipo() { return tipo; }
+    /** Devuelve el título. */
     public String getTitulo() { return titulo; }
+    /** Devuelve el área responsable. */
     public String getArea() { return area; }
+    /** Devuelve la fecha de vencimiento, si aplica. */
     public LocalDate getVenceEn() { return venceEn; }
+    /** Devuelve la fecha hasta la que se conserva el documento. */
     public LocalDate getRetencionHasta() { return retencionHasta; }
+    /** Devuelve las versiones en orden, en una vista de solo lectura. */
     public List<VersionDocumento> getVersiones() { return Collections.unmodifiableList(versiones); }
+    /** Devuelve el número de la última versión. */
     public int getVersionActual() { return versiones.size(); }
+    /** Indica si el documento fue eliminado de forma lógica. */
     public boolean isEliminado() { return eliminado; }
+    /** Devuelve el motivo de la eliminación, o nulo si no fue eliminado. */
     public String getMotivoEliminacion() { return motivoEliminacion; }
+    /** Devuelve la fecha de eliminación en UTC. */
     public Instant getEliminadoUtc() { return eliminadoUtc; }
+    /** Indica si el documento está marcado para revisión de retención. */
     public boolean isRevisionRetencion() { return revisionRetencion; }
+    /** Indica si ya se emitió la alerta de vencimiento. */
     public boolean isAlertaVencimientoEmitida() { return alertaVencimientoEmitida; }
+    /** Indica si el contenido ya fue purgado. */
     public boolean isPurgado() { return purgado; }
+    /** Devuelve la fecha de la purga en UTC. */
     public Instant getPurgadoUtc() { return purgadoUtc; }
 }

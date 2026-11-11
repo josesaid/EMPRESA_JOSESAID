@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/** Acceso a la tabla de documentos con Spring Data JPA. */
 public interface DocumentoJpaRepository extends JpaRepository<DocumentoEntity, UUID> {
 
     @Query("select d from DocumentoEntity d where d.eliminado = false and d.venceEn between :desde and :hasta")
@@ -16,6 +17,7 @@ public interface DocumentoJpaRepository extends JpaRepository<DocumentoEntity, U
             + "and d.revisionRetencion = false")
     List<DocumentoEntity> buscarActivosConRetencionVencida(@Param("hoy") LocalDate hoy);
 
+    /** Busca documentos cuyo título contiene el patrón indicado, con límite de resultados. */
     @Query("select d from DocumentoEntity d where d.eliminado = false and lower(d.titulo) like :patron escape '!' "
             + "order by d.titulo asc")
     List<DocumentoEntity> buscarPorTitulo(@Param("patron") String patron,

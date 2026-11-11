@@ -21,11 +21,13 @@ public class ExportadorXlsx implements ExportadorReporte {
     private static final String[] CABECERAS = {
             "Área", "Indicador", "Periodo", "Valor", "Fuente actualizada (UTC)", "Desactualizado"};
 
+    /** Devuelve el formato XLSX. */
     @Override
     public FormatoExportacion formato() {
         return FormatoExportacion.XLSX;
     }
 
+    /** Genera el libro de Excel del reporte con una hoja de indicadores. */
     @Override
     public byte[] exportar(DatosExportacion datos) {
         try (XSSFWorkbook libro = new XSSFWorkbook();

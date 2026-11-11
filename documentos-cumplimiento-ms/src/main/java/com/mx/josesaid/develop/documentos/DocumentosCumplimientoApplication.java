@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ConfigurationPropertiesScan
 public class DocumentosCumplimientoApplication {
 
+    /** Arranca documentos-cumplimiento-ms. */
     public static void main(String[] args) {
         SpringApplication.run(DocumentosCumplimientoApplication.class, args);
     }

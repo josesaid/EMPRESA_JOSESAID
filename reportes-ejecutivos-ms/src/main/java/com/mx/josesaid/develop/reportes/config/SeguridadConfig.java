@@ -34,6 +34,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SeguridadConfig {
 
+    /** Cadena de seguridad: exige JWT válido y reglas por rol para cada endpoint. */
     @Bean
     SecurityFilterChain cadenaSeguridad(HttpSecurity http) throws Exception {
         http
@@ -66,6 +67,7 @@ public class SeguridadConfig {
         return decoder;
     }
 
+    /** Codificador de contraseñas BCrypt para el servicio. */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

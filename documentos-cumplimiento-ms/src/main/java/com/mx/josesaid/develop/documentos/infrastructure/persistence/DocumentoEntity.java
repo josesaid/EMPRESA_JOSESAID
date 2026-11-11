@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/** Fila de la tabla de documentos. Guarda los datos del documento y su historial de versiones. */
 @Entity
 @Table(name = "documentos")
 public class DocumentoEntity {
@@ -73,9 +74,11 @@ public class DocumentoEntity {
     @OrderBy("numero ASC")
     private List<VersionEntity> versiones = new ArrayList<>();
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected DocumentoEntity() {
     }
 
+    /** Crea una fila a partir de un documento del dominio. */
     static DocumentoEntity nuevo(Documento d) {
         DocumentoEntity e = new DocumentoEntity();
         e.id = d.getId();
@@ -105,6 +108,7 @@ public class DocumentoEntity {
         }
     }
 
+    /** Convierte la fila en el objeto del dominio. */
     Documento aDominio() {
         return Documento.reconstruir(id, tipo, titulo, area, venceEn, retencionHasta,
                 versiones.stream().map(VersionEntity::aDominio).toList(),

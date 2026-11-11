@@ -23,11 +23,13 @@ public class ListenerIndicadores {
     private final ReportesService servicio;
     private final ObjectMapper mapper;
 
+    /** Recibe el servicio de reportes y el lector JSON de los mensajes de Kafka. */
     public ListenerIndicadores(ReportesService servicio, ObjectMapper mapper) {
         this.servicio = servicio;
         this.mapper = mapper;
     }
 
+    /** Registra el indicador del mensaje. Un mensaje inválido o que viola una regla se registra en el log y se descarta, sin reintentos infinitos. */
     @KafkaListener(topics = "${reportes.indicadores.topico:indicadores-areas}", groupId = "reportes-ejecutivos-ms")
     public void recibir(String mensaje) {
         try {

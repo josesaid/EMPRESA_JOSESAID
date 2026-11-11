@@ -19,32 +19,38 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 @RestControllerAdvice
 public class ManejadorErrores {
 
+    /** Convierte una regla de negocio incumplida en 422. */
     @ExceptionHandler(ReglaDeNegocioException.class)
     ResponseEntity<ProblemDetail> reglaDeNegocio(ReglaDeNegocioException e) {
         return respuesta(HttpStatus.UNPROCESSABLE_ENTITY, "regla-de-negocio", e.getMessage());
     }
 
+    /** Convierte un recurso inexistente en 404. */
     @ExceptionHandler(RecursoNoEncontradoException.class)
     ResponseEntity<ProblemDetail> noEncontrado(RecursoNoEncontradoException e) {
         return respuesta(HttpStatus.NOT_FOUND, "recurso-no-encontrado", e.getMessage());
     }
 
+    /** Convierte un conflicto de estado, por ejemplo eliminar dentro de retención, en 409. */
     @ExceptionHandler(ConflictoException.class)
     ResponseEntity<ProblemDetail> conflicto(ConflictoException e) {
         return respuesta(HttpStatus.CONFLICT, "conflicto-de-estado", e.getMessage());
     }
 
+    /** Convierte una solicitud inválida en 400. */
     @ExceptionHandler(SolicitudInvalidaException.class)
     ResponseEntity<ProblemDetail> solicitudInvalida(SolicitudInvalidaException e) {
         return respuesta(HttpStatus.BAD_REQUEST, "solicitud-invalida", e.getMessage());
     }
 
+    /** Responde 400 cuando falta la parte del archivo en la carga. */
     @ExceptionHandler(MissingServletRequestPartException.class)
     ResponseEntity<ProblemDetail> parteFaltante(MissingServletRequestPartException e) {
         return respuesta(HttpStatus.BAD_REQUEST, "solicitud-invalida",
                 "Falta la parte multipart requerida: " + e.getRequestPartName());
     }
 
+    /** Responde 413 cuando el archivo supera el tamaño permitido. */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     ResponseEntity<ProblemDetail> archivoGrande(MaxUploadSizeExceededException e) {
         return respuesta(HttpStatus.CONTENT_TOO_LARGE, "archivo-demasiado-grande",
@@ -58,6 +64,7 @@ public class ManejadorErrores {
                 "El documento cambió mientras se procesaba. Vuelva a leerlo e intente de nuevo.");
     }
 
+    /** Construye la respuesta de error con el estado, el tipo y el detalle indicados. */
     private static ResponseEntity<ProblemDetail> respuesta(HttpStatus estado, String slug, String detalle) {
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(estado, detalle);
         problema.setTitle(estado.getReasonPhrase());
@@ -65,6 +72,7 @@ public class ManejadorErrores {
         return ResponseEntity.status(estado).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(problema);
     }
 
+    /** Convierte parámetros inválidos en 400 sin revelar detalles internos. */
     @org.springframework.web.bind.annotation.ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
     org.springframework.http.ProblemDetail parametrosInvalidos(jakarta.validation.ConstraintViolationException e) {
         return org.springframework.http.ProblemDetail.forStatusAndDetail(

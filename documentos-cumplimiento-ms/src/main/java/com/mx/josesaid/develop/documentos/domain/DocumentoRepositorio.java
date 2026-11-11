@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/** Puerto para guardar y consultar documentos, sin depender de JPA. */
 public interface DocumentoRepositorio {
     Documento guardar(Documento documento);
     Optional<Documento> buscarPorId(UUID id);

@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+/** Fila de la tabla de indicadores. Guarda el área, el nombre, el periodo y el valor. */
 @Entity
 @Table(name = "indicadores")
 public class IndicadorEntity {
@@ -40,9 +41,11 @@ public class IndicadorEntity {
     @Version
     private Long version;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected IndicadorEntity() {
     }
 
+    /** Crea una fila a partir de un indicador del dominio. */
     static IndicadorEntity nuevo(Indicador i) {
         IndicadorEntity e = new IndicadorEntity();
         e.id = i.id();
@@ -50,6 +53,7 @@ public class IndicadorEntity {
         return e;
     }
 
+    /** Actualiza la fila con los datos de un indicador del dominio. */
     void actualizar(Indicador i) {
         this.area = i.area();
         this.nombre = i.nombre();
@@ -58,6 +62,7 @@ public class IndicadorEntity {
         this.fuenteActualizadaUtc = i.fuenteActualizadaUtc();
     }
 
+    /** Convierte la fila en el objeto del dominio. */
     Indicador aDominio() {
         return new Indicador(id, area, nombre, valor, Periodo.de(periodo), fuenteActualizadaUtc);
     }
