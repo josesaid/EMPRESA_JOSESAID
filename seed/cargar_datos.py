@@ -113,10 +113,12 @@ def sin_acentos(texto):
 # ---------- cifrado e índices (mismo formato que los servicios Java) ----------
 
 class Cripto:
-    def __init__(self, env):
-        self.version = int(env.get("CRYPTO_VERSION_ACTIVA", "1"))
-        self.aes = AESGCM(base64.b64decode(env["CRYPTO_CLAVE_CIFRADO"].strip()))
-        self.clave_indice = base64.b64decode(env["CRYPTO_CLAVE_INDICE"].strip())
+    """Cifrado y índices de un servicio. Cada servicio tiene su propia pareja de claves en .env."""
+
+    def __init__(self, env, nombre_cifrado, nombre_indice):
+        self.version = int(env.get("CRYPTO_VERSION_ACTIVA", "1")) if nombre_cifrado.startswith("CRYPTO") else 1
+        self.aes = AESGCM(base64.b64decode(env[nombre_cifrado].strip()))
+        self.clave_indice = base64.b64decode(env[nombre_indice].strip())
 
     def cifrar(self, texto):
         """Formato del servicio: v<versión>:Base64(IV de 12 bytes || texto cifrado + tag)."""
@@ -135,6 +137,11 @@ class Cripto:
     def indice_correo(self, correo):
         return self._hmac("correo:" + correo.strip().lower())
 
+    def indice_rfc_b64(self, rfc):
+        """Índice de compras: HMAC del RFC en mayúsculas, en Base64."""
+        return base64.b64encode(hmac.new(self.clave_indice, rfc.strip().upper().encode("utf-8"),
+                                         hashlib.sha256).digest()).decode("ascii")
+
     def indice_nombre(self, nombre):
         normal = " ".join(sin_acentos(nombre.strip()).split()).lower()
         return self._hmac("nombre:" + normal)
@@ -152,12 +159,14 @@ def leer_env(ruta):
 
 # ---------- generación de filas por base ----------
 
-def generar(cr, rnd):
+def generar(cr_cli, cr_usr, cr_cmp, rnd):
     """Devuelve {base: [(tabla, columnas, filas), ...]} en el orden en que deben insertarse."""
     tiempo0 = dt.datetime(2026, 1, 5, 9, 0, tzinfo=dt.timezone.utc)
     cuando = lambda i, dias=7: tiempo0 + dt.timedelta(days=(i * dias) % 330, hours=i % 10)
     n_usuarios = max(N, len(ROLES))
     bases = {}
+
+    cr = cr_usr  # usuarios-accesos-ms
 
     # --- usuarios_accesos ---
     usuarios, roles = [], []
@@ -184,6 +193,7 @@ def generar(cr, rnd):
     ]
 
     # --- clientes ---
+    cr = cr_cli  # clientes-ms
     prospectos, clientes, contactos, consentimientos, interacciones = [], [], [], [], []
     nprosp = combinaciones(5, 3, 2)
     for i in range(nprosp):
@@ -271,13 +281,14 @@ def generar(cr, rnd):
     ]
 
     # --- compras ---
+    cr = cr_cmp  # compras-proveedores-ms
     proveedores, ordenes_c, lineas_oc, recepciones = [], [], [], []
     for i in range(N):
         razon = f"Proveedor {PREFIJOS_EMPRESA[(i * 3) % 8]} {i:03d}"
         rfc = f"PRV{i:03d}{chr(65 + i % 26)}{chr(65 + (i * 3) % 26)}"[:12]
         correo = f"proveedor{i}@demo.invalid"
         estatus = ["ACTIVO", "INACTIVO", "BLOQUEADO"][i % 3]
-        proveedores.append((uid("proveedor", i), razon, cr.cifrar(rfc), cr.indice_rfc(rfc), cr.cifrar(correo),
+        proveedores.append((uid("proveedor", i), razon, cr.cifrar(rfc), cr.indice_rfc_b64(rfc), cr.cifrar(correo),
                             estatus, 0))
     estatus_oc = ["BORRADOR", "APROBADA", "RECIBIDA_PARCIAL", "RECIBIDA", "CANCELADA"]
     for i in range(N):
@@ -484,11 +495,14 @@ def main():
     if not env_ruta.exists():
         sys.exit("Falta el archivo .env en la raíz del repo.")
     env = leer_env(env_ruta)
-    for clave in ("CRYPTO_CLAVE_CIFRADO", "CRYPTO_CLAVE_INDICE"):
-        if not env.get(clave):
-            sys.exit(f"Falta {clave} en .env")
-    cr = Cripto(env)
-    bases = generar(cr, random.Random(42))
+    pares = [("CRYPTO_CLAVE_CIFRADO", "CRYPTO_CLAVE_INDICE"),          # clientes-ms
+             ("USUARIOS_CIFRADO_CLAVE", "USUARIOS_INDICE_CLAVE"),      # usuarios-accesos-ms
+             ("COMPRAS_CIFRADO_CLAVE", "COMPRAS_INDICE_CLAVE")]        # compras-proveedores-ms
+    for cifrado, indice in pares:
+        for clave in (cifrado, indice):
+            if not env.get(clave):
+                sys.exit(f"Falta {clave} en .env (sin este valor no se puede cifrar el servicio correspondiente)")
+    bases = generar(Cripto(env, *pares[0]), Cripto(env, *pares[1]), Cripto(env, *pares[2]), random.Random(42))
 
     for base, tablas in bases.items():
         nombres = [t[0] for t in tablas]
