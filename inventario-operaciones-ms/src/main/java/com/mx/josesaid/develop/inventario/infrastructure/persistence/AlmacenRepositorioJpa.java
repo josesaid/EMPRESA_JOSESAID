@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de almacenes con JPA. */
 @Component
 class AlmacenRepositorioJpa implements AlmacenRepositorio {
 
@@ -15,6 +16,7 @@ class AlmacenRepositorioJpa implements AlmacenRepositorio {
         this.jpa = jpa;
     }
 
+    /** Guarda un almacén y devuelve el guardado. */
     @Override
     public Almacen guardar(Almacen a) {
         AlmacenEntity e = new AlmacenEntity();
@@ -25,6 +27,7 @@ class AlmacenRepositorioJpa implements AlmacenRepositorio {
         return a;
     }
 
+    /** Busca un almacén por id. */
     @Override
     public Optional<Almacen> buscarPorId(UUID id) {
         return jpa.findById(id).map(e -> Almacen.reconstruir(e.id, e.nombre, e.ubicacion));

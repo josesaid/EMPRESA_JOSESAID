@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de órdenes con JPA. */
 @Component
 class OrdenRepositorioJpa implements OrdenRepositorio {
 
@@ -15,6 +16,7 @@ class OrdenRepositorioJpa implements OrdenRepositorio {
         this.jpa = jpa;
     }
 
+    /** Guarda una orden y devuelve la guardada. */
     @Override
     public OrdenOperacion guardar(OrdenOperacion o) {
         OrdenEntity e = jpa.findById(o.getId()).orElseGet(() -> {
@@ -30,6 +32,7 @@ class OrdenRepositorioJpa implements OrdenRepositorio {
         return o;
     }
 
+    /** Busca una orden por id. */
     @Override
     public Optional<OrdenOperacion> buscarPorId(UUID id) {
         return jpa.findById(id).map(e -> OrdenOperacion.reconstruir(e.id, e.tipo, e.estatus,

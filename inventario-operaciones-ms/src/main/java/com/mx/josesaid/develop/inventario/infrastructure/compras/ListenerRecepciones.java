@@ -27,6 +27,7 @@ public class ListenerRecepciones {
     private final ObjectMapper mapper;
     private final String almacenConfigurado;
 
+    /** Recibe el servicio de recepciones, el lector JSON y la configuración del tópico de compras. */
     public ListenerRecepciones(RecepcionesService servicio, ObjectMapper mapper,
                                @Value("${inventario.pedidos.almacen-id:}") String almacenConfigurado) {
         this.servicio = servicio;
@@ -34,6 +35,7 @@ public class ListenerRecepciones {
         this.almacenConfigurado = almacenConfigurado;
     }
 
+    /** Recibe desde Kafka el evento de recepción de una orden de compra y lo registra como entrada de inventario. */
     @KafkaListener(topics = "${inventario.compras.topico:compras.eventos}",
                    groupId = "inventario-operaciones-ms-compras")
     public void recibir(String mensaje) {
@@ -66,6 +68,7 @@ public class ListenerRecepciones {
         servicio.registrar(eventoId, ordenId, UUID.fromString(almacenConfigurado), lineas);
     }
 
+    /** Convierte las líneas del evento en líneas de recepción. */
     private static List<LineaRecibida> aLineas(Map<String, Object> datos) {
         if (!(datos.get("lineas") instanceof List<?> lista)) {
             throw new IllegalArgumentException("La recepción no trae líneas");

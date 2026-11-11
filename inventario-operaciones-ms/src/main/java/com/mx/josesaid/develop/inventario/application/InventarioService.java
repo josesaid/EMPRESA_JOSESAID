@@ -40,6 +40,7 @@ public class InventarioService {
     private final PublicadorEventos eventos;
     private final Clock reloj;
 
+    /** Recibe los repositorios de artículos, almacenes, existencias, movimientos y órdenes, y el reloj. */
     public InventarioService(ArticuloRepositorio articulos, AlmacenRepositorio almacenes,
                              ExistenciaRepositorio existencias, MovimientoRepositorio movimientos,
                              OrdenRepositorio ordenes, PublicadorEventos eventos, Clock reloj) {
@@ -52,6 +53,7 @@ public class InventarioService {
         this.reloj = reloj;
     }
 
+    /** Da de alta un artículo. Valida el SKU y que no exista ya. */
     @Transactional
     public Articulo crearArticulo(String sku, String nombre, String unidad, boolean loteObligatorio, BigDecimal minimo) {
         if (sku != null && articulos.existePorSku(sku.trim())) {
@@ -60,6 +62,7 @@ public class InventarioService {
         return articulos.guardar(Articulo.crear(sku, nombre, unidad, loteObligatorio, minimo));
     }
 
+    /** Da de alta un almacén. */
     @Transactional
     public Almacen crearAlmacen(String nombre, String ubicacion) {
         return almacenes.guardar(Almacen.crear(nombre, ubicacion));
@@ -96,11 +99,13 @@ public class InventarioService {
         return movimiento;
     }
 
+    /** Crea una orden de operación en estatus abierta. */
     @Transactional
     public OrdenOperacion crearOrden(TipoOrden tipo, BigDecimal cantidadObjetivo) {
         return ordenes.guardar(OrdenOperacion.crear(tipo, cantidadObjetivo));
     }
 
+    /** Cierra una orden con su cantidad real y guarda el cambio. */
     @Transactional
     public OrdenOperacion cerrarOrden(UUID id, BigDecimal cantidadReal) {
         OrdenOperacion orden = ordenes.buscarPorId(id)
@@ -140,12 +145,14 @@ public class InventarioService {
         return movimientos.listarRecientesDeArticulo(articuloId, 15);
     }
 
+    /** Devuelve las existencias de un artículo en todos sus almacenes. */
     @Transactional(readOnly = true)
     public List<Existencia> existenciasDe(UUID articuloId) {
         obtenerArticulo(articuloId);
         return existencias.buscarPorArticulo(articuloId);
     }
 
+    /** Devuelve los movimientos de un lote. */
     @Transactional(readOnly = true)
     public List<MovimientoInventario> trazabilidad(String lote) {
         List<MovimientoInventario> resultado = movimientos.buscarPorLote(lote);
@@ -155,11 +162,13 @@ public class InventarioService {
         return resultado;
     }
 
+    /** Devuelve un artículo por id o lanza RecursoNoEncontradoException. */
     private Articulo obtenerArticulo(UUID id) {
         return articulos.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Artículo no encontrado: " + id));
     }
 
+    /** Devuelve un almacén por id o lanza RecursoNoEncontradoException. */
     private Almacen obtenerAlmacen(UUID id) {
         return almacenes.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Almacén no encontrado: " + id));

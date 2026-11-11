@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/** Acceso a la tabla de existencias con Spring Data JPA. */
 interface ExistenciaJpaRepository extends JpaRepository<ExistenciaEntity, UUID> {
     Optional<ExistenciaEntity> findByArticuloIdAndAlmacenId(UUID articuloId, UUID almacenId);
     List<ExistenciaEntity> findByArticuloId(UUID articuloId);

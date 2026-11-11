@@ -26,6 +26,7 @@ public class ListenerPedidos {
     private final ObjectMapper mapper;
     private final String almacenConfigurado;
 
+    /** Recibe el servicio de reservas, el lector JSON y la configuración del tópico de pedidos. */
     public ListenerPedidos(ReservasPedidoService servicio, ObjectMapper mapper,
                            @Value("${inventario.pedidos.almacen-id:}") String almacenConfigurado) {
         this.servicio = servicio;
@@ -33,6 +34,7 @@ public class ListenerPedidos {
         this.almacenConfigurado = almacenConfigurado;
     }
 
+    /** Recibe desde Kafka los eventos de pedidos: confirmado reserva existencias y entregado las descuenta. */
     @KafkaListener(topics = "${inventario.pedidos.topico:pedidos.eventos}",
                    groupId = "inventario-operaciones-ms-pedidos")
     public void recibir(String mensaje) {
@@ -72,6 +74,7 @@ public class ListenerPedidos {
         servicio.reservar(pedidoId, UUID.fromString(almacenConfigurado), lineas);
     }
 
+    /** Convierte las líneas del evento en líneas de pedido. */
     private static List<LineaPedido> aLineas(Map<String, Object> datos) {
         Object crudas = datos == null ? null : datos.get("lineas");
         if (!(crudas instanceof List<?> lista)) {

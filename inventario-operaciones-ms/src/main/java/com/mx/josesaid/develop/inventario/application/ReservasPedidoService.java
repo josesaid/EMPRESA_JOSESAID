@@ -41,6 +41,7 @@ public class ReservasPedidoService {
     private final ReservasPedidoRepositorio reservas;
     private final Clock reloj;
 
+    /** Recibe los repositorios de artículos, existencias, movimientos y reservas, y el reloj. */
     public ReservasPedidoService(ArticuloRepositorio articulos, ExistenciaRepositorio existencias,
                                  MovimientoRepositorio movimientos, ReservasPedidoRepositorio reservas, Clock reloj) {
         this.articulos = articulos;
@@ -50,6 +51,7 @@ public class ReservasPedidoService {
         this.reloj = reloj;
     }
 
+    /** Reserva las piezas de un pedido confirmado. Si no alcanza la existencia, reserva lo disponible y registra el faltante. Cada pedido se procesa una sola vez. */
     @Transactional
     public void reservar(UUID pedidoId, UUID almacenId, List<LineaPedido> lineas) {
         if (!reservas.marcarProcesado(pedidoId, EVENTO_CONFIRMADO)) {
@@ -79,6 +81,7 @@ public class ReservasPedidoService {
         }
     }
 
+    /** Descuenta del inventario lo reservado al entregarse el pedido y libera esas reservas. Si el pedido no tiene reservas, no hace nada. */
     @Transactional
     public void entregar(UUID pedidoId) {
         if (!reservas.marcarProcesado(pedidoId, EVENTO_ENTREGADO)) {

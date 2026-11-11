@@ -38,6 +38,7 @@ public class RecepcionesService {
     private final RecepcionesRepositorio recepciones;
     private final Clock reloj;
 
+    /** Recibe los repositorios, el reloj y el registro de recepciones ya aplicadas. */
     public RecepcionesService(ArticuloRepositorio articulos, ExistenciaRepositorio existencias,
                               MovimientoRepositorio movimientos, RecepcionesRepositorio recepciones, Clock reloj) {
         this.articulos = articulos;
@@ -47,6 +48,7 @@ public class RecepcionesService {
         this.reloj = reloj;
     }
 
+    /** Suma a las existencias lo recibido de una orden de compra. Cada recepción se aplica una sola vez, aunque el evento llegue dos veces. Los artículos con lote obligatorio no se registran, porque el evento no trae lote. */
     @Transactional
     public void registrar(UUID eventoId, UUID ordenId, UUID almacenId, List<LineaRecibida> lineas) {
         if (!recepciones.marcarProcesada(eventoId)) {

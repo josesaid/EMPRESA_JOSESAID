@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de existencias con JPA. */
 @Component
 class ExistenciaRepositorioJpa implements ExistenciaRepositorio {
 
@@ -33,16 +34,19 @@ class ExistenciaRepositorioJpa implements ExistenciaRepositorio {
         return x;
     }
 
+    /** Busca la existencia de un artículo en un almacén. */
     @Override
     public Optional<Existencia> buscar(UUID articuloId, UUID almacenId) {
         return jpa.findByArticuloIdAndAlmacenId(articuloId, almacenId).map(this::aDominio);
     }
 
+    /** Devuelve las existencias de un artículo en todos sus almacenes. */
     @Override
     public List<Existencia> buscarPorArticulo(UUID articuloId) {
         return jpa.findByArticuloId(articuloId).stream().map(this::aDominio).toList();
     }
 
+    /** Devuelve la cantidad total por artículo, sumando todos los almacenes. */
     @Override
     public java.util.Map<UUID, java.math.BigDecimal> cantidadTotalPorArticulo() {
         return jpa.findAll().stream().collect(java.util.stream.Collectors.groupingBy(
@@ -51,6 +55,7 @@ class ExistenciaRepositorioJpa implements ExistenciaRepositorio {
                         java.math.BigDecimal::add)));
     }
 
+    /** Convierte la fila en la existencia del dominio. */
     private Existencia aDominio(ExistenciaEntity e) {
         return Existencia.reconstruir(e.articuloId, e.almacenId, e.cantidad, e.reservado);
     }

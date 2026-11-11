@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RelojConfig {
 
+    /** Reloj del sistema en UTC, usado para todas las fechas de inventario. */
     @Bean
     Clock reloj() {
         return Clock.systemUTC();
