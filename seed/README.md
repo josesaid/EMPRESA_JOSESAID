@@ -28,5 +28,5 @@ python3 seed/cargar_datos.py --reset   # borra los datos de negocio y vuelve a c
 ## Notas
 
 - `--reset` y `--cargar-datos` borran los datos de negocio de tus bases **locales**. No corras esto contra datos reales.
-- Los datos personales se cifran con las claves de tu `.env`. Si cambias esas claves, vuelve a correr el script.
+- Los datos personales se cifran con las claves de cada servicio en tu `.env`: `CRYPTO_CLAVE_CIFRADO` y `CRYPTO_CLAVE_INDICE` (clientes), `USUARIOS_CIFRADO_CLAVE` y `USUARIOS_INDICE_CLAVE` (usuarios), `COMPRAS_CIFRADO_CLAVE` y `COMPRAS_INDICE_CLAVE` (compras). Si cambias alguna, vuelve a correr el script con `--reset`.
 - Los datos no se publican a Kafka, así que el tablero de reportes no cambia hasta que se generen eventos.
