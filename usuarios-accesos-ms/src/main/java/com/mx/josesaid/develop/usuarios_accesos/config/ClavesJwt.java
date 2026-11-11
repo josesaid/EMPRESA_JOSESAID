@@ -19,6 +19,7 @@ public final class ClavesJwt {
     /** Identificador por defecto de la clave; viaja en el encabezado "kid" de cada token. */
     public static final String KID_POR_DEFECTO = "empresa-usuarios-1";
 
+    /** Clase de utilidad; no se instancia. */
     private ClavesJwt() {
     }
 

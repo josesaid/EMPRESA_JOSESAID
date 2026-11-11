@@ -29,6 +29,7 @@ public class AuthController {
     private final PropiedadesJwt propiedades;
     private final SesionService sesiones;
 
+    /** Recibe el servicio de usuarios, el emisor de tokens, las propiedades JWT y el servicio de sesiones. */
     public AuthController(UsuarioService servicio, EmisorTokens emisor, PropiedadesJwt propiedades,
                           SesionService sesiones) {
         this.servicio = servicio;
@@ -37,6 +38,7 @@ public class AuthController {
         this.sesiones = sesiones;
     }
 
+    /** Inicia sesión con correo y contraseña. Devuelve un access token y un refresh token. */
     @PostMapping("/login")
     public TokenRespuesta login(@Valid @RequestBody LoginSolicitud solicitud) {
         Usuario usuario = servicio.autenticar(solicitud.correo(), solicitud.password());
@@ -70,22 +72,27 @@ public class AuthController {
         sesiones.cerrarTodas(UUID.fromString(jwt.getSubject()));
     }
 
+    /** Arma la respuesta con los dos tokens, el tipo Bearer y la vigencia del access token en segundos. */
     private TokenRespuesta respuesta(SesionService.Par par) {
         return new TokenRespuesta(par.accessToken(), "Bearer", propiedades.duracion().toSeconds(), par.refreshToken());
     }
 
+    /** Datos de inicio de sesión: correo y contraseña. */
     public record LoginSolicitud(@NotBlank @Email String correo, @NotBlank String password) {
     }
 
+    /** Refresh token a rotar o a cerrar. */
     public record RefrescoSolicitud(@NotBlank String refreshToken) {
     }
 
+    /** Datos para cambiar la contraseña temporal. La nueva debe tener entre 12 y 100 caracteres. */
     public record CambioPasswordSolicitud(
             @NotBlank @Email String correo,
             @NotBlank String passwordActual,
             @NotBlank @Size(min = 12, max = 100) String passwordNueva) {
     }
 
+    /** Respuesta con los tokens. expiresIn va en segundos. */
     public record TokenRespuesta(String accessToken, String tokenType, long expiresIn, String refreshToken) {
     }
 }

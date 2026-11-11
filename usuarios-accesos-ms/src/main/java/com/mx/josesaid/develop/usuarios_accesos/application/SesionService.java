@@ -46,6 +46,7 @@ public class SesionService {
     private final Clock reloj;
     private final PublicadorEventos publicador;
 
+    /** Recibe los repositorios de refresh tokens y usuarios, el emisor de tokens, el reloj y el publicador de eventos. */
     public SesionService(RefreshTokenRepositorio refrescos, UsuarioRepositorio usuarios,
                          EmisorTokens emisor, Clock reloj,
                          PublicadorEventos publicador) {
@@ -107,6 +108,7 @@ public class SesionService {
                 Map.of("usuarioId", usuarioId.toString(), "ocurridoEn", ahora.toString())));
     }
 
+    /** Crea un access token y un refresh token nuevos, y guarda solo el hash del refresh token. Los tokens de una misma sesión comparten familia. */
     private Par emitirPar(Usuario usuario, UUID familia, Instant ahora) {
         String refresco = nuevoRefresco();
         refrescos.guardar(new RefreshToken(UUID.randomUUID(), usuario.getId(), familia, hash(refresco),
@@ -114,12 +116,14 @@ public class SesionService {
         return new Par(emisor.emitir(usuario, familia), refresco);
     }
 
+    /** Genera un refresh token aleatorio de 256 bits, en Base64 sin relleno. */
     private static String nuevoRefresco() {
         byte[] bytes = new byte[32];
         ALEATORIO.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
+    /** Calcula el SHA-256 de un token en hexadecimal. Solo el hash se guarda, nunca el token. */
     static String hash(String valor) {
         try {
             byte[] digest = MessageDigest.getInstance("SHA-256")
@@ -130,6 +134,7 @@ public class SesionService {
         }
     }
 
+    /** Devuelve la excepción genérica de token inválido, sin revelar la causa exacta. */
     private static CredencialesInvalidasException invalido() {
         return new CredencialesInvalidasException();
     }

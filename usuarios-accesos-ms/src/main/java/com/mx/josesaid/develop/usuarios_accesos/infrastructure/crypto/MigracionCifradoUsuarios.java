@@ -20,10 +20,12 @@ public class MigracionCifradoUsuarios implements ApplicationRunner {
 
     private final JdbcTemplate jdbc;
 
+    /** Recibe JDBC para leer y actualizar la tabla de usuarios. */
     public MigracionCifradoUsuarios(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
 
+    /** Al arrancar, cifra los usuarios que todavía tienen correo y nombre en claro. Es idempotente y no registra datos personales. */
     @Override
     public void run(ApplicationArguments args) {
         List<Map<String, Object>> pendientes = jdbc.queryForList(

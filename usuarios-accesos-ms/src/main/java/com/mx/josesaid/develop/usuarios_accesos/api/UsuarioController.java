@@ -31,10 +31,12 @@ public class UsuarioController {
 
     private final UsuarioService servicio;
 
+    /** Recibe el servicio de usuarios. */
     public UsuarioController(UsuarioService servicio) {
         this.servicio = servicio;
     }
 
+    /** Da de alta un usuario con su contraseña temporal. Debe cambiarla antes de su primer inicio de sesión. */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioRespuesta crear(@Valid @RequestBody CrearUsuarioSolicitud solicitud) {
@@ -43,33 +45,39 @@ public class UsuarioController {
         return UsuarioRespuesta.de(usuario);
     }
 
+    /** Lista los usuarios más recientes. */
     @GetMapping
     public List<UsuarioRespuesta> listar() {
         return servicio.listarRecientes().stream().map(UsuarioRespuesta::de).toList();
     }
 
+    /** Devuelve un usuario por id. */
     @GetMapping("/{id}")
     public UsuarioRespuesta obtener(@PathVariable UUID id) {
         return UsuarioRespuesta.de(servicio.obtener(id));
     }
 
+    /** Reemplaza los roles de un usuario. Exige un motivo para la auditoría. */
     @PutMapping("/{id}/roles")
     public UsuarioRespuesta asignarRoles(@PathVariable UUID id,
                                          @Valid @RequestBody AsignarRolesSolicitud solicitud) {
         return UsuarioRespuesta.de(servicio.asignarRoles(id, solicitud.roles(), solicitud.motivo()));
     }
 
+    /** Asigna el área de un usuario. Exige un motivo para la auditoría. */
     @PutMapping("/{id}/area")
     public UsuarioRespuesta asignarArea(@PathVariable UUID id,
                                         @Valid @RequestBody AsignarAreaSolicitud solicitud) {
         return UsuarioRespuesta.de(servicio.asignarArea(id, solicitud.area(), solicitud.motivo()));
     }
 
+    /** Da de baja al usuario de forma definitiva. */
     @PostMapping("/{id}/baja")
     public UsuarioRespuesta darDeBaja(@PathVariable UUID id) {
         return UsuarioRespuesta.de(servicio.darDeBaja(id));
     }
 
+    /** Datos para crear un usuario: correo, nombre completo, contraseña temporal y roles. */
     public record CrearUsuarioSolicitud(
             @NotBlank @Email String correo,
             @NotBlank String nombreCompleto,
@@ -77,11 +85,13 @@ public class UsuarioController {
             @NotEmpty Set<Rol> roles) {
     }
 
+    /** Área a asignar y motivo del cambio. */
     public record AsignarAreaSolicitud(
             @NotBlank @Size(max = 40) String area,
             @NotBlank String motivo) {
     }
 
+    /** Roles nuevos y motivo del cambio. */
     public record AsignarRolesSolicitud(
             @NotNull @NotEmpty Set<Rol> roles,
             @NotBlank String motivo) {
@@ -90,6 +100,7 @@ public class UsuarioController {
     /** Respuesta con datos personales enmascarados. */
     public record UsuarioRespuesta(UUID id, String correo, String nombreCompleto, String estatus, Set<Rol> roles,
                                    String area) {
+        /** Convierte un usuario en su respuesta. */
         static UsuarioRespuesta de(Usuario u) {
             return new UsuarioRespuesta(u.getId(), Enmascarado.correo(u.getCorreo()),
                     Enmascarado.nombre(u.getNombreCompleto()), u.getEstatus().name(), u.getRoles(),

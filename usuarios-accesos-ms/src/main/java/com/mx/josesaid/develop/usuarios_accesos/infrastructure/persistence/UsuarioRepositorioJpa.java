@@ -14,10 +14,12 @@ public class UsuarioRepositorioJpa implements UsuarioRepositorio {
 
     private final UsuarioJpaRepository jpa;
 
+    /** Recibe el repositorio JPA de usuarios. */
     public UsuarioRepositorioJpa(UsuarioJpaRepository jpa) {
         this.jpa = jpa;
     }
 
+    /** Guarda un usuario y devuelve el guardado. */
     @Override
     public Usuario guardar(Usuario usuario) {
         UsuarioEntity entidad = jpa.findById(usuario.getId()).orElseGet(UsuarioEntity::new);
@@ -36,21 +38,25 @@ public class UsuarioRepositorioJpa implements UsuarioRepositorio {
         return toDominio(jpa.save(entidad));
     }
 
+    /** Busca un usuario por id. */
     @Override
     public Optional<Usuario> buscarPorId(UUID id) {
         return jpa.findById(id).map(UsuarioRepositorioJpa::toDominio);
     }
 
+    /** Busca un usuario por correo normalizado, usando el índice de búsqueda. */
     @Override
     public Optional<Usuario> buscarPorCorreo(String correoNormalizado) {
         return jpa.findByCorreoIndice(IndiceCorreo.de(correoNormalizado)).map(UsuarioRepositorioJpa::toDominio);
     }
 
+    /** Indica si ya existe un usuario con ese correo normalizado. */
     @Override
     public boolean existePorCorreo(String correoNormalizado) {
         return jpa.existsByCorreoIndice(IndiceCorreo.de(correoNormalizado));
     }
 
+    /** Lista los usuarios más recientes, con límite. */
     @Override
     public java.util.List<Usuario> listarRecientes(int limite) {
         return jpa.findAllByOrderByCreadoUtcDesc(org.springframework.data.domain.PageRequest.of(0, limite)).stream()
@@ -58,6 +64,7 @@ public class UsuarioRepositorioJpa implements UsuarioRepositorio {
                 .toList();
     }
 
+    /** Convierte la fila en el usuario del dominio. */
     private static Usuario toDominio(UsuarioEntity e) {
         return Usuario.reconstruir(
                 e.getId(),
