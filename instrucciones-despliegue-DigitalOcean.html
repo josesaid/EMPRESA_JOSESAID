@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía completa — EMPRESA_JOSESAID en DigitalOcean — josesaid.lat</title>
+<style>
+  :root { --indigo:#4338ca; --cyan:#0891b2; --ink:#1e1b4b; --muted:#64748b; --bg:#f8fafc; --warn:#b45309; --warnbg:#fffbeb; --ok:#059669; --okbg:#ecfdf5; --err:#b91c1c; --errbg:#fef2f2; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
+  header { background: linear-gradient(135deg, var(--indigo), var(--cyan)); color:#fff; padding:40px 24px; }
+  header h1 { margin:0 0 8px; font-size:1.8rem; }
+  header p { margin:4px 0; opacity:.92; }
+  main { max-width: 1000px; margin: 0 auto; padding: 24px; }
+  nav.toc { background:#fff; border-radius:12px; padding:20px 24px; margin-bottom:20px; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+  nav.toc ol { margin:8px 0 0; padding-left:20px; columns:2; }
+  nav.toc a { color:var(--indigo); text-decoration:none; }
+  section { background:#fff; border-radius:12px; padding:24px; margin-bottom:20px; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+  h2 { margin-top:0; font-size:1.3rem; color:var(--indigo); border-bottom:2px solid #e0e7ff; padding-bottom:8px; }
+  h3 { color:var(--cyan); margin:22px 0 8px; font-size:1.05rem; }
+  table { width:100%; border-collapse:collapse; margin:10px 0; font-size:.93rem; }
+  th, td { text-align:left; padding:9px 10px; border-bottom:1px solid #e2e8f0; vertical-align:top; }
+  th { background:#eef2ff; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:.88rem; background:#eef2ff; padding:2px 6px; border-radius:4px; }
+  pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:.85rem; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; overflow-x:auto; white-space:pre; }
+  .step { display:flex; gap:14px; align-items:flex-start; margin:12px 0; }
+  .num { flex:0 0 34px; height:34px; border-radius:50%; background:var(--indigo); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .flow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; margin:16px 0; }
+  .box { border:2px solid var(--indigo); border-radius:8px; padding:10px 12px; background:#eef2ff; text-align:center; font-size:.88rem; min-width:150px; }
+  .box.cyan { border-color:var(--cyan); background:#ecfeff; }
+  .box small { color:var(--muted); }
+  .arrow { font-size:1.3rem; color:var(--indigo); }
+  .note { background:#eff6ff; border-left:4px solid var(--indigo); padding:12px 16px; border-radius:6px; margin:12px 0; }
+  .warn { background:var(--warnbg); border-left:4px solid var(--warn); padding:12px 16px; border-radius:6px; margin:12px 0; }
+  .ok { background:var(--okbg); border-left:4px solid var(--ok); padding:12px 16px; border-radius:6px; margin:12px 0; }
+  .danger { background:var(--errbg); border-left:4px solid var(--err); padding:12px 16px; border-radius:6px; margin:12px 0; }
+  .placeholder { background:#fef9c3; padding:0 4px; border-radius:3px; }
+  ul, ol { padding-left:22px; }
+  li { margin:4px 0; }
+  .file { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:.85rem; color:var(--indigo); font-weight:600; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Guía completa — EMPRESA_JOSESAID en DigitalOcean</h1>
+  <p>Dominio: <strong>josesaid.lat</strong> · Aplicación: <strong>ui-ms</strong> (Spring Boot, Java 21) · Docker Compose</p>
+  <p>Ruta de la petición: Navegador → DNS → Nginx → Apache → Docker → Spring Boot</p>
+</header>
+
+<main>
+
+<nav class="toc">
+  <strong>Índice</strong>
+  <ol>
+    <li><a href="#s0">Arquitectura y flujo de una petición</a></li>
+    <li><a href="#s1">Crear la cuenta de DigitalOcean</a></li>
+    <li><a href="#s2">Crear la llave SSH</a></li>
+    <li><a href="#s3">Crear el Droplet</a></li>
+    <li><a href="#s4">Primer acceso y endurecimiento del servidor</a></li>
+    <li><a href="#s5">Swap y ajustes del sistema</a></li>
+    <li><a href="#s6">Instalar Docker Engine</a></li>
+    <li><a href="#s7">Registros DNS</a></li>
+    <li><a href="#s8">Firewall (UFW)</a></li>
+    <li><a href="#s9">Mapa de puertos</a></li>
+    <li><a href="#s10">Subir el código y preparar ui-ms</a></li>
+    <li><a href="#s11">Dockerfile de ui-ms</a></li>
+    <li><a href="#s12">docker-compose.yml y variables de entorno</a></li>
+    <li><a href="#s13">Spring Boot: cabeceras reenviadas y Actuator</a></li>
+    <li><a href="#s14">Apache: proxy hacia Docker</a></li>
+    <li><a href="#s15">Nginx: josesaid.lat y app.josesaid.lat</a></li>
+    <li><a href="#s16">Página de bienvenida</a></li>
+    <li><a href="#s17">Pruebas por niveles</a></li>
+    <li><a href="#s18">HTTPS con Certbot</a></li>
+    <li><a href="#s19">Actualizar la aplicación</a></li>
+    <li><a href="#s20">Solución de problemas</a></li>
+    <li><a href="#s21">Rollback</a></li>
+    <li><a href="#s22">Checklist final</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<section id="s0">
+  <h2>0. Arquitectura y flujo de una petición</h2>
+
+  <div class="flow">
+    <div class="box">Navegador<br><small>https://app.josesaid.lat</small></div>
+    <div class="arrow">→</div>
+    <div class="box">DNS<br><small>app → IP del Droplet</small></div>
+    <div class="arrow">→</div>
+    <div class="box cyan">Nginx<br><small>0.0.0.0:80 / 443</small></div>
+    <div class="arrow">→</div>
+    <div class="box">Apache<br><small>127.0.0.1:8090</small></div>
+    <div class="arrow">→</div>
+    <div class="box cyan">Docker<br><small>127.0.0.1:8098</small></div>
+    <div class="arrow">→</div>
+    <div class="box">ui-ms<br><small>Spring Boot · 8080</small></div>
+  </div>
+
+  <h3>Qué pasa en cada salto</h3>
+  <div class="step"><div class="num">1</div><div><strong>Navegador → DNS.</strong> El navegador pide la IP de <code>app.josesaid.lat</code>. El registro A devuelve la IP pública del Droplet.</div></div>
+  <div class="step"><div class="num">2</div><div><strong>Navegador → Nginx.</strong> La petición llega al puerto 80 (o 443 con HTTPS) del Droplet. Nginx lee la cabecera <code>Host</code> y selecciona el bloque <code>server_name app.josesaid.lat</code>.</div></div>
+  <div class="step"><div class="num">3</div><div><strong>Nginx → Apache.</strong> Nginx hace <code>proxy_pass http://127.0.0.1:8090</code> y agrega <code>X-Real-IP</code>, <code>X-Forwarded-For</code>, <code>X-Forwarded-Proto</code> y <code>X-Forwarded-Host</code>.</div></div>
+  <div class="step"><div class="num">4</div><div><strong>Apache → Docker.</strong> Apache escucha solo en localhost, selecciona el VirtualHost <code>app.josesaid.lat</code> y hace <code>ProxyPass</code> a <code>http://127.0.0.1:8098/</code>, conservando el <code>Host</code> original.</div></div>
+  <div class="step"><div class="num">5</div><div><strong>Docker → contenedor.</strong> Docker Engine recibe la conexión en el 8098 del host (publicado solo en 127.0.0.1) y la envía al 8080 del contenedor <code>ui-ms</code>.</div></div>
+  <div class="step"><div class="num">6</div><div><strong>Spring Boot.</strong> La aplicación procesa la petición. Con <code>forward-headers-strategy: framework</code> toma la IP real del cliente y si la conexión original fue HTTP o HTTPS.</div></div>
+  <div class="step"><div class="num">7</div><div><strong>Respuesta.</strong> La respuesta regresa por la misma cadena, en orden inverso, hasta el navegador.</div></div>
+
+  <div class="note">
+    <strong>Por qué esta arquitectura:</strong> solo Nginx está expuesto a internet. Apache y Docker escuchan en localhost, así que no pueden recibir tráfico directo desde fuera. Apache queda como punto de configuración adicional para otros web servers o reglas (<code>mod_rewrite</code>, autenticación, cabeceras).
+  </div>
+
+  <div class="warn">
+    <strong>Costo de la capa Apache:</strong> añade un salto más. Si en el futuro ui-ms es la única aplicación, puedes quitar Apache y hacer que Nginx apunte directo a <code>127.0.0.1:8098</code> sin tocar Docker.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="s1">
+  <h2>1. Crear la cuenta de DigitalOcean</h2>
+  <p class="note">Los nombres de botones de la consola de DigitalOcean pueden cambiar con el tiempo. Si algo no coincide, busca la función por nombre en el menú.</p>
+
+  <div class="step"><div class="num">1</div><div>Entra a <strong>cloud.digitalocean.com/registrations/new</strong> y regístrate con tu correo o con Google/GitHub.</div></div>
+  <div class="step"><div class="num">2</div><div>Confirma el correo electrónico desde el mensaje que te llega.</div></div>
+  <div class="step"><div class="num">3</div><div>Agrega un método de pago. DigitalOcean puede pedir una tarjeta de crédito o débito y, en algunos casos, una verificación adicional.</div></div>
+  <div class="step"><div class="num">4</div><div>Activa la autenticación de dos factores en <strong>Settings → Security</strong>. Usa una app de autenticación (Google Authenticator, 1Password, Authy).</div></div>
+  <div class="step"><div class="num">5</div><div>Guarda los códigos de recuperación de 2FA en un gestor de contraseñas. Sin ellos, perder el teléfono puede bloquear tu cuenta.</div></div>
+
+  <div class="warn">
+    Crea también un <strong>equipo</strong> o revisa el <strong>proyecto</strong> por defecto en el panel. Todo lo que crees (Droplets, firewalls, DNS) queda asociado a un proyecto; ponle un nombre como <code>EMPRESA_JOSESAID</code> para encontrarlo fácil.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="s2">
+  <h2>2. Crear la llave SSH</h2>
+  <p>Usaremos llaves SSH en lugar de contraseñas para entrar al servidor. Hazlo en tu computadora local.</p>
+
+  <h3>2.1 Generar el par de llaves</h3>
+  <pre># macOS / Linux (en la terminal)
+ssh-keygen -t ed25519 -C "josesaid-droplet" -f ~/.ssh/id_ed25519_do
+
+# Te pedirá una passphrase. Ponla y guárdala en tu gestor de contraseñas.</pre>
+
+  <h3>2.2 Ver la llave pública</h3>
+  <pre>cat ~/.ssh/id_ed25519_do.pub</pre>
+  <p>Copia toda la línea que empieza con <code>ssh-ed25519</code>.</p>
+
+  <h3>2.3 Registrarla en DigitalOcean</h3>
+  <div class="step"><div class="num">1</div><div>En el panel, ve a <strong>Settings → Security → SSH Keys → Add SSH Key</strong>.</div></div>
+  <div class="step"><div class="num">2</div><div>Pega la llave pública y dale un nombre como <code>laptop-josesaid</code>.</div></div>
+
+  <div class="danger">
+    <strong>Nunca compartas la llave privada</strong> (<code>~/.ssh/id_ed25519_do</code>, sin <code>.pub</code>). Solo la llave pública se registra en DigitalOcean.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="s3">
+  <h2>3. Crear el Droplet</h2>
+
+  <div class="step"><div class="num">1</div><div>En el panel, selecciona <strong>Create → Droplets</strong>.</div></div>
+  <div class="step"><div class="num">2</div><div><strong>Región:</strong> elige la más cercana a tus usuarios. Desde México, las regiones de Norteamérica (Nueva York, San Francisco o Toronto) suelen tener menor latencia. Revisa la lista disponible en tu cuenta.</div></div>
+  <div class="step"><div class="num">3</div><div><strong>Imagen:</strong> <strong>Ubuntu 24.04 (LTS) x64</strong>. Es la versión con soporte a largo plazo y la que usa esta guía.</div></div>
+  <div class="step"><div class="num">4</div><div><strong>Plan:</strong> <em>Basic → Regular</em>. Para una aplicación Spring Boot con Docker, Nginx y Apache, el mínimo recomendado es <strong>2 GB de RAM y 1 vCPU</strong>. Si el build de Maven en el servidor falla por memoria, sube a 4 GB.</div></div>
+  <div class="step"><div class="num">5</div><div><strong>Autenticación:</strong> selecciona <strong>SSH Key</strong> y marca la llave que registraste en la sección 2. No uses contraseña.</div></div>
+  <div class="step"><div class="num">6</div><div><strong>Hostname:</strong> <code>empresa-josesaid-01</code>.</div></div>
+  <div class="step"><div class="num">7</div><div><strong>Opciones adicionales:</strong> activa <em>Monitoring</em> (gratuito). Los <em>Backups</em> cuestan un extra mensual; actívalos si quieres copias automáticas del disco.</div></div>
+  <div class="step"><div class="num">8</div><div>Haz clic en <strong>Create Droplet</strong> y espera a que el estado sea <em>Running</em>.</div></div>
+
+  <h3>3.1 Anotar la IP</h3>
+  <p>Copia la <strong>IPv4 pública</strong> del Droplet desde la lista de Droplets. La usarás en el DNS y en el acceso SSH. En esta guía la llamaremos <code>IP_DEL_DROPLET</code>.</p>
+
+  <div class="note">
+    Las siguientes secciones usan <code>TU_IP</code> para tu IP pública actual. Consíguela con <code>curl ifconfig.me</code> desde tu computadora.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="s4">
+  <h2>4. Primer acceso y endurecimiento del servidor</h2>
+
+  <h3>4.1 Entrar como root por primera vez</h3>
+  <pre>ssh -i ~/.ssh/id_ed25519_do root@IP_DEL_DROPLET</pre>
+  <p>La primera vez te preguntará si confías en el host. Escribe <code>yes</code>.</p>
+
+  <h3>4.2 Actualizar el sistema</h3>
+  <pre>apt update &amp;&amp; apt upgrade -y
+reboot</pre>
+  <p>Espera un minuto y vuelve a entrar.</p>
+
+  <h3>4.3 Crear un usuario de despliegue</h3>
+  <pre>adduser deploy
+usermod -aG sudo deploy</pre>
+
+  <h3>4.4 Copiar la llave SSH al nuevo usuario</h3>
+  <pre>mkdir -p /home/deploy/.ssh
+cp /root/.ssh/authorized_keys /home/deploy/.ssh/
+chown -R deploy:deploy /home/deploy/.ssh
+chmod 700 /home/deploy/.ssh
+chmod 600 /home/deploy/.ssh/authorized_keys</pre>
+
+  <h3>4.5 Probar el acceso con el nuevo usuario</h3>
+  <p><strong>Antes de cerrar la sesión de root</strong>, abre otra terminal en tu computadora y prueba:</p>
+  <pre>ssh -i ~/.ssh/id_ed25519_do deploy@IP_DEL_DROPLET
+sudo whoami    # debe responder: root</pre>
+
+  <div class="danger">
+    No deshabilites el acceso por contraseña ni el login de root hasta que el acceso como <code>deploy</code> con llave funcione. Si lo haces antes, puedes quedarte sin acceso al servidor.
+  </div>
+
+  <h3>4.6 Deshabilitar login de root y contraseñas</h3>
+  <p>Solo ejecútalo cuando el paso 4.5 haya funcionado:</p>
+  <pre>sudo nano /etc/ssh/sshd_config</pre>
+  <p>Asegúrate de que estas líneas tengan estos valores:</p>
+  <pre>PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes</pre>
+  <pre>sudo sshd -t &amp;&amp; sudo systemctl restart ssh</pre>
+  <p>A partir de ahora entra solo con <code>ssh -i ~/.ssh/id_ed25519_do deploy@IP_DEL_DROPLET</code>.</p>
+
+  <h3>4.7 Zona horaria</h3>
+  <pre>sudo timedatectl set-timezone America/Mexico_City
+timedatectl</pre>
+  <p>Los logs y el cron usarán tu hora local. Si prefieres UTC para los logs de producción, omite este paso.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="s5">
+  <h2>5. Swap y ajustes del sistema</h2>
+  <p>Un Droplet de 2 GB puede quedarse sin memoria durante el build de Maven o al arrancar la JVM. Un archivo de swap evita que el sistema se caiga.</p>
+
+  <pre>sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+free -h</pre>
+  <p>En <code>free -h</code> debes ver la línea <code>Swap</code> con 2 GB.</p>
+
+  <h3>5.1 Ajustar la agresividad del swap</h3>
+  <pre>echo 'vm.swappiness=10' | sudo tee /etc/sysctl.d/99-swappiness.conf
+sudo sysctl -p /etc/sysctl.d/99-swappiness.conf</pre>
+</section>
+
+<!-- ============================================================ -->
+<section id="s6">
+  <h2>6. Instalar Docker Engine</h2>
+  <p>Usamos el repositorio oficial de Docker, no el paquete de Ubuntu, que suele estar desactualizado.</p>
+
+  <h3>6.1 Dependencias y clave del repositorio</h3>
+  <pre>sudo apt install -y ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg</pre>
+
+  <h3>6.2 Agregar el repositorio e instalar</h3>
+  <pre>echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release &amp;&amp; echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</pre>
+
+  <h3>6.3 Permitir a tu usuario usar Docker sin sudo</h3>
+  <pre>sudo usermod -aG docker deploy</pre>
+  <p>Cierra la sesión SSH y vuelve a entrar para que el grupo tome efecto.</p>
+
+  <h3>6.4 Verificar</h3>
+  <pre>docker --version
+docker compose version
+docker run --rm hello-world</pre>
+  <p>Si <code>hello-world</code> imprime un mensaje, Docker funciona.</p>
+
+  <h3>6.5 Limitar el tamaño de los logs de contenedores</h3>
+  <p>Evita que los logs de Docker llenen el disco.</p>
+  <pre>sudo nano /etc/docker/daemon.json</pre>
+  <pre>{
+  "log-driver": "json-file",
+  "log-opts": { "max-size": "10m", "max-file": "3" }
+}</pre>
+  <pre>sudo systemctl restart docker</pre>
+</section>
+
+<!-- ============================================================ -->
+<section id="s7">
+  <h2>7. Registros DNS</h2>
+  <p>En el proveedor donde administras <code>josesaid.lat</code>, crea estos registros apuntando a <code>IP_DEL_DROPLET</code>:</p>
+  <table>
+    <tr><th>Tipo</th><th>Nombre (host)</th><th>Valor</th><th>TTL</th></tr>
+    <tr><td>A</td><td><code>@</code> (josesaid.lat)</td><td><code>IP_DEL_DROPLET</code></td><td>3600</td></tr>
+    <tr><td>A</td><td><code>www</code></td><td><code>IP_DEL_DROPLET</code></td><td>3600</td></tr>
+    <tr><td>A</td><td><code>app</code></td><td><code>IP_DEL_DROPLET</code></td><td>3600</td></tr>
+  </table>
+  <p>Si prefieres administrar el DNS en DigitalOcean, crea el dominio en <strong>Networking → Domains</strong> y apunta los nameservers del registrador a DigitalOcean. Los registros son los mismos.</p>
+
+  <h3>7.1 Verificar la propagación</h3>
+  <pre>dig +short josesaid.lat
+dig +short app.josesaid.lat</pre>
+  <p>Ambos deben devolver <code>IP_DEL_DROPLET</code>. Si no, espera y vuelve a intentar.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="s8">
+  <h2>8. Firewall (UFW)</h2>
+  <p>Ejecuta esto dentro del Droplet, como <code>deploy</code>.</p>
+
+  <div class="danger">
+    Antes de activar UFW, confirma que tu IP (<code>TU_IP</code>) está correcta. Si UFW bloquea tu SSH, pierdes el acceso y tendrás que usar la consola web de DigitalOcean.
+  </div>
+
+  <pre>sudo apt install -y ufw
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# SSH solo desde tu IP
+sudo ufw allow from TU_IP to any port 22 proto tcp
+
+# Web público
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+sudo ufw enable
+sudo ufw status verbose</pre>
+
+  <div class="note">
+    <strong>Alternativa:</strong> DigitalOcean ofrece <em>Cloud Firewalls</em> en <strong>Networking → Firewalls</strong>. Puedes usarlo además de UFW como una segunda capa. Si lo usas, aplica las mismas reglas: SSH desde tu IP y HTTP/HTTPS abiertos.
+  </div>
+
+  <div class="ok">
+    <strong>Qué no debe quedar abierto:</strong> 8080, 8090 y 8098. Están ligados a 127.0.0.1 y no deben ser accesibles desde internet.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="s9">
+  <h2>9. Mapa de puertos</h2>
+  <table>
+    <tr><th>Puerto</th><th>Enlace</th><th>Servicio</th><th>Exposición</th></tr>
+    <tr><td>22</td><td><code>0.0.0.0</code></td><td>SSH</td><td>Solo tu IP</td></tr>
+    <tr><td>80</td><td><code>0.0.0.0</code></td><td>Nginx (HTTP)</td><td>Público</td></tr>
+    <tr><td>443</td><td><code>0.0.0.0</code></td><td>Nginx (HTTPS, tras Certbot)</td><td>Público</td></tr>
+    <tr><td>8090</td><td><code>127.0.0.1</code></td><td>Apache</td><td>Solo localhost</td></tr>
+    <tr><td>8098</td><td><code>127.0.0.1</code></td><td>Docker → ui-ms (<code>127.0.0.1:8098:8080</code>)</td><td>Solo localhost</td></tr>
+    <tr><td>8080 (dentro del contenedor)</td><td>red interna de Docker</td><td>Spring Boot (<code>ui-ms</code>)</td><td>No se publica al host</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<section id="s10">
+  <h2>10. Subir el código y preparar ui-ms</h2>
+
+  <h3>10.1 Clonar el repositorio</h3>
+  <p>Si el repositorio es privado, crea una llave de deploy o un token en GitHub. La forma más simple es una llave SSH de solo lectura:</p>
+  <pre># En el Droplet, como deploy
+ssh-keygen -t ed25519 -C "droplet-deploy" -f ~/.ssh/id_ed25519_github
+cat ~/.ssh/id_ed25519_github.pub</pre>
+  <p>Agrega esa llave pública en GitHub: <strong>Repositorio → Settings → Deploy keys → Add deploy key</strong>. Deja <em>Allow write access</em> desmarcado.</p>
+  <pre>cat &gt;&gt; ~/.ssh/config &lt;&lt;'EOF'
+Host github.com
+  IdentityFile ~/.ssh/id_ed25519_github
+  IdentitiesOnly yes
+EOF
+chmod 600 ~/.ssh/config
+
+git clone git@github.com:TU_USUARIO/EMPRESA_JOSESAID.git ~/EMPRESA_JOSESAID
+cd ~/EMPRESA_JOSESAID
+git log --oneline -n 5</pre>
+
+  <h3>10.2 Estructura esperada</h3>
+  <pre>~/EMPRESA_JOSESAID/
+└── ui-ms/
+    ├── Dockerfile
+    ├── docker-compose.yml
+    ├── .env                 ← NO va en git; se crea en el servidor
+    ├── pom.xml
+    └── src/</pre>
+
+  <div class="warn">
+    Si tu repositorio no tiene esta estructura, ajusta las rutas de este documento. El <code>Dockerfile</code> y el <code>docker-compose.yml</code> deben estar en la misma carpeta que <code>pom.xml</code>.
+  </div>
+
+  <h3>10.3 Verificar que Spring Boot compila localmente</h3>
+  <p>Antes de dockerizar, verifica en tu computadora que el proyecto compila con Java 21:</p>
+  <pre>cd ui-ms
+./mvnw -B clean package -DskipTests
+ls target/*.jar</pre>
+</section>
+
+<!-- ============================================================ -->
+<section id="s11">
+  <h2>11. Dockerfile de ui-ms</h2>
+  <p>Archivo: <span class="file">ui-ms/Dockerfile</span></p>
+  <p>Este Dockerfile hace un build multi-etapa. La primera etapa compila con Maven y la segunda solo copia el JAR a una imagen liviana de Java 21.</p>
+  <pre># ---- Etapa 1: build con Maven ----
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /src
+
+# Cachear dependencias primero para acelerar builds siguientes
+COPY pom.xml .
+RUN mvn -B -q dependency:go-offline
+
+COPY src ./src
+RUN mvn -B -q clean package -DskipTests
+
+# ---- Etapa 2: runtime ----
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+
+# Usuario sin privilegios
+RUN groupadd --system app &amp;&amp; useradd --system --gid app --uid 10001 app
+
+COPY --from=build /src/target/*.jar /app/app.jar
+
+USER app
+EXPOSE 8080
+
+# Límite de memoria de la JVM: 75% del límite del contenedor
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError"
+
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]</pre>
+
+  <div class="note">
+    <strong>Por qué <code>exec</code>:</strong> sin él, la JVM no recibe las señales de Docker (<code>SIGTERM</code>) y los apagados tardan 10 segundos o fallan.
+  </div>
+
+  <div class="warn">
+    Si el proyecto no usa el wrapper <code>mvnw</code> o tiene varios módulos Maven, el paso <code>COPY pom.xml</code> cambia. Compártelo para ajustarlo.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="s12">
+  <h2>12. docker-compose.yml y variables de entorno</h2>
+
+  <h3>12.1 Compose de ui-ms</h3>
+  <p>Archivo: <span class="file">ui-ms/docker-compose.yml</span></p>
+  <pre>services:
+  ui-ms:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: empresa/ui-ms:latest
+    container_name: ui-ms
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      SERVER_PORT: 8080
+    ports:
+      - "127.0.0.1:8098:8080"   # Solo localhost: Apache es el único que llega aquí
+    mem_limit: 1g
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"</pre>
+
+  <div class="note">
+    <strong>Sobre <code>mem_limit: 1g</code>:</strong> ajústalo según el plan del Droplet. En un Droplet de 2 GB, 1 GB para ui-ms deja espacio para Nginx, Apache y el sistema. Con <code>MaxRAMPercentage=75</code>, la JVM usará como máximo unos 768 MB de heap.
+  </div>
+
+  <h3>12.2 Archivo .env con las variables reales</h3>
+  <p>Archivo: <span class="file">ui-ms/.env</span> (en el servidor, nunca en git)</p>
+  <pre># Crear el archivo y restringir permisos
+cd ~/EMPRESA_JOSESAID/ui-ms
+nano .env
+chmod 600 .env</pre>
+
+  <pre># ---- Perfil de Spring ----
+SPRING_PROFILES_ACTIVE=<span class="placeholder">PERFIL_REAL_DEL_PROYECTO</span>
+
+# ---- Base de datos ----
+SPRING_DATASOURCE_URL=<span class="placeholder">jdbc:postgresql://HOST:5432/NOMBRE_BD</span>
+SPRING_DATASOURCE_USERNAME=<span class="placeholder">USUARIO_BD</span>
+SPRING_DATASOURCE_PASSWORD=<span class="placeholder">PASSWORD_BD</span>
+
+# ---- Seguridad JWT (RS256 / JWKS) ----
+<span class="placeholder">VARIABLES_JWT_REALES</span>
+
+# ---- Eureka / servicios ----
+<span class="placeholder">EUREKA_URL_Y_OTROS_SERVICIOS</span></pre>
+
+  <div class="danger">
+    Los valores entre marcadores amarillos son <strong>placeholders</strong>. Reemplázalos con las variables reales de tu proyecto. Nunca subas el <code>.env</code> a git ni lo pegues en un chat. Si lo compartiste por error, rota las credenciales.
+  </div>
+
+  <h3>12.3 Qué pasa con el perfil</h3>
+  <p>El valor de <code>SPRING_PROFILES_ACTIVE</code> debe coincidir con el nombre de un archivo <code>application-PERFIL.yml</code> existente en el proyecto. Si no existe, Spring usará solo <code>application.yml</code>.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="s13">
+  <h2>13. Spring Boot: cabeceras reenviadas y Actuator</h2>
+
+  <h3>13.1 Leer las cabeceras de los proxies</h3>
+  <p>Archivo: <span class="file">ui-ms/src/main/resources/application.yml</span> (o el perfil de producción)</p>
+  <pre>server:
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: framework</pre>
+  <p>Sin esta propiedad, <code>request.getRemoteAddr()</code> devuelve <code>127.0.0.1</code> y los redirects pueden salir en <code>http://</code> en lugar de <code>https://</code>.</p>
+
+  <h3>13.2 Actuator para el healthcheck</h3>
+  <p>Si el proyecto no tiene Actuator, agrega la dependencia en <code>pom.xml</code>:</p>
+  <pre>&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre>
+  <p>Y exponer solo lo necesario:</p>
+  <pre>management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true</pre>
+
+  <div class="warn">
+    No expongas <code>env</code>, <code>beans</code> ni <code>heapdump</code> en producción. Pueden filtrar secretos.
+  </div>
+
+  <h3>13.3 Verificar</h3>
+  <pre>curl -s http://127.0.0.1:8098/actuator/health</pre>
+  <p>Debe responder <code>{"status":"UP"}</code>.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="s14">
+  <h2>14. Apache: proxy hacia Docker</h2>
+
+  <h3>14.1 Instalar y habilitar módulos</h3>
+  <pre>sudo apt install -y apache2
+sudo a2enmod proxy proxy_http headers
+sudo a2dismod -f status 2&gt;/dev/null || true</pre>
+
+  <h3>14.2 Cambiar el puerto de escucha</h3>
+  <p>Archivo: <span class="file">/etc/apache2/ports.conf</span></p>
+  <pre>Listen 127.0.0.1:8090</pre>
+  <p>Así Apache no escucha en el 80 público (que es de Nginx) y solo acepta conexiones locales.</p>
+
+  <h3>14.3 Desactivar el sitio por defecto</h3>
+  <pre>sudo a2dissite 000-default.conf</pre>
+
+  <h3>14.4 Crear el VirtualHost</h3>
+  <p>Archivo: <span class="file">/etc/apache2/sites-available/app.josesaid.lat.conf</span></p>
+  <pre>&lt;VirtualHost 127.0.0.1:8090&gt;
+    ServerName app.josesaid.lat
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+
+    ProxyPass        / http://127.0.0.1:8098/ retry=0 timeout=120
+    ProxyPassReverse / http://127.0.0.1:8098/
+
+    ErrorLog  ${APACHE_LOG_DIR}/app.josesaid.lat-error.log
+    CustomLog ${APACHE_LOG_DIR}/app.josesaid.lat-access.log combined
+&lt;/VirtualHost&gt;</pre>
+
+  <div class="note">
+    <strong>Cabeceras:</strong> Apache no sobrescribe <code>X-Forwarded-*</code>. Las recibe de Nginx y las reenvía a Docker. Apache agrega su propia IP a <code>X-Forwarded-For</code>; por eso Spring debe leer la primera IP de la lista, que es la del cliente original.
+  </div>
+
+  <h3>14.5 Activar y validar</h3>
+  <pre>sudo a2ensite app.josesaid.lat.conf
+sudo apache2ctl configtest
+sudo systemctl restart apache2
+ss -ltnp | grep 8090</pre>
+  <p><code>configtest</code> debe responder <code>Syntax OK</code>, y <code>ss</code> debe mostrar <code>127.0.0.1:8090</code>.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="s15">
+  <h2>15. Nginx: josesaid.lat y app.josesaid.lat</h2>
+
+  <h3>15.1 Instalar Nginx</h3>
+  <pre>sudo apt install -y nginx
+sudo rm -f /etc/nginx/sites-enabled/default</pre>
+
+  <h3>15.2 Sitio principal: josesaid.lat</h3>
+  <p>Archivo: <span class="file">/etc/nginx/sites-available/josesaid.lat</span></p>
+  <pre>server {
+    listen 80;
+    listen [::]:80;
+    server_name josesaid.lat www.josesaid.lat;
+
+    root /var/www/josesaid.lat/html;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}</pre>
+
+  <h3>15.3 Aplicación: app.josesaid.lat → Apache</h3>
+  <p>Archivo: <span class="file">/etc/nginx/sites-available/app.josesaid.lat</span></p>
+  <pre>server {
+    listen 80;
+    listen [::]:80;
+    server_name app.josesaid.lat;
+
+    client_max_body_size 20m;
+
+    location / {
+        proxy_pass http://127.0.0.1:8090;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host  $host;
+
+        proxy_connect_timeout 60s;
+        proxy_send_timeout    120s;
+        proxy_read_timeout    120s;
+    }
+}</pre>
+
+  <h3>15.4 Crear directorios y activar</h3>
+  <pre>sudo mkdir -p /var/www/josesaid.lat/html /var/www/app.josesaid.lat/html
+sudo chown -R deploy:deploy /var/www/josesaid.lat /var/www/app.josesaid.lat
+
+sudo ln -s /etc/nginx/sites-available/josesaid.lat /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/app.josesaid.lat /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx</pre>
+  <p><code>nginx -t</code> debe responder <code>syntax is ok</code> y <code>test is successful</code>.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="s16">
+  <h2>16. Página de bienvenida</h2>
+  <p>Archivo: <span class="file">/var/www/josesaid.lat/html/index.html</span></p>
+  <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="es"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;josesaid.lat&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Bienvenido a mi página web&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</section>
+
+<!-- ============================================================ -->
+<section id="s17">
+  <h2>17. Pruebas por niveles</h2>
+  <p>Ejecuta las pruebas en orden. Cada nivel depende del anterior.</p>
+
+  <h3>17.1 Nivel 1: servicios del sistema</h3>
+  <pre>systemctl is-active nginx apache2 docker
+ss -ltnp | grep -E ':(80|8090|8098)\b'</pre>
+  <p>Esperado: <code>active</code> tres veces; <code>0.0.0.0:80</code> de Nginx y <code>127.0.0.1:8090</code> y <code>127.0.0.1:8098</code>.</p>
+
+  <h3>17.2 Nivel 2: cada capa por separado</h3>
+  <pre># Docker → Spring Boot
+curl -I http://127.0.0.1:8098/
+
+# Apache → Docker
+curl -I -H "Host: app.josesaid.lat" http://127.0.0.1:8090/
+
+# Nginx → Apache → Docker
+curl -I -H "Host: app.josesaid.lat" http://127.0.0.1/
+
+# Nginx → página de bienvenida
+curl -I -H "Host: josesaid.lat" http://127.0.0.1/</pre>
+
+  <h3>17.3 Nivel 3: desde internet</h3>
+  <pre>curl -I http://josesaid.lat
+curl -I http://app.josesaid.lat</pre>
+
+  <h3>17.4 Nivel 4: puertos internos no públicos</h3>
+  <p>Desde tu computadora (no desde el Droplet):</p>
+  <pre>curl -m 5 http://IP_DEL_DROPLET:8090/   # debe fallar
+curl -m 5 http://IP_DEL_DROPLET:8098/   # debe fallar</pre>
+
+  <h3>17.5 Nivel 5: IP real del cliente</h3>
+  <pre>tail -n 3 /var/log/apache2/app.josesaid.lat-access.log
+docker logs --tail 20 ui-ms</pre>
+  <p>Apache registra <code>127.0.0.1</code> (Nginx). Spring Boot debe registrar tu IP pública.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="s18">
+  <h2>18. HTTPS con Certbot</h2>
+  <p>Ejecuta esto solo cuando la sección 17 pase completa.</p>
+  <pre>sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d josesaid.lat -d www.josesaid.lat -d app.josesaid.lat \
+  --redirect --agree-tos -m TU_CORREO --no-eff-email
+sudo certbot renew --dry-run</pre>
+
+  <p>Certbot agrega <code>listen 443 ssl</code>, la redirección de HTTP a HTTPS y el timer de renovación. Nginx sigue enviando <code>X-Forwarded-Proto $scheme</code>, que ahora será <code>https</code>; Spring Boot lo lee gracias a la sección 13.</p>
+
+  <pre>curl -I https://josesaid.lat
+curl -I https://app.josesaid.lat
+sudo systemctl list-timers | grep certbot</pre>
+</section>
+
+<!-- ============================================================ -->
+<section id="s19">
+  <h2>19. Actualizar la aplicación</h2>
+  <p>Procedimiento para publicar una nueva versión de ui-ms:</p>
+  <pre>cd ~/EMPRESA_JOSESAID
+git pull --ff-only
+cd ui-ms
+docker compose build --no-cache ui-ms
+docker compose up -d ui-ms
+docker compose ps
+docker logs --tail 50 ui-ms
+curl -s http://127.0.0.1:8098/actuator/health</pre>
+
+  <div class="note">
+    <code>--ff-only</code> evita merges automáticos en el servidor. Si falla, hay cambios locales que revisar antes de desplegar.
+  </div>
+
+  <h3>19.1 Limpiar imágenes viejas</h3>
+  <pre>docker image prune -f</pre>
+  <p>Borra solo las imágenes sin etiqueta que quedan de builds anteriores.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="s20">
+  <h2>20. Solución de problemas</h2>
+  <table>
+    <tr><th>Síntoma</th><th>Causa probable</th><th>Qué revisar</th></tr>
+    <tr><td><code>502 Bad Gateway</code> en Nginx</td><td>Apache no escucha en 8090</td><td><code>systemctl status apache2</code> y <code>ss -ltnp | grep 8090</code></td></tr>
+    <tr><td><code>503</code> o error de conexión desde Apache</td><td>ui-ms no responde en 8098</td><td><code>curl -I http://127.0.0.1:8098/</code> y <code>docker logs ui-ms</code></td></tr>
+    <tr><td>El contenedor se reinicia en bucle</td><td>Falta una variable del <code>.env</code> o no conecta a la BD</td><td><code>docker logs ui-ms</code> busca <code>Caused by</code></td></tr>
+    <tr><td><code>OutOfMemoryError</code> o el contenedor se cae</td><td>Memoria insuficiente</td><td><code>free -h</code>, <code>docker stats</code> y subir el plan o <code>mem_limit</code></td></tr>
+    <tr><td>El build de Maven falla en el servidor</td><td>Memoria insuficiente durante la compilación</td><td>Verifica el swap (sección 5) o compila localmente y sube el JAR</td></tr>
+    <tr><td>Redirects a <code>http://</code> con HTTPS</td><td>Spring no lee <code>X-Forwarded-Proto</code></td><td>Confirma <code>forward-headers-strategy: framework</code></td></tr>
+    <tr><td>Spring ve <code>127.0.0.1</code> como IP del cliente</td><td>Falta <code>forward-headers-strategy</code></td><td>Sección 13</td></tr>
+    <tr><td>Timeout desde internet</td><td>UFW o el Cloud Firewall bloquea 80/443, o el DNS no propagó</td><td><code>ufw status verbose</code> y <code>dig +short app.josesaid.lat</code></td></tr>
+    <tr><td>No puedes entrar por SSH</td><td>UFW bloqueó tu IP o cambió tu IP pública</td><td>Consola web de DigitalOcean (<em>Recovery Console</em>) para corregir UFW</td></tr>
+    <tr><td><code>nginx -t</code> falla</td><td>Error de sintaxis o archivo duplicado</td><td>El mensaje de error y <code>ls -la /etc/nginx/sites-enabled/</code></td></tr>
+    <tr><td><code>permission denied</code> al usar Docker</td><td>No cerraste sesión tras agregar el grupo</td><td>Cierra sesión SSH y vuelve a entrar</td></tr>
+  </table>
+
+  <h3>Comandos de diagnóstico</h3>
+  <pre>sudo tail -n 50 /var/log/nginx/error.log
+sudo tail -n 50 /var/log/apache2/app.josesaid.lat-error.log
+docker logs --tail 100 ui-ms
+docker stats --no-stream
+free -h
+df -h
+sudo ss -ltnp</pre>
+</section>
+
+<!-- ============================================================ -->
+<section id="s21">
+  <h2>21. Rollback</h2>
+  <p>Para volver a una versión anterior de ui-ms:</p>
+  <pre>cd ~/EMPRESA_JOSESAID
+git log --oneline -n 10          # identifica el commit anterior
+git checkout COMMIT_ANTERIOR
+cd ui-ms
+docker compose build ui-ms
+docker compose up -d ui-ms</pre>
+
+  <div class="warn">
+    Después del rollback, vuelve a la rama principal con <code>git checkout main</code> y <code>git pull</code> cuando decidas desplegar otra versión. No dejes el servidor en un commit desconocido.
+  </div>
+
+  <h3>Desactivar la app sin borrar nada</h3>
+  <pre>cd ~/EMPRESA_JOSESAID/ui-ms
+docker compose stop ui-ms
+
+sudo a2dissite app.josesaid.lat.conf
+sudo systemctl restart apache2</pre>
+
+  <div class="warn">
+    Si ya activaste HTTPS, no borres <code>/etc/letsencrypt</code>. Solo elimina el bloque <code>listen 443</code> del archivo de Nginx que quieras revertir.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="s22">
+  <h2>22. Checklist final</h2>
+  <div class="step"><div class="num">☐</div><div><strong>Cuenta:</strong> DigitalOcean con 2FA y método de pago.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Llave SSH:</strong> creada localmente y registrada en DigitalOcean.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Droplet:</strong> Ubuntu 24.04, 2 GB RAM mínimo, autenticación con llave SSH.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Endurecimiento:</strong> usuario <code>deploy</code>, login de root y contraseñas deshabilitados.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Swap:</strong> 2 GB activos.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Docker:</strong> Docker Engine y Compose instalados; <code>deploy</code> en el grupo <code>docker</code>.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>DNS:</strong> <code>josesaid.lat</code>, <code>www</code> y <code>app</code> apuntan al Droplet.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Firewall:</strong> SSH solo desde tu IP; 80 y 443 abiertos; 8090 y 8098 cerrados.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Código:</strong> repositorio clonado con deploy key de solo lectura; <code>.env</code> creado con <code>chmod 600</code>.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>ui-ms:</strong> <code>docker compose up -d</code> levanta el contenedor; <code>/actuator/health</code> responde <code>UP</code>.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Spring Boot:</strong> <code>forward-headers-strategy: framework</code> configurado.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Apache:</strong> escucha en <code>127.0.0.1:8090</code> y redirige a <code>127.0.0.1:8098</code>.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Nginx:</strong> <code>josesaid.lat</code> sirve la bienvenida; <code>app.josesaid.lat</code> hace <code>proxy_pass</code> a Apache.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>Pruebas:</strong> sección 17 completa, incluidos los puertos internos cerrados desde internet.</div></div>
+  <div class="step"><div class="num">☐</div><div><strong>HTTPS:</strong> certificados emitidos y renovación probada.</div></div>
+</section>
+
+</main>
+</body>
+</html>
