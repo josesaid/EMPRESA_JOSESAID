@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Uso de IA · EMPRESA_JOSESAID</title>
+<style>
+:root { --bg:#f6f5f1; --surface:#fff; --fg:#1d1f24; --muted:#5b6070; --line:#dcdfe7; --code-bg:#f1f3f8; --gutter:#e4e7ee;
+  --num:#8a90a2; --kw:#7048e8; --ann:#b4531a; --str:#2b8a3e; --com:#868e96; --typ:#1864ab; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#14161b; --surface:#1d2028; --fg:#e9ebf0; --muted:#a3a9b8; --line:#313642;
+  --code-bg:#111318; --gutter:#1a1d24; --num:#5c6372; --kw:#b197fc; --ann:#ffa94d; --str:#69db7c; --com:#6c7383; --typ:#74c0fc; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg:#14161b; --surface:#1d2028; --fg:#e9ebf0; --muted:#a3a9b8; --line:#313642;
+  --code-bg:#111318; --gutter:#1a1d24; --num:#5c6372; --kw:#b197fc; --ann:#ffa94d; --str:#69db7c; --com:#6c7383; --typ:#74c0fc; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px)); }
+a { color: var(--c); }
+header.hero { background: linear-gradient(135deg, var(--c) 0%, #1d1f24 150%); color:#fff; padding:34px 0 28px;
+  padding-top: calc(34px + env(safe-area-inset-top,0px)); }
+.wrap { max-width:980px; margin:0 auto; }
+.nav { font-size:13px; margin:0 0 14px; } .nav a { color:#fff; opacity:.9; }
+header .kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; opacity:.85; margin:0 0 6px; }
+header h1 { font-size:clamp(25px,5vw,38px); line-height:1.15; margin:0 0 10px; text-wrap:balance; }
+header p { margin:0; max-width:700px; opacity:.93; }
+main { padding-block:26px 8px; }
+.intro { background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--c); border-radius:12px; padding:14px 18px; margin-bottom:22px; }
+.intro p { margin:0 0 6px; } .intro .tag { display:inline-block; font:600 12px/1 system-ui; padding:5px 8px; border-radius:6px; background:var(--gutter); margin:2px 4px 2px 0; }
+.intro .tag.esc { border:1px dashed var(--c); }
+h2.bloque { font-size:19px; margin:32px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--c); display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline; }
+h2.bloque .num { color:var(--c); font-variant-numeric:tabular-nums; }
+.desc { color:var(--muted); margin:0 0 12px; max-width:72ch; }
+.editor { background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:0 0 18px; min-width:0; }
+.editor-bar { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; background:var(--gutter); border-bottom:1px solid var(--line); font-size:12.5px; color:var(--muted); }
+.editor-bar .archivo { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--fg); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.dots { display:inline-flex; gap:5px; margin-right:8px; vertical-align:middle; } .dots i { width:9px; height:9px; border-radius:50%; background:var(--num); display:inline-block; }
+button.copiar { font:inherit; font-size:12px; cursor:pointer; border:1px solid var(--line); background:var(--surface); color:var(--fg); border-radius:6px; padding:4px 10px; flex:none; }
+button.copiar:hover { border-color:var(--c); color:var(--c); }
+.code-wrap { display:flex; overflow-x:auto; background:var(--code-bg); }
+.nums { margin:0; padding:14px 10px 14px 12px; text-align:right; user-select:none; font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--num); background:var(--gutter); border-right:1px solid var(--line); flex:none; }
+pre.code { margin:0; padding:14px 16px; min-width:0; flex:1 1 auto; font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--fg); white-space:pre; tab-size:4; }
+.kw { color:var(--kw); font-weight:600; } .ann { color:var(--ann); } .str { color:var(--str); } .com { color:var(--com); font-style:italic; } .typ { color:var(--typ); }
+.editor-foot { padding:10px 14px; font-size:13.5px; border-top:1px solid var(--line); color:var(--muted); }
+.editor-foot strong { color:var(--fg); }
+.tip { border-left:4px solid var(--c); background:var(--surface); padding:12px 14px; border-radius:0 10px 10px 0; margin:0 0 14px; font-size:14px; }
+.indice { display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); margin:8px 0 20px; padding:0; list-style:none; }
+.indice a { display:block; height:100%; text-decoration:none; color:var(--fg); background:var(--surface); border:1px solid var(--line); border-top:6px solid var(--c); border-radius:12px; padding:14px; min-width:0; }
+.indice a:hover { border-color:var(--c); }
+.indice strong { display:block; color:var(--c); font-size:16px; margin-bottom:4px; }
+.indice span { font-size:13.5px; color:var(--muted); }
+.indice small { display:block; margin-top:8px; font-size:12px; color:var(--fg); }
+table.tabla { width:100%; border-collapse:collapse; font-size:13.5px; margin:6px 0 16px; }
+table.tabla th { text-align:left; background:var(--gutter); padding:7px 9px; border-bottom:2px solid var(--line); }
+table.tabla td { padding:7px 9px; border-bottom:1px solid var(--line); vertical-align:top; }
+table.tabla code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12.5px; }
+footer.pie { margin-top:40px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; padding-block:18px calc(18px + env(safe-area-inset-bottom,0px)); }
+footer.pie .wrap { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 16px; }
+footer.pie a { color:var(--c); }
+@media (max-width:480px) { .editor-bar { flex-wrap:wrap; } .editor-bar .archivo { white-space:normal; word-break:break-all; } }
+</style>
+</head>
+<body style="--c:#c2255c">
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">EMPRESA_JOSESAID · Asistente Nexus</p>
+    <h1>Uso de IA por microservicio</h1>
+    <p>Índice de las páginas. Cada microservicio tiene su color y muestra el código real con el que la IA lo usa.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro"><p><strong>Cómo leerlo.</strong> El modelo nunca llama a los microservicios directamente: lo hace Nexus, por el gateway, con herramientas (<code>@Tool</code>) que solo puede usar el rol del usuario.</p></section>
+
+  <h2 class="bloque"><span class="num">01</span> Páginas por microservicio</h2>
+  <ul class="indice">
+  <li><a href="uso-ia-clientes-ms.html" style="--c:#d9480f"><strong>Clientes</strong><span>Clientes, prospectos, interacciones y métricas de conversión.</span><small>9 herramientas</small></a></li>
+  <li><a href="uso-ia-compras-proveedores-ms.html" style="--c:#2b8a3e"><strong>Compras y proveedores</strong><span>Proveedores y órdenes de compra.</span><small>8 herramientas</small></a></li>
+  <li><a href="uso-ia-contabilidad-ms.html" style="--c:#1864ab"><strong>Contabilidad</strong><span>Pólizas, cuentas y estados financieros.</span><small>5 herramientas</small></a></li>
+  <li><a href="uso-ia-documentos-cumplimiento-ms.html" style="--c:#7048e8"><strong>Documentos y cumplimiento</strong><span>Documentos legales, vencimientos y versiones.</span><small>5 herramientas</small></a></li>
+  <li><a href="uso-ia-facturacion-pagos-ms.html" style="--c:#0b7285"><strong>Facturación y pagos</strong><span>Comprobantes, cobros y pagos a proveedores.</span><small>6 herramientas</small></a></li>
+  <li><a href="uso-ia-gateway-ms.html" style="--c:#862e9c"><strong>Gateway</strong><span>Entrada única a la plataforma en el puerto 8080. No tiene herramientas propias.</span><small>Sin herramientas propias</small></a></li>
+  <li><a href="uso-ia-discovery-ms.html" style="--c:#495057"><strong>Discovery (Eureka)</strong><span>Registro de servicios. Nexus y el gateway localizan a cada microservicio por aquí. No tiene herramientas propias.</span><small>Sin herramientas propias</small></a></li>
+  <li><a href="uso-ia-inventario-operaciones-ms.html" style="--c:#5c940d"><strong>Inventario y operaciones</strong><span>Existencias, lotes, movimientos y órdenes de operación.</span><small>8 herramientas</small></a></li>
+  <li><a href="uso-ia-nexus-ms.html" style="--c:#c2255c"><strong>Nexus (asistente IA)</strong><span>El servicio de IA. Usa Spring AI, recibe las preguntas, elige herramientas y prepara acciones.</span><small>71 herramientas</small></a></li>
+  <li><a href="uso-ia-pedidos-ventas-ms.html" style="--c:#e67700"><strong>Pedidos y ventas</strong><span>Cotizaciones, pedidos, prospectos y resumen de ventas.</span><small>20 herramientas</small></a></li>
+  <li><a href="uso-ia-reportes-ejecutivos-ms.html" style="--c:#1098ad"><strong>Reportes ejecutivos</strong><span>Indicadores y reportes para dirección.</span><small>3 herramientas</small></a></li>
+  <li><a href="uso-ia-ui-ms.html" style="--c:#3b5bdb"><strong>Interfaz web (ui-ms)</strong><span>Pantallas que usa la persona: Asistente Nexus, Agiliza con IA y la sugerencia de póliza. No llama al modelo directamente.</span><small>Sin herramientas propias</small></a></li>
+  <li><a href="uso-ia-usuarios-accesos-ms.html" style="--c:#a61e4d"><strong>Usuarios y accesos</strong><span>Usuarios, roles y altas. Las altas las completa un ADMIN con código.</span><small>3 herramientas</small></a></li>
+  </ul>
+
+  <h2 class="bloque"><span class="num">02</span> Herramientas de lectura y escritura</h2>
+  <table class="tabla"><tr><th>Microservicio</th><th>Lectura de ejemplo</th><th>Escritura de ejemplo</th></tr>
+<tr><td><a href="uso-ia-clientes-ms.html" style="color:#d9480f">clientes-ms</a></td><td><code>obtener_cliente</code></td><td><code>crear_cliente</code></td></tr>
+<tr><td><a href="uso-ia-compras-proveedores-ms.html" style="color:#2b8a3e">compras-proveedores-ms</a></td><td><code>consultar_orden_compra</code></td><td><code>crear_orden_compra</code></td></tr>
+<tr><td><a href="uso-ia-contabilidad-ms.html" style="color:#1864ab">contabilidad-ms</a></td><td><code>consultar_poliza</code></td><td><code>sugerir_poliza</code></td></tr>
+<tr><td><a href="uso-ia-documentos-cumplimiento-ms.html" style="color:#7048e8">documentos-cumplimiento-ms</a></td><td><code>consultar_documentos_por_vencer</code></td><td><code>solicitar_eliminacion_documento</code></td></tr>
+<tr><td><a href="uso-ia-facturacion-pagos-ms.html" style="color:#0b7285">facturacion-pagos-ms</a></td><td><code>consultar_comprobante</code></td><td><code>registrar_pago_comprobante</code></td></tr>
+<tr><td><a href="uso-ia-gateway-ms.html" style="color:#862e9c">gateway-ms</a></td><td><code>—</code></td><td><code>—</code></td></tr>
+<tr><td><a href="uso-ia-discovery-ms.html" style="color:#495057">discovery-ms</a></td><td><code>—</code></td><td><code>—</code></td></tr>
+<tr><td><a href="uso-ia-inventario-operaciones-ms.html" style="color:#5c940d">inventario-operaciones-ms</a></td><td><code>consultar_existencias</code></td><td><code>registrar_movimiento_inventario</code></td></tr>
+<tr><td><a href="uso-ia-nexus-ms.html" style="color:#c2255c">nexus-ms</a></td><td><code>—</code></td><td><code>—</code></td></tr>
+<tr><td><a href="uso-ia-pedidos-ventas-ms.html" style="color:#e67700">pedidos-ventas-ms</a></td><td><code>obtener_pedido</code></td><td><code>preparar_pedido_borrador</code></td></tr>
+<tr><td><a href="uso-ia-reportes-ejecutivos-ms.html" style="color:#1098ad">reportes-ejecutivos-ms</a></td><td><code>consultar_indicadores</code></td><td><code>registrar_indicador</code></td></tr>
+<tr><td><a href="uso-ia-ui-ms.html" style="color:#3b5bdb">ui-ms</a></td><td><code>—</code></td><td><code>—</code></td></tr>
+<tr><td><a href="uso-ia-usuarios-accesos-ms.html" style="color:#a61e4d">usuarios-accesos-ms</a></td><td><code>consultar_usuario</code></td><td><code>preparar_alta_usuario</code></td></tr>
+</table>
+  <div class="tip"><strong>Nota:</strong> <code>nexus-comun</code> es una biblioteca compartida (advisors, prompts y tokens). No es un microservicio, por eso no tiene página propia.</div>
+</main>
+
+<footer class="pie">
+  <div class="wrap"><span>EMPRESA_JOSESAID · Uso de IA</span><span>Spring AI · Java 21</span></div>
+</footer>
+
+
+<script>
+(function () {
+  var token = /(\/\/[^\n]*)|("[^"\n]*")|(@\w+)|\b(public|private|protected|class|record|interface|return|new|final|static|void|String|int|long|boolean|this|null|import|package|implements|if|else|for|var|throw)\b/g;
+  function escapar(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function resaltar(texto) {
+    var salida = "", ultimo = 0, m; token.lastIndex = 0;
+    while ((m = token.exec(texto)) !== null) {
+      salida += escapar(texto.slice(ultimo, m.index));
+      var clase = m[1] ? "com" : m[2] ? "str" : m[3] ? "ann" : "kw";
+      salida += '<span class="' + clase + '">' + escapar(m[0]) + "</span>";
+      ultimo = m.index + m[0].length;
+    }
+    return salida + escapar(texto.slice(ultimo));
+  }
+  document.querySelectorAll("pre.code").forEach(function (pre) {
+    var texto = pre.textContent;
+    var nums = pre.parentElement.querySelector("pre.nums");
+    nums.textContent = texto.split("\n").map(function (_, i) { return i + 1; }).join("\n");
+    pre.innerHTML = resaltar(texto);
+  });
+  document.querySelectorAll("button.copiar").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var codigo = btn.closest(".editor").querySelector("pre.code").textContent;
+      var ok = function () { btn.textContent = "Copiado"; setTimeout(function () { btn.textContent = "Copiar"; }, 1500); };
+      if (navigator.clipboard) navigator.clipboard.writeText(codigo).then(ok, function () {});
+    });
+  });
+})();
+</script>
+</body>
+</html>

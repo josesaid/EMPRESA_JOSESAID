@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Uso de IA · Clientes</title>
+<style>
+:root { --bg:#f6f5f1; --surface:#fff; --fg:#1d1f24; --muted:#5b6070; --line:#dcdfe7; --code-bg:#f1f3f8; --gutter:#e4e7ee;
+  --num:#8a90a2; --kw:#7048e8; --ann:#b4531a; --str:#2b8a3e; --com:#868e96; --typ:#1864ab; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#14161b; --surface:#1d2028; --fg:#e9ebf0; --muted:#a3a9b8; --line:#313642;
+  --code-bg:#111318; --gutter:#1a1d24; --num:#5c6372; --kw:#b197fc; --ann:#ffa94d; --str:#69db7c; --com:#6c7383; --typ:#74c0fc; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg:#14161b; --surface:#1d2028; --fg:#e9ebf0; --muted:#a3a9b8; --line:#313642;
+  --code-bg:#111318; --gutter:#1a1d24; --num:#5c6372; --kw:#b197fc; --ann:#ffa94d; --str:#69db7c; --com:#6c7383; --typ:#74c0fc; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px)); }
+a { color: var(--c); }
+header.hero { background: linear-gradient(135deg, var(--c) 0%, #1d1f24 150%); color:#fff; padding:34px 0 28px;
+  padding-top: calc(34px + env(safe-area-inset-top,0px)); }
+.wrap { max-width:980px; margin:0 auto; }
+.nav { font-size:13px; margin:0 0 14px; } .nav a { color:#fff; opacity:.9; }
+header .kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; opacity:.85; margin:0 0 6px; }
+header h1 { font-size:clamp(25px,5vw,38px); line-height:1.15; margin:0 0 10px; text-wrap:balance; }
+header p { margin:0; max-width:700px; opacity:.93; }
+main { padding-block:26px 8px; }
+.intro { background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--c); border-radius:12px; padding:14px 18px; margin-bottom:22px; }
+.intro p { margin:0 0 6px; } .intro .tag { display:inline-block; font:600 12px/1 system-ui; padding:5px 8px; border-radius:6px; background:var(--gutter); margin:2px 4px 2px 0; }
+.intro .tag.esc { border:1px dashed var(--c); }
+h2.bloque { font-size:19px; margin:32px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--c); display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline; }
+h2.bloque .num { color:var(--c); font-variant-numeric:tabular-nums; }
+.desc { color:var(--muted); margin:0 0 12px; max-width:72ch; }
+.editor { background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:0 0 18px; min-width:0; }
+.editor-bar { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; background:var(--gutter); border-bottom:1px solid var(--line); font-size:12.5px; color:var(--muted); }
+.editor-bar .archivo { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--fg); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.dots { display:inline-flex; gap:5px; margin-right:8px; vertical-align:middle; } .dots i { width:9px; height:9px; border-radius:50%; background:var(--num); display:inline-block; }
+button.copiar { font:inherit; font-size:12px; cursor:pointer; border:1px solid var(--line); background:var(--surface); color:var(--fg); border-radius:6px; padding:4px 10px; flex:none; }
+button.copiar:hover { border-color:var(--c); color:var(--c); }
+.code-wrap { display:flex; overflow-x:auto; background:var(--code-bg); }
+.nums { margin:0; padding:14px 10px 14px 12px; text-align:right; user-select:none; font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--num); background:var(--gutter); border-right:1px solid var(--line); flex:none; }
+pre.code { margin:0; padding:14px 16px; min-width:0; flex:1 1 auto; font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--fg); white-space:pre; tab-size:4; }
+.kw { color:var(--kw); font-weight:600; } .ann { color:var(--ann); } .str { color:var(--str); } .com { color:var(--com); font-style:italic; } .typ { color:var(--typ); }
+.editor-foot { padding:10px 14px; font-size:13.5px; border-top:1px solid var(--line); color:var(--muted); }
+.editor-foot strong { color:var(--fg); }
+.tip { border-left:4px solid var(--c); background:var(--surface); padding:12px 14px; border-radius:0 10px 10px 0; margin:0 0 14px; font-size:14px; }
+.indice { display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); margin:8px 0 20px; padding:0; list-style:none; }
+.indice a { display:block; height:100%; text-decoration:none; color:var(--fg); background:var(--surface); border:1px solid var(--line); border-top:6px solid var(--c); border-radius:12px; padding:14px; min-width:0; }
+.indice a:hover { border-color:var(--c); }
+.indice strong { display:block; color:var(--c); font-size:16px; margin-bottom:4px; }
+.indice span { font-size:13.5px; color:var(--muted); }
+.indice small { display:block; margin-top:8px; font-size:12px; color:var(--fg); }
+table.tabla { width:100%; border-collapse:collapse; font-size:13.5px; margin:6px 0 16px; }
+table.tabla th { text-align:left; background:var(--gutter); padding:7px 9px; border-bottom:2px solid var(--line); }
+table.tabla td { padding:7px 9px; border-bottom:1px solid var(--line); vertical-align:top; }
+table.tabla code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12.5px; }
+footer.pie { margin-top:40px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; padding-block:18px calc(18px + env(safe-area-inset-bottom,0px)); }
+footer.pie .wrap { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 16px; }
+footer.pie a { color:var(--c); }
+@media (max-width:480px) { .editor-bar { flex-wrap:wrap; } .editor-bar .archivo { white-space:normal; word-break:break-all; } }
+</style>
+</head>
+<body style="--c:#d9480f">
+<header class="hero">
+  <div class="wrap">
+    <p class="nav"><a href="uso-de-ia.html">← Índice de uso de IA</a></p>
+    <p class="kicker">EMPRESA_JOSESAID · clientes-ms</p>
+    <h1>Uso de IA · Clientes</h1>
+    <p>Clientes, prospectos, interacciones y métricas de conversión.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <p><strong>Cómo se usa la IA aquí.</strong> Los fragmentos son código real del repositorio.</p>
+    <p><strong>Usuario a ser usado:</strong> admin@demo.empresa.mx (contraseña Demo2026!)</p>
+    <p>Herramientas que expone a la IA (9):</p><p><span class="tag">buscar_clientes</span><span class="tag">obtener_cliente</span><span class="tag">consultar_interacciones_cliente</span><span class="tag">obtener_prospecto</span><span class="tag">consultar_metricas_conversion</span><span class="tag">crear_cliente</span><span class="tag">actualizar_cliente</span><span class="tag">agregar_contacto_cliente</span><span class="tag">cambiar_estatus_cliente</span></p>
+    <p>Ruta base en Nexus: <code>/clientes-ms/v1/clientes</code></p>
+  </section>
+
+  <h2 class="bloque"><span class="num">01</span> Herramienta de lectura: consulta el servicio y devuelve datos</h2>
+  <p class="desc">Herramienta de lectura: consulta el servicio y devuelve datos.</p>
+  <div class="editor">
+    <div class="editor-bar"><span class="archivo"><span class="dots"><i></i><i></i><i></i></span>HerramientasClientes.java</span><button class="copiar" type="button">Copiar</button></div>
+    <div class="code-wrap"><pre class="nums"></pre><pre class="code">    @Tool(name = "obtener_cliente",
+          description = "Devuelve el detalle de un cliente por su identificador (UUID).")
+    public String obtenerCliente(
+            @ToolParam(description = "Identificador UUID del cliente", required = true) String id) {
+        RegistroHerramientasUsadas.registrar("obtener_cliente");
+        String cuerpo = gateway.get()
+                .uri(RUTA_BASE + "/{id}", id)
+                .retrieve()
+                .body(String.class);
+        return redactar(cuerpo);
+    }
+</pre></div>
+    <div class="editor-foot"><strong>Qué hace:</strong> Llama al gateway con la ruta del servicio y devuelve el resultado al modelo.</div>
+  </div>
+
+  <h2 class="bloque"><span class="num">02</span> Herramienta de escritura: prepara la acción y NO la ejecuta</h2>
+  <p class="desc">Herramienta de escritura: prepara la acción y NO la ejecuta.</p>
+  <div class="editor">
+    <div class="editor-bar"><span class="archivo"><span class="dots"><i></i><i></i><i></i></span>HerramientasClientes.java</span><button class="copiar" type="button">Copiar</button></div>
+    <div class="code-wrap"><pre class="nums"></pre><pre class="code">    @Tool(name = "crear_cliente",
+          description = "Prepara el alta de un cliente con su contacto principal. NO lo crea: devuelve un resumen y un accion_id. "
+                  + "El usuario debe confirmarlo en la aplicación. Solo ADMIN puede usarla.")
+    public String crearCliente(
+            @ToolParam(description = "Razón social del cliente", required = true) String razonSocial,
+            @ToolParam(description = "RFC del cliente, en mayúsculas", required = true) String rfc,
+            @ToolParam(description = "Nombre del contacto principal", required = true) String contactoNombre,
+            @ToolParam(description = "Correo electrónico del contacto principal", required = true) String contactoCorreo,
+            @ToolParam(description = "Rol del contacto: COMPRAS, PAGOS o ASISTENCIA", required = true) String contactoRol) {
+        RegistroHerramientasUsadas.registrar("crear_cliente");
+        if (acciones == null) {
+            return NO_DISPONIBLE;
+        }
+        if (vacio(razonSocial) || razonSocial.trim().length() &gt; 250) {
+            return "La razón social es obligatoria y de hasta 250 caracteres.";
+        }
+        String rfcNormalizado = rfc == null ? "" : rfc.trim().toUpperCase();
+        if (!RFC.matcher(rfcNormalizado).matches()) {
+            return "El RFC no tiene un formato válido.";
+        }
+        String rol = normalizar(contactoRol);
+        if (!ROLES_CONTACTO.contains(rol)) {
+            return "El rol del contacto debe ser COMPRAS, PAGOS o ASISTENCIA.";
+        }
+        if (!correoValido(contactoCorreo)) {
+            return "El correo del contacto no es válido.";
+        }
+        if (vacio(contactoNombre) || contactoNombre.trim().length() &gt; 200) {
+            return "El nombre del contacto es obligatorio y de hasta 200 caracteres.";
+        }
+        Map&lt;String, Object&gt; contacto = new LinkedHashMap&lt;&gt;();
+        contacto.put("nombre", contactoNombre.trim());
+        contacto.put("correo", contactoCorreo.trim());
+        contacto.put("rol", rol);
+        Map&lt;String, Object&gt; cuerpo = new LinkedHashMap&lt;&gt;();
+        cuerpo.put("razonSocial", razonSocial.trim());
+        cuerpo.put("rfc", rfcNormalizado);
+        cuerpo.put("contactoPrincipal", contacto);
+        String resumen = "Alta de cliente " + razonSocial.trim() + " (RFC " + rfcNormalizado + ")";
+        return guardarAccion(AccionesPendientes.TIPO_CLIENTE_CREAR, cuerpo, resumen, "Alta preparada, no creada.");
+    }
+</pre></div>
+    <div class="editor-foot"><strong>Qué hace:</strong> La acción queda pendiente hasta que la persona confirma con el código.</div>
+  </div>
+
+  <h2 class="bloque"><span class="num">03</span> Ruta base del servicio dentro de Nexus</h2>
+  <p class="desc">Ruta base del servicio dentro de Nexus.</p>
+  <div class="editor">
+    <div class="editor-bar"><span class="archivo"><span class="dots"><i></i><i></i><i></i></span>HerramientasClientes.java</span><button class="copiar" type="button">Copiar</button></div>
+    <div class="code-wrap"><pre class="nums"></pre><pre class="code">    static final String RUTA_BASE = "/clientes-ms/v1/clientes";
+</pre></div>
+    <div class="editor-foot"><strong>Qué hace:</strong> Todas las herramientas de este módulo se construyen sobre esta ruta.</div>
+  </div>
+  <div class="tip"><strong>Regla del proyecto:</strong> la IA propone o prepara; la persona confirma con el código de 8 dígitos. Ninguna herramienta de escritura cambia datos por sí sola.</div>
+</main>
+
+<footer class="pie">
+  <div class="wrap">
+    <span>Clientes · Uso de IA</span>
+    <a href="uso-de-ia.html">Volver al índice</a>
+  </div>
+</footer>
+
+
+<script>
+(function () {
+  var token = /(\/\/[^\n]*)|("[^"\n]*")|(@\w+)|\b(public|private|protected|class|record|interface|return|new|final|static|void|String|int|long|boolean|this|null|import|package|implements|if|else|for|var|throw)\b/g;
+  function escapar(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function resaltar(texto) {
+    var salida = "", ultimo = 0, m; token.lastIndex = 0;
+    while ((m = token.exec(texto)) !== null) {
+      salida += escapar(texto.slice(ultimo, m.index));
+      var clase = m[1] ? "com" : m[2] ? "str" : m[3] ? "ann" : "kw";
+      salida += '<span class="' + clase + '">' + escapar(m[0]) + "</span>";
+      ultimo = m.index + m[0].length;
+    }
+    return salida + escapar(texto.slice(ultimo));
+  }
+  document.querySelectorAll("pre.code").forEach(function (pre) {
+    var texto = pre.textContent;
+    var nums = pre.parentElement.querySelector("pre.nums");
+    nums.textContent = texto.split("\n").map(function (_, i) { return i + 1; }).join("\n");
+    pre.innerHTML = resaltar(texto);
+  });
+  document.querySelectorAll("button.copiar").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var codigo = btn.closest(".editor").querySelector("pre.code").textContent;
+      var ok = function () { btn.textContent = "Copiado"; setTimeout(function () { btn.textContent = "Copiar"; }, 1500); };
+      if (navigator.clipboard) navigator.clipboard.writeText(codigo).then(ok, function () {});
+    });
+  });
+})();
+</script>
+</body>
+</html>
