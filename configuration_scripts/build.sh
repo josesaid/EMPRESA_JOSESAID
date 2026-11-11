@@ -292,12 +292,19 @@ paso "📚 Paso 6/6 · Generando reportes de calidad y documentación (docs/api)
 # Reportes de calidad y pruebas: el paso 2 los omite (-Dxxx.skip) para compilar rápido, así que se generan aquí.
 # Ninguno bloquea el build: si una herramienta falla, la ficha solo queda sin resultados para ella.
 if [ "$SIN_MAVEN" != "1" ] && command -v mvn >/dev/null 2>&1; then
+  reportes_proyectos=""
   for d in */; do
     d="${d%/}"
-    [ -f "$d/pom.xml" ] || continue
-    echo "   ⏳ Reportes de calidad en $d..."
+    [ -f "$d/pom.xml" ] && reportes_proyectos="$reportes_proyectos $d"
+  done
+  reportes_total=0
+  for d in $reportes_proyectos; do reportes_total=$((reportes_total + 1)); done
+  reportes_n=0
+  for d in $reportes_proyectos; do
+    reportes_n=$((reportes_n + 1))
+    echo "   ⏳ [$reportes_n/$reportes_total] Reportes de calidad en $d..."
     if (cd "$d" && mvn -B -q test jacoco:report checkstyle:checkstyle pmd:pmd spotbugs:spotbugs javadoc:javadoc) > "$LOGS/reportes-$d.log" 2>&1; then
-      echo "      ${VERDE}✅ pruebas, JaCoCo, Checkstyle, PMD, SpotBugs y Javadoc: $d${RST}"
+      echo "      ${VERDE}✅ [$reportes_n/$reportes_total] pruebas, JaCoCo, Checkstyle, PMD, SpotBugs y Javadoc: $d${RST}"
     else
       echo "      ${AMARILLO}⚠️  Algún reporte falló en $d (log: $LOGS/reportes-$d.log)${RST}"
     fi
