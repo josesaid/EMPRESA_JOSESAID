@@ -288,7 +288,20 @@ while IFS= read -r img; do
   fi
 done <<< "$imagenes"
 
-paso "📚 Paso 6/6 · Generando documentación Swagger (docs/api)"
+paso "📚 Paso 6/6 · Generando documentación Swagger y Javadoc (docs/api)"
+# Javadoc: -Djavadoc.skip del paso 2 impide generar target/site/apidocs, así que se genera aquí.
+# No bloquea el build: si un servicio falla, la ficha solo muestra "sin resultados" para él.
+if [ "$SIN_MAVEN" != "1" ] && command -v mvn >/dev/null 2>&1; then
+  for d in */; do
+    d="${d%/}"
+    [ -f "$d/pom.xml" ] || continue
+    if (cd "$d" && mvn -B -q javadoc:javadoc) > "$LOGS/javadoc-$d.log" 2>&1; then
+      echo "   ${VERDE}✅ Javadoc generado: $d${RST}"
+    else
+      echo "   ${AMARILLO}⚠️  Javadoc falló en $d (log: $LOGS/javadoc-$d.log)${RST}"
+    fi
+  done
+fi
 if command -v python3 >/dev/null 2>&1; then
   if PYTHONDONTWRITEBYTECODE=1 python3 configuration_scripts/generar-docs-api.py > "$LOGS/swagger.log" 2>&1; then
     echo "   ${VERDE}✅ Documentación generada en docs/api/index.html${RST}"
