@@ -30,6 +30,8 @@ spring:
       chat:
         options:
           model: ${NEXUS_MODELO:claude-sonnet-5-5}
+          # Tope de tokens de salida por cada llamada al modelo. Acota el costo de una sola respuesta.
+          max-tokens: ${NEXUS_MODELO_MAX_TOKENS:2048}
     mcp:
       server:
         name: nexus-mcp
