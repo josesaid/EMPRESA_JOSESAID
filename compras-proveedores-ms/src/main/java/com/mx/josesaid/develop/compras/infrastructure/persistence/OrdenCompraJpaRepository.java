@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/** Acceso a la tabla de órdenes de compra con Spring Data JPA. */
 interface OrdenCompraJpaRepository extends JpaRepository<OrdenCompraEntity, UUID> {
 
     List<OrdenCompraEntity> findAllByOrderByCreadoUtcDesc(Pageable pagina);

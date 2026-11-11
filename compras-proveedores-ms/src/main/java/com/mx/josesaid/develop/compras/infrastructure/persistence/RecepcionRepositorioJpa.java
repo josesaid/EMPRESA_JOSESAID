@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de recepciones con JPA. */
 @Component
 class RecepcionRepositorioJpa implements RecepcionRepositorio {
 
@@ -15,6 +16,7 @@ class RecepcionRepositorioJpa implements RecepcionRepositorio {
         this.jpa = jpa;
     }
 
+    /** Guarda una recepción y devuelve la guardada. */
     @Override
     public Recepcion guardar(Recepcion r) {
         RecepcionEntity e = new RecepcionEntity();

@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ConfigurationPropertiesScan
 public class ComprasApplication {
 
+    /** Arranca la aplicación Spring Boot. */
     public static void main(String[] args) {
         SpringApplication.run(ComprasApplication.class, args);
     }

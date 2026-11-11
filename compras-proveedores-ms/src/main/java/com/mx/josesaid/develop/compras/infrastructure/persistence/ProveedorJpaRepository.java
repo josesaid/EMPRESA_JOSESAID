@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/** Acceso a la tabla de proveedores con Spring Data JPA. */
 interface ProveedorJpaRepository extends JpaRepository<ProveedorEntity, UUID> {
     boolean existsByRfcIndice(String rfcIndice);
 

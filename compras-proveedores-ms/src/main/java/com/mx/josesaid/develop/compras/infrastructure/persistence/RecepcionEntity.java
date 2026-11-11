@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/** Fila de la tabla de recepciones de mercancía. */
 @Entity
 @Table(name = "recepciones")
 class RecepcionEntity {
@@ -17,6 +18,7 @@ class RecepcionEntity {
     @Column(nullable = false, precision = 14, scale = 3) BigDecimal cantidad;
     @Column(nullable = false) LocalDate fecha;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected RecepcionEntity() {
     }
 }
