@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diseño
+propuesto: versión de clave en los datos cifrados · EMPRESA_JOSESAID</title>
+<style>
+:root{--bg:#f4f6f9;--surface:#ffffff;--fg:#0f172a;--muted:#5b6475;--line:#dde2ec;--acento:#334155;--acento-suave:rgba(51,65,85,.10);--codigo:#eef1f6;--cabecera-a:#334155;--cabecera-b:#0f172a;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--surface:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--line:#23304f;--acento:#cbd5e1;--acento-suave:rgba(203,213,225,.10);--codigo:#1b2440;--cabecera-a:#1e293b;--cabecera-b:#020617;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--surface:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--line:#23304f;--acento:#cbd5e1;--acento-suave:rgba(203,213,225,.10);--codigo:#1b2440;--cabecera-a:#1e293b;--cabecera-b:#020617;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--acento)}
+code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--codigo);border-radius:6px;padding:1px 6px}
+pre{background:var(--codigo);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;max-width:100%}
+pre code{background:transparent;padding:0;font-size:13px}
+.cabecera{background:linear-gradient(135deg,var(--cabecera-a),var(--cabecera-b));color:#fff;padding:26px max(16px,env(safe-area-inset-left,0px)) 62px}
+.cabecera .in{max-width:960px;margin:0 auto}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.volver:hover{opacity:1;text-decoration:underline}
+.cabecera h1{margin:14px 0 0;font:700 clamp(22px,4vw,32px)/1.2 system-ui,sans-serif;letter-spacing:-.01em;text-wrap:balance}
+main{max-width:960px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px var(--sombra);padding:24px 26px;margin:0 0 20px;min-width:0;overflow-wrap:anywhere}
+.panel h1{display:none}
+.panel h2{margin:26px 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:6px}
+.panel h2:first-child{margin-top:0}
+.panel h3{margin:20px 0 6px;font-size:16px}
+.panel p{margin:10px 0}
+.panel ol,.panel ul{padding-left:22px}
+.panel li{margin:6px 0}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);background:var(--acento-suave);border-radius:10px}
+blockquote p{margin:4px 0}
+hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+</style>
+</head>
+<body>
+<header class="cabecera"><div class="in">
+  <a class="volver" href="../../index.html">← Volver al índice</a>
+  <h1>Diseño
+propuesto: versión de clave en los datos cifrados</h1>
+</div></header>
+<main>
+  <article class="panel">
+<p><strong>Estado:</strong> diseño aprobado en sus decisiones (ver al
+final). No hay código todavía. Resuelve el bloqueo de la sección «Por
+qué las claves de cifrado no se pueden rotar todavía» de <a
+href="inventario-de-claves.html">inventario-de-claves.md</a>.</p>
+<h2 id="problema">Problema</h2>
+<p>Hoy el valor cifrado es
+<code>Base64(IV de 12 bytes || texto cifrado + tag)</code> y no dice con
+qué clave se cifró. Para rotar una clave hay que descifrar y volver a
+cifrar todo con una sola clave en un solo paso, y mientras eso corre,
+los valores viejos y los nuevos no se distinguen. Por eso hoy la
+rotación obliga a un corte.</p>
+<h2 id="objetivo">Objetivo</h2>
+<ol type="1">
+<li>Cada valor cifrado declara su versión de clave.</li>
+<li>El servicio puede leer valores con dos versiones a la vez durante la
+transición.</li>
+<li>La rotación se hace por lotes, sin corte, y se puede pausar o
+revertir.</li>
+<li>Los índices HMAC (búsqueda por RFC o correo) siguen funcionando
+durante la transición.</li>
+</ol>
+<h2 id="formato-propuesto">Formato propuesto</h2>
+<pre><code>v&lt;N&gt;:Base64(IV de 12 bytes || texto cifrado + tag)</code></pre>
+<ul>
+<li><code>N</code> es un entero que indica la versión de
+<code>*_CIFRADO_CLAVE</code> con la que se cifró.</li>
+<li>Los valores <strong>sin prefijo</strong> se tratan como versión 1,
+para no tener que reescribir de golpe lo que ya existe.</li>
+<li>Las columnas son <code>TEXT</code> (en clientes-ms,
+compras-proveedores-ms y usuarios-accesos-ms), así que el prefijo cabe
+sin cambiar el esquema.</li>
+</ul>
+<p>Configuración: una lista de claves por versión, por ejemplo
+<code>CRYPTO_CLAVES_CIFRADO=1:&lt;base64&gt;,2:&lt;base64&gt;</code>, y
+<code>CRYPTO_VERSION_ACTIVA=2</code>. Cifrar siempre con la activa;
+descifrar con la que indique el prefijo.</p>
+<h2 id="índices-hmac">Índices HMAC</h2>
+<p>Los índices (<code>correo_hash</code>, <code>rfc_hash</code>,
+<code>rfc_indice</code>) son <code>VARCHAR(64)</code>. Cambiar la clave
+HMAC cambia todos los valores, así que no se puede hacer en un solo paso
+sin romper las búsquedas.</p>
+<p>Propuesta en tres fases:</p>
+<ol type="1">
+<li>Agregar una columna de índice nueva (por ejemplo
+<code>rfc_indice_v2</code>), sin borrar la anterior.</li>
+<li>Un proceso de recálculo por lotes llena la columna nueva.</li>
+<li>Las consultas usan la nueva; cuando todos los registros estén
+llenos, se borra la anterior en una migración aparte.</li>
+</ol>
+<p>En compras, <code>rfc_indice</code> es <code>UNIQUE</code>: la
+columna nueva también debe serlo, y el recálculo debe detectar
+colisiones antes de activarla.</p>
+<h2 id="procedimiento-de-rotación-propuesto">Procedimiento de rotación
+(propuesto)</h2>
+<ol type="1">
+<li>Generar la clave nueva y agregarla a la lista con un número mayor
+(sin cambiar la activa).</li>
+<li>Reiniciar el servicio: ya puede <strong>leer</strong> la nueva, y
+sigue <strong>cifrando</strong> con la anterior.</li>
+<li>Cambiar <code>CRYPTO_VERSION_ACTIVA</code> a la nueva y reiniciar:
+los datos nuevos se cifran con ella.</li>
+<li>Ejecutar el re-cifrado por lotes: lee cada valor, lo descifra con su
+versión y lo cifra con la activa. Registra progreso y puede
+reanudarse.</li>
+<li>Verificar que no queden valores con versiones antiguas (consulta por
+prefijo).</li>
+<li>Retirar la clave antigua de la lista, reiniciando.</li>
+</ol>
+<p>Para los índices HMAC, el paso 4 incluye también recalcular las
+columnas <code>_v2</code> (fase 2 de arriba).</p>
+<h2 id="riesgos">Riesgos</h2>
+<ul>
+<li><strong>Pérdida de una clave</strong> deja sin acceso a los datos de
+su versión. El respaldo de claves (inventario) es requisito previo.</li>
+<li><strong>Re-cifrado a medio camino:</strong> si el proceso se corta,
+quedan dos versiones. Por eso debe poder reanudarse y la lectura debe
+aceptar ambas.</li>
+<li><strong>Rendimiento:</strong> el re-cifrado de tablas grandes debe
+hacerse por lotes pequeños, fuera de horas pico.</li>
+<li><strong>Archivos (documentos-cumplimiento-ms):</strong> los archivos
+cifrados en disco necesitan el mismo prefijo en su encabezado, no en una
+columna. Hay que revisar <code>ProtectorArchivos</code> antes de diseñar
+esa parte.</li>
+</ul>
+<h2 id="por-servicio">Por servicio</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Servicio</th>
+<th>Campos</th>
+<th>Índices</th>
+<th>Notas</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>clientes-ms</td>
+<td><code>correo_cifrado</code>, <code>rfc_cifrado</code>,
+contactos</td>
+<td><code>correo_hash</code>, <code>rfc_hash</code></td>
+<td><code>CRYPTO_CLAVE_*</code></td>
+</tr>
+<tr class="even">
+<td>compras-proveedores-ms</td>
+<td><code>rfc_cifrado</code></td>
+<td><code>rfc_indice</code> (UNIQUE)</td>
+<td><code>COMPRAS_*_CLAVE</code></td>
+</tr>
+<tr class="odd">
+<td>usuarios-accesos-ms</td>
+<td><code>correo_cifrado</code>, <code>nombre_completo</code></td>
+<td>índice de correo</td>
+<td><code>USUARIOS_*_CLAVE</code></td>
+</tr>
+<tr class="even">
+<td>documentos-cumplimiento-ms</td>
+<td>archivos en disco</td>
+<td>—</td>
+<td>Prefijo en el encabezado del archivo</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pruebas-propuestas">Pruebas propuestas</h2>
+<ul>
+<li>Leer un valor sin prefijo (versión 1) y uno con <code>v2:</code>,
+con las dos claves configuradas.</li>
+<li>Re-cifrado por lotes: después de correrlo, ningún valor queda con la
+versión anterior.</li>
+<li>Interrupción a la mitad del re-cifrado: al reanudar, termina sin
+duplicar ni perder datos.</li>
+<li>Índices: después de recalcular, las búsquedas devuelven el mismo
+resultado que antes.</li>
+<li>Fallo al descifrar con una versión no configurada: error explícito,
+sin devolver datos.</li>
+</ul>
+<h2 id="decisiones-tomadas">Decisiones tomadas</h2>
+<ol type="1">
+<li><strong>Formato propio, sin KMS por ahora.</strong> Las claves se
+mantienen dentro del sistema, con el prefijo <code>v&lt;N&gt;:</code>.
+El despliegue actual es Docker Compose en un solo entorno; un KMS
+agregaría una dependencia externa y un costo mensual sin resolver un
+problema actual. El formato no impide migrar a un KMS después: solo
+cambia el origen de cada clave.</li>
+<li><strong>Rotación una vez al año</strong>, o de inmediato si hay
+sospecha de exposición.</li>
+<li><strong>Autoriza solo el responsable del proyecto</strong> (Said
+Olano).</li>
+</ol>
+  </article>
+</main>
+<footer><span>EMPRESA_JOSESAID · Seguridad</span><a href="../../index.html">Índice</a></footer>
+</body>
+</html>
