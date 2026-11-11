@@ -1,129 +1,115 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<!doctype html>
+<html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>10-rastrear-request-jaeger</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía 10. Rastrear un
+request en Jaeger · Guías EMPRESA_JOSESAID</title>
+<style>
+:root{--bg:#f4f8f6;--superficie:#ffffff;--fg:#0f1f19;--muted:#5b6f66;--linea:#d5e3dc;--acento:#059669;--acento-suave:rgba(5,150,105,.10);--codigo:#ecf7f1;--ambar:#b45309;--ambar-suave:#fef3c7;--sombra:rgba(15,31,25,.08);--cabecera-a:#047857;--cabecera-b:#0f766e;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#07120e;--superficie:#0e1d17;--fg:#dcf5e8;--muted:#8fb3a2;--linea:#1f3a2f;--acento:#6ee7b7;--acento-suave:rgba(110,231,183,.12);--codigo:#15291f;--ambar:#fcd34d;--ambar-suave:rgba(252,211,77,.12);--sombra:rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#07120e;--superficie:#0e1d17;--fg:#dcf5e8;--muted:#8fb3a2;--linea:#1f3a2f;--acento:#6ee7b7;--acento-suave:rgba(110,231,183,.12);--codigo:#15291f;--ambar:#fcd34d;--ambar-suave:rgba(252,211,77,.12);--sombra:rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--acento)}
+code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--codigo);border-radius:6px;padding:1px 6px}
+pre{background:var(--codigo);border:1px solid var(--linea);border-radius:10px;padding:14px 16px;overflow-x:auto;max-width:100%}
+pre code{background:transparent;padding:0;font-size:13px}
+.cabecera{background:linear-gradient(135deg,var(--cabecera-a),var(--cabecera-b));color:#fff;padding:26px max(16px,env(safe-area-inset-left,0px)) 62px}
+.cabecera .in{max-width:960px;margin:0 auto}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.volver:hover{opacity:1;text-decoration:underline}
+.etiqueta{display:inline-block;margin-top:16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 10px}
+.cabecera h1{margin:10px 0 0;font:700 clamp(22px,4vw,32px)/1.2 system-ui,sans-serif;letter-spacing:-.01em;text-wrap:balance}
+main{max-width:960px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.panel{background:var(--superficie);border:1px solid var(--linea);border-radius:14px;box-shadow:0 10px 30px var(--sombra);padding:24px 26px;margin:0 0 20px;min-width:0;overflow-wrap:anywhere}
+.panel h2{margin:26px 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--linea);padding-bottom:6px}
+.panel h2:first-child{margin-top:0}
+.panel h3{margin:20px 0 6px;font-size:16px}
+.panel p{margin:10px 0}
+.panel ol,.panel ul{padding-left:22px}
+.panel li{margin:6px 0}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--linea)}
+td{padding:10px;border-bottom:1px solid var(--linea);vertical-align:top}
+tr:last-child td{border-bottom:0}
+img{max-width:100%;height:auto;display:block;margin:14px auto;border-radius:10px}
+blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);background:var(--acento-suave);border-radius:10px}
+blockquote p{margin:4px 0}
+hr{border:0;border-top:1px solid var(--linea);margin:22px 0}
+footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}th{white-space:nowrap}table{font-size:13px}}
+</style>
 </head>
 <body>
-<h1 id="guía-10.-rastrear-un-request-en-jaeger">Guía 10. Rastrear un request en Jaeger</h1>
-<p><strong>Objetivo:</strong> seguir un request desde que entra por el gateway hasta cada servicio que lo atiende, para saber por dónde pasó y en qué paso se tardó o falló.</p>
+<header class="cabecera"><div class="in">
+  <a class="volver" href="README.html">← Todas las guías</a>
+  <div><span class="etiqueta">Guía 10</span></div>
+  <h1>Guía 10. Rastrear un
+request en Jaeger</h1>
+</div></header>
+<main>
+  <article class="panel">
+<p><strong>Objetivo:</strong> seguir un request desde que entra por el
+gateway hasta cada servicio que lo atiende, para saber por dónde pasó y
+en qué paso se tardó o falló.</p>
 <p><strong>Interfaz:</strong> http://localhost:16686 (Jaeger).</p>
 <h2 id="antes-de-empezar">Antes de empezar</h2>
 <ul>
 <li>macOS con <strong>Docker Desktop abierto</strong>.</li>
-<li>El ecosistema levantado. Jaeger se levanta junto con el resto con <code>start.sh</code> (ver <a href="01-levantar-ecosistema.md">guía 1</a>).</li>
-<li>Un usuario con acceso. Si no tienes uno, pide que te den de alta (<a href="05-dar-de-alta-usuario.md">guía 5</a>).</li>
-<li>Las trazas se guardan <strong>en memoria</strong>. Si reiniciaste el contenedor de Jaeger, las trazas anteriores ya no existen: genera el request de nuevo.</li>
+<li>El ecosistema levantado. Jaeger se levanta junto con el resto con
+<code>start.sh</code> (ver <a href="01-levantar-ecosistema.html">guía
+1</a>).</li>
+<li>Un usuario con acceso. Si no tienes uno, pide que te den de alta (<a
+href="05-dar-de-alta-usuario.html">guía 5</a>).</li>
+<li>Las trazas se guardan <strong>en memoria</strong>. Si reiniciaste el
+contenedor de Jaeger, las trazas anteriores ya no existen: genera el
+request de nuevo.</li>
 </ul>
 <h2 id="pasos">Pasos</h2>
 <ol type="1">
-<li><p><strong>Verifica que Jaeger responda.</strong> Abre http://localhost:16686 en el navegador. Desde la terminal:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">curl</span> -s -o /dev/null -w <span class="st">&quot;%{http_code}\n&quot;</span> http://localhost:16686</span></code></pre></div>
+<li><p><strong>Verifica que Jaeger responda.</strong> Abre
+http://localhost:16686 en el navegador. Desde la terminal:</p>
+<pre class="bash"><code>curl -s -o /dev/null -w &quot;%{http_code}\n&quot; http://localhost:16686</code></pre>
 <p>Debe responder <code>200</code>.</p></li>
-<li><p><strong>Inicia sesión y guarda el token</strong> (vence en 15 minutos):</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="ex">curl</span> -s -X POST http://localhost:8080/usuarios-accesos-ms/v1/auth/login <span class="kw">\</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>  <span class="ex">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="kw">\</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>  <span class="ex">-d</span> <span class="st">&#39;{&quot;correo&quot;:&quot;TU_CORREO&quot;,&quot;password&quot;:&quot;TU_CONTRASEÑA&quot;}&#39;</span></span></code></pre></div>
+<li><p><strong>Inicia sesión y guarda el token</strong> (vence en 15
+minutos):</p>
+<pre class="bash"><code>curl -s -X POST http://localhost:8080/usuarios-accesos-ms/v1/auth/login \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;correo&quot;:&quot;TU_CORREO&quot;,&quot;password&quot;:&quot;TU_CONTRASEÑA&quot;}&#39;</code></pre>
 <p>Copia el valor de <code>accessToken</code> y guárdalo:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="bu">export</span> <span class="va">TOKEN=</span><span class="st">&quot;PEGA_EL_ACCESS_TOKEN&quot;</span></span></code></pre></div></li>
-<li><p><strong>Haz un request al servicio que quieres rastrear.</strong> Anota la hora aproximada para ubicarlo después:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="fu">date</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="ex">curl</span> -s -i http://localhost:8080/clientes-ms/v1/clientes <span class="kw">\</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>  <span class="ex">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$TOKEN</span><span class="st">&quot;</span></span></code></pre></div></li>
+<pre class="bash"><code>export TOKEN=&quot;PEGA_EL_ACCESS_TOKEN&quot;</code></pre></li>
+<li><p><strong>Haz un request al servicio que quieres rastrear.</strong>
+Anota la hora aproximada para ubicarlo después:</p>
+<pre class="bash"><code>date
+curl -s -i http://localhost:8080/clientes-ms/v1/clientes \
+  -H &quot;Authorization: Bearer $TOKEN&quot;</code></pre></li>
 <li><p><strong>Busca la traza en Jaeger.</strong></p>
 <ol type="1">
-<li>En <strong>Service</strong> elige <code>gateway-ms</code>. Todo request pasa primero por el gateway.</li>
+<li>En <strong>Service</strong> elige <code>gateway-ms</code>. Todo
+request pasa primero por el gateway.</li>
 <li>Pulsa <strong>Find Traces</strong>.</li>
 <li>Localiza la traza de la hora que anotaste en el paso 3.</li>
 </ol></li>
-<li><p><strong>Lee la traza.</strong> Cada barra horizontal es un <strong>span</strong>, es decir, un paso del request:</p>
+<li><p><strong>Lee la traza.</strong> Cada barra horizontal es un
+<strong>span</strong>, es decir, un paso del request:</p>
 <ul>
-<li>El gateway aparece primero, y debajo de él el servicio que lo atendió (<code>clientes-ms</code>).</li>
+<li>El gateway aparece primero, y debajo de él el servicio que lo
+atendió (<code>clientes-ms</code>).</li>
 <li>El ancho de cada barra es el tiempo que tardó ese paso.</li>
 <li>Pulsa un span para ver su duración, su estado y sus etiquetas.</li>
 </ul></li>
-<li><p><strong>Rastrea otro servicio si lo necesitas.</strong> Cambia <strong>Service</strong> por el nombre del servicio, por ejemplo <code>usuarios-accesos-ms</code> para ver el login. Los nombres de los servicios coinciden con sus carpetas del repositorio.</p></li>
-<li><p><strong>Identifica el cuello de botella.</strong> Si un span tarda mucho más que los demás, ese servicio (o la base de datos que consulta) es donde conviene revisar.</p></li>
+<li><p><strong>Rastrea otro servicio si lo necesitas.</strong> Cambia
+<strong>Service</strong> por el nombre del servicio, por ejemplo
+<code>usuarios-accesos-ms</code> para ver el login. Los nombres de los
+servicios coinciden con sus carpetas del repositorio.</p></li>
+<li><p><strong>Identifica el cuello de botella.</strong> Si un span
+tarda mucho más que los demás, ese servicio (o la base de datos que
+consulta) es donde conviene revisar.</p></li>
 </ol>
 <h2 id="cómo-interpretar-lo-que-ves">Cómo interpretar lo que ves</h2>
-<table>
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 33%" />
-<col style="width: 33%" />
-</colgroup>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Lo que ves en Jaeger</th>
@@ -135,30 +121,46 @@
 <tr class="odd">
 <td>Solo aparece <code>gateway-ms</code></td>
 <td>El request no llegó al servicio.</td>
-<td>El código de respuesta del <code>curl</code>. Un <code>401</code> indica token vencido o inválido.</td>
+<td>El código de respuesta del <code>curl</code>. Un <code>401</code>
+indica token vencido o inválido.</td>
 </tr>
 <tr class="even">
 <td>Un span aparece en rojo</td>
 <td>Ese paso terminó con error.</td>
-<td>Pulsa el span y revisa su etiqueta de error y los logs del servicio.</td>
+<td>Pulsa el span y revisa su etiqueta de error y los logs del
+servicio.</td>
 </tr>
 <tr class="odd">
 <td>Un span dura mucho más que los demás</td>
 <td>Ese paso es lento.</td>
-<td>Revisa ese servicio con <code>docker compose logs &lt;servicio&gt;</code>.</td>
+<td>Revisa ese servicio con
+<code>docker compose logs &lt;servicio&gt;</code>.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h2 id="problemas-comunes">Problemas comunes</h2>
 <ul>
 <li><strong>No aparece ninguna traza.</strong>
 <ul>
-<li>Revisa que Jaeger esté arriba: <code>docker compose -f infra/trazabilidad/docker-compose.yml ps</code>.</li>
-<li>Revisa que elegiste el servicio correcto en <strong>Service</strong>.</li>
-<li>Si corres un servicio fuera de Docker, define <code>TRAZAS_OTLP_ENDPOINT=http://localhost:4318/v1/traces</code> antes de arrancarlo.</li>
+<li>Revisa que Jaeger esté arriba:
+<code>docker compose -f infra/trazabilidad/docker-compose.yml ps</code>.</li>
+<li>Revisa que elegiste el servicio correcto en
+<strong>Service</strong>.</li>
+<li>Si corres un servicio fuera de Docker, define
+<code>TRAZAS_OTLP_ENDPOINT=http://localhost:4318/v1/traces</code> antes
+de arrancarlo.</li>
 </ul></li>
-<li><strong>La traza desapareció después de un rato o de reiniciar.</strong> Es normal: las trazas viven en memoria de Jaeger. Vuelve a hacer el request.</li>
-<li><strong>El <code>curl</code> responde <code>401</code>.</strong> El token venció a los 15 minutos. Vuelve al paso 2.</li>
+<li><strong>La traza desapareció después de un rato o de
+reiniciar.</strong> Es normal: las trazas viven en memoria de Jaeger.
+Vuelve a hacer el request.</li>
+<li><strong>El <code>curl</code> responde <code>401</code>.</strong> El
+token venció a los 15 minutos. Vuelve al paso 2.</li>
 </ul>
+  </article>
+</main>
+<footer>
+  <span>EMPRESA_JOSESAID · Guías de procesos</span>
+  <a href="README.html">Índice de guías</a>
+</footer>
 </body>
 </html>

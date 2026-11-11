@@ -1,99 +1,89 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<!doctype html>
+<html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>README</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guías paso a paso · EMPRESA_JOSESAID</title>
+<style>
+:root{--bg:#f5f7fb;--superficie:#ffffff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;--acento:#4f46e5;--acento-suave:rgba(79,70,229,.10);--codigo:#eef2ff;--ambar:#b45309;--ambar-suave:#fef3c7;--sombra:rgba(15,23,42,.08);--cabecera-a:#4338ca;--cabecera-b:#0e7490;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--acento:#a5b4fc;--acento-suave:rgba(165,180,252,.14);--codigo:#1e2a4a;--ambar:#fcd34d;--ambar-suave:rgba(252,211,77,.12);--sombra:rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--acento:#a5b4fc;--acento-suave:rgba(165,180,252,.14);--codigo:#1e2a4a;--ambar:#fcd34d;--ambar-suave:rgba(252,211,77,.12);--sombra:rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--acento)}
+code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--codigo);border-radius:6px;padding:1px 6px}
+.cabecera{background:linear-gradient(135deg,var(--cabecera-a),var(--cabecera-b));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 64px}
+.cabecera .in{max-width:960px;margin:0 auto}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.volver:hover{opacity:1;text-decoration:underline}
+.etiqueta{display:inline-block;margin-top:18px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 10px}
+.cabecera h1{margin:10px 0 8px;font:700 clamp(24px,4vw,34px)/1.2 system-ui,sans-serif;letter-spacing:-.01em}
+.cabecera p{margin:0;max-width:680px;opacity:.92}
+main{max-width:960px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px)) 0;padding-right:max(16px,env(safe-area-inset-right,0px))}
+.panel{background:var(--superficie);border:1px solid var(--linea);border-radius:14px;box-shadow:0 10px 30px var(--sombra);padding:22px 24px;margin:0 0 20px;min-width:0}
+.panel h2{margin:0 0 12px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--linea)}
+td{padding:12px;border-bottom:1px solid var(--linea);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--acento-suave)}
+.num{display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:9px;background:var(--acento-suave);color:var(--acento);font-weight:700;font-size:13px}
+.guia a{font-weight:600;text-decoration:none}
+.guia a:hover{text-decoration:underline}
+.cuando{color:var(--muted)}
+.aviso{border-left:4px solid var(--ambar);background:var(--ambar-suave);border-radius:10px;padding:14px 16px;margin:0 0 12px}
+.aviso h2{color:var(--ambar)}
+ul{margin:0;padding-left:20px}
+li{margin:6px 0}
+footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (max-width:560px){.panel{padding:18px 16px} td,th{padding:10px 8px}}
+</style>
 </head>
 <body>
-<h1 id="guías-paso-a-paso">Guías paso a paso</h1>
-<p>Procedimientos completos, con pasos numerados, diagramas y verificación. Cada guía indica el rol que se necesita y el servicio que atiende.</p>
-<table>
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 33%" />
-<col style="width: 33%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>#</th>
-<th>Guía</th>
-<th>Cuándo usarla</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td><a href="01-levantar-ecosistema.md">Levantar el ecosistema completo</a></td>
-<td>Primera vez en una máquina o después de un reinicio completo</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td><a href="02-ejecutar-pruebas.md">Ejecutar las pruebas de un servicio</a></td>
-<td>Antes de integrar un cambio</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td><a href="03-rotar-clave-rs256.md">Rotar la clave RS256 sin cortar sesiones</a></td>
-<td>Cada año, o de inmediato si la clave se expone</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td><a href="04-conectar-cliente-mcp.md">Conectar un cliente MCP a Nexus</a></td>
-<td>Para usar Nexus desde un cliente MCP</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td><a href="05-dar-de-alta-usuario.md">Dar de alta un usuario y asignarle rol y área</a></td>
-<td>Incorporar a alguien (rol ADMIN)</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td><a href="06-orden-de-compra.md">Crear un proveedor, una orden, aprobarla y recibirla</a></td>
-<td>Ciclo de compra</td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td><a href="07-pago-a-proveedor.md">Registrar un pago a proveedor</a></td>
-<td>Pagar una cuenta por pagar (rol FINANZAS)</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td><a href="08-comprobantes-y-cobros.md">Emitir un comprobante, registrar un cobro y cancelar</a></td>
-<td>Facturación y cobranza (rol FINANZAS)</td>
-</tr>
-<tr class="odd">
-<td>9</td>
-<td><a href="09-indicadores-y-reportes.md">Consultar indicadores y generar reportes</a></td>
-<td>Reporte ejecutivo mensual, trimestral o anual</td>
-</tr>
-<tr class="even">
-<td>10</td>
-<td><a href="10-rastrear-request-jaeger.md">Rastrear un request en Jaeger</a></td>
-<td>Ver por dónde pasó un request y en qué paso se tardó o falló</td>
-</tr>
-</tbody>
-</table>
-<h2 id="pendientes-de-diseño">Pendientes de diseño</h2>
-<p>Estos procedimientos todavía no tienen guía porque el procedimiento no está definido. No se escriben pasos que aún no existen.</p>
-<ul>
-<li><strong>Derechos ARCO</strong> (acceso, rectificación, cancelación y oposición) de datos personales en <code>clientes-ms</code>: falta definir el proceso de anonimización.</li>
-<li><strong>Rotación de la clave de cifrado y de la clave HMAC de <code>compras-proveedores-ms</code>:</strong> falta el diseño de la rotación y de su prueba.</li>
-</ul>
-<h2 id="convenciones">Convenciones</h2>
-<ul>
+<header class="cabecera"><div class="in">
+  <a class="volver" href="../../index.html">← Inicio</a>
+  <div><span class="etiqueta">Procedimientos</span></div>
+  <h1>Guías paso a paso</h1>
+  <p>Procedimientos completos, con pasos numerados, diagramas y verificación. Cada guía indica el rol que se necesita y el servicio que atiende.</p>
+</div></header>
+
+<main>
+  <section class="panel">
+    <h2>Guías disponibles</h2>
+    <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Guía</th><th>Cuándo usarla</th></tr></thead>
+      <tbody>
+<tr><td><span class="num">1</span></td><td class="guia"><a href="01-levantar-ecosistema.md">Levantar el ecosistema completo</a></td><td class="cuando">Primera vez en una máquina o después de un reinicio completo</td></tr>
+<tr><td><span class="num">2</span></td><td class="guia"><a href="02-ejecutar-pruebas.md">Ejecutar las pruebas de un servicio</a></td><td class="cuando">Antes de integrar un cambio</td></tr>
+<tr><td><span class="num">3</span></td><td class="guia"><a href="03-rotar-clave-rs256.md">Rotar la clave RS256 sin cortar sesiones</a></td><td class="cuando">Cada año, o de inmediato si la clave se expone</td></tr>
+<tr><td><span class="num">4</span></td><td class="guia"><a href="04-conectar-cliente-mcp.md">Conectar un cliente MCP a Nexus</a></td><td class="cuando">Para usar Nexus desde un cliente MCP</td></tr>
+<tr><td><span class="num">5</span></td><td class="guia"><a href="05-dar-de-alta-usuario.md">Dar de alta un usuario y asignarle rol y área</a></td><td class="cuando">Incorporar a alguien (rol ADMIN)</td></tr>
+<tr><td><span class="num">6</span></td><td class="guia"><a href="06-orden-de-compra.md">Crear un proveedor, una orden, aprobarla y recibirla</a></td><td class="cuando">Ciclo de compra</td></tr>
+<tr><td><span class="num">7</span></td><td class="guia"><a href="07-pago-a-proveedor.md">Registrar un pago a proveedor</a></td><td class="cuando">Pagar una cuenta por pagar (rol FINANZAS)</td></tr>
+<tr><td><span class="num">8</span></td><td class="guia"><a href="08-comprobantes-y-cobros.md">Emitir un comprobante, registrar un cobro y cancelar</a></td><td class="cuando">Facturación y cobranza (rol FINANZAS)</td></tr>
+<tr><td><span class="num">9</span></td><td class="guia"><a href="09-indicadores-y-reportes.md">Consultar indicadores y generar reportes</a></td><td class="cuando">Reporte ejecutivo mensual, trimestral o anual</td></tr>
+<tr><td><span class="num">10</span></td><td class="guia"><a href="10-rastrear-request-jaeger.md">Rastrear un request en Jaeger</a></td><td class="cuando">Ver por dónde pasó un request y en qué paso se tardó o falló</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+
+  <section class="panel">
+    <h2>Convenciones</h2>
+    <ul>
 <li><code>HOST</code> es la dirección del gateway (por ejemplo <code>localhost:8080</code>). Las rutas de API van bajo el prefijo del servicio, por ejemplo <code>/compras-proveedores-ms/v1</code>.</li>
 <li><code>ACCESS_TOKEN</code> es el <code>accessToken</code> del login. Vence en 15 minutos.</li>
 <li>Nunca pegues contraseñas, claves o tokens en el chat ni en un commit.</li>
-</ul>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <span>EMPRESA_JOSESAID · Guías de procesos</span>
+  <span>Documentación de la plataforma</span>
+</footer>
 </body>
 </html>
