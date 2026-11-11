@@ -23,7 +23,7 @@ python3 seed/cargar_datos.py --reset   # borra los datos de negocio y vuelve a c
 - Alrededor de 100 filas por tabla de negocio. Las tablas que dependen de otras (pagos, reportes) tienen menos.
 - Catálogos completos: todos los estatus, tipos, roles y canales. Las combinaciones se recorren hasta cubrirlas todas.
 - 12 periodos contables y 12 reportes (uno por mes, porque el periodo es único).
-- Usuarios demo: uno por rol, por ejemplo `admin@demo.empresa.mx`, con contraseña **Demo2026!**.
+- Usuarios demo: uno por rol, por ejemplo `admin@empresa.mx`, con contraseña **Demo2026!**.
 
 ## Notas
 

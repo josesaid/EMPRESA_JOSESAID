@@ -1,6 +1,6 @@
 # Registro de PRs de la sesión de seguridad y pruebas
 
-Lista de los PR fusionados de #109 a #263, con su commit de fusión, fecha y servicios afectados. Los servicios salen de los archivos que cambió cada PR.
+Lista de los PR fusionados de #109 a #274, con su commit de fusión, fecha y servicios afectados. Los servicios salen de los archivos que cambió cada PR.
 
 Enlace desde el [README principal](../README.md).
 
@@ -164,6 +164,14 @@ Enlace desde el [README principal](../README.md).
 | [#264](https://github.com/josesaid/EMPRESA_JOSESAID/pull/264) | docs: sincronizar el registro de PRs con el último merge | `docs/sincronizar-todo` | Documentación | `1fef4a4` | 2026-11-11 |
 | [#265](https://github.com/josesaid/EMPRESA_JOSESAID/pull/265) | docs(guia-pruebas): la cobertura falla el build por servicio | `docs/guia-pruebas-cobertura` | Documentación | `3ee9ce5` | 2026-11-11 |
 | [#266](https://github.com/josesaid/EMPRESA_JOSESAID/pull/266) | docs(registro): registro de PRs hasta #263 en el archivo Markdown | `docs/registro-prs-md` | Documentación | `d60a50b` | 2026-11-11 |
+| [#267](https://github.com/josesaid/EMPRESA_JOSESAID/pull/267) | docs(registro): agregar #264, #265 y #266 al registro de PRs | `docs/registro-faltantes` | Documentación | `73d717d` | 2026-11-10 |
+| [#268](https://github.com/josesaid/EMPRESA_JOSESAID/pull/268) | docs: manual con la interfaz, Kafka UI y Nexus; README de nexus-ms sin puerto de host | `docs/revisar-contenido` | Documentación, nexus-ms | `2c09433` | 2026-11-10 |
+| [#269](https://github.com/josesaid/EMPRESA_JOSESAID/pull/269) | test(smoke): aceptar 404 del servicio cuando el dato de prueba no existe | `test/smoke-404-recurso` | scripts | `2cac924` | 2026-11-10 |
+| [#270](https://github.com/josesaid/EMPRESA_JOSESAID/pull/270) | fix(revocaciones): el sobre guarda una copia inmutable de los datos | `fix/sobre-datos-inmutables` | usuarios-accesos-ms | `0e80ef6` | 2026-11-10 |
+| [#271](https://github.com/josesaid/EMPRESA_JOSESAID/pull/271) | feat(nexus): tope de tokens de salida por llamada al modelo | `feat/nexus-max-tokens` | nexus-ms | `5793e01` | 2026-11-11 |
+| [#272](https://github.com/josesaid/EMPRESA_JOSESAID/pull/272) | docs(seed): aclarar cuántas filas genera cada tabla | `feat/seed-datos` | configuration_scripts, seed | `34271d3` | 2026-11-11 |
+| [#273](https://github.com/josesaid/EMPRESA_JOSESAID/pull/273) | fix(seed): cada servicio cifra con sus propias claves del .env | `fix/seed-claves-por-servicio` | seed | `212e796` | 2026-11-11 |
+| [#274](https://github.com/josesaid/EMPRESA_JOSESAID/pull/274) | docs: agrega página de uso de IA por microservicio | `docs/uso-de-ia` | Documentación | `470cbda` | 2026-11-11 |
 
 ## Decisiones registradas
 
