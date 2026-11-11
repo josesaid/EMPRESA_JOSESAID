@@ -31,10 +31,12 @@ public class AsistenteNexusController {
 
     private final NexusCliente nexus;
 
+    /** Recibe el cliente de Nexus. */
     public AsistenteNexusController(NexusCliente nexus) {
         this.nexus = nexus;
     }
 
+    /** Muestra el asistente con el historial de la conversación guardado en la sesión HTTP. */
     @GetMapping
     public String pantalla(HttpSession sesion, Model modelo) {
         modelo.addAttribute("titulo", "Asistente Nexus");
@@ -43,6 +45,7 @@ public class AsistenteNexusController {
         return "asistente/nexus";
     }
 
+    /** Envía una pregunta a Nexus y guarda la pregunta y la respuesta en el historial. La conversación se conserva solo en la sesión HTTP del usuario. */
     @PostMapping
     public String preguntar(@RequestParam(required = false) String pregunta, HttpSession sesion,
                             Authentication usuario, RedirectAttributes redireccion) {
@@ -69,12 +72,14 @@ public class AsistenteNexusController {
         return "redirect:/asistente";
     }
 
+    /** Borra el historial de la conversación. */
     @PostMapping("/limpiar")
     public String limpiar(HttpSession sesion) {
         sesion.removeAttribute(CLAVE_SESION);
         return "redirect:/asistente";
     }
 
+    /** Obtiene el historial de la sesión HTTP, o crea uno vacío. */
     private static List<Mensaje> historial(HttpSession sesion) {
         Object actual = sesion.getAttribute(CLAVE_SESION);
         if (actual instanceof List<?> lista) {
@@ -85,6 +90,7 @@ public class AsistenteNexusController {
         return new ArrayList<>();
     }
 
+    /** Agrega un mensaje al historial y limita su tamaño para no crecer sin límite. */
     private static void agregar(List<Mensaje> historial, Mensaje mensaje) {
         historial.add(mensaje);
         while (historial.size() > MAX_MENSAJES) {
@@ -92,6 +98,7 @@ public class AsistenteNexusController {
         }
     }
 
+    /** Traduce el estado de Nexus en un mensaje para el usuario. */
     private static String mensajeNexus(int estado) {
         return switch (estado) {
             case 429 -> "Se agotó tu presupuesto de consultas al asistente por ahora.";

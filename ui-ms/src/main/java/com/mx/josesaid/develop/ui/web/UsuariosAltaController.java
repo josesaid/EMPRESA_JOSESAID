@@ -31,11 +31,13 @@ public class UsuariosAltaController {
     private final NexusCliente nexus;
     private final UsuariosCliente usuarios;
 
+    /** Recibe el cliente de Nexus y el de usuarios. */
     public UsuariosAltaController(NexusCliente nexus, UsuariosCliente usuarios) {
         this.nexus = nexus;
         this.usuarios = usuarios;
     }
 
+    /** Muestra el formulario para completar el alta de un usuario con su código de verificación. */
     @GetMapping("/{id}")
     public String formulario(@PathVariable UUID id, Authentication usuario, Model modelo) {
         modelo.addAttribute("id", id);
@@ -53,6 +55,7 @@ public class UsuariosAltaController {
         return VISTA;
     }
 
+    /** Completa el alta del usuario con su código y la contraseña inicial. Si falla, vuelve al formulario con el motivo. */
     @PostMapping("/{id}")
     public String completar(@PathVariable UUID id,
                             @RequestParam String codigo,
@@ -99,6 +102,7 @@ public class UsuariosAltaController {
         return VISTA;
     }
 
+    /** Traduce el estado de Nexus en un mensaje de verificación. */
     private static String mensajeNexus(int estado) {
         return switch (estado) {
             case 422 -> "El código no coincide. El alta se canceló; pide a Nexus que la prepare de nuevo.";
@@ -109,6 +113,7 @@ public class UsuariosAltaController {
         };
     }
 
+    /** Traduce el estado de usuarios en un mensaje de alta. */
     private static String mensajeUsuarios(int estado) {
         return switch (estado) {
             case 409 -> "Ya existe un usuario con ese correo. No se creó nada; el alta sigue pendiente.";
@@ -118,6 +123,7 @@ public class UsuariosAltaController {
         };
     }
 
+    /** Indica si el usuario tiene el rol de administrador. */
     private static boolean esAdmin(Authentication usuario) {
         return usuario.getAuthorities().stream().anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
     }

@@ -17,10 +17,12 @@ public class ServicioCuenta {
 
     private final RestClient gateway;
 
+    /** Recibe el cliente del gateway. */
     public ServicioCuenta(RestClient gatewayClient) {
         this.gateway = gatewayClient;
     }
 
+    /** Cambia la contraseña temporal de un usuario. Traduce los errores del servicio a ErrorCambioPassword con un mensaje legible. */
     public void cambiarPasswordInicial(String correo, String actual, String nueva) {
         try {
             gateway.post()
@@ -50,7 +52,9 @@ public class ServicioCuenta {
         return m.find() ? m.group(1) : "No se pudo cambiar la contraseña.";
     }
 
+    /** Error al cambiar la contraseña, con el mensaje que se muestra al usuario. */
     public static class ErrorCambioPassword extends RuntimeException {
+        /** Crea el error con su mensaje. */
         public ErrorCambioPassword(String mensaje) {
             super(mensaje);
         }

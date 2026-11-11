@@ -19,6 +19,7 @@ public class IpOrigen {
 
     private final List<String> proxiesConfiables;
 
+    /** Lee de la configuración los proxies de confianza, separados por comas. Sin valor, no se confía en ningún proxy. */
     public IpOrigen(@Value("${ui.proxies-confiables:}") String proxies) {
         this.proxiesConfiables = Arrays.asList(proxies.split(","));
     }
@@ -32,6 +33,7 @@ public class IpOrigen {
         return resolver(servlet.getRequest());
     }
 
+    /** Devuelve la IP real del cliente. Usa X-Forwarded-For solo si la conexión llega desde un proxy de confianza y la IP del encabezado es válida. */
     String resolver(HttpServletRequest request) {
         String directa = request.getRemoteAddr();
         String xff = request.getHeader("X-Forwarded-For");
@@ -42,6 +44,7 @@ public class IpOrigen {
         return esIpValida(candidata) ? candidata : directa;
     }
 
+    /** Indica si la IP pertenece a alguno de los proxies de confianza. */
     boolean esDeConfianza(String ip) {
         for (String rango : proxiesConfiables) {
             if (!rango.isBlank() && perteneceAlRango(ip, rango.trim())) {
@@ -51,6 +54,7 @@ public class IpOrigen {
         return false;
     }
 
+    /** Indica si la IP pertenece a un rango CIDR, por ejemplo 10.0.0.0/8. Lanza error si el rango es inválido. */
     static boolean perteneceAlRango(String ip, String cidr) {
         String[] partes = cidr.split("/");
         if (partes.length != 2 || !esIpValida(ip)) {
@@ -75,10 +79,12 @@ public class IpOrigen {
         return true;
     }
 
+    /** Valida que el texto sea una IP v4 o v6 antes de usarlo. */
     static boolean esIpValida(String s) {
         return !s.isEmpty() && s.length() <= 45 && s.matches("[0-9a-fA-F:.]+") && (s.contains(".") || s.contains(":"));
     }
 
+    /** Convierte una IP literal en sus bytes, sin consultar DNS. */
     private static byte[] literal(String ip) {
         try {
             return InetAddress.getByName(ip).getAddress();

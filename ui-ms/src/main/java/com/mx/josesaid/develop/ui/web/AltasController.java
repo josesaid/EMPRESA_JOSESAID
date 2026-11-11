@@ -28,10 +28,12 @@ public class AltasController {
 
     private final AltasCliente altas;
 
+    /** Recibe el servicio de altas. */
     public AltasController(AltasCliente altas) {
         this.altas = altas;
     }
 
+    /** Muestra el formulario de alta de cliente. */
     @GetMapping("/altas/clientes")
     public String formularioCliente(Authentication usuario, Model modelo) {
         preparar(modelo, usuario, "Nuevo cliente", "clientes");
@@ -39,6 +41,7 @@ public class AltasController {
         return VISTA_CLIENTE;
     }
 
+    /** Envía el alta de cliente con sus datos de contacto. Si falla, vuelve al formulario con el mensaje. */
     @PostMapping("/altas/clientes")
     public String crearCliente(@RequestParam String razonSocial, @RequestParam String rfc,
                                @RequestParam String contactoNombre, @RequestParam String contactoCorreo,
@@ -66,12 +69,14 @@ public class AltasController {
         return VISTA_CLIENTE;
     }
 
+    /** Muestra el formulario de alta de proveedor. */
     @GetMapping("/altas/proveedores")
     public String formularioProveedor(Authentication usuario, Model modelo) {
         preparar(modelo, usuario, "Nuevo proveedor", "proveedores");
         return VISTA_PROVEEDOR;
     }
 
+    /** Envía el alta de proveedor. Si falla, vuelve al formulario con el mensaje. */
     @PostMapping("/altas/proveedores")
     public String crearProveedor(@RequestParam String razonSocial, @RequestParam String rfc,
                                  @RequestParam String correo, Authentication usuario, Model modelo) {
@@ -93,12 +98,14 @@ public class AltasController {
         return VISTA_PROVEEDOR;
     }
 
+    /** Agrega al modelo el título, la sección y el usuario de la pantalla de altas. */
     private static void preparar(Model modelo, Authentication usuario, String titulo, String seccion) {
         modelo.addAttribute("titulo", titulo);
         modelo.addAttribute("seccion", seccion);
         modelo.addAttribute("correo", usuario.getName());
     }
 
+    /** Rearma el cuerpo del formulario con los datos de contacto, para volver a mostrarlo si hubo error. */
     private static Map<String, Object> cuerpoParaFormulario(Map<String, Object> cuerpo, Map<String, Object> contacto) {
         Map<String, Object> valores = new LinkedHashMap<>(cuerpo);
         valores.put("contactoNombre", contacto.get("nombre"));
@@ -107,6 +114,7 @@ public class AltasController {
         return valores;
     }
 
+    /** Traduce el estado de la API en un mensaje de alta, según la entidad. */
     private static String mensajeApi(int estado, String entidad) {
         return switch (estado) {
             case 403 -> "Tu rol no puede dar de alta " + entidad + ".";

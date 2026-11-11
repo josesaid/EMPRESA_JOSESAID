@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AgilizaIaController {
 
+    /** Muestra las sugerencias guiadas por la opción elegida. Son textos de ayuda del catálogo, sin llamadas a servicios. */
     @GetMapping("/agiliza-ia")
     public String agilizaIa(@RequestParam(required = false) String opcion, Authentication usuario, Model modelo) {
         Set<String> roles = usuario.getAuthorities().stream()

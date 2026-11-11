@@ -18,10 +18,12 @@ public class ColorBarraAdvice {
 
     static final String POR_DEFECTO = "azul";
 
+    /** Orden de prioridad de los roles para elegir el color de la barra: el primero que tenga el usuario gana. */
     private static final List<String> PRIORIDAD = List.of(
             "ADMIN", "DIRECCION", "FINANZAS", "CONTADOR", "VENTAS", "COMPRAS",
             "ALMACEN", "OPERACIONES", "CALIDAD", "LEGAL", "JEFE_AREA");
 
+    /** Color de la barra superior por rol. Ayuda a distinguir de un vistazo en qué área está el usuario. */
     private static final Map<String, String> COLORES = Map.ofEntries(
             entry("ADMIN", "morado"),
             entry("DIRECCION", "rojo"),
@@ -35,6 +37,7 @@ public class ColorBarraAdvice {
             entry("LEGAL", "rojo"),
             entry("JEFE_AREA", "azul"));
 
+    /** Devuelve el color de la barra según el rol de mayor prioridad del usuario. */
     @ModelAttribute("colorBarra")
     public String colorBarra(Authentication usuario) {
         if (usuario == null) {

@@ -17,11 +17,13 @@ public class ContabilidadCliente {
     private final RestClient gateway;
     private final ServicioSesion sesion;
 
+    /** Recibe el cliente del gateway y el servicio de sesión. */
     public ContabilidadCliente(RestClient gatewayClient, ServicioSesion sesion) {
         this.gateway = gatewayClient;
         this.sesion = sesion;
     }
 
+    /** Lista el catálogo de cuentas contables. */
     public List<CuentaDto> listarCuentas() {
         List<CuentaDto> cuentas = sesion.ejecutar(token -> gateway.get()
                 .uri("/contabilidad-ms/v1/cuentas")
@@ -32,6 +34,7 @@ public class ContabilidadCliente {
         return cuentas == null ? List.of() : cuentas;
     }
 
+    /** Lista las pólizas de un periodo (formato AAAA-MM). */
     public List<PolizaDto> listarPolizas(String periodo) {
         List<PolizaDto> polizas = sesion.ejecutar(token -> gateway.get()
                 .uri(constructor -> constructor.path("/contabilidad-ms/v1/polizas").queryParam("periodo", periodo).build())
@@ -42,6 +45,7 @@ public class ContabilidadCliente {
         return polizas == null ? List.of() : polizas;
     }
 
+    /** Obtiene una póliza con sus movimientos. */
     public PolizaDto obtenerPoliza(UUID id) {
         return sesion.ejecutar(token -> gateway.get()
                 .uri("/contabilidad-ms/v1/polizas/{id}", id)
@@ -50,6 +54,7 @@ public class ContabilidadCliente {
                 .body(PolizaDto.class));
     }
 
+    /** Solicita la reversa de una póliza. Solo afecta a la póliza indicada; la reversa la registra contabilidad. */
     public void reversarPoliza(UUID id) {
         sesion.ejecutar(token -> gateway.post()
                 .uri("/contabilidad-ms/v1/polizas/{id}/reversa", id)

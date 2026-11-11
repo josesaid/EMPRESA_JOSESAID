@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class CorreoAdvice {
 
+    /** Agrega el correo del usuario al modelo de todas las pantallas. */
     @ModelAttribute("correo")
     public String correo(Authentication usuario) {
         if (usuario == null || !usuario.isAuthenticated() || usuario instanceof AnonymousAuthenticationToken) {

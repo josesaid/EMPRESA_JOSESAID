@@ -16,6 +16,7 @@ public class SugerenciasIaAdvice {
 
     static final ZoneId ZONA = ZoneId.of("America/Mexico_City");
 
+    /** Agrega al modelo las sugerencias del catálogo para el menú de ayuda. */
     @ModelAttribute("sugerenciasIa")
     public List<SugerenciasIa.Sugerencia> sugerenciasIa(Authentication usuario) {
         if (usuario == null) {

@@ -26,6 +26,7 @@ import com.mx.josesaid.develop.ui.contabilidad.ContabilidadCliente;
 import com.mx.josesaid.develop.ui.contabilidad.CuentaDto;
 import com.mx.josesaid.develop.ui.contabilidad.PolizaDto;
 
+/** Pantallas de pólizas contables. La reversa solo la puede pedir un contador. */
 @Controller
 @RequestMapping("/polizas")
 public class PolizasController {
@@ -34,10 +35,12 @@ public class PolizasController {
 
     private final ContabilidadCliente contabilidad;
 
+    /** Recibe el servicio de contabilidad. */
     public PolizasController(ContabilidadCliente contabilidad) {
         this.contabilidad = contabilidad;
     }
 
+    /** Lista las pólizas del periodo indicado, o del mes actual. */
     @GetMapping
     public String listado(@RequestParam(required = false) String periodo, Authentication usuario, Model modelo) {
         String periodoElegido = periodoValido(periodo);
@@ -56,6 +59,7 @@ public class PolizasController {
         return "polizas/listado";
     }
 
+    /** Muestra el detalle de una póliza con sus movimientos y el nombre de cada cuenta. */
     @GetMapping("/{id}")
     public String detalle(@PathVariable UUID id, Authentication usuario, Model modelo,
                           @RequestParam(required = false) Boolean revertida,
@@ -88,6 +92,7 @@ public class PolizasController {
         return "polizas/detalle";
     }
 
+    /** Pide la reversa de una póliza. Solo para contadores. Redirige al detalle con el resultado. */
     @PostMapping("/{id}/reversa")
     public String reversar(@PathVariable UUID id) {
         try {
@@ -101,10 +106,12 @@ public class PolizasController {
         }
     }
 
+    /** Codifica el texto para usarlo en una URL. */
     private static String codificar(String texto) {
         return URLEncoder.encode(texto, StandardCharsets.UTF_8);
     }
 
+    /** Traduce el estado de la reversa en un mensaje para el usuario. */
     private static String mensajeReversa(int estado) {
         return switch (estado) {
             case 403 -> "Tu rol no puede revertir pólizas.";
@@ -114,10 +121,12 @@ public class PolizasController {
         };
     }
 
+    /** Indica si el usuario tiene el rol de contador. */
     private static boolean esContador(Authentication usuario) {
         return usuario.getAuthorities().stream().anyMatch(a -> "ROLE_CONTADOR".equals(a.getAuthority()));
     }
 
+    /** Convierte un movimiento en la fila que se muestra, con el nombre de su cuenta. */
     private static MovimientoVista vista(PolizaDto.MovimientoDto m, Map<UUID, CuentaDto> cuentas) {
         CuentaDto cuenta = cuentas.get(m.cuentaId());
         if (cuenta == null) {
@@ -126,6 +135,7 @@ public class PolizasController {
         return new MovimientoVista(cuenta.codigo(), cuenta.nombre(), m.cargo(), m.abono());
     }
 
+    /** Valida el periodo AAAA-MM. Si no es válido, usa el mes actual. */
     private static String periodoValido(String periodo) {
         String actual = YearMonth.now(ZONA).toString();
         if (periodo == null || periodo.isBlank()) {

@@ -10,10 +10,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+/** Reglas de acceso de la interfaz web con inicio de sesión por formulario. */
 @Configuration
 @EnableWebSecurity
 public class SeguridadConfig {
 
+    /** Cadena de seguridad: deja abiertos el login, la pantalla de cambio de contraseña, los estilos y el health check. El resto exige sesión. Al fallar el login redirige con un motivo (bloqueado, cambio de contraseña o error). Al salir, avisa al gateway para cerrar la sesión remota. */
     @Bean
     public SecurityFilterChain cadenaSeguridad(HttpSecurity http, UsuariosAuthenticationProvider proveedor,
                                                CierreSesionRemoto cierreRemoto) throws Exception {
