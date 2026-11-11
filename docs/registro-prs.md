@@ -161,6 +161,9 @@ Enlace desde el [README principal](../README.md).
 | [#261](https://github.com/josesaid/EMPRESA_JOSESAID/pull/261) | docs(registro-prs): ancho del 95 % en la página de PRs | `docs/registro-ancho` | Documentación | `6e43994` | 2026-11-11 |
 | [#262](https://github.com/josesaid/EMPRESA_JOSESAID/pull/262) | docs(seguridad): inventario de claves al 95 % del ancho de la página | `docs/inventario-95` | Documentación | `72f4ff8` | 2026-11-11 |
 | [#263](https://github.com/josesaid/EMPRESA_JOSESAID/pull/263) | docs(registro-prs): tabla al 95 % de la pantalla | `docs/registro-ancho-2` | Documentación | `d39c9eb` | 2026-11-11 |
+| [#264](https://github.com/josesaid/EMPRESA_JOSESAID/pull/264) | docs: sincronizar el registro de PRs con el último merge | `docs/sincronizar-todo` | Documentación | `1fef4a4` | 2026-11-11 |
+| [#265](https://github.com/josesaid/EMPRESA_JOSESAID/pull/265) | docs(guia-pruebas): la cobertura falla el build por servicio | `docs/guia-pruebas-cobertura` | Documentación | `3ee9ce5` | 2026-11-11 |
+| [#266](https://github.com/josesaid/EMPRESA_JOSESAID/pull/266) | docs(registro): registro de PRs hasta #263 en el archivo Markdown | `docs/registro-prs-md` | Documentación | `d60a50b` | 2026-11-11 |
 
 ## Decisiones registradas
 
