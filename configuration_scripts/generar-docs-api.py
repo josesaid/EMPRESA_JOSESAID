@@ -13,6 +13,7 @@ import html
 import json
 import os
 import re
+import urllib.parse
 import datetime
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -980,7 +981,18 @@ def seccion_resultados(svc_dir, tid):
         cab = ENCABEZADOS_DETALLE.get(tid, [])
         cortas = {i for i, h in enumerate(cab) if h in COLUMNAS_CORTAS}
         clase = lambda i: " class='nw'" if i in cortas else ""
-        cuerpo = "".join("<tr>" + "".join(f"<td{clase(i)}>{insignia(cab[i] if i < len(cab) else '', c)}</td>" for i, c in enumerate(fila)) + "</tr>" for fila in detalle)
+        svc = os.path.basename(svc_dir)
+        mapa = fuentes_java(svc_dir)
+
+        def celda(i, c):
+            columna = cab[i] if i < len(cab) else ""
+            if columna == "Clase" and c:
+                enlace = enlace_clase(svc, mapa, str(c))
+                if enlace:
+                    return enlace
+            return insignia(columna, c)
+
+        cuerpo = "".join("<tr>" + "".join(f"<td{clase(i)}>{celda(i, c)}</td>" for i, c in enumerate(fila)) + "</tr>" for fila in detalle)
         lista = ("<h2 style='margin-top:16px'>Detalle</h2><div style='overflow-x:auto'><table><tr>"
                  + "".join(f"<th{clase(i)}>{e(h)}</th>" for i, h in enumerate(cab)) + "</tr>" + cuerpo + "</table></div>")
     else:
@@ -994,7 +1006,7 @@ def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs, svc_dir, navegacion=()
     if t["id"] == "pruebas":
         secciones = (
             f"<section class='panel'><h2>Clases de prueba ({len(pruebas)})</h2><ul>"
-            + "".join(f"<li><code>{e(n)}</code></li>" for n in pruebas) + "</ul></section>"
+            + "".join(f"<li>{enlace_java(svc, rel, n, codigo=True)}</li>" for n, rel in pruebas) + "</ul></section>"
             + ("<section class='panel'><h2>Librerías de prueba</h2><ul>"
                + "".join(f"<li><code>{e(l)}</code></li>" for l in libs) + "</ul></section>" if libs else "")
         )
@@ -1028,7 +1040,7 @@ def pagina_tecnologia(svc, hue, t, bloque, pruebas, libs, svc_dir, navegacion=()
     return (
         "<!doctype html><html lang='es'><head><meta charset='utf-8'>"
         "<meta name='viewport' content='width=device-width, initial-scale=1'>"
-        f"<title>{e(t['nombre'])} · {e(svc)}</title><style>{CSS_TEC}{CSS_NAV}</style></head>"
+        f"<title>{e(t['nombre'])} · {e(svc)}</title><style>{CSS_TEC}{CSS_NAV}{CSS_ARCHIVO}</style></head>"
         f"<body style='--h:{hue:.0f}'>"
         f"<header class='cab'><div class='in'><a class='volver' href='../../{e(svc)}.html#tecnologias'>← Ficha de {e(svc)}</a>"
         f"<div><span class='etq'>Tecnología</span></div><h1>{e(t['nombre'])}</h1>"
@@ -1044,7 +1056,7 @@ def generar_tecnologias(svc, svc_dir, hue):
     if os.path.isdir(destino):
         shutil.rmtree(destino)
     clases = sorted(glob.glob(os.path.join(svc_dir, "src", "test", "java", "**", "*.java"), recursive=True))
-    nombres = [os.path.basename(c)[:-5] for c in clases]
+    nombres = [(os.path.basename(c)[:-5], os.path.relpath(c, svc_dir).replace(os.sep, "/")) for c in clases]
     libs = sorted(set(re.findall(
         r"<artifactId>([^<]*(?:junit|mockito|testcontainers|assertj|archunit|rest-assured)[^<]*)</artifactId>", texto)))
     previas = []
@@ -1069,8 +1081,222 @@ def generar_tecnologias(svc, svc_dir, hue):
     return resultado
 
 
+CSS_ARCHIVO = (
+    ".archivo-java{color:inherit;text-decoration:none;border-bottom:1px dashed hsl(var(--h) 60% 50%)}"
+    ".archivo-java:hover{color:hsl(var(--h) 70% 42%);border-bottom-style:solid}"
+    ".archivo-java code{font:600 13px ui-monospace,monospace}"
+)
+
+
+def fuentes_java(svc_dir):
+    """Mapa nombre completo (paquete.Clase) -> ruta relativa al servicio, de src/main y src/test."""
+    mapa = {}
+    for sub in ("src/main/java", "src/test/java"):
+        base = os.path.join(svc_dir, *sub.split("/"))
+        for ruta in glob.glob(os.path.join(base, "**", "*.java"), recursive=True):
+            paquete = os.path.relpath(os.path.dirname(ruta), base).replace(os.sep, ".")
+            clase = os.path.basename(ruta)[:-5]
+            fqn = clase if paquete == "." else paquete + "." + clase
+            mapa.setdefault(fqn, os.path.relpath(ruta, svc_dir).replace(os.sep, "/"))
+    return mapa
+
+
+def enlace_java(svc, rel, texto, codigo=False):
+    """Enlace al visor de código para un archivo del servicio (las páginas de tecnologías están en docs/api/<svc>/tecnologias/)."""
+    href = "../../codigo/visor.html?" + urllib.parse.urlencode({"svc": svc, "f": rel})
+    dentro = f"<code>{html.escape(texto)}</code>" if codigo else html.escape(texto)
+    return f"<a class='archivo-java' href='{html.escape(href)}' title='Ver código fuente'>{dentro}</a>"
+
+
+def enlace_clase(svc, mapa, nombre):
+    """Enlace al código de una clase indicada por su nombre completo (o simple, si es único). None si no existe."""
+    fqn = nombre.split("$")[0].strip()
+    rel = mapa.get(fqn)
+    if rel is None:
+        candidatos = [r for f, r in mapa.items() if f == fqn or f.endswith("." + fqn)]
+        if len(candidatos) != 1:
+            return None
+        rel = candidatos[0]
+    return enlace_java(svc, rel, nombre)
+
+
+def generar_codigo(svc, svc_dir):
+    """Escribe docs/api/codigo/<svc>.js con el código fuente Java del servicio (funciona abriendo el HTML sin servidor)."""
+    archivos = {rel: leer(os.path.join(svc_dir, rel)) for rel in sorted(fuentes_java(svc_dir).values())}
+    carpeta = os.path.join(SALIDA, "codigo")
+    os.makedirs(carpeta, exist_ok=True)
+    datos = json.dumps(archivos, ensure_ascii=False).replace("</", "<\\/")
+    with open(os.path.join(carpeta, svc + ".js"), "w", encoding="utf-8") as f:
+        f.write(f"window.CODIGO_JAVA = window.CODIGO_JAVA || {{}};\nwindow.CODIGO_JAVA[{json.dumps(svc)}] = {datos};\n")
+
+
+PAGINA_VISOR = r"""<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Código fuente · EMPRESA_JOSESAID</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+<style>
+:root{--bg:#f5f7fb;--superficie:#ffffff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;--sombra:rgba(15,23,42,.08);--cabecera-a:#4338ca;--cabecera-b:#0e7490;--code-bg:#0d1117;--code-barra:#161b22;--code-fg:#c9d1d9;--code-num:#484f58;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:40px}
+.cabecera{background:linear-gradient(135deg,var(--cabecera-a),var(--cabecera-b));color:#fff;padding:24px max(16px,env(safe-area-inset-left,0px)) 56px}
+.cabecera .in{max-width:1100px;margin:0 auto}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.volver:hover{opacity:1;text-decoration:underline}
+.miga{font-size:13px;opacity:.85;margin:14px 0 6px;word-break:break-all}
+.cabecera h1{margin:0;font:700 clamp(20px,4vw,28px)/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.01em;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{font-size:12.5px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 10px}
+main{max-width:1100px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.visor{background:var(--superficie);border:1px solid var(--linea);border-radius:14px;box-shadow:0 10px 30px var(--sombra);overflow:hidden;min-width:0}
+.barra{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--code-barra);color:var(--code-fg);padding:10px 14px;border-bottom:1px solid #30363d;font:13px ui-monospace,SFMono-Regular,Menlo,monospace}
+.puntos{display:flex;gap:6px;flex:none}
+.puntos i{width:11px;height:11px;border-radius:50%;background:#30363d;display:block}
+.puntos i:nth-child(1){background:#ff5f56}.puntos i:nth-child(2){background:#ffbd2e}.puntos i:nth-child(3){background:#27c93f}
+.nombre-archivo{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.copiar{flex:none;font:600 12.5px system-ui,sans-serif;color:var(--code-fg);background:#21262d;border:1px solid #30363d;border-radius:8px;padding:5px 11px;cursor:pointer}
+.copiar:hover{background:#30363d}
+.codigo{display:flex;background:var(--code-bg);overflow:auto;max-width:100%}
+.nums{flex:none;margin:0;padding:14px 12px 14px 14px;text-align:right;color:var(--code-num);font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none;border-right:1px solid #21262d}
+.codigo .texto{margin:0;padding:14px 16px 14px 14px;flex:1;min-width:0}
+.codigo code{font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre;background:transparent;color:var(--code-fg)}
+.codigo code.hljs{background:transparent;padding:0}
+.pie{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 14px;font-size:13px;color:var(--muted);border-top:1px solid var(--linea)}
+.aviso{padding:24px;color:var(--muted)}
+.aviso a{color:inherit}
+.copiado{color:#3fb950}
+</style>
+</head>
+<body>
+<header class="cabecera"><div class="in">
+  <a class="volver" id="volver" href="#">← Volver a la ficha</a>
+  <div class="miga" id="miga"></div>
+  <h1 id="titulo">Código fuente</h1>
+  <div class="chips" id="chips"></div>
+</div></header>
+<main>
+  <div class="visor" id="visor">
+    <div class="barra">
+      <div class="puntos" aria-hidden="true"><i></i><i></i><i></i></div>
+      <span class="nombre-archivo" id="nombre"></span>
+      <button class="copiar" id="copiar" type="button">Copiar</button>
+    </div>
+    <div id="contenido" class="aviso">Cargando código…</div>
+  </div>
+</main>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var svc = params.get('svc') || '';
+  var ruta = params.get('f') || '';
+  var contenido = document.getElementById('contenido');
+
+  function mostrarError(mensaje) {
+    contenido.className = 'aviso';
+    contenido.textContent = mensaje;
+    document.getElementById('copiar').hidden = true;
+  }
+
+  function escapar(texto) {
+    return texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function copiar(texto, boton) {
+    function listo() { boton.textContent = 'Copiado'; boton.classList.add('copiado'); setTimeout(function () { boton.textContent = 'Copiar'; boton.classList.remove('copiado'); }, 1600); }
+    function respaldo() {
+      var area = document.createElement('textarea');
+      area.value = texto; document.body.appendChild(area); area.select();
+      try { document.execCommand('copy'); listo(); } catch (e) { boton.textContent = 'Selecciona y copia'; }
+      document.body.removeChild(area);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto).then(listo, respaldo);
+    } else {
+      respaldo();
+    }
+  }
+
+  function pintar(codigo) {
+    var nombre = ruta.split('/').pop();
+    var paquete = ruta.replace(/^src\/(main|test)\/java\//, '').split('/').slice(0, -1).join('.');
+    var lineas = codigo.split('\n');
+    if (lineas.length > 1 && lineas[lineas.length - 1] === '') { lineas.pop(); }
+    var resaltado = (window.hljs && hljs.getLanguage('java'))
+      ? hljs.highlight(codigo, { language: 'java', ignoreIllegals: true }).value
+      : escapar(codigo);
+
+    document.title = nombre + ' · ' + svc;
+    document.getElementById('volver').href = '../' + svc + '.html';
+    document.getElementById('miga').textContent = svc + ' / ' + ruta;
+    document.getElementById('titulo').textContent = nombre;
+    document.getElementById('nombre').textContent = ruta;
+
+    var tipo = ruta.indexOf('src/test/') === 0 ? 'Prueba' : 'Código principal';
+    var chips = [svc, tipo, 'Java'];
+    if (paquete) { chips.push(paquete); }
+    chips.push(lineas.length + (lineas.length === 1 ? ' línea' : ' líneas'));
+    var zona = document.getElementById('chips');
+    zona.innerHTML = '';
+    chips.forEach(function (texto) {
+      var c = document.createElement('span'); c.className = 'chip'; c.textContent = texto; zona.appendChild(c);
+    });
+
+    var numeros = [];
+    for (var i = 1; i <= lineas.length; i++) { numeros.push(i); }
+    contenido.className = '';
+    contenido.innerHTML = '';
+    var bloque = document.createElement('div');
+    bloque.className = 'codigo';
+    bloque.innerHTML =
+      '<pre class="nums" aria-hidden="true">' + numeros.join('\n') + '</pre>' +
+      '<pre class="texto"><code class="hljs language-java">' + resaltado + '</code></pre>';
+    contenido.appendChild(bloque);
+
+    var pie = document.createElement('div');
+    pie.className = 'pie';
+    pie.innerHTML = '<span>Vista de solo lectura</span><span></span>';
+    pie.lastChild.textContent = svc;
+    contenido.appendChild(pie);
+
+    document.getElementById('copiar').onclick = function () { copiar(codigo, this); };
+  }
+
+  if (!/^[a-z0-9-]+$/.test(svc) || !ruta || ruta.indexOf('..') !== -1) {
+    mostrarError('Falta el servicio o el archivo que quieres ver.');
+    return;
+  }
+  var datos = document.createElement('script');
+  datos.src = svc + '.js';
+  datos.onload = function () {
+    var archivos = (window.CODIGO_JAVA || {})[svc] || {};
+    if (!Object.prototype.hasOwnProperty.call(archivos, ruta)) {
+      mostrarError('No encontré este archivo en ' + svc + ': ' + ruta);
+      return;
+    }
+    pintar(archivos[ruta]);
+  };
+  datos.onerror = function () {
+    mostrarError('No se pudo cargar el código de ' + svc + '. Genera de nuevo la documentación.');
+  };
+  document.head.appendChild(datos);
+})();
+</script>
+</body>
+</html>
+"""
+
+
 def main():
     os.makedirs(SALIDA, exist_ok=True)
+    os.makedirs(os.path.join(SALIDA, "codigo"), exist_ok=True)
+    with open(os.path.join(SALIDA, "codigo", "visor.html"), "w", encoding="utf-8") as f:
+        f.write(PAGINA_VISOR)
     servicios = servicios_documentados()
     resumen = []
     for svc in servicios:
@@ -1088,6 +1314,7 @@ def main():
         hue = (len(resumen) * 137.508) % 360
         diagramas = copiar_diagramas(svc)
         tecnologias = generar_tecnologias(svc, svc_dir, hue)
+        generar_codigo(svc, svc_dir)
         datos = {
             "svc": svc,
             "info": {"nombre": svc, "descripcion": descripcion, "puerto": puerto_de(svc_dir),
