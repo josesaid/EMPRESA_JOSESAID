@@ -4,6 +4,12 @@ import com.mx.josesaid.develop.reportes.domain.IndicadorConsolidado;
 import java.util.List;
 import java.util.UUID;
 
-/** Datos que un exportador necesita. No depende de JPA ni de ningún formato. */
+/**
+ * Datos que un exportador necesita. No depende de JPA ni de ningún formato.
+ *
+ * @param reporteId componente de tipo {@code UUID}.
+ * @param periodo componente de tipo {@code String}.
+ * @param indicadores componente de tipo {@code List<IndicadorConsolidado>}.
+ */
 public record DatosExportacion(UUID reporteId, String periodo, List<IndicadorConsolidado> indicadores) {
 }

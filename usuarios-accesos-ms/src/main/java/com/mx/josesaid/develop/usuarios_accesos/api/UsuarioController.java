@@ -77,7 +77,14 @@ public class UsuarioController {
         return UsuarioRespuesta.de(servicio.darDeBaja(id));
     }
 
-    /** Datos para crear un usuario: correo, nombre completo, contraseña temporal y roles. */
+    /**
+     * Datos para crear un usuario: correo, nombre completo, contraseña temporal y roles.
+     *
+     * @param correo componente de tipo {@code String}.
+     * @param nombreCompleto componente de tipo {@code String}.
+     * @param password componente de tipo {@code String}.
+     * @param roles componente de tipo {@code Set<Rol>}.
+     */
     public record CrearUsuarioSolicitud(
             @NotBlank @Email String correo,
             @NotBlank String nombreCompleto,
@@ -85,19 +92,38 @@ public class UsuarioController {
             @NotEmpty Set<Rol> roles) {
     }
 
-    /** Área a asignar y motivo del cambio. */
+    /**
+     * Área a asignar y motivo del cambio.
+     *
+     * @param area componente de tipo {@code String}.
+     * @param motivo componente de tipo {@code String}.
+     */
     public record AsignarAreaSolicitud(
             @NotBlank @Size(max = 40) String area,
             @NotBlank String motivo) {
     }
 
-    /** Roles nuevos y motivo del cambio. */
+    /**
+     * Roles nuevos y motivo del cambio.
+     *
+     * @param roles componente de tipo {@code Set<Rol>}.
+     * @param motivo componente de tipo {@code String}.
+     */
     public record AsignarRolesSolicitud(
             @NotNull @NotEmpty Set<Rol> roles,
             @NotBlank String motivo) {
     }
 
-    /** Respuesta con datos personales enmascarados. */
+    /**
+     * Respuesta con datos personales enmascarados.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param correo componente de tipo {@code String}.
+     * @param nombreCompleto componente de tipo {@code String}.
+     * @param estatus componente de tipo {@code String}.
+     * @param roles componente de tipo {@code Set<Rol>}.
+     * @param area componente de tipo {@code String}.
+     */
     public record UsuarioRespuesta(UUID id, String correo, String nombreCompleto, String estatus, Set<Rol> roles,
                                    String area) {
         /** Convierte un usuario en su respuesta. */

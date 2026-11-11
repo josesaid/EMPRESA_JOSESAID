@@ -12,7 +12,12 @@ import java.util.function.UnaryOperator;
  */
 public final class RecifradorPorLotes {
 
-    /** Fila pendiente: su id y el valor cifrado tal como está en la base. */
+    /**
+     * Fila pendiente: su id y el valor cifrado tal como está en la base.
+     *
+     * @param id componente de tipo {@code Object}.
+     * @param valor componente de tipo {@code String}.
+     */
     public record Fila(Object id, String valor) {
     }
 

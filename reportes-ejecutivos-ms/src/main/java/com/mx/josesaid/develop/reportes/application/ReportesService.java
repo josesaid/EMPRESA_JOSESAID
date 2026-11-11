@@ -48,15 +48,31 @@ public class ReportesService {
         listaExportadores.forEach(e -> this.exportadores.put(e.formato(), e));
     }
 
-    /** Indicador con la marca de si su fuente está desactualizada. */
+    /**
+     * Indicador con la marca de si su fuente está desactualizada.
+     *
+     * @param indicador componente de tipo {@code Indicador}.
+     * @param desactualizado componente de tipo {@code boolean}.
+     */
     public record IndicadorVista(Indicador indicador, boolean desactualizado) {
     }
 
-    /** Reporte con sus indicadores consolidados. */
+    /**
+     * Reporte con sus indicadores consolidados.
+     *
+     * @param reporte componente de tipo {@code Reporte}.
+     * @param indicadores componente de tipo {@code List<IndicadorConsolidado>}.
+     */
     public record ReporteVista(Reporte reporte, List<IndicadorConsolidado> indicadores) {
     }
 
-    /** Resultado de exportar: contenido binario, formato y nombre de archivo sugerido. */
+    /**
+     * Resultado de exportar: contenido binario, formato y nombre de archivo sugerido.
+     *
+     * @param contenido componente de tipo {@code byte[]}.
+     * @param formato componente de tipo {@code FormatoExportacion}.
+     * @param nombreArchivo componente de tipo {@code String}.
+     */
     public record Exportacion(byte[] contenido, FormatoExportacion formato, String nombreArchivo) {
     }
 

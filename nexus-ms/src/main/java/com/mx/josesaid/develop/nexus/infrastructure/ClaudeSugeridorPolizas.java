@@ -106,11 +106,24 @@ public final class ClaudeSugeridorPolizas implements SugeridorPolizas {
         }
     }
 
-    /** Respuesta del modelo: tipo de póliza, líneas, nivel de confianza y motivo. */
+    /**
+     * Respuesta del modelo: tipo de póliza, líneas, nivel de confianza y motivo.
+     *
+     * @param tipo componente de tipo {@code String}.
+     * @param lineas componente de tipo {@code List<LineaModelo>}.
+     * @param confianza componente de tipo {@code double}.
+     * @param motivo componente de tipo {@code String}.
+     */
     record RespuestaModelo(String tipo, List<LineaModelo> lineas, double confianza, String motivo) {
     }
 
-    /** Línea propuesta por el modelo: código de cuenta, cargo y abono. */
+    /**
+     * Línea propuesta por el modelo: código de cuenta, cargo y abono.
+     *
+     * @param codigo componente de tipo {@code String}.
+     * @param cargo componente de tipo {@code BigDecimal}.
+     * @param abono componente de tipo {@code BigDecimal}.
+     */
     record LineaModelo(String codigo, BigDecimal cargo, BigDecimal abono) {
     }
 }

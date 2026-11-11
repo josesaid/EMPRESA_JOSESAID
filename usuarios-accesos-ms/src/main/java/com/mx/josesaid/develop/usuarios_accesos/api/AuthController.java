@@ -77,22 +77,44 @@ public class AuthController {
         return new TokenRespuesta(par.accessToken(), "Bearer", propiedades.duracion().toSeconds(), par.refreshToken());
     }
 
-    /** Datos de inicio de sesión: correo y contraseña. */
+    /**
+     * Datos de inicio de sesión: correo y contraseña.
+     *
+     * @param correo componente de tipo {@code String}.
+     * @param password componente de tipo {@code String}.
+     */
     public record LoginSolicitud(@NotBlank @Email String correo, @NotBlank String password) {
     }
 
-    /** Refresh token a rotar o a cerrar. */
+    /**
+     * Refresh token a rotar o a cerrar.
+     *
+     * @param refreshToken componente de tipo {@code String}.
+     */
     public record RefrescoSolicitud(@NotBlank String refreshToken) {
     }
 
-    /** Datos para cambiar la contraseña temporal. La nueva debe tener entre 12 y 100 caracteres. */
+    /**
+     * Datos para cambiar la contraseña temporal. La nueva debe tener entre 12 y 100 caracteres.
+     *
+     * @param correo componente de tipo {@code String}.
+     * @param passwordActual componente de tipo {@code String}.
+     * @param passwordNueva componente de tipo {@code String}.
+     */
     public record CambioPasswordSolicitud(
             @NotBlank @Email String correo,
             @NotBlank String passwordActual,
             @NotBlank @Size(min = 12, max = 100) String passwordNueva) {
     }
 
-    /** Respuesta con los tokens. expiresIn va en segundos. */
+    /**
+     * Respuesta con los tokens. expiresIn va en segundos.
+     *
+     * @param accessToken componente de tipo {@code String}.
+     * @param tokenType componente de tipo {@code String}.
+     * @param expiresIn componente de tipo {@code long}.
+     * @param refreshToken componente de tipo {@code String}.
+     */
     public record TokenRespuesta(String accessToken, String tokenType, long expiresIn, String refreshToken) {
     }
 }

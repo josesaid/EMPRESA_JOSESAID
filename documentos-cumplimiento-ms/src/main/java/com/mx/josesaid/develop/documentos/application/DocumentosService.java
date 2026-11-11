@@ -49,7 +49,12 @@ public class DocumentosService {
         this.umbralDias = umbralDias;
     }
 
-    /** Contenido descifrado de una versión, ya verificado contra su hash. */
+    /**
+     * Contenido descifrado de una versión, ya verificado contra su hash.
+     *
+     * @param version componente de tipo {@code VersionDocumento}.
+     * @param contenido componente de tipo {@code byte[]}.
+     */
     public record DescargaVersion(VersionDocumento version, byte[] contenido) {
     }
 

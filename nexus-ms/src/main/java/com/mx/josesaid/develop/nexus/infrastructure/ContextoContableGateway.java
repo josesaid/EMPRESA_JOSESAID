@@ -70,15 +70,34 @@ public final class ContextoContableGateway implements ContextoContable {
         return ejemplos;
     }
 
-    /** Cuenta tal como la devuelve el gateway. */
+    /**
+     * Cuenta tal como la devuelve el gateway.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param codigo componente de tipo {@code String}.
+     * @param nombre componente de tipo {@code String}.
+     */
     record RespuestaCuenta(UUID id, String codigo, String nombre) {
     }
 
-    /** Póliza tal como la devuelve el gateway. */
+    /**
+     * Póliza tal como la devuelve el gateway.
+     *
+     * @param tipo componente de tipo {@code String}.
+     * @param fecha componente de tipo {@code LocalDate}.
+     * @param estatus componente de tipo {@code String}.
+     * @param movimientos componente de tipo {@code List<RespuestaMovimiento>}.
+     */
     record RespuestaPoliza(String tipo, LocalDate fecha, String estatus, List<RespuestaMovimiento> movimientos) {
     }
 
-    /** Movimiento de una póliza: cuenta, cargo y abono. */
+    /**
+     * Movimiento de una póliza: cuenta, cargo y abono.
+     *
+     * @param cuentaId componente de tipo {@code UUID}.
+     * @param cargo componente de tipo {@code BigDecimal}.
+     * @param abono componente de tipo {@code BigDecimal}.
+     */
     record RespuestaMovimiento(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
     }
 }

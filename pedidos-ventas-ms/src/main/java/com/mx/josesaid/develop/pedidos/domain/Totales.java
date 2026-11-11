@@ -6,7 +6,13 @@ import static java.math.RoundingMode.HALF_EVEN;
 import java.math.BigDecimal;
 import java.util.List;
 
-/** Subtotal, IVA y total redondeados a los decimales de la moneda con redondeo bancario. */
+/**
+ * Subtotal, IVA y total redondeados a los decimales de la moneda con redondeo bancario.
+ *
+ * @param subtotal componente de tipo {@code BigDecimal}.
+ * @param iva componente de tipo {@code BigDecimal}.
+ * @param total componente de tipo {@code BigDecimal}.
+ */
 public record Totales(BigDecimal subtotal, BigDecimal iva, BigDecimal total) {
 
     /** Calcula subtotal, IVA y total. Cada cifra se redondea a los decimales de la moneda con redondeo bancario. */

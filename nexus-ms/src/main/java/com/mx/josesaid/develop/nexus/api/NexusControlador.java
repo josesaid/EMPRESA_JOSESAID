@@ -112,7 +112,11 @@ public class NexusControlador {
         return ResponseEntity.noContent().build();
     }
 
-    /** Código de confirmación de 8 dígitos que el usuario escribe para ejecutar una acción pendiente. */
+    /**
+     * Código de confirmación de 8 dígitos que el usuario escribe para ejecutar una acción pendiente.
+     *
+     * @param codigo componente de tipo {@code String}.
+     */
     public record ConfirmacionSolicitud(@NotBlank @Pattern(regexp = "\\d{8}") String codigo) {
     }
 

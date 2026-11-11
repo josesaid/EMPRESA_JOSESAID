@@ -25,7 +25,12 @@ public class AsistenteNexusController {
     static final int MAX_MENSAJES = 50;
     static final int MAX_PREGUNTA = 2000;
 
-    /** Un turno del chat: quién escribió y qué dijo. */
+    /**
+     * Un turno del chat: quién escribió y qué dijo.
+     *
+     * @param autor componente de tipo {@code String}.
+     * @param texto componente de tipo {@code String}.
+     */
     public record Mensaje(String autor, String texto) implements Serializable {
     }
 

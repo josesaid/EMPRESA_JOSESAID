@@ -148,7 +148,14 @@ public class PolizasController {
         }
     }
 
-    /** Movimiento listo para mostrar: incluye el código y nombre de la cuenta. */
+    /**
+     * Movimiento listo para mostrar: incluye el código y nombre de la cuenta.
+     *
+     * @param codigo componente de tipo {@code String}.
+     * @param nombre componente de tipo {@code String}.
+     * @param cargo componente de tipo {@code BigDecimal}.
+     * @param abono componente de tipo {@code BigDecimal}.
+     */
     public record MovimientoVista(String codigo, String nombre, BigDecimal cargo, BigDecimal abono) {
     }
 }

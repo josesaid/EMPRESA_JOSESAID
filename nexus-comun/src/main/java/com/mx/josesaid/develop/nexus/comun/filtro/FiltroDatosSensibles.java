@@ -33,7 +33,12 @@ public final class FiltroDatosSensibles {
         }
     }
 
-    /** Texto ya redactado y cuántas veces se redactó cada tipo. */
+    /**
+     * Texto ya redactado y cuántas veces se redactó cada tipo.
+     *
+     * @param texto componente de tipo {@code String}.
+     * @param conteo componente de tipo {@code Map<Tipo, Integer>}.
+     */
     public record Resultado(String texto, Map<Tipo, Integer> conteo) {
         public Resultado {
             conteo = Map.copyOf(conteo);

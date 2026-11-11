@@ -114,28 +114,54 @@ public class ContabilidadControlador {
         return servicio.estadosFinancieros(YearMonth.parse(periodo));
     }
 
-    /** Datos para dar de alta una cuenta contable. */
+    /**
+     * Datos para dar de alta una cuenta contable.
+     *
+     * @param codigo componente de tipo {@code String}.
+     * @param nombre componente de tipo {@code String}.
+     * @param naturaleza componente de tipo {@code Naturaleza}.
+     */
     public record CrearCuentaSolicitud(
             @NotBlank @Size(max = 20) String codigo,
             @NotBlank @Size(max = 150) String nombre,
             @NotNull Naturaleza naturaleza) {
     }
 
-    /** Movimiento de una póliza: cuenta, cargo y abono. */
+    /**
+     * Movimiento de una póliza: cuenta, cargo y abono.
+     *
+     * @param cuentaId componente de tipo {@code UUID}.
+     * @param cargo componente de tipo {@code BigDecimal}.
+     * @param abono componente de tipo {@code BigDecimal}.
+     */
     public record MovimientoSolicitud(
             @NotNull UUID cuentaId,
             @DecimalMin("0") BigDecimal cargo,
             @DecimalMin("0") BigDecimal abono) {
     }
 
-    /** Datos para registrar una póliza: tipo, fecha y movimientos. */
+    /**
+     * Datos para registrar una póliza: tipo, fecha y movimientos.
+     *
+     * @param tipo componente de tipo {@code TipoPoliza}.
+     * @param fecha componente de tipo {@code LocalDate}.
+     * @param movimientos componente de tipo {@code List<MovimientoSolicitud>}.
+     */
     public record RegistrarPolizaSolicitud(
             @NotNull TipoPoliza tipo,
             @NotNull LocalDate fecha,
             @NotNull @Size(min = 2) List<@Valid MovimientoSolicitud> movimientos) {
     }
 
-    /** Respuesta de una cuenta contable. */
+    /**
+     * Respuesta de una cuenta contable.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param codigo componente de tipo {@code String}.
+     * @param nombre componente de tipo {@code String}.
+     * @param naturaleza componente de tipo {@code Naturaleza}.
+     * @param activa componente de tipo {@code boolean}.
+     */
     public record CuentaRespuesta(UUID id, String codigo, String nombre, Naturaleza naturaleza, boolean activa) {
         /** Convierte una cuenta en su respuesta. */
         static CuentaRespuesta de(CuentaContable c) {
@@ -143,11 +169,28 @@ public class ContabilidadControlador {
         }
     }
 
-    /** Movimiento de una póliza en la respuesta. */
+    /**
+     * Movimiento de una póliza en la respuesta.
+     *
+     * @param cuentaId componente de tipo {@code UUID}.
+     * @param cargo componente de tipo {@code BigDecimal}.
+     * @param abono componente de tipo {@code BigDecimal}.
+     */
     public record MovimientoRespuesta(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
     }
 
-    /** Respuesta de una póliza. */
+    /**
+     * Respuesta de una póliza.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param periodo componente de tipo {@code String}.
+     * @param tipo componente de tipo {@code TipoPoliza}.
+     * @param fecha componente de tipo {@code LocalDate}.
+     * @param estatus componente de tipo {@code EstatusPoliza}.
+     * @param reversaDe componente de tipo {@code UUID}.
+     * @param total componente de tipo {@code BigDecimal}.
+     * @param movimientos componente de tipo {@code List<MovimientoRespuesta>}.
+     */
     public record PolizaRespuesta(UUID id, String periodo, TipoPoliza tipo, LocalDate fecha, EstatusPoliza estatus,
                                   UUID reversaDe, BigDecimal total, List<MovimientoRespuesta> movimientos) {
         /** Convierte una póliza en su respuesta. */
@@ -160,7 +203,12 @@ public class ContabilidadControlador {
         }
     }
 
-    /** Estatus de un periodo contable. */
+    /**
+     * Estatus de un periodo contable.
+     *
+     * @param anioMes componente de tipo {@code String}.
+     * @param estatus componente de tipo {@code EstatusPeriodo}.
+     */
     public record PeriodoRespuesta(String anioMes, EstatusPeriodo estatus) {
         /** Convierte un periodo en su respuesta. */
         static PeriodoRespuesta de(Periodo p) {

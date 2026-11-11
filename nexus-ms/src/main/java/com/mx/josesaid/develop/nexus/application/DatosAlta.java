@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Datos de un alta de usuario que Nexus prepara. No contiene contraseña: la escribe el administrador
  * en la pantalla de altas, que la envía directo a usuarios-accesos.
+  * @param correo componente de tipo {@code String}.
+  * @param nombreCompleto componente de tipo {@code String}.
+  * @param roles componente de tipo {@code List<String>}.
  */
 public record DatosAlta(String correo, String nombreCompleto, List<String> roles) {
 
