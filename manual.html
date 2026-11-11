@@ -224,6 +224,8 @@ a { color: var(--acceso); }
         <tr><td>documentos-cumplimiento-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Documentos legales</td></tr>
         <tr><td>reportes-ejecutivos-ms</td><td class="num">sin puerto publicado (vía gateway)</td><td>Indicadores y reportes de dirección</td></tr>
         <tr><td>discovery-ms</td><td class="num">8761</td><td>Registro de servicios (Eureka)</td></tr>
+        <tr><td>ui-ms</td><td class="num">8098</td><td>Interfaz web: cuentas, pólizas, acciones pendientes y cambio de contraseña</td></tr>
+        <tr><td>kafka-ui</td><td class="num">8090</td><td>Tópicos y mensajes de Kafka</td></tr>
         <tr><td>prometheus</td><td class="num">9090</td><td>Recolección de métricas</td></tr>
         <tr><td>grafana</td><td class="num">3000</td><td>Tableros de métricas</td></tr>
         <tr><td>jaeger</td><td class="num">16686</td><td>Trazas de cada solicitud</td></tr>
@@ -321,10 +323,24 @@ a { color: var(--acceso); }
   <h3>Acceso</h3>
   <div class="grupo">
     <article class="tarjeta acceso">
+      <span class="puerto">ui-ms · 8098</span>
+      <h3>Interfaz web</h3>
+      <p>Renderiza las pantallas del sistema: cuentas, pólizas, acciones pendientes y cambio de contraseña. Solo consulta; las escrituras van en sus pantallas propias o en Nexus. Se abre en <code>http://localhost:8098</code> y consume las APIs a través del gateway.</p>
+    </article>
+    <article class="tarjeta acceso">
       <span class="puerto">usuarios-accesos-ms · vía gateway</span>
       <h3>Usuarios y accesos</h3>
       <p>Emite los tokens JWT que usan todos los servicios para saber quién hace cada solicitud y qué rol tiene. Los roles son ADMIN, FINANZAS, CONTADOR, VENTAS, COMPRAS, ALMACEN, OPERACIONES, CALIDAD, DIRECCION, LEGAL y JEFE_AREA (lee los indicadores de su área).</p>
       <p class="nota">Firma los tokens con RS256 usando la clave privada <code>USUARIOS_JWT_CLAVE_PRIVADA</code>. Publica la clave pública en <code>/.well-known/jwks.json</code>; los demás servicios sólo verifican, no firman.</p>
+    </article>
+  </div>
+
+  <h3>Asistente</h3>
+  <div class="grupo">
+    <article class="tarjeta">
+      <span class="puerto">nexus-ms · vía gateway</span>
+      <h3>Nexus (asistente de IA)</h3>
+      <p>Responde preguntas en lenguaje natural sobre la empresa consultando los microservicios con el token del propio usuario. Nunca actúa con permisos propios: cada servicio vuelve a validar el rol. Las escrituras requieren que el usuario confirme un resumen de la acción.</p>
     </article>
   </div>
 
@@ -420,7 +436,7 @@ a { color: var(--acceso); }
     <li>Rotación de la clave RS256 con periodo de traslape implementada (procedimiento en usuarios-accesos-ms/README.md). Falta definir el calendario de rotación.</li>
     <li>Cambio de la contraseña temporal de los diez jefes de área: cada uno debe cambiarla antes de iniciar sesión.</li>
     <li>Revocar también el access token al cerrar sesión; hoy vence en 15 minutos.</li>
-    <li>Métricas: ningún servicio de área publica puerto; solo el gateway (8080) y Eureka (8761). El gateway bloquea /actuator.</li>
+    <li>Métricas: ningún servicio de área publica puerto; en el host solo publican puerto el gateway (8080), Eureka (8761), la interfaz (8098) y Kafka UI (8090). El gateway bloquea /actuator.</li>
     <li>Órdenes de compra anteriores a V3: reciben en V4 la fecha de aplicación de la migración, por lo que cuentan en ese mes. Confirmar si el criterio es aceptable.</li>
   </ul>
   <h2 id="endpoints">9. Endpoints y ejemplos JSON por microservicio</h2>

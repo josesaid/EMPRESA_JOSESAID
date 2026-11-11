@@ -4,7 +4,7 @@
 
 - **Nombre:** nexus-ms
 - **Área de negocio:** Asistente de IA sobre el resto de la plataforma (consulta y, con confirmación del usuario, escritura)
-- **Acceso:** vía gateway (`/nexus/**`). Dentro del contenedor escucha en 8080; en el host, 8097.
+- **Acceso:** vía gateway (`/nexus/**`). Dentro de la red Docker escucha en 8080; no publica puerto en el host.
 - **Base de datos:** `nexus`, usuario `nexus`. El esquema lo maneja Flyway.
 - **Versión:** 0.1.0 · Java 21 · Spring Boot 4.1.2 · Spring AI · PostgreSQL 17
 
@@ -79,11 +79,7 @@ Desde la raíz del repositorio, con el `.env` configurado:
 docker compose up -d --build nexus-ms
 ```
 
-Verificación rápida:
-
-```
-curl -s http://localhost:8097/actuator/health
-```
+Verificación rápida: abre el panel de Eureka en http://localhost:8761 (con EUREKA_USUARIO y EUREKA_PASSWORD) y confirma que `nexus-ms` aparece en línea.
 
 ## 7. Modelo de datos
 
