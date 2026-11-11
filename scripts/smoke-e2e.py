@@ -54,8 +54,10 @@ def main():
 
     fallos = 0
     for nombre, ruta, aceptables in SERVICIOS:
-        codigo, _ = peticion("GET", ruta, token=token)
-        ok = codigo in aceptables
+        codigo, cuerpo = peticion("GET", ruta, token=token)
+        # 404 cuenta como respuesta válida solo si lo emite el servicio (su tipo de problema termina en "no-encontrado"),
+        # no si el gateway no tiene la ruta.
+        ok = codigo in aceptables or (codigo == 404 and b"no-encontrado" in cuerpo)
         fallos += 0 if ok else 1
         print(f"{'OK   ' if ok else 'FALLO'} {nombre:<13} {codigo}")
 
