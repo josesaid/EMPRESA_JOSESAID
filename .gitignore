@@ -8,3 +8,5 @@ target/
 
 # TLS: certificados y claves generados (nunca al repositorio)
 infra/tls/out/
+__pycache__/
+Claude outputs/
