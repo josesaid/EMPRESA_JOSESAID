@@ -778,7 +778,7 @@ def insignia(columna, valor):
     return f"<span class='badge b-{tono}'>{esc}</span>" if tono else esc
 
 
-COLUMNAS_CORTAS = {"Línea", "Severidad", "Prioridad", "Resultado", "Tiempo", "Categoría", "Tipo", "Líneas", "Ramas", "Métodos"}
+COLUMNAS_CORTAS = {"Archivo", "Línea", "Severidad", "Prioridad", "Resultado", "Tiempo", "Categoría", "Tipo", "Líneas", "Ramas", "Métodos"}
 
 ENCABEZADOS_DETALLE = {
     "pruebas": ["Clase", "Prueba", "Resultado", "Tiempo"],
@@ -990,6 +990,10 @@ def seccion_resultados(svc_dir, tid):
                 enlace = enlace_clase(svc, mapa, str(c))
                 if enlace:
                     return enlace
+            if columna == "Archivo" and str(c).endswith(".java"):
+                enlace = enlace_archivo(svc, mapa, str(c))
+                if enlace:
+                    return enlace
             return insignia(columna, c)
 
         cuerpo = "".join("<tr>" + "".join(f"<td{clase(i)}>{celda(i, c)}</td>" for i, c in enumerate(fila)) + "</tr>" for fila in detalle)
@@ -1108,6 +1112,12 @@ def enlace_java(svc, rel, texto, codigo=False):
     return f"<a class='archivo-java' href='{html.escape(href)}' title='Ver código fuente'>{dentro}</a>"
 
 
+def enlace_archivo(svc, mapa, nombre):
+    """Enlace al código de un archivo por su nombre base, solo si el nombre es único en el servicio."""
+    rutas = [r for r in mapa.values() if os.path.basename(r) == nombre]
+    return enlace_java(svc, rutas[0], nombre) if len(rutas) == 1 else None
+
+
 def enlace_clase(svc, mapa, nombre):
     """Enlace al código de una clase indicada por su nombre completo (o simple, si es único). None si no existe."""
     fqn = nombre.split("$")[0].strip()
@@ -1136,7 +1146,7 @@ PAGINA_VISOR = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Código fuente · EMPRESA_JOSESAID</title>
-<link id="tema-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link id="tema-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
 <style>
@@ -1187,8 +1197,8 @@ main{max-width:1100px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset
       <div class="puntos" aria-hidden="true"><i></i><i></i><i></i></div>
       <span class="nombre-archivo" id="nombre"></span>
       <select class="tema-sel" id="tema" aria-label="Tema de color del código">
-        <option value="github-dark">GitHub Dark</option>
         <option value="github">GitHub Light</option>
+        <option value="github-dark">GitHub Dark</option>
         <option value="atom-one-dark">Atom One Dark</option>
         <option value="atom-one-light">Atom One Light</option>
         <option value="monokai">Monokai</option>
@@ -1239,7 +1249,7 @@ main{max-width:1100px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset
   };
 
   function aplicarTema(id) {
-    if (!TEMAS[id]) { id = 'github-dark'; }
+    if (!TEMAS[id]) { id = 'github'; }
     var t = TEMAS[id];
     var visor = document.getElementById('visor');
     visor.style.setProperty('--code-bg', t.bg);
@@ -1257,7 +1267,7 @@ main{max-width:1100px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset
   selector.addEventListener('change', function () { aplicarTema(this.value); });
   var guardado = null;
   try { guardado = localStorage.getItem('visor-tema'); } catch (e) { guardado = null; }
-  aplicarTema(guardado || 'github-dark');
+  aplicarTema(guardado || 'github');
 
   function pintar(codigo) {
     var nombre = ruta.split('/').pop();
