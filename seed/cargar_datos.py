@@ -13,7 +13,7 @@ Qué hace:
 - Cifra los datos personales con AES-256-GCM, igual que los servicios, y calcula los índices HMAC.
 - Usa identificadores fijos (UUID determinísticos) para que las referencias entre servicios coincidan.
 - Cubre todas las combinaciones de los estatus y tipos; si las combinaciones superan 100, agrega filas.
-- Usuarios demo: <rol>@demo.empresa.mx con contraseña Demo2026!
+- Usuarios demo: <rol>@demo.empresa.mx con contraseña Demo2026!; admin@empresa.mx tiene todos los roles, sin restricciones
 """
 import argparse
 import base64
@@ -174,14 +174,21 @@ def generar(cr_cli, cr_usr, cr_cmp, rnd):
         rol_principal = ROLES[i % len(ROLES)]
         estatus = ["ACTIVO", "BLOQUEADO", "BAJA"][(i // len(ROLES)) % 3]
         debe_cambiar = (i // (len(ROLES) * 3)) % 2 == 1
-        correo = f"{rol_principal.lower()}@demo.empresa.mx" if i < len(ROLES) else f"usuario{i}@demo.empresa.mx"
+        if i == 0:
+            correo = "admin@empresa.mx"  # administrador con todos los roles
+        elif i < len(ROLES):
+            correo = f"{rol_principal.lower()}@demo.empresa.mx"
+        else:
+            correo = f"usuario{i}@demo.empresa.mx"
         nombre = f"{NOMBRES[i % len(NOMBRES)]} {APELLIDOS[i % len(APELLIDOS)]}"
         bloqueado = cuando(i, 3) if estatus == "BLOQUEADO" else None
         usuarios.append((uid("usuario", i), cr.cifrar(correo), cr.indice_correo(correo), cr.cifrar(nombre),
                          CLAVE_DEMO_HASH, estatus, 5 if estatus == "BLOQUEADO" else 0, bloqueado, 0,
                          cuando(i, 2), cuando(i, 2), AREAS_USUARIO[i % len(AREAS_USUARIO)], debe_cambiar))
         roles.append((uid("usuario", i), rol_principal))
-        if i % 3 == 0:
+        if i == 0:
+            roles.extend((uid("usuario", i), r) for r in ROLES if r != rol_principal)
+        elif i % 3 == 0:
             secundario = ROLES[(i * 3 + 1) % len(ROLES)]
             if secundario != rol_principal:
                 roles.append((uid("usuario", i), secundario))
@@ -520,7 +527,7 @@ def main():
         bloque.append("COMMIT;")
         correr(base, "\n".join(bloque), opciones)
         print(f"  {base}: " + ", ".join(f"{n}={len(f)}" for n, _, f in tablas))
-    print("Listo. Usuarios demo: <rol>@demo.empresa.mx, contraseña Demo2026!")
+    print("Listo. Usuarios demo: <rol>@demo.empresa.mx; admin@empresa.mx con todos los roles. Contraseña Demo2026!")
 
 
 if __name__ == "__main__":
