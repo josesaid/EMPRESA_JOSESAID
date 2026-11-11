@@ -799,10 +799,13 @@ ENCABEZADOS_DETALLE = {
     "javadoc": ["Paquete", "Clases documentadas"],
 }
 
-CSS_NAV = (".tecs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}"
-           ".tecs a{padding:6px 12px;border:1px solid currentColor;border-radius:999px;"
-           "font-size:14px;text-decoration:none;opacity:.75}"
-           ".tecs a[aria-current='page']{opacity:1;font-weight:700}")
+CSS_NAV = (".tecs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px;background:var(--superficie);"
+           "border:1px solid var(--linea);border-radius:14px;padding:8px;box-shadow:0 6px 20px var(--sombra, rgba(15,23,42,.08))}"
+           ".tecs a{padding:6px 12px;border:1px solid var(--linea);border-radius:999px;color:var(--muted);"
+           "font-size:14px;text-decoration:none}"
+           ".tecs a[aria-current='page']{color:hsl(var(--h) 70% 35%);background:hsl(var(--h) 80% 50% / .14);"
+           "border-color:transparent;font-weight:700}"
+           "@media (prefers-color-scheme: dark){:root:not([data-theme=\"light\"]) .tecs a[aria-current='page']{color:hsl(var(--h) 90% 75%)}}")
 
 
 def resultados_de(svc_dir, tid):
