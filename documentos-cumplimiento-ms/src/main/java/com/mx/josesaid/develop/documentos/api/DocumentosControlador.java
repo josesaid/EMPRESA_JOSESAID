@@ -134,7 +134,14 @@ public class DocumentosControlador {
 
     // ---- Peticiones ----
 
-    /** Datos del alta de un documento: tipo, título, área y fecha de vencimiento si aplica. */
+    /**
+     * Datos del alta de un documento: tipo, título, área y fecha de vencimiento si aplica.
+     *
+     * @param tipo componente de tipo {@code TipoDocumento}.
+     * @param titulo componente de tipo {@code String}.
+     * @param area componente de tipo {@code String}.
+     * @param venceEn componente de tipo {@code LocalDate}.
+     */
     public record CrearDocumentoPeticion(
             @NotNull TipoDocumento tipo,
             @NotBlank @Size(max = 150) String titulo,
@@ -142,17 +149,31 @@ public class DocumentosControlador {
             LocalDate venceEn) {
     }
 
-    /** Motivo de la eliminación, de hasta 300 caracteres. */
+    /**
+     * Motivo de la eliminación, de hasta 300 caracteres.
+     *
+     * @param motivo componente de tipo {@code String}.
+     */
     public record MotivoPeticion(@NotBlank @Size(max = 300) String motivo) {
     }
 
-    /** La confirmación debe ser el identificador del documento, tecleado por quien purga. */
+    /**
+     * La confirmación debe ser el identificador del documento, tecleado por quien purga.
+     *
+     * @param confirmacion componente de tipo {@code String}.
+     */
     public record PurgaPeticion(@NotBlank String confirmacion) {
     }
 
     // ---- Respuestas: nunca se expone la referencia de almacenamiento ----
 
-    /** Versión de un documento: número, huella SHA-256 del contenido y fecha de creación. */
+    /**
+     * Versión de un documento: número, huella SHA-256 del contenido y fecha de creación.
+     *
+     * @param numero componente de tipo {@code int}.
+     * @param hashSha256 componente de tipo {@code String}.
+     * @param creadoUtc componente de tipo {@code Instant}.
+     */
     public record VersionRespuesta(int numero, String hashSha256, Instant creadoUtc) {
         /** Convierte una versión del dominio en su respuesta. */
         static VersionRespuesta de(VersionDocumento v) {
@@ -160,7 +181,20 @@ public class DocumentosControlador {
         }
     }
 
-    /** Documento tal como lo ve el cliente. Nunca incluye la referencia de almacenamiento. */
+    /**
+     * Documento tal como lo ve el cliente. Nunca incluye la referencia de almacenamiento.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param tipo componente de tipo {@code TipoDocumento}.
+     * @param titulo componente de tipo {@code String}.
+     * @param area componente de tipo {@code String}.
+     * @param venceEn componente de tipo {@code LocalDate}.
+     * @param retencionHasta componente de tipo {@code LocalDate}.
+     * @param versionActual componente de tipo {@code int}.
+     * @param eliminado componente de tipo {@code boolean}.
+     * @param purgado componente de tipo {@code boolean}.
+     * @param versiones componente de tipo {@code List<VersionRespuesta>}.
+     */
     public record DocumentoRespuesta(UUID id, TipoDocumento tipo, String titulo, String area, LocalDate venceEn,
                                      LocalDate retencionHasta, int versionActual, boolean eliminado,
                                      boolean purgado, List<VersionRespuesta> versiones) {

@@ -10,6 +10,11 @@ import java.util.Map;
 /**
  * Política de la empresa leída de un archivo Markdown con front matter:
  * título, vigencia (fecha desde la que aplica) y roles que pueden consultarla.
+  * @param id componente de tipo {@code String}.
+  * @param titulo componente de tipo {@code String}.
+  * @param vigencia componente de tipo {@code LocalDate}.
+  * @param roles componente de tipo {@code List<String>}.
+  * @param cuerpo componente de tipo {@code String}.
  */
 public record Politica(String id, String titulo, LocalDate vigencia, List<String> roles, String cuerpo) {
 

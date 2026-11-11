@@ -80,7 +80,15 @@ public class PublicadorIndicadoresMovimientos {
         }
     }
 
-    /** Formato que espera reportes-ejecutivos-ms (ListenerIndicadores.IndicadorEvento). */
+    /**
+     * Formato que espera reportes-ejecutivos-ms (ListenerIndicadores.IndicadorEvento).
+     *
+     * @param area componente de tipo {@code String}.
+     * @param nombre componente de tipo {@code String}.
+     * @param periodo componente de tipo {@code String}.
+     * @param valor componente de tipo {@code BigDecimal}.
+     * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
+     */
     public record IndicadorEvento(String area, String nombre, String periodo, BigDecimal valor,
                                   Instant fuenteActualizadaUtc) {
     }

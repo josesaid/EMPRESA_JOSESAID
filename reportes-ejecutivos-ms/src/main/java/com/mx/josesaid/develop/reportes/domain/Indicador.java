@@ -5,7 +5,16 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
-/** Valor de un indicador de un área en un periodo. Se identifica por área, nombre y periodo. */
+/**
+ * Valor de un indicador de un área en un periodo. Se identifica por área, nombre y periodo.
+ *
+ * @param id componente de tipo {@code UUID}.
+ * @param area componente de tipo {@code Area}.
+ * @param nombre componente de tipo {@code String}.
+ * @param valor componente de tipo {@code BigDecimal}.
+ * @param periodo componente de tipo {@code Periodo}.
+ * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
+ */
 public record Indicador(UUID id, Area area, String nombre, BigDecimal valor, Periodo periodo,
                         Instant fuenteActualizadaUtc) {
 

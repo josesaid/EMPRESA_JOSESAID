@@ -18,11 +18,23 @@ import java.util.Set;
  */
 public final class SugerenciasIa {
 
-    /** Idea del catálogo: qué hacer y cómo llevarlo a cabo. */
+    /**
+     * Idea del catálogo: qué hacer y cómo llevarlo a cabo.
+     *
+     * @param texto componente de tipo {@code String}.
+     * @param pasos componente de tipo {@code List<String>}.
+     */
     public record Idea(String texto, List<String> pasos) {
     }
 
-    /** Una línea del log: hora de generación, rol al que aplica, idea y pasos. */
+    /**
+     * Una línea del log: hora de generación, rol al que aplica, idea y pasos.
+     *
+     * @param hora componente de tipo {@code String}.
+     * @param rol componente de tipo {@code String}.
+     * @param texto componente de tipo {@code String}.
+     * @param pasos componente de tipo {@code List<String>}.
+     */
     public record Sugerencia(String hora, String rol, String texto, List<String> pasos) {
     }
 
@@ -174,13 +186,26 @@ public final class SugerenciasIa {
         return List.copyOf(log);
     }
 
-    /** Opción elegible en "Agiliza con IA". El id es rol-índice dentro del catálogo. */
+    /**
+     * Opción elegible en "Agiliza con IA". El id es rol-índice dentro del catálogo.
+     *
+     * @param id componente de tipo {@code String}.
+     * @param rol componente de tipo {@code String}.
+     * @param texto componente de tipo {@code String}.
+     * @param pasos componente de tipo {@code List<String>}.
+     * @param tarea componente de tipo {@code Tarea}.
+     */
     public record Opcion(String id, String rol, String texto, List<String> pasos, Tarea tarea) {
     }
 
     /**
      * Pantalla que abre la opción y el único dato que pide. Si valorFijo no es null, el dato ya viene
      * resuelto y no se pide; si campo es null, solo se ofrece ir a la pantalla.
+      * @param ruta componente de tipo {@code String}.
+      * @param campo componente de tipo {@code String}.
+      * @param etiqueta componente de tipo {@code String}.
+      * @param ejemplo componente de tipo {@code String}.
+      * @param valorFijo componente de tipo {@code String}.
      */
     public record Tarea(String ruta, String campo, String etiqueta, String ejemplo, String valorFijo) {
     }

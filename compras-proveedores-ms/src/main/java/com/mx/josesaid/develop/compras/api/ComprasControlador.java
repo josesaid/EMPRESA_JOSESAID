@@ -134,40 +134,79 @@ public class ComprasControlador {
         return OrdenRespuesta.de(servicio.cancelarOrden(id, s.motivo()));
     }
 
-    /** Datos para dar de alta un proveedor. */
+    /**
+     * Datos para dar de alta un proveedor.
+     *
+     * @param razonSocial componente de tipo {@code String}.
+     * @param rfc componente de tipo {@code String}.
+     * @param correo componente de tipo {@code String}.
+     */
     public record CrearProveedorSolicitud(
             @NotBlank @Size(max = 200) String razonSocial,
             @NotBlank @Size(max = 13) String rfc,
             @NotBlank @Email @Size(max = 254) String correo) {
     }
 
-    /** Línea de una orden: SKU, cantidad y precio unitario. */
+    /**
+     * Línea de una orden: SKU, cantidad y precio unitario.
+     *
+     * @param articuloSku componente de tipo {@code String}.
+     * @param cantidad componente de tipo {@code BigDecimal}.
+     * @param precioUnitario componente de tipo {@code BigDecimal}.
+     */
     public record LineaSolicitud(
             @NotBlank @Size(max = 40) String articuloSku,
             @NotNull @Positive @Digits(integer = 9, fraction = 3) BigDecimal cantidad,
             @NotNull @DecimalMin("0") @Digits(integer = 10, fraction = 2) BigDecimal precioUnitario) {
     }
 
-    /** Datos para crear una orden: proveedor, moneda y líneas. */
+    /**
+     * Datos para crear una orden: proveedor, moneda y líneas.
+     *
+     * @param proveedorId componente de tipo {@code UUID}.
+     * @param moneda componente de tipo {@code String}.
+     * @param lineas componente de tipo {@code List<LineaSolicitud>}.
+     */
     public record CrearOrdenSolicitud(
             @NotNull UUID proveedorId,
             @NotBlank @Size(max = 3) String moneda,
             @NotEmpty @Size(max = 100) List<@Valid LineaSolicitud> lineas) {
     }
 
-    /** Línea recibida: SKU y cantidad. */
+    /**
+     * Línea recibida: SKU y cantidad.
+     *
+     * @param articuloSku componente de tipo {@code String}.
+     * @param cantidad componente de tipo {@code BigDecimal}.
+     */
     public record LineaRecepcionSolicitud(@NotBlank String articuloSku, @NotNull @Positive @Digits(integer = 9, fraction = 3) BigDecimal cantidad) {
     }
 
-    /** Lista de líneas recibidas en una recepción. */
+    /**
+     * Lista de líneas recibidas en una recepción.
+     *
+     * @param lineas componente de tipo {@code List<LineaRecepcionSolicitud>}.
+     */
     public record RecepcionSolicitud(@NotEmpty @Size(max = 100) List<@Valid LineaRecepcionSolicitud> lineas) {
     }
 
-    /** Motivo de la cancelación, de hasta 200 caracteres. */
+    /**
+     * Motivo de la cancelación, de hasta 200 caracteres.
+     *
+     * @param motivo componente de tipo {@code String}.
+     */
     public record CancelarSolicitud(@NotBlank @Size(max = 200) String motivo) {
     }
 
-    /** Respuesta de un proveedor. */
+    /**
+     * Respuesta de un proveedor.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param razonSocial componente de tipo {@code String}.
+     * @param rfc componente de tipo {@code String}.
+     * @param correo componente de tipo {@code String}.
+     * @param estatus componente de tipo {@code EstatusProveedor}.
+     */
     public record ProveedorRespuesta(UUID id, String razonSocial, String rfc, String correo, EstatusProveedor estatus) {
         /** Convierte un proveedor en su respuesta. */
         static ProveedorRespuesta de(Proveedor p) {
@@ -190,17 +229,42 @@ public class ComprasControlador {
         }
     }
 
-    /** Respuesta de una línea de orden, con las cantidades ordenada y recibida. */
+    /**
+     * Respuesta de una línea de orden, con las cantidades ordenada y recibida.
+     *
+     * @param articuloSku componente de tipo {@code String}.
+     * @param cantidadOrdenada componente de tipo {@code BigDecimal}.
+     * @param cantidadRecibida componente de tipo {@code BigDecimal}.
+     * @param precioUnitario componente de tipo {@code BigDecimal}.
+     * @param subtotal componente de tipo {@code BigDecimal}.
+     */
     public record LineaRespuesta(String articuloSku, BigDecimal cantidadOrdenada, BigDecimal cantidadRecibida,
                                  BigDecimal precioUnitario, BigDecimal subtotal) {
     }
 
-    /** Resumen de una orden para los listados. */
+    /**
+     * Resumen de una orden para los listados.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param estatus componente de tipo {@code EstatusOrdenCompra}.
+     * @param razonSocialProveedor componente de tipo {@code String}.
+     * @param creadaUtc componente de tipo {@code java.time.Instant}.
+     */
     public record ResumenOrdenRespuesta(UUID id, EstatusOrdenCompra estatus, String razonSocialProveedor,
                                         java.time.Instant creadaUtc) {
     }
 
-    /** Respuesta de una orden de compra. */
+    /**
+     * Respuesta de una orden de compra.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param proveedorId componente de tipo {@code UUID}.
+     * @param estatus componente de tipo {@code EstatusOrdenCompra}.
+     * @param moneda componente de tipo {@code String}.
+     * @param total componente de tipo {@code BigDecimal}.
+     * @param motivoCancelacion componente de tipo {@code String}.
+     * @param lineas componente de tipo {@code List<LineaRespuesta>}.
+     */
     public record OrdenRespuesta(UUID id, UUID proveedorId, EstatusOrdenCompra estatus, String moneda,
                                  BigDecimal total, String motivoCancelacion, List<LineaRespuesta> lineas) {
         /** Convierte una orden en su respuesta. */

@@ -47,11 +47,24 @@ public class PedidosService {
         this.clientes = clientes;
     }
 
-    /** Línea tal como llega de la API, antes de validarse en el dominio. */
+    /**
+     * Línea tal como llega de la API, antes de validarse en el dominio.
+     *
+     * @param productoId componente de tipo {@code UUID}.
+     * @param descripcion componente de tipo {@code String}.
+     * @param cantidad componente de tipo {@code int}.
+     * @param precioUnitario componente de tipo {@code BigDecimal}.
+     */
     public record LineaComando(UUID productoId, String descripcion, int cantidad, BigDecimal precioUnitario) {
     }
 
-    /** Ventas netas de un mes: pedidos confirmados o entregados, sin los cancelados ni devueltos. */
+    /**
+     * Ventas netas de un mes: pedidos confirmados o entregados, sin los cancelados ni devueltos.
+     *
+     * @param mes componente de tipo {@code YearMonth}.
+     * @param pedidos componente de tipo {@code long}.
+     * @param ventasPorMoneda componente de tipo {@code Map<String, BigDecimal>}.
+     */
     public record ResumenVentas(YearMonth mes, long pedidos, Map<String, BigDecimal> ventasPorMoneda) {
     }
 

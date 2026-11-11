@@ -30,7 +30,14 @@ public class ComprasService {
     /** Límite fijo del listado de órdenes para las herramientas de IA y la API. */
     public static final int LIMITE_LISTADO_ORDENES = 15;
 
-    /** Fila del listado: sin RFC, sin montos y sin líneas. */
+    /**
+     * Fila del listado: sin RFC, sin montos y sin líneas.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param estatus componente de tipo {@code EstatusOrdenCompra}.
+     * @param razonSocialProveedor componente de tipo {@code String}.
+     * @param creadaUtc componente de tipo {@code Instant}.
+     */
     public record ResumenListado(UUID id, EstatusOrdenCompra estatus, String razonSocialProveedor, Instant creadaUtc) {
     }
 

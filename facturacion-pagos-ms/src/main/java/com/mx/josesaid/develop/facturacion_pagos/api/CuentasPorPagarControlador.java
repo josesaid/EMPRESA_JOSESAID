@@ -65,14 +65,31 @@ public class CuentasPorPagarControlador {
                         id, solicitud.monto(), solicitud.fechaPago(), solicitud.referencia())));
     }
 
-    /** Datos de un pago a proveedor: monto, fecha opcional y referencia. */
+    /**
+     * Datos de un pago a proveedor: monto, fecha opcional y referencia.
+     *
+     * @param monto componente de tipo {@code BigDecimal}.
+     * @param fechaPago componente de tipo {@code LocalDate}.
+     * @param referencia componente de tipo {@code String}.
+     */
     public record RegistrarPagoSolicitud(
             @NotNull @Positive BigDecimal monto,
             LocalDate fechaPago,
             @Size(max = 100) String referencia) {
     }
 
-    /** Respuesta de una cuenta por pagar. */
+    /**
+     * Respuesta de una cuenta por pagar.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param ordenId componente de tipo {@code UUID}.
+     * @param proveedorId componente de tipo {@code UUID}.
+     * @param moneda componente de tipo {@code String}.
+     * @param monto componente de tipo {@code BigDecimal}.
+     * @param saldo componente de tipo {@code BigDecimal}.
+     * @param estatus componente de tipo {@code String}.
+     * @param pagos componente de tipo {@code List<PagoRespuesta>}.
+     */
     public record CuentaRespuesta(UUID id, UUID ordenId, UUID proveedorId, String moneda, BigDecimal monto,
                                   BigDecimal saldo, String estatus, List<PagoRespuesta> pagos) {
 
@@ -83,12 +100,27 @@ public class CuentasPorPagarControlador {
         }
     }
 
-    /** Pago dentro de un listado, con la cuenta a la que pertenece. */
+    /**
+     * Pago dentro de un listado, con la cuenta a la que pertenece.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param cuentaId componente de tipo {@code UUID}.
+     * @param monto componente de tipo {@code BigDecimal}.
+     * @param fechaPago componente de tipo {@code LocalDate}.
+     * @param referencia componente de tipo {@code String}.
+     */
     public record PagoListadoRespuesta(UUID id, UUID cuentaId, BigDecimal monto, LocalDate fechaPago,
                                        String referencia) {
     }
 
-    /** Respuesta de un pago a proveedor. */
+    /**
+     * Respuesta de un pago a proveedor.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param monto componente de tipo {@code BigDecimal}.
+     * @param fechaPago componente de tipo {@code LocalDate}.
+     * @param referencia componente de tipo {@code String}.
+     */
     public record PagoRespuesta(UUID id, BigDecimal monto, LocalDate fechaPago, String referencia) {
 
         /** Convierte un pago a proveedor en su respuesta. */

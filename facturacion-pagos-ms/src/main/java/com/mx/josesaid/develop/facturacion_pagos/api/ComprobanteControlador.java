@@ -104,30 +104,62 @@ public class ComprobanteControlador {
                         id, solicitud.monto(), solicitud.fechaPago(), solicitud.referencia())));
     }
 
-    /** Datos para crear el borrador: orden, moneda y subtotal. */
+    /**
+     * Datos para crear el borrador: orden, moneda y subtotal.
+     *
+     * @param ordenId componente de tipo {@code UUID}.
+     * @param moneda componente de tipo {@code String}.
+     * @param subtotal componente de tipo {@code BigDecimal}.
+     */
     public record CrearComprobanteSolicitud(
             @NotNull UUID ordenId,
             @NotBlank String moneda,
             @NotNull @Positive BigDecimal subtotal) {
     }
 
-    /** Motivo de la cancelación, de hasta 200 caracteres. */
+    /**
+     * Motivo de la cancelación, de hasta 200 caracteres.
+     *
+     * @param motivo componente de tipo {@code String}.
+     */
     public record CancelarSolicitud(@NotBlank @Size(max = 200) String motivo) {
     }
 
-    /** Datos de un pago: monto, fecha opcional y referencia. */
+    /**
+     * Datos de un pago: monto, fecha opcional y referencia.
+     *
+     * @param monto componente de tipo {@code BigDecimal}.
+     * @param fechaPago componente de tipo {@code LocalDate}.
+     * @param referencia componente de tipo {@code String}.
+     */
     public record RegistrarPagoSolicitud(
             @NotNull @Positive BigDecimal monto,
             LocalDate fechaPago,
             @Size(max = 100) String referencia) {
     }
 
-    /** Comprobante emitido con saldo pendiente de cobro. */
+    /**
+     * Comprobante emitido con saldo pendiente de cobro.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param folio componente de tipo {@code String}.
+     * @param moneda componente de tipo {@code String}.
+     * @param total componente de tipo {@code BigDecimal}.
+     * @param saldo componente de tipo {@code BigDecimal}.
+     * @param estatusCobro componente de tipo {@code EstatusCobro}.
+     */
     public record ComprobantePendienteRespuesta(UUID id, String folio, String moneda, BigDecimal total,
                                                 BigDecimal saldo, EstatusCobro estatusCobro) {
     }
 
-    /** Respuesta de un pago. */
+    /**
+     * Respuesta de un pago.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param monto componente de tipo {@code BigDecimal}.
+     * @param fechaPago componente de tipo {@code LocalDate}.
+     * @param referencia componente de tipo {@code String}.
+     */
     public record PagoRespuesta(UUID id, BigDecimal monto, LocalDate fechaPago, String referencia) {
         /** Convierte un pago en su respuesta. */
         static PagoRespuesta de(Pago p) {
@@ -135,7 +167,24 @@ public class ComprobanteControlador {
         }
     }
 
-    /** Respuesta de un comprobante, con sus pagos y su saldo. */
+    /**
+     * Respuesta de un comprobante, con sus pagos y su saldo.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param ordenId componente de tipo {@code UUID}.
+     * @param folio componente de tipo {@code String}.
+     * @param moneda componente de tipo {@code String}.
+     * @param subtotal componente de tipo {@code BigDecimal}.
+     * @param iva componente de tipo {@code BigDecimal}.
+     * @param total componente de tipo {@code BigDecimal}.
+     * @param tasaIva componente de tipo {@code BigDecimal}.
+     * @param estatus componente de tipo {@code EstatusComprobante}.
+     * @param motivoCancelacion componente de tipo {@code String}.
+     * @param estatusCobro componente de tipo {@code EstatusCobro}.
+     * @param pagado componente de tipo {@code BigDecimal}.
+     * @param saldo componente de tipo {@code BigDecimal}.
+     * @param pagos componente de tipo {@code List<PagoRespuesta>}.
+     */
     public record ComprobanteRespuesta(
             UUID id,
             UUID ordenId,

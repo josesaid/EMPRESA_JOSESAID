@@ -16,7 +16,13 @@ public interface ReservasPedidoRepositorio {
 
     void eliminarReservas(UUID pedidoId);
 
-    /** Reserva registrada para un pedido: artículo, almacén y cantidad. */
+    /**
+     * Reserva registrada para un pedido: artículo, almacén y cantidad.
+     *
+     * @param articuloId componente de tipo {@code UUID}.
+     * @param almacenId componente de tipo {@code UUID}.
+     * @param cantidad componente de tipo {@code BigDecimal}.
+     */
     record Reserva(UUID articuloId, UUID almacenId, BigDecimal cantidad) {
     }
 }

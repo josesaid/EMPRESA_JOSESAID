@@ -13,11 +13,25 @@ import java.util.UUID;
 /**
  * Balanza de comprobación de un periodo. Solo incluye lo que sí está calculado:
  * balanza de comprobación. Estado de resultados y balance general son pendientes.
+  * @param periodo componente de tipo {@code String}.
+  * @param lineas componente de tipo {@code List<Linea>}.
+  * @param totalCargos componente de tipo {@code BigDecimal}.
+  * @param totalAbonos componente de tipo {@code BigDecimal}.
+  * @param cuadra componente de tipo {@code boolean}.
  */
 public record Balanza(String periodo, List<Linea> lineas, BigDecimal totalCargos, BigDecimal totalAbonos,
                       boolean cuadra) {
 
-    /** Línea de la balanza: cuenta, cargos, abonos y saldo según la naturaleza de la cuenta. */
+    /**
+     * Línea de la balanza: cuenta, cargos, abonos y saldo según la naturaleza de la cuenta.
+     *
+     * @param cuentaId componente de tipo {@code UUID}.
+     * @param codigo componente de tipo {@code String}.
+     * @param nombre componente de tipo {@code String}.
+     * @param cargos componente de tipo {@code BigDecimal}.
+     * @param abonos componente de tipo {@code BigDecimal}.
+     * @param saldo componente de tipo {@code BigDecimal}.
+     */
     public record Linea(UUID cuentaId, String codigo, String nombre, BigDecimal cargos, BigDecimal abonos,
                         BigDecimal saldo) {
     }

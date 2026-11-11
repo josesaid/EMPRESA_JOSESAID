@@ -13,7 +13,13 @@ import com.mx.josesaid.develop.nexus.comun.filtro.FiltroDatosSensibles;
  */
 public final class EjecutorEvaluaciones {
 
-    /** Resumen de una corrida: total de casos, cuántos aprobaron y el detalle de cada uno. */
+    /**
+     * Resumen de una corrida: total de casos, cuántos aprobaron y el detalle de cada uno.
+     *
+     * @param total componente de tipo {@code int}.
+     * @param aprobados componente de tipo {@code int}.
+     * @param resultados componente de tipo {@code List<ResultadoCaso>}.
+     */
     public record Informe(int total, int aprobados, List<ResultadoCaso> resultados) {
 
         public Informe {

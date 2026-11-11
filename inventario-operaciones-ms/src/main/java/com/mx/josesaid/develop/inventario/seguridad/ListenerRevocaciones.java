@@ -51,7 +51,13 @@ public class ListenerRevocaciones {
         }
     }
 
-    /** Sobre que publica usuarios-accesos-ms por el outbox. */
+    /**
+     * Sobre que publica usuarios-accesos-ms por el outbox.
+     *
+     * @param tipo componente de tipo {@code String}.
+     * @param agregadoId componente de tipo {@code String}.
+     * @param datos componente de tipo {@code Map<String, Object>}.
+     */
     public record Sobre(String tipo, String agregadoId, Map<String, Object> datos) {
     }
 }

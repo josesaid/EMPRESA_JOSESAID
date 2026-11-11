@@ -125,7 +125,15 @@ public class ReportesControlador {
 
     // ---- Peticiones ----
 
-    /** Cuerpo para registrar un indicador: área, nombre, periodo, valor y fecha de la fuente. */
+    /**
+     * Cuerpo para registrar un indicador: área, nombre, periodo, valor y fecha de la fuente.
+     *
+     * @param area componente de tipo {@code Area}.
+     * @param nombre componente de tipo {@code String}.
+     * @param periodo componente de tipo {@code String}.
+     * @param valor componente de tipo {@code BigDecimal}.
+     * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
+     */
     public record RegistrarIndicadorPeticion(
             @NotNull Area area,
             @NotBlank String nombre,
@@ -136,7 +144,17 @@ public class ReportesControlador {
 
     // ---- Respuestas ----
 
-    /** Indicador tal como lo ve el cliente. Marca si la fuente está desactualizada. */
+    /**
+     * Indicador tal como lo ve el cliente. Marca si la fuente está desactualizada.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param area componente de tipo {@code Area}.
+     * @param nombre componente de tipo {@code String}.
+     * @param valor componente de tipo {@code BigDecimal}.
+     * @param periodo componente de tipo {@code String}.
+     * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
+     * @param desactualizado componente de tipo {@code boolean}.
+     */
     public record IndicadorRespuesta(UUID id, Area area, String nombre, BigDecimal valor, String periodo,
                                      Instant fuenteActualizadaUtc, boolean desactualizado) {
         /** Convierte un indicador del dominio en su respuesta. */
@@ -146,7 +164,16 @@ public class ReportesControlador {
         }
     }
 
-    /** Indicador consolidado de un reporte cerrado. */
+    /**
+     * Indicador consolidado de un reporte cerrado.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param area componente de tipo {@code Area}.
+     * @param nombre componente de tipo {@code String}.
+     * @param valor componente de tipo {@code BigDecimal}.
+     * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
+     * @param desactualizado componente de tipo {@code boolean}.
+     */
     public record IndicadorConsolidadoRespuesta(UUID id, Area area, String nombre, BigDecimal valor,
                                                 Instant fuenteActualizadaUtc, boolean desactualizado) {
         /** Convierte un indicador consolidado del dominio en su respuesta. */
@@ -156,7 +183,16 @@ public class ReportesControlador {
         }
     }
 
-    /** Reporte con sus indicadores. Si está cerrado, incluye los consolidados. */
+    /**
+     * Reporte con sus indicadores. Si está cerrado, incluye los consolidados.
+     *
+     * @param id componente de tipo {@code UUID}.
+     * @param periodo componente de tipo {@code String}.
+     * @param estatus componente de tipo {@code EstatusReporte}.
+     * @param creadoUtc componente de tipo {@code Instant}.
+     * @param cerradoUtc componente de tipo {@code Instant}.
+     * @param indicadores componente de tipo {@code List<IndicadorConsolidadoRespuesta>}.
+     */
     public record ReporteRespuesta(UUID id, String periodo, EstatusReporte estatus, Instant creadoUtc,
                                    Instant cerradoUtc, List<IndicadorConsolidadoRespuesta> indicadores) {
         /** Convierte un reporte del dominio en su respuesta. */

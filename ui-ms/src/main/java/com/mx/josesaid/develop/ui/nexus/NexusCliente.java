@@ -46,7 +46,11 @@ public class NexusCliente {
         return r == null || r.respuesta() == null ? "" : r.respuesta();
     }
 
-    /** Respuesta de nexus-ms a una consulta. */
+    /**
+     * Respuesta de nexus-ms a una consulta.
+     *
+     * @param respuesta componente de tipo {@code String}.
+     */
     public record RespuestaConsulta(String respuesta) {
     }
 

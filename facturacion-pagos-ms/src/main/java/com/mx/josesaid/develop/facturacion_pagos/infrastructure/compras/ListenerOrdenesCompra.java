@@ -66,11 +66,24 @@ public class ListenerOrdenesCompra {
                 UUID.fromString(String.valueOf(d.get("proveedor_id"))), moneda, total);
     }
 
-    /** Datos extraídos del evento: orden, proveedor, moneda y total. */
+    /**
+     * Datos extraídos del evento: orden, proveedor, moneda y total.
+     *
+     * @param ordenId componente de tipo {@code UUID}.
+     * @param proveedorId componente de tipo {@code UUID}.
+     * @param moneda componente de tipo {@code String}.
+     * @param total componente de tipo {@code BigDecimal}.
+     */
     private record Datos(UUID ordenId, UUID proveedorId, String moneda, BigDecimal total) {
     }
 
-    /** Sobre que publica compras-proveedores-ms por el outbox. */
+    /**
+     * Sobre que publica compras-proveedores-ms por el outbox.
+     *
+     * @param tipo componente de tipo {@code String}.
+     * @param agregadoId componente de tipo {@code String}.
+     * @param datos componente de tipo {@code Map<String, Object>}.
+     */
     public record Sobre(String tipo, String agregadoId, Map<String, Object> datos) {
     }
 }

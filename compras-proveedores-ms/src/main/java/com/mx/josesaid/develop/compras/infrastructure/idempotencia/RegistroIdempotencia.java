@@ -20,7 +20,14 @@ class RegistroIdempotencia {
     static final Duration VIGENCIA = Duration.ofHours(24);
     static final Duration CONCESION_RESERVA = Duration.ofMinutes(2);
 
-    /** Fila guardada para una clave: huella, estatus HTTP, cuerpo de la respuesta y si ya terminó. */
+    /**
+     * Fila guardada para una clave: huella, estatus HTTP, cuerpo de la respuesta y si ya terminó.
+     *
+     * @param huella componente de tipo {@code String}.
+     * @param estatus componente de tipo {@code int}.
+     * @param cuerpo componente de tipo {@code String}.
+     * @param completada componente de tipo {@code boolean}.
+     */
     record Registro(String huella, int estatus, String cuerpo, boolean completada) {}
 
     private final JdbcTemplate jdbc;

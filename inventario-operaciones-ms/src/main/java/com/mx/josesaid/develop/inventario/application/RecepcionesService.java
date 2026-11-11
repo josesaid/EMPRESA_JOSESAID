@@ -28,7 +28,12 @@ public class RecepcionesService {
 
     private static final Logger log = LoggerFactory.getLogger(RecepcionesService.class);
 
-    /** Línea recibida: SKU del artículo y cantidad. */
+    /**
+     * Línea recibida: SKU del artículo y cantidad.
+     *
+     * @param sku componente de tipo {@code String}.
+     * @param cantidad componente de tipo {@code BigDecimal}.
+     */
     public record LineaRecibida(String sku, BigDecimal cantidad) {
     }
 

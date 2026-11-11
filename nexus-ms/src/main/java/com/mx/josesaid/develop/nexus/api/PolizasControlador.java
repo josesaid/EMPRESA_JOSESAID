@@ -61,13 +61,23 @@ public class PolizasControlador {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of("error", e.getMessage()));
     }
 
-    /** Cuerpo de la petición: descripción de la póliza, de 1 a 500 caracteres. */
+    /**
+     * Cuerpo de la petición: descripción de la póliza, de 1 a 500 caracteres.
+     *
+     * @param descripcion componente de tipo {@code String}.
+     */
     public record SugerenciaPolizaSolicitud(@NotBlank @Size(max = 500) String descripcion) {
     }
 
     /**
      * Respuesta de una sugerencia. Incluye el código de confirmación de una sola vez, que solo recibe
      * quien pidió la sugerencia (CONTADOR). Sin el código la acción no puede confirmarse.
+      * @param id componente de tipo {@code UUID}.
+      * @param tipo componente de tipo {@code String}.
+      * @param resumen componente de tipo {@code String}.
+      * @param estatus componente de tipo {@code String}.
+      * @param expiraUtc componente de tipo {@code Instant}.
+      * @param codigoConfirmacion componente de tipo {@code String}.
      */
     public record SugerenciaRespuesta(UUID id, String tipo, String resumen, String estatus,
                                       Instant expiraUtc, String codigoConfirmacion) {
