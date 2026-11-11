@@ -1,0 +1,22 @@
+
+== 1. Java 21 y Maven ==
+openjdk version "21.0.11" 2026-04-21 LTS
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+
+== 2. Docker ==
+OK: Docker responde
+
+== 3. Validar archivos de Compose ==
+
+== 4. Pruebas completas (unitarias + integración con Testcontainers) ==
+OK: mvn verify
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.615 s -- in com.mx.josesaid.develop.pedidos.infrastructure.indicadores.PublicadorIndicadoresVentasIT
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.288 s -- in com.mx.josesaid.develop.pedidos.infrastructure.idempotencia.RegistroIdempotenciaIT
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
+
+== 5. Construir la imagen ==
+OK: docker build
+
+== Resumen: 3 OK, 0 fallos ==
+Logs: .verify-pedidos.log y .build-pedidos.log en la raíz del repositorio.
+== Fin. Pega esta salida en el chat ==

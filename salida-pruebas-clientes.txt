@@ -1,0 +1,25 @@
+
+== 1. Java 21 y Maven ==
+openjdk version "21.0.11" 2026-04-21 LTS
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+
+== 2. Docker ==
+OK: Docker responde
+
+== 3. Validar archivos de Compose ==
+OK: Compose de la raíz válido (valores de prueba; no crea nada)
+error while interpolating services.clientes-ms.environment.EUREKA_URL: required variable EUREKA_USUARIO is missing a value: Defina EUREKA_USUARIO en .env
+FALLO: Compose de clientes-ms válido
+
+== 4. Pruebas completas (unitarias + integración con Testcontainers) ==
+OK: mvn verify
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 14.46 s -- in com.mx.josesaid.develop.clientes.integracion.FlujoClientesIT
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 32.58 s -- in com.mx.josesaid.develop.clientes.infrastructure.indicadores.PublicadorIndicadoresClientesIT
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+
+== 5. Construir la imagen ==
+OK: docker build
+
+== Resumen: 4 OK, 1 fallos ==
+Logs: .verify-clientes.log y .build-clientes.log en la raíz del repositorio.
+== Fin. Pega esta salida en el chat ==

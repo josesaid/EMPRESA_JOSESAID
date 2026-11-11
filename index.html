@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Documentación de API · EMPRESA_JOSESAID</title>
+<title>Microservicios · EMPRESA_JOSESAID</title>
 <style>
 :root{
   --bg:#f5f7fb; --superficie:#ffffff; --fg:#0f172a; --muted:#64748b; --linea:#e2e8f0;
@@ -72,9 +72,9 @@ footer{margin-top:32px;color:var(--muted);font-size:13px}
 <header class="cabecera">
   <div class="cabecera-in">
     <div class="cabecera-texto">
-      <span class="etiqueta">Documentación de API</span>
+      <span class="etiqueta">Fichas de microservicios</span>
       <h1>EMPRESA_JOSESAID</h1>
-      <p class="lead">Endpoints REST de cada microservicio, con su especificación OpenAPI 3.0 y Swagger UI.</p>
+      <p class="lead">Ficha de cada microservicio: información, README, roles y permisos, diagramas y Swagger.</p>
       <div class="autor">
         <span><strong>Jose Said Olano Garcia</strong> · Senior Engineering Manager</span>
         <a href="mailto:josesaid@gmail.com">josesaid@gmail.com</a>
@@ -121,22 +121,33 @@ footer{margin-top:32px;color:var(--muted);font-size:13px}
 </header>
 <main>
   <div class="stats">
-    <div class="stat"><b>10</b><span>Servicios documentados</span></div>
+    <div class="stat"><b>12</b><span>Servicios documentados</span></div>
     <div class="stat"><b>101</b><span>Endpoints</span></div>
-    <div class="stat"><b>2026-11-10</b><span>Fecha de generación</span></div>
+    <div class="stat"><b>2026-11-11</b><span>Fecha de generación</span></div>
+  </div>
+  <h2>Guías</h2>
+  <div class="grid">
+<a class="tarjeta" style="--h:200" href="instrucciones.html"><span class="nombre">Instrucciones</span><span class="conteo">Arrancar y apagar el proyecto</span><span class="ver">Abrir guía →</span></a>
+<a class="tarjeta" style="--h:20" href="diagramas.html"><span class="nombre">Diagramas</span><span class="conteo">Arquitectura y flujos del sistema</span><span class="ver">Abrir diagramas →</span></a>
+<a class="tarjeta" style="--h:110" href="manual.html"><span class="nombre">Manual</span><span class="conteo">Manual completo del proyecto</span><span class="ver">Abrir manual →</span></a>
+<a class="tarjeta" style="--h:160" href="docs/guias/README.html"><span class="nombre">Guías de procesos</span><span class="conteo">Órdenes, pagos, usuarios y más</span><span class="ver">Abrir guías →</span></a>
+<a class="tarjeta" style="--h:260" href="docs/seguridad/inventario-de-claves.md"><span class="nombre">Seguridad</span><span class="conteo">Auditoría de cifrado y rotación de claves</span><span class="ver">Abrir notas →</span></a>
+<a class="tarjeta" style="--h:320" href="docs/registro-prs.md"><span class="nombre">Registro de PRs</span><span class="conteo">Historial de pull requests</span><span class="ver">Abrir registro →</span></a>
   </div>
   <h2>Servicios</h2>
   <div class="grid">
 <a class="tarjeta" style="--h:0" href="docs/api/clientes-ms.html"><span class="nombre">clientes-ms</span><span class="conteo">15 endpoints</span><span class="ver">Abrir ficha →</span></a>
-<a class="tarjeta" style="--h:36" href="docs/api/compras-proveedores-ms.html"><span class="nombre">compras-proveedores-ms</span><span class="conteo">9 endpoints</span><span class="ver">Abrir ficha →</span></a>
-<a class="tarjeta" style="--h:72" href="docs/api/contabilidad-ms.html"><span class="nombre">contabilidad-ms</span><span class="conteo">8 endpoints</span><span class="ver">Abrir ficha →</span></a>
-<a class="tarjeta" style="--h:108" href="docs/api/documentos-cumplimiento-ms.html"><span class="nombre">documentos-cumplimiento-ms</span><span class="conteo">9 endpoints</span><span class="ver">Abrir ficha →</span></a>
-<a class="tarjeta" style="--h:144" href="docs/api/facturacion-pagos-ms.html"><span class="nombre">facturacion-pagos-ms</span><span class="conteo">10 endpoints</span><span class="ver">Abrir ficha →</span></a>
-<a class="tarjeta" style="--h:180" href="docs/api/inventario-operaciones-ms.html"><span class="nombre">inventario-operaciones-ms</span><span class="conteo">9 endpoints</span><span class="ver">Abrir ficha →</span></a>
-<a class="tarjeta" style="--h:216" href="docs/api/nexus-ms.html"><span class="nombre">nexus-ms</span><span class="conteo">8 endpoints</span><span class="ver">Abrir ficha →</span></a>
-<a class="tarjeta" style="--h:252" href="docs/api/pedidos-ventas-ms.html"><span class="nombre">pedidos-ventas-ms</span><span class="conteo">16 endpoints</span><span class="ver">Abrir ficha →</span></a>
-<a class="tarjeta" style="--h:288" href="docs/api/reportes-ejecutivos-ms.html"><span class="nombre">reportes-ejecutivos-ms</span><span class="conteo">5 endpoints</span><span class="ver">Abrir ficha →</span></a>
-<a class="tarjeta" style="--h:324" href="docs/api/usuarios-accesos-ms.html"><span class="nombre">usuarios-accesos-ms</span><span class="conteo">12 endpoints</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:138" href="docs/api/compras-proveedores-ms.html"><span class="nombre">compras-proveedores-ms</span><span class="conteo">9 endpoints</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:275" href="docs/api/contabilidad-ms.html"><span class="nombre">contabilidad-ms</span><span class="conteo">8 endpoints</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:53" href="docs/api/discovery-ms.html"><span class="nombre">discovery-ms</span><span class="conteo">Sin API REST</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:190" href="docs/api/documentos-cumplimiento-ms.html"><span class="nombre">documentos-cumplimiento-ms</span><span class="conteo">9 endpoints</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:328" href="docs/api/facturacion-pagos-ms.html"><span class="nombre">facturacion-pagos-ms</span><span class="conteo">10 endpoints</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:105" href="docs/api/gateway-ms.html"><span class="nombre">gateway-ms</span><span class="conteo">Sin API REST</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:243" href="docs/api/inventario-operaciones-ms.html"><span class="nombre">inventario-operaciones-ms</span><span class="conteo">9 endpoints</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:20" href="docs/api/nexus-ms.html"><span class="nombre">nexus-ms</span><span class="conteo">8 endpoints</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:158" href="docs/api/pedidos-ventas-ms.html"><span class="nombre">pedidos-ventas-ms</span><span class="conteo">16 endpoints</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:295" href="docs/api/reportes-ejecutivos-ms.html"><span class="nombre">reportes-ejecutivos-ms</span><span class="conteo">5 endpoints</span><span class="ver">Abrir ficha →</span></a>
+<a class="tarjeta" style="--h:73" href="docs/api/usuarios-accesos-ms.html"><span class="nombre">usuarios-accesos-ms</span><span class="conteo">12 endpoints</span><span class="ver">Abrir ficha →</span></a>
   </div>
 </main>
 </body>
