@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventario
+de claves y procedimientos de rotación y respaldo · EMPRESA_JOSESAID</title>
+<style>
+:root{--bg:#f4f6f9;--surface:#ffffff;--fg:#0f172a;--muted:#5b6475;--line:#dde2ec;--acento:#334155;--acento-suave:rgba(51,65,85,.10);--codigo:#eef1f6;--cabecera-a:#334155;--cabecera-b:#0f172a;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--surface:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--line:#23304f;--acento:#cbd5e1;--acento-suave:rgba(203,213,225,.10);--codigo:#1b2440;--cabecera-a:#1e293b;--cabecera-b:#020617;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--surface:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--line:#23304f;--acento:#cbd5e1;--acento-suave:rgba(203,213,225,.10);--codigo:#1b2440;--cabecera-a:#1e293b;--cabecera-b:#020617;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--acento)}
+code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--codigo);border-radius:6px;padding:1px 6px}
+pre{background:var(--codigo);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;max-width:100%}
+pre code{background:transparent;padding:0;font-size:13px}
+.cabecera{background:linear-gradient(135deg,var(--cabecera-a),var(--cabecera-b));color:#fff;padding:26px max(16px,env(safe-area-inset-left,0px)) 62px}
+.cabecera .in{max-width:960px;margin:0 auto}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.volver:hover{opacity:1;text-decoration:underline}
+.cabecera h1{margin:14px 0 0;font:700 clamp(22px,4vw,32px)/1.2 system-ui,sans-serif;letter-spacing:-.01em;text-wrap:balance}
+main{max-width:960px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px var(--sombra);padding:24px 26px;margin:0 0 20px;min-width:0;overflow-wrap:anywhere}
+.panel h1{display:none}
+.panel h2{margin:26px 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:6px}
+.panel h2:first-child{margin-top:0}
+.panel h3{margin:20px 0 6px;font-size:16px}
+.panel p{margin:10px 0}
+.panel ol,.panel ul{padding-left:22px}
+.panel li{margin:6px 0}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);background:var(--acento-suave);border-radius:10px}
+blockquote p{margin:4px 0}
+hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+</style>
+</head>
+<body>
+<header class="cabecera"><div class="in">
+  <a class="volver" href="../../index.html">← Volver al índice</a>
+  <h1>Inventario
+de claves y procedimientos de rotación y respaldo</h1>
+</div></header>
+<main>
+  <article class="panel">
+<p>Revisión al 2026-11-05. Todas las claves viven en el
+<code>.env</code> de la raíz (o en el de cada servicio). <strong>Ninguna
+se versiona en Git.</strong> El <code>.env</code> debe guardarse en el
+gestor de secretos de la empresa, nunca en un archivo compartido.</p>
+<p>Para verificar un <code>.env</code> antes de levantar el
+ecosistema:</p>
+<pre class="bash"><code>bash infra/claves/verificar-claves.sh            # revisa .env de la raíz
+bash infra/claves/prueba-verificar-claves.sh     # prueba del propio verificador</code></pre>
+<h2 id="inventario">Inventario</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Clave</th>
+<th>Servicio</th>
+<th>Uso</th>
+<th>Rotación</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>USUARIOS_JWT_CLAVE_PRIVADA</code> (+ <code>KID</code>)</td>
+<td>usuarios-accesos-ms</td>
+<td>Firma RS256 de los tokens</td>
+<td>Sin cortar sesiones, dos reinicios</td>
+<td><strong>Procedimiento listo</strong>: <a
+href="../guias/03-rotar-clave-rs256.html">guía 3</a></td>
+</tr>
+<tr class="even">
+<td><code>USUARIOS_CIFRADO_CLAVE</code> (+
+<code>USUARIOS_CIFRADO_CLAVES</code>,
+<code>USUARIOS_CIFRADO_VERSION_ACTIVA</code>)</td>
+<td>usuarios-accesos-ms</td>
+<td>AES-256-GCM de correo y nombre</td>
+<td>Con versiones: lista <code>N:base64,N:base64</code> y versión
+activa</td>
+<td><strong>Versionada</strong> (PR #90) y re-cifrado por lotes (PR
+#93). Probada en desarrollo, ver abajo</td>
+</tr>
+<tr class="odd">
+<td><code>USUARIOS_INDICE_CLAVE</code></td>
+<td>usuarios-accesos-ms</td>
+<td>HMAC del índice de búsqueda por correo</td>
+<td>No definida</td>
+<td><strong>Pendiente de diseño</strong>: rotarla obliga a recalcular el
+índice</td>
+</tr>
+<tr class="even">
+<td><code>COMPRAS_CIFRADO_CLAVE</code> (+
+<code>COMPRAS_CIFRADO_CLAVES</code>,
+<code>COMPRAS_CIFRADO_VERSION_ACTIVA</code>)</td>
+<td>compras-proveedores-ms</td>
+<td>AES-256-GCM de RFC y correo de proveedor</td>
+<td>Con versiones, igual que usuarios</td>
+<td><strong>Versionada</strong> (PR #89) y re-cifrado por lotes (PR
+#92). Probada en desarrollo</td>
+</tr>
+<tr class="odd">
+<td><code>COMPRAS_INDICE_CLAVE</code></td>
+<td>compras-proveedores-ms</td>
+<td>HMAC del índice (RFC)</td>
+<td>No definida</td>
+<td><strong>Pendiente de diseño</strong></td>
+</tr>
+<tr class="even">
+<td><code>DOCUMENTOS_CIFRADO_CLAVE</code></td>
+<td>documentos-cumplimiento-ms</td>
+<td>AES-256 de archivos</td>
+<td>No definida</td>
+<td><strong>Pendiente de diseño</strong></td>
+</tr>
+<tr class="odd">
+<td><code>CRYPTO_CLAVE_CIFRADO</code> (+
+<code>CRYPTO_CLAVES_CIFRADO</code>, <code>CRYPTO_VERSION_ACTIVA</code>)
+/ <code>CRYPTO_CLAVE_INDICE</code></td>
+<td>clientes-ms</td>
+<td>AES-256-GCM de datos de cliente; índice HMAC sin cambios</td>
+<td>Con versiones, igual que usuarios</td>
+<td><strong>Versionada</strong> (PR #88) y re-cifrado por lotes (PR
+#91). Probada en desarrollo. El índice HMAC sigue
+<strong>pendiente</strong></td>
+</tr>
+<tr class="even">
+<td><code>GATEWAY_TLS_PASSWORD</code></td>
+<td>gateway-ms, ui-ms, nexus-ms</td>
+<td>Contraseña del keystore y truststore TLS</td>
+<td>Regenerar con <code>generar-certificados.sh</code> y
+redistribuir</td>
+<td>Procedimiento: <a
+href="../../infra/tls/README.md">infra/tls</a></td>
+</tr>
+<tr class="odd">
+<td><code>*_DB_PASSWORD</code>, <code>POSTGRES_PASSWORD</code></td>
+<td>PostgreSQL</td>
+<td>Usuarios de cada base</td>
+<td>Cambiar con <code>ALTER ROLE</code> y actualizar el
+<code>.env</code></td>
+<td>Sin automatizar</td>
+</tr>
+<tr class="even">
+<td><code>EUREKA_PASSWORD</code></td>
+<td>discovery-ms</td>
+<td>Registro de servicios</td>
+<td>Cambiar en <code>discovery-ms</code> y en <code>.env</code> a la
+vez</td>
+<td>Sin automatizar</td>
+</tr>
+<tr class="odd">
+<td><code>ANTHROPIC_API_KEY</code>, <code>VOYAGE_API_KEY</code></td>
+<td>nexus-ms</td>
+<td>Proveedores de IA</td>
+<td>En la consola del proveedor</td>
+<td>Externo</td>
+</tr>
+<tr class="even">
+<td><code>GRAFANA_ADMIN_PASSWORD</code></td>
+<td>monitoreo</td>
+<td>Acceso a Grafana</td>
+<td>Cambiar en Grafana y en <code>.env</code></td>
+<td>Sin automatizar</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rotación-de-claves-de-cifrado-de-campos-personales">Rotación de
+claves de cifrado de campos personales</h2>
+<p>Los campos cifrados de clientes, compras y usuarios ya llevan prefijo
+de versión: <code>v&lt;N&gt;:Base64(IV || cifrado + tag)</code>. Los
+valores anteriores, sin prefijo, se leen como versión 1.</p>
+<p>Para rotar: agregar la nueva clave a la lista
+<code>N:base64,N:base64</code>, cambiar la versión activa, y correr el
+re-cifrado por lotes (<code>*_RECIFRADO_ACTIVO=true</code>, que se apaga
+después). El diseño está en <a
+href="diseno-version-de-clave.html">diseno-version-de-clave.md</a> y el
+procedimiento de prueba en <a
+href="guia-prueba-rotacion-clave.html">guia-prueba-rotacion-clave.md</a>.</p>
+<p><strong>Dónde viven las claves:</strong> <code>CRYPTO_*</code> en
+<code>clientes-ms/.env</code>; <code>USUARIOS_CIFRADO_*</code> en el
+<code>.env</code> de la raíz y <code>usuarios-accesos-ms/.env</code>;
+<code>COMPRAS_CIFRADO_*</code> en el <code>.env</code> de la raíz.
+Cuando cambies una clave, revisa los dos archivos.</p>
+<p><strong>Resultado de la prueba en el entorno de desarrollo del
+responsable (2026-11-05):</strong></p>
+<ul>
+<li>Línea base antes del cambio: consulta de un cliente con
+<code>HTTP 200</code>.</li>
+<li>Versión 2 agregada sin activarla: la lectura no cambió.</li>
+<li>Versión activa 2: un contacto nuevo quedó con prefijo
+<code>v2:</code>.</li>
+<li>Re-cifrado: conteos por campo en clientes, compras y usuarios;
+después, <code>0</code> filas en versión anterior en los cinco campos
+verificados.</li>
+<li>Lectura después del re-cifrado: igual a la línea base.</li>
+</ul>
+<p>Esto es una prueba en desarrollo, no en producción. Quedan pendientes
+el retiro de la versión 1 y la prueba de corte a mitad.</p>
+<p><strong>Incidencia encontrada:</strong> después de reconstruir
+contenedores, el gateway mantuvo conexiones a las direcciones anteriores
+y respondió <code>500</code> y <code>404</code> a rutas válidas.
+Reiniciar <code>gateway-ms</code> lo resolvió. Por eso, tras reconstruir
+o recrear un servicio, reinicia también el gateway.</p>
+<h2 id="índices-hmac">Índices HMAC</h2>
+<p>Rotar <code>*_INDICE_CLAVE</code> (<code>rfc_hash</code>,
+<code>correo_hash</code>, <code>rfc_indice</code>,
+<code>correo_indice</code>) cambia todos los valores de búsqueda. Sigue
+<strong>pendiente</strong>: requiere columnas nuevas y recálculo, según
+el diseño. Hasta entonces, esas claves no se rotan.</p>
+<h2 id="respaldo">Respaldo</h2>
+<p>Un respaldo completo tiene <strong>dos partes que deben guardarse por
+separado</strong>:</p>
+<ol type="1">
+<li><strong>Base de datos:</strong> volcado de cada base con
+<code>pg_dump</code> (o el respaldo de la infraestructura). Contiene los
+datos cifrados, pero sin las claves no se leen.</li>
+<li><strong>Claves:</strong> el contenido del <code>.env</code> (o las
+claves de la tabla) en el gestor de secretos. Sin ellas, la base es
+ilegible para los campos cifrados.</li>
+</ol>
+<p>No guardes el volcado y las claves en el mismo lugar ni en el mismo
+medio.</p>
+<h2 id="prueba-de-restauración">Prueba de restauración</h2>
+<p>Hazla al menos una vez al trimestre, en un entorno separado:</p>
+<ol type="1">
+<li>Restaura el volcado de PostgreSQL en una instancia nueva.</li>
+<li>Restaura el <code>.env</code> desde el gestor de secretos.</li>
+<li>Ejecuta <code>bash infra/claves/verificar-claves.sh</code> sobre ese
+<code>.env</code>. Debe terminar con 0 fallos.</li>
+<li>Levanta <code>usuarios-accesos-ms</code> y <code>clientes-ms</code>
+y consulta un usuario y un cliente conocidos. Si el correo se muestra en
+claro, las claves y la base corresponden.</li>
+<li>Registra la fecha, quién la hizo y el resultado.</li>
+</ol>
+<h2 id="pendiente">Pendiente</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />Diseñar el formato con
+versión de clave para los campos cifrados.</label></li>
+<li><label><input type="checkbox" checked="" />Implementar la versión de
+clave en clientes, compras y usuarios.</label></li>
+<li><label><input type="checkbox" checked="" />Implementar el re-cifrado
+por lotes en clientes, compras y usuarios.</label></li>
+<li><label><input type="checkbox" checked="" />Probar la rotación en un
+entorno de desarrollo.</label></li>
+<li><label><input type="checkbox" checked="" />Retirar la versión 1 de
+las listas <code>*_CIFRADO_CLAVES</code>, con la clave 1 guardada fuera
+de la máquina (2026-11-05).</label></li>
+<li><label><input type="checkbox" checked="" />Sustituir el valor de las
+variables de clave única (<code>CRYPTO_CLAVE_CIFRADO</code>,
+<code>COMPRAS_CIFRADO_CLAVE</code>, <code>USUARIOS_CIFRADO_CLAVE</code>)
+por la clave 2 (verificado el 2026-11-05). Hace falta porque
+<code>docker-compose.yml</code> exige esas variables para arrancar.
+Mientras la lista exista, se ignoran; si algún día se borra la lista, la
+variable quedaría como versión 1 con la clave 2, y los datos nuevos no
+se leerían.</label></li>
+<li><label><input type="checkbox" />Probar el corte a mitad del
+re-cifrado.</label></li>
+<li><label><input type="checkbox" />Diseñar el recálculo de índices
+HMAC.</label></li>
+<li><label><input type="checkbox" />Rotar
+<code>DOCUMENTOS_CIFRADO_CLAVE</code> (archivos cifrados en disco; aún
+sin diseño).</label></li>
+<li><label><input type="checkbox" />Automatizar la rotación de
+contraseñas de PostgreSQL.</label></li>
+<li><label><input type="checkbox" />Hacer la primera prueba de
+restauración y registrar el resultado.</label></li>
+</ul>
+  </article>
+</main>
+<footer><span>EMPRESA_JOSESAID · Seguridad</span><a href="../../index.html">Índice</a></footer>
+</body>
+</html>

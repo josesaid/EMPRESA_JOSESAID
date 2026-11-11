@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro de
+PRs de la sesión de seguridad y pruebas · EMPRESA_JOSESAID</title>
+<style>
+:root{--bg:#f4f6f9;--surface:#ffffff;--fg:#0f172a;--muted:#5b6475;--line:#dde2ec;--acento:#334155;--acento-suave:rgba(51,65,85,.10);--codigo:#eef1f6;--cabecera-a:#334155;--cabecera-b:#0f172a;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--surface:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--line:#23304f;--acento:#cbd5e1;--acento-suave:rgba(203,213,225,.10);--codigo:#1b2440;--cabecera-a:#1e293b;--cabecera-b:#020617;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--surface:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--line:#23304f;--acento:#cbd5e1;--acento-suave:rgba(203,213,225,.10);--codigo:#1b2440;--cabecera-a:#1e293b;--cabecera-b:#020617;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--acento)}
+code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--codigo);border-radius:6px;padding:1px 6px}
+pre{background:var(--codigo);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;max-width:100%}
+pre code{background:transparent;padding:0;font-size:13px}
+.cabecera{background:linear-gradient(135deg,var(--cabecera-a),var(--cabecera-b));color:#fff;padding:26px max(16px,env(safe-area-inset-left,0px)) 62px}
+.cabecera .in{max-width:960px;margin:0 auto}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.volver:hover{opacity:1;text-decoration:underline}
+.cabecera h1{margin:14px 0 0;font:700 clamp(22px,4vw,32px)/1.2 system-ui,sans-serif;letter-spacing:-.01em;text-wrap:balance}
+main{max-width:960px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px var(--sombra);padding:24px 26px;margin:0 0 20px;min-width:0;overflow-wrap:anywhere}
+.panel h1{display:none}
+.panel h2{margin:26px 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:6px}
+.panel h2:first-child{margin-top:0}
+.panel h3{margin:20px 0 6px;font-size:16px}
+.panel p{margin:10px 0}
+.panel ol,.panel ul{padding-left:22px}
+.panel li{margin:6px 0}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);background:var(--acento-suave);border-radius:10px}
+blockquote p{margin:4px 0}
+hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+</style>
+</head>
+<body>
+<header class="cabecera"><div class="in">
+  <a class="volver" href="../index.html">← Volver al índice</a>
+  <h1>Registro de
+PRs de la sesión de seguridad y pruebas</h1>
+</div></header>
+<main>
+  <article class="panel">
+<p>Lista de los PR fusionados de #109 a #149, con su commit de fusión,
+fecha y servicios afectados. Los servicios salen de los archivos que
+cambió cada PR.</p>
+<p>Enlace desde el <a href="../README.md">README principal</a>.</p>
+<table>
+<thead>
+<tr class="header">
+<th>PR</th>
+<th>Título</th>
+<th>Rama</th>
+<th>Servicios</th>
+<th>Commit de fusión</th>
+<th>Fecha</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/109">#109</a></td>
+<td>Documentar avances de seguridad del 2026-11-05 en los pendientes del
+backend</td>
+<td><code>seguridad/actualizar-pendientes</code></td>
+<td>pendientes</td>
+<td><code>b3ebe0f</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/110">#110</a></td>
+<td>Fijar el digest de la imagen base de runtime en los Dockerfiles</td>
+<td><code>seguridad/digest-imagen-jre</code></td>
+<td>Todos los servicios</td>
+<td><code>9c46a00</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/111">#111</a></td>
+<td>Fijar el digest de la imagen base de build en los Dockerfiles</td>
+<td><code>seguridad/digest-imagen-maven</code></td>
+<td>Todos los servicios</td>
+<td><code>b0ce870</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/112">#112</a></td>
+<td>No registrar montos agregados en los logs de indicadores</td>
+<td><code>seguridad/logs-sin-montos</code></td>
+<td>clientes-ms, compras-proveedores-ms, contabilidad-ms,
+documentos-cumplimiento-ms, facturacion-pagos-ms,
+inventario-operaciones-ms, pedidos-ventas-ms, usuarios-accesos-ms</td>
+<td><code>b9aa691</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/113">#113</a></td>
+<td>No registrar mensajes de excepción en los logs de advertencia</td>
+<td><code>seguridad/logs-excepciones</code></td>
+<td>Todos los servicios</td>
+<td><code>74acd30</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/114">#114</a></td>
+<td>Usar la IP del cliente para el límite de intentos cuando el proxy es
+de confianza</td>
+<td><code>seguridad/gateway-ip-cliente</code></td>
+<td>gateway-ms</td>
+<td><code>7e708f6</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/115">#115</a></td>
+<td>Enviar la IP del navegador al gateway en el login de la UI</td>
+<td><code>seguridad/ui-envia-ip</code></td>
+<td>ui-ms</td>
+<td><code>0038a72</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/116">#116</a></td>
+<td>Compartir el límite de intentos del gateway entre réplicas con
+Redis</td>
+<td><code>seguridad/limite-redis</code></td>
+<td>gateway-ms</td>
+<td><code>24a0837</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/117">#117</a></td>
+<td>Registrar resultados de mvn verify en los pendientes del
+backend</td>
+<td><code>seguridad/resultados-verify</code></td>
+<td>pendientes</td>
+<td><code>0400b76</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/118">#118</a></td>
+<td>Responder 400 cuando un parámetro de búsqueda excede su
+longitud</td>
+<td><code>seguridad/clientes-pruebas-400</code></td>
+<td>clientes-ms</td>
+<td><code>5879296</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/119">#119</a></td>
+<td>Responder 400 cuando un parámetro de búsqueda excede su longitud en
+cinco servicios</td>
+<td><code>seguridad/400-parametros-servicios</code></td>
+<td>compras-proveedores-ms, contabilidad-ms, documentos-cumplimiento-ms,
+facturacion-pagos-ms, reportes-ejecutivos-ms</td>
+<td><code>43afbc4</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/120">#120</a></td>
+<td>Marcar como hecha la sustitución de las variables de clave
+única</td>
+<td><code>seguridad/inventario-claves-estado</code></td>
+<td>docs</td>
+<td><code>1da88eb</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/121">#121</a></td>
+<td>Probar el 400 del parámetro razonSocial en compras</td>
+<td><code>seguridad/compras-pruebas-400</code></td>
+<td>compras-proveedores-ms</td>
+<td><code>135eb15</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/122">#122</a></td>
+<td>Probar el 400 de los parámetros de búsqueda en cuatro servicios</td>
+<td><code>seguridad/400-pruebas-restantes</code></td>
+<td>contabilidad-ms, documentos-cumplimiento-ms, facturacion-pagos-ms,
+reportes-ejecutivos-ms</td>
+<td><code>68062fc</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/123">#123</a></td>
+<td>Documentar la auditoría de cobertura del cifrado de campos</td>
+<td><code>seguridad/auditoria-cifrado</code></td>
+<td>docs</td>
+<td><code>df96f42</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/124">#124</a></td>
+<td>Corregir la fecha de la auditoría de cifrado</td>
+<td><code>seguridad/auditoria-cifrado-fecha</code></td>
+<td>docs</td>
+<td><code>a60ca31</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/125">#125</a></td>
+<td>No guardar nombre ni correo del prospecto en el resumen de la
+acción</td>
+<td><code>seguridad/nexus-resumen-sin-datos</code></td>
+<td>nexus-ms</td>
+<td><code>6f49128</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/126">#126</a></td>
+<td>Actualizar pendientes y la auditoría de cifrado</td>
+<td><code>docs/pendientes-avances-2026-11-05</code></td>
+<td>docs, pendientes</td>
+<td><code>4e0b39e</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/127">#127</a></td>
+<td>Borrar acciones pendientes vencidas de nexus</td>
+<td><code>seguridad/nexus-payload-cifrado</code></td>
+<td>nexus-ms</td>
+<td><code>2c8b21b</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/128">#128</a></td>
+<td>Actualizar la auditoría de cifrado con la limpieza del payload de
+nexus</td>
+<td><code>docs/auditoria-payload-nexus</code></td>
+<td>docs</td>
+<td><code>8f74012</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/129">#129</a></td>
+<td>Registrar la IP de los intentos de login a nivel DEBUG</td>
+<td><code>seguridad/log-debug-ip-login</code></td>
+<td>gateway-ms</td>
+<td><code>1bddfd1</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/130">#130</a></td>
+<td>Agregar script para verificar el login de la UI</td>
+<td><code>docs/script-verificar-login</code></td>
+<td>scripts</td>
+<td><code>42c8eac</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/131">#131</a></td>
+<td>Fijar la versión de la imagen del gateway en Kubernetes</td>
+<td><code>seguridad/k8s-gateway-tag</code></td>
+<td>infra</td>
+<td><code>de4d90c</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/132">#132</a></td>
+<td>Agregar prueba de humo del stack</td>
+<td><code>docs/script-smoke-e2e</code></td>
+<td>scripts</td>
+<td><code>4f644a6</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/133">#133</a></td>
+<td>Corregir el arranque de nexus: LimpiezaAcciones no inyecta
+Clock</td>
+<td><code>seguridad/fix-limpieza-bean</code></td>
+<td>nexus-ms</td>
+<td><code>fa5daaf</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/134">#134</a></td>
+<td>Pruebas de autorización por rol en clientes (piloto)</td>
+<td><code>test/autorizacion-clientes</code></td>
+<td>clientes-ms</td>
+<td><code>d81ed01</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/135">#135</a></td>
+<td>Pruebas de autorización por rol en compras</td>
+<td><code>test/autorizacion-compras</code></td>
+<td>compras-proveedores-ms</td>
+<td><code>b019f65</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/136">#136</a></td>
+<td>Pruebas de autorización por rol en contabilidad</td>
+<td><code>test/autorizacion-contabilidad</code></td>
+<td>contabilidad-ms</td>
+<td><code>b74b449</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/137">#137</a></td>
+<td>Pruebas de autorización por rol en documentos</td>
+<td><code>test/autorizacion-documentos</code></td>
+<td>documentos-cumplimiento-ms</td>
+<td><code>cfc9655</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/138">#138</a></td>
+<td>test(facturacion): matriz de autorización por rol</td>
+<td><code>test/autorizacion-facturacion</code></td>
+<td>facturacion-pagos-ms</td>
+<td><code>01118c4</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/139">#139</a></td>
+<td>test(inventario): matriz de autorización por rol</td>
+<td><code>test/autorizacion-inventario</code></td>
+<td>inventario-operaciones-ms</td>
+<td><code>a680b7d</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/140">#140</a></td>
+<td>test(pedidos): matriz de autorización por rol</td>
+<td><code>test/autorizacion-pedidos</code></td>
+<td>pedidos-ventas-ms</td>
+<td><code>1685d76</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/141">#141</a></td>
+<td>test(reportes): matriz de autorización por rol</td>
+<td><code>test/autorizacion-reportes</code></td>
+<td>reportes-ejecutivos-ms</td>
+<td><code>d13ec16</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/142">#142</a></td>
+<td>test(nexus): matriz de autorización por rol</td>
+<td><code>test/autorizacion-nexus</code></td>
+<td>nexus-ms</td>
+<td><code>ceedf98</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/143">#143</a></td>
+<td>test(usuarios-accesos): matriz de autorización de /v1/usuarios</td>
+<td><code>test/autorizacion-usuarios</code></td>
+<td>usuarios-accesos-ms</td>
+<td><code>6fdc504</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/144">#144</a></td>
+<td>docs(pendientes): registrar decisiones de TLS y límite de
+cuerpo</td>
+<td><code>docs/decisiones-tls-limite-cuerpo</code></td>
+<td>pendientes</td>
+<td><code>9156d83</code></td>
+<td>2026-11-06</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/145">#145</a></td>
+<td>docs(pendientes): resultado de pruebas de integración con
+Docker</td>
+<td><code>docs/resultado-failsafe</code></td>
+<td>pendientes</td>
+<td><code>1bcd1b1</code></td>
+<td>2026-11-08</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/146">#146</a></td>
+<td>fix(seguridad): versiones corregidas de dependencias
+transitivas</td>
+<td><code>seguridad/dependencias-versiones</code></td>
+<td>Todos los servicios</td>
+<td><code>75a4c12</code></td>
+<td>2026-11-08</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/147">#147</a></td>
+<td>fix(seguridad): actualizar OpenTelemetry a 1.67.0</td>
+<td><code>seguridad/opentelemetry</code></td>
+<td>Todos los servicios</td>
+<td><code>aeeddd0</code></td>
+<td>2026-11-08</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/148">#148</a></td>
+<td>fix(seguridad): actualizar apt en la imagen de runtime</td>
+<td><code>seguridad/base-apt</code></td>
+<td>Todos los servicios</td>
+<td><code>bf15aea</code></td>
+<td>2026-11-08</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/149">#149</a></td>
+<td>build(calidad): piso de cobertura por servicio y fallo del
+build</td>
+<td><code>calidad/umbrales-cobertura</code></td>
+<td>Todos los servicios</td>
+<td><code>4d4ae13</code></td>
+<td>2026-11-08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="decisiones-registradas">Decisiones registradas</h2>
+<ul>
+<li><strong>#64 bloqueo de cuenta a 5 minutos:</strong> decisión de Said
+Olano.</li>
+<li><strong>#83 y #84 TLS interno:</strong> desactivado por defecto; se
+activa con CA interna (opt-in).</li>
+<li><strong>#103 límite de cuerpo en el gateway:</strong> 64 KiB.</li>
+<li><strong>#114 IP del cliente:</strong> solo se usa cuando el proxy es
+de confianza.</li>
+<li><strong>#116 Redis para el límite de intentos:</strong> opcional con
+<code>GATEWAY_LIMITE_ALMACEN=redis</code>; por defecto usa memoria.</li>
+<li><strong>#123 y #124 auditoría de cifrado:</strong> razón social y
+título se dejan en claro por decisión.</li>
+<li><strong>#127 limpieza del payload de nexus:</strong> se borran las
+acciones pendientes vencidas.</li>
+<li><strong>#146 a #148 dependencias, OpenTelemetry y apt:</strong> se
+fijan versiones corregidas; Spring Boot se mantiene en 4.1.2.</li>
+<li><strong>#149 pisos de cobertura:</strong> cada servicio falla si
+baja de su cobertura actual con integración. nexus-ms queda pendiente
+porque no genera datos de JaCoCo.</li>
+<li><strong>Pendientes sin decisión:</strong> ARCO, rotación de la clave
+HMAC de compras y clave NVD quedan omitidos por decisión.</li>
+</ul>
+  </article>
+</main>
+<footer><span>EMPRESA_JOSESAID · Registro de PRs</span><a href="../index.html">Índice</a></footer>
+</body>
+</html>

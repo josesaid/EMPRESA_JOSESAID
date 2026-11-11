@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía
+de prueba: rotar la clave de cifrado sin cortar el servicio · EMPRESA_JOSESAID</title>
+<style>
+:root{--bg:#f4f6f9;--surface:#ffffff;--fg:#0f172a;--muted:#5b6475;--line:#dde2ec;--acento:#334155;--acento-suave:rgba(51,65,85,.10);--codigo:#eef1f6;--cabecera-a:#334155;--cabecera-b:#0f172a;--sombra:rgba(15,23,42,.08);color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--surface:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--line:#23304f;--acento:#cbd5e1;--acento-suave:rgba(203,213,225,.10);--codigo:#1b2440;--cabecera-a:#1e293b;--cabecera-b:#020617;--sombra:rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--surface:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--line:#23304f;--acento:#cbd5e1;--acento-suave:rgba(203,213,225,.10);--codigo:#1b2440;--cabecera-a:#1e293b;--cabecera-b:#020617;--sombra:rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--acento)}
+code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--codigo);border-radius:6px;padding:1px 6px}
+pre{background:var(--codigo);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;max-width:100%}
+pre code{background:transparent;padding:0;font-size:13px}
+.cabecera{background:linear-gradient(135deg,var(--cabecera-a),var(--cabecera-b));color:#fff;padding:26px max(16px,env(safe-area-inset-left,0px)) 62px}
+.cabecera .in{max-width:960px;margin:0 auto}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.volver:hover{opacity:1;text-decoration:underline}
+.cabecera h1{margin:14px 0 0;font:700 clamp(22px,4vw,32px)/1.2 system-ui,sans-serif;letter-spacing:-.01em;text-wrap:balance}
+main{max-width:960px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px var(--sombra);padding:24px 26px;margin:0 0 20px;min-width:0;overflow-wrap:anywhere}
+.panel h1{display:none}
+.panel h2{margin:26px 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:6px}
+.panel h2:first-child{margin-top:0}
+.panel h3{margin:20px 0 6px;font-size:16px}
+.panel p{margin:10px 0}
+.panel ol,.panel ul{padding-left:22px}
+.panel li{margin:6px 0}
+.tabla-wrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);background:var(--acento-suave);border-radius:10px}
+blockquote p{margin:4px 0}
+hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+</style>
+</head>
+<body>
+<header class="cabecera"><div class="in">
+  <a class="volver" href="../../index.html">← Volver al índice</a>
+  <h1>Guía
+de prueba: rotar la clave de cifrado sin cortar el servicio</h1>
+</div></header>
+<main>
+  <article class="panel">
+<p><strong>Objetivo:</strong> comprobar en tu entorno (Mac con Docker
+Desktop) que se puede pasar de la clave de cifrado actual a una nueva,
+re-cifrar los datos y volver atrás si algo falla, sin perder
+información.</p>
+<p><strong>Alcance:</strong> clientes-ms, compras-proveedores-ms y
+usuarios-accesos-ms. No cubre los índices HMAC (<code>rfc_hash</code>,
+<code>correo_hash</code>, <code>rfc_indice</code>,
+<code>correo_indice</code>): esas claves no cambian en esta prueba.</p>
+<p><strong>Riesgo:</strong> esta prueba modifica datos cifrados. Haz el
+respaldo del paso 1 antes de cualquier otro paso.</p>
+<h2 id="antes-de-empezar">Antes de empezar</h2>
+<ul>
+<li>Docker Desktop abierto y el repositorio en <code>main</code>, con
+los PRs #88 a #93 fusionados (los de versión de clave y
+re-cifrado).</li>
+<li>Los respaldos de claves del <a
+href="inventario-de-claves.html">inventario de claves</a> hechos y
+guardados en el gestor de secretos.</li>
+<li>Ventana de prueba de al menos 1 hora. No hagas la prueba con datos
+reales de clientes: usa una base de desarrollo.</li>
+</ul>
+<blockquote>
+<p><strong>No pegues ninguna clave en el chat, en un commit ni en un
+archivo del repositorio.</strong> Las claves se escriben solo en el
+<code>.env</code> de la raíz, que está en <code>.gitignore</code>.</p>
+</blockquote>
+<h2 id="variables-que-vas-a-usar">Variables que vas a usar</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Qué hace</th>
+<th>Valor en esta prueba</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>CRYPTO_CLAVE_CIFRADO</code></td>
+<td>Clave actual (versión 1) de clientes-ms</td>
+<td>La que ya tienes; no la borres</td>
+</tr>
+<tr class="even">
+<td><code>CRYPTO_CLAVES_CIFRADO</code></td>
+<td>Lista de versiones <code>N:base64,N:base64</code></td>
+<td><code>1:&lt;clave actual&gt;,2:&lt;clave nueva&gt;</code></td>
+</tr>
+<tr class="odd">
+<td><code>CRYPTO_VERSION_ACTIVA</code></td>
+<td>Versión con la que se cifra lo nuevo</td>
+<td><code>1</code> al inicio, luego <code>2</code></td>
+</tr>
+<tr class="even">
+<td><code>CRYPTO_RECIFRADO_ACTIVO</code></td>
+<td>Re-cifra al arrancar clientes-ms</td>
+<td><code>false</code> salvo en el paso 6</td>
+</tr>
+<tr class="odd">
+<td><code>COMPRAS_CIFRADO_CLAVES</code>,
+<code>COMPRAS_CIFRADO_VERSION_ACTIVA</code>,
+<code>COMPRAS_RECIFRADO_ACTIVO</code></td>
+<td>Lo mismo para compras</td>
+<td>Igual que arriba</td>
+</tr>
+<tr class="even">
+<td><code>USUARIOS_CIFRADO_CLAVES</code>,
+<code>USUARIOS_CIFRADO_VERSION_ACTIVA</code>,
+<code>USUARIOS_RECIFRADO_ACTIVO</code></td>
+<td>Lo mismo para usuarios</td>
+<td>Igual que arriba</td>
+</tr>
+</tbody>
+</table>
+<p>Cada vez que cambies código o variables de clave, reconstruye
+(<code>docker compose build</code>) y reinicia el servicio afectado.
+Cada servicio necesita que la <strong>misma</strong> clave de la versión
+1 aparezca en su lista. En clientes, <code>1:</code> debe ser igual a
+<code>CRYPTO_CLAVE_CIFRADO</code>; en compras, <code>1:</code> debe ser
+igual a <code>COMPRAS_CIFRADO_CLAVE</code>; en usuarios, <code>1:</code>
+debe ser igual a <code>USUARIOS_CIFRADO_CLAVE</code>.</p>
+<h2 id="pasos">Pasos</h2>
+<h3 id="1-respaldo">1. Respaldo</h3>
+<p>Respalda las tres bases y las claves antes de empezar:</p>
+<pre class="bash"><code>docker compose exec -T postgres pg_dump -U postgres clientes &gt; respaldo-clientes-$(date +%F).sql
+docker compose exec -T postgres pg_dump -U postgres compras &gt; respaldo-compras-$(date +%F).sql
+docker compose exec -T postgres pg_dump -U postgres usuarios_accesos &gt; respaldo-usuarios-$(date +%F).sql</code></pre>
+<p>Confirma que los archivos no están vacíos
+(<code>ls -lh respaldo-*.sql</code>). Guarda las claves actuales en el
+gestor de secretos si no lo has hecho.</p>
+<h3 id="2-línea-base">2. Línea base</h3>
+<p>Levanta el ecosistema con la configuración actual y comprueba que
+todo funciona antes de cambiar nada:</p>
+<pre class="bash"><code>docker compose up -d</code></pre>
+<p>Entra al gateway con un usuario de prueba, consulta un cliente
+existente y anota su respuesta. Si algo falla aquí, no sigas: resuélvelo
+primero.</p>
+<h3 id="3-generar-la-clave-nueva">3. Generar la clave nueva</h3>
+<p>Genera una clave de 32 bytes y cópiala directamente al
+<code>.env</code>, sin mostrarla en pantalla:</p>
+<pre class="bash"><code>openssl rand -base64 32</code></pre>
+<p>Pégala en el <code>.env</code> como versión 2 (paso siguiente).
+Repite el comando para cada servicio: <strong>las tres claves nuevas
+deben ser distintas</strong>.</p>
+<h3 id="4-agregar-la-versión-2-sin-cambiar-la-activa">4. Agregar la
+versión 2 sin cambiar la activa</h3>
+<p>En el <code>.env</code>, para cada servicio, agrega la lista.
+<strong>Deja también la variable de clave única:</strong> la lista tiene
+prioridad, y la clave 1 de la lista debe ser la misma que la clave
+única. Ejemplo para clientes (los valores reales van en tu
+<code>.env</code>, no aquí):</p>
+<pre><code>CRYPTO_CLAVES_CIFRADO=1:&lt;clave_actual&gt;,2:&lt;clave_nueva&gt;
+CRYPTO_VERSION_ACTIVA=1</code></pre>
+<p>Haz lo mismo con <code>COMPRAS_CIFRADO_CLAVES</code> y
+<code>USUARIOS_CIFRADO_CLAVES</code>. Reconstruye las imágenes y
+reinicia los tres servicios. <strong>Reconstruir es
+obligatorio:</strong> <code>docker compose up -d</code> solo reinicia
+con la imagen que ya existe, y esa imagen puede no tener el código de
+versiones.</p>
+<pre class="bash"><code>docker compose build clientes-ms compras-proveedores-ms usuarios-accesos-ms
+docker compose up -d clientes-ms compras-proveedores-ms usuarios-accesos-ms</code></pre>
+<p>Repite la consulta del paso 2. Debe responder igual: la versión 2
+solo se <strong>lee</strong>, todavía no se escribe.</p>
+<h3 id="5-cambiar-la-versión-activa-a-2">5. Cambiar la versión activa a
+2</h3>
+<p>En el <code>.env</code>, cambia <code>CRYPTO_VERSION_ACTIVA=2</code>
+(y las de compras y usuarios). Reinicia los servicios.</p>
+<p>Crea un contacto de prueba desde la aplicación y luego revisa que
+existan valores nuevos con la versión 2 (las filas anteriores siguen sin
+cambiar hasta el paso 6):</p>
+<pre class="bash"><code>docker compose exec -T postgres psql -U postgres -d clientes \
+  -c &quot;SELECT count(*) AS en_v2 FROM contacto WHERE correo_cifrado LIKE &#39;v2:%&#39;;&quot;</code></pre>
+<p>Resultado esperado: <code>en_v2</code> es mayor que cero. Los datos
+anteriores siguen en <code>v1:</code> o sin prefijo, y deben seguir
+leyéndose igual.</p>
+<h3 id="6-re-cifrar-los-datos-anteriores">6. Re-cifrar los datos
+anteriores</h3>
+<p>En el <code>.env</code>, cambia a <code>true</code> las tres
+variables de re-cifrado (<code>CRYPTO_RECIFRADO_ACTIVO</code>,
+<code>COMPRAS_RECIFRADO_ACTIVO</code>,
+<code>USUARIOS_RECIFRADO_ACTIVO</code>). Reinicia los servicios y revisa
+los logs:</p>
+<pre class="bash"><code>docker compose logs clientes-ms | grep &quot;Campos re-cifrados&quot;
+docker compose logs compras-proveedores-ms | grep &quot;Campos re-cifrados&quot;
+docker compose logs usuarios-accesos-ms | grep &quot;Campos re-cifrados&quot;</code></pre>
+<p>Cada línea muestra el conteo por campo, por ejemplo
+<code>Campos re-cifrados en prospecto.correo_cifrado: 12</code>. Son
+solo números; no aparecen valores personales.</p>
+<p>Cuando termine, <strong>vuelve a poner las tres variables en
+<code>false</code></strong> y reinicia. El re-cifrado solo debe correr
+una vez por cada cambio de versión.</p>
+<h3 id="7-verificar-que-no-quedan-valores-antiguos">7. Verificar que no
+quedan valores antiguos</h3>
+<p>Cada consulta debe devolver <code>0</code>:</p>
+<pre class="bash"><code>docker compose exec -T postgres psql -U postgres -d clientes -c &quot;
+SELECT count(*) FROM prospecto WHERE correo_cifrado IS NOT NULL AND correo_cifrado NOT LIKE &#39;v2:%&#39;;
+SELECT count(*) FROM contacto  WHERE correo_cifrado IS NOT NULL AND correo_cifrado NOT LIKE &#39;v2:%&#39;;
+SELECT count(*) FROM cliente   WHERE rfc_cifrado    IS NOT NULL AND rfc_cifrado    NOT LIKE &#39;v2:%&#39;;&quot;
+
+docker compose exec -T postgres psql -U postgres -d compras -c &quot;
+SELECT count(*) FROM proveedores WHERE rfc_cifrado IS NOT NULL AND rfc_cifrado NOT LIKE &#39;v2:%&#39;;&quot;
+
+docker compose exec -T postgres psql -U postgres -d usuarios_accesos -c &quot;
+SELECT count(*) FROM usuarios WHERE correo NOT LIKE &#39;v2:%&#39;;&quot;</code></pre>
+<p>Repite la consulta de lectura del paso 2 y comprueba que el cliente y
+el proveedor se siguen leyendo con su nombre, RFC y correo
+correctos.</p>
+<h3 id="8-prueba-de-reanudación-opcional-recomendada">8. Prueba de
+reanudación (opcional, recomendada)</h3>
+<p>Para probar que un corte no pierde datos, repite el paso 6 pero detén
+el servicio a mitad:</p>
+<pre class="bash"><code>docker compose stop clientes-ms     # mientras corre el re-cifrado
+docker compose start clientes-ms    # debe continuar donde quedó</code></pre>
+<p>Al final, el paso 7 debe seguir dando <code>0</code>, y el conteo de
+re-cifrados de la segunda corrida debe ser menor que el total.</p>
+<h3 id="9-retirar-la-versión-1-solo-cuando-todo-esté-bien">9. Retirar la
+versión 1 (solo cuando todo esté bien)</h3>
+<p>Cuando el paso 7 dé <code>0</code> en todo, y hayas verificado la
+lectura, quita la versión 1 de la lista
+(<code>CRYPTO_CLAVES_CIFRADO=2:&lt;clave_nueva&gt;</code>) y
+reinicia.</p>
+<blockquote>
+<p><strong>No borres la clave 1 de tu gestor de secretos.</strong> Si
+restauras el respaldo del paso 1, esos datos siguen cifrados con la
+clave 1.</p>
+</blockquote>
+<blockquote>
+<p><strong>Variables de clave única.</strong>
+<code>CRYPTO_CLAVE_CIFRADO</code>, <code>COMPRAS_CIFRADO_CLAVE</code> y
+<code>USUARIOS_CIFRADO_CLAVE</code> siguen con la clave 1 después de
+este paso. El <code>docker-compose.yml</code> de la raíz las exige para
+arrancar, así que no se borran. Mientras la lista exista, se ignoran.
+Para sacar la clave 1 también de esas variables, pon en ellas el valor
+de la clave 2 (el mismo que aparece en la lista), y deja documentado que
+una lista borrada las convertiría en versión 1 con la clave 2.</p>
+</blockquote>
+<blockquote>
+<p><strong>Reinicio del gateway.</strong> Después de recrear
+contenedores, reinicia también <code>gateway-ms</code>. Sin ese
+reinicio, el gateway puede responder <code>500</code> o <code>404</code>
+a rutas válidas.</p>
+</blockquote>
+<h2 id="cómo-volver-atrás">Cómo volver atrás</h2>
+<p>Si algo falla en cualquier paso:</p>
+<ol type="1">
+<li>En el <code>.env</code>, pon <code>CRYPTO_VERSION_ACTIVA=1</code> (y
+las de compras y usuarios). Las nuevas escrituras vuelven a usar la
+versión 1 y la lectura de la 2 sigue funcionando mientras la tengas en
+la lista.</li>
+<li>Pon en <code>false</code> las variables de re-cifrado.</li>
+<li>Reinicia los servicios.</li>
+<li>Si los datos quedaron dañados, restaura el respaldo del paso 1 con
+<code>psql</code> y la clave 1 original.</li>
+</ol>
+<h2 id="resultados-esperados">Resultados esperados</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Paso</th>
+<th>Qué revisar</th>
+<th>Resultado esperado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2</td>
+<td>Consulta de cliente</td>
+<td>Igual que antes</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Consulta después de agregar la versión 2</td>
+<td>Igual que antes</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Valor de un contacto nuevo</td>
+<td>Empieza por <code>v2:</code></td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Logs de re-cifrado</td>
+<td>Conteos por campo, sin valores</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Consultas de conteo</td>
+<td><code>0</code> en todas</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Corte a mitad</td>
+<td>Termina sin duplicar ni perder</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Consulta después de quitar la 1</td>
+<td>Datos legibles</td>
+</tr>
+</tbody>
+</table>
+<h2 id="problemas-comunes">Problemas comunes</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Síntoma</th>
+<th>Causa probable</th>
+<th>Qué hacer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Versión de clave de cifrado no configurada: 2</code> al
+arrancar</td>
+<td><code>CRYPTO_CLAVES_CIFRADO</code> no tiene la versión 2</td>
+<td>Revisa el <code>.env</code>; no tiene que haber espacios ni saltos
+de línea</td>
+</tr>
+<tr class="even">
+<td><code>La versión activa de clave 2 no está configurada</code></td>
+<td>La activa no está en la lista</td>
+<td>Agrega <code>2:</code> a la lista o baja la activa a 1</td>
+</tr>
+<tr class="odd">
+<td><code>No se actualizó ... el valor cambió durante el proceso</code></td>
+<td>Otra escritura tocó la fila</td>
+<td>Vuelve a correr el re-cifrado; es reanudable</td>
+</tr>
+<tr class="even">
+<td>El re-cifrado no hace nada</td>
+<td>La variable no llegó al contenedor</td>
+<td>Revisa con <code>docker compose config</code> que aparezca el valor
+<code>true</code></td>
+</tr>
+<tr class="odd">
+<td>El conteo de <code>NOT LIKE 'v2:%'</code> no baja a 0</td>
+<td>Quedan filas con <code>NULL</code> o el re-cifrado no terminó</td>
+<td>Revisa los logs y vuelve a correrlo</td>
+</tr>
+</tbody>
+</table>
+<h2 id="lo-que-esta-guía-no-prueba">Lo que esta guía no prueba</h2>
+<ul>
+<li>Los índices HMAC: siguen con sus claves originales.</li>
+<li>La producción: esta prueba es solo en tu Mac, con datos de
+desarrollo.</li>
+<li>Rotaciones en varias versiones a la vez. La guía cubre un solo
+cambio, de 1 a 2.</li>
+</ul>
+  </article>
+</main>
+<footer><span>EMPRESA_JOSESAID · Seguridad</span><a href="../../index.html">Índice</a></footer>
+</body>
+</html>
