@@ -22,6 +22,7 @@ class CuentaPorPagarRepositorioJpa implements CuentaPorPagarRepositorio {
         this.pagos = pagos;
     }
 
+    /** Devuelve los pagos más recientes con su cuenta, con límite. */
     @Override
     public List<PagoResumen> listarPagosRecientes(int limite) {
         return pagos.findAllByOrderByFechaPagoDescCreadoUtcDesc(PageRequest.of(0, limite)).stream()
@@ -30,6 +31,7 @@ class CuentaPorPagarRepositorioJpa implements CuentaPorPagarRepositorio {
                 .toList();
     }
 
+    /** Guarda una cuenta con sus pagos y devuelve la guardada. */
     @Override
     public CuentaPorPagar guardar(CuentaPorPagar cuenta) {
         CuentaPorPagarEntity entidad = jpa.findById(cuenta.getId())
@@ -38,16 +40,19 @@ class CuentaPorPagarRepositorioJpa implements CuentaPorPagarRepositorio {
         return aDominio(jpa.save(entidad));
     }
 
+    /** Busca una cuenta por id. */
     @Override
     public Optional<CuentaPorPagar> buscarPorId(UUID id) {
         return jpa.findById(id).map(this::aDominio);
     }
 
+    /** Busca la cuenta de una orden de compra. */
     @Override
     public Optional<CuentaPorPagar> buscarPorOrdenId(UUID ordenId) {
         return jpa.findByOrdenId(ordenId).map(this::aDominio);
     }
 
+    /** Convierte la fila en la cuenta del dominio. */
     private CuentaPorPagar aDominio(CuentaPorPagarEntity e) {
         List<PagoProveedor> pagos = e.getPagos().stream()
                 .map(p -> new PagoProveedor(p.getId(), p.getMonto(), p.getFechaPago(), p.getReferencia()))

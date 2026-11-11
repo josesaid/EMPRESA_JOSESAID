@@ -20,21 +20,25 @@ public class ManejadorErrores {
 
     private static final String PREFIJO = "urn:josesaid:facturacion-pagos:error:";
 
+    /** Convierte un recurso inexistente en un problema HTTP. */
     @ExceptionHandler(RecursoNoEncontradoException.class)
     ProblemDetail noEncontrado(RecursoNoEncontradoException ex) {
         return problema(HttpStatus.NOT_FOUND, "no-encontrado", ex.getMessage());
     }
 
+    /** Convierte un conflicto de estado en un problema HTTP. */
     @ExceptionHandler(ConflictoException.class)
     ProblemDetail conflicto(ConflictoException ex) {
         return problema(HttpStatus.CONFLICT, "conflicto", ex.getMessage());
     }
 
+    /** Convierte una regla de negocio incumplida en un problema HTTP, por ejemplo un pago que excede el saldo. */
     @ExceptionHandler(ReglaDeNegocioException.class)
     ProblemDetail reglaDeNegocio(ReglaDeNegocioException ex) {
         return problema(HttpStatus.UNPROCESSABLE_ENTITY, "regla-de-negocio", ex.getMessage());
     }
 
+    /** Convierte errores de validación en un problema HTTP con el detalle de cada campo. */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ProblemDetail validacion(MethodArgumentNotValidException ex) {
         String detalle = ex.getBindingResult().getFieldErrors().stream()
@@ -43,6 +47,7 @@ public class ManejadorErrores {
         return problema(HttpStatus.BAD_REQUEST, "datos-invalidos", detalle);
     }
 
+    /** Construye la respuesta de error con su estatus, código y detalle. */
     private static ProblemDetail problema(HttpStatus estatus, String slug, String detalle) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(estatus, detalle);
         pd.setType(URI.create(PREFIJO + slug));
@@ -50,6 +55,7 @@ public class ManejadorErrores {
         return pd;
     }
 
+    /** Convierte parámetros inválidos en un problema HTTP. */
     @org.springframework.web.bind.annotation.ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
     org.springframework.http.ProblemDetail parametrosInvalidos(jakarta.validation.ConstraintViolationException e) {
         return org.springframework.http.ProblemDetail.forStatusAndDetail(

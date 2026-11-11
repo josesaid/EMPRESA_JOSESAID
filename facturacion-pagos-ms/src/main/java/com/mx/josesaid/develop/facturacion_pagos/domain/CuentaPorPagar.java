@@ -26,6 +26,7 @@ public class CuentaPorPagar {
     private final BigDecimal monto;
     private final List<PagoProveedor> pagos;
 
+    /** Constructor privado: las cuentas se crean con sus fábricas. */
     private CuentaPorPagar(UUID id, UUID ordenId, UUID proveedorId, String moneda, BigDecimal monto,
                            List<PagoProveedor> pagos) {
         this.id = id;
@@ -36,6 +37,7 @@ public class CuentaPorPagar {
         this.pagos = new ArrayList<>(pagos);
     }
 
+    /** Crea una cuenta por pagar en MXN o USD. Requiere orden, proveedor y monto mayor a cero. */
     public static CuentaPorPagar crear(UUID ordenId, UUID proveedorId, String moneda, BigDecimal monto) {
         if (ordenId == null) {
             throw new ReglaDeNegocioException("La cuenta por pagar necesita la orden");
@@ -53,6 +55,7 @@ public class CuentaPorPagar {
                 monto.setScale(2, RoundingMode.HALF_EVEN), List.of());
     }
 
+    /** Reconstruye la cuenta desde la base de datos sin volver a validar. */
     public static CuentaPorPagar reconstruir(UUID id, UUID ordenId, UUID proveedorId, String moneda,
                                              BigDecimal monto, List<PagoProveedor> pagos) {
         return new CuentaPorPagar(id, ordenId, proveedorId, moneda, monto, pagos);
@@ -78,15 +81,18 @@ public class CuentaPorPagar {
         return pago;
     }
 
+    /** Devuelve la suma de los pagos registrados. */
     public BigDecimal pagado() {
         return pagos.stream().map(PagoProveedor::getMonto).reduce(ZERO, BigDecimal::add);
     }
 
+    /** Devuelve el saldo pendiente. Nunca es negativo. */
     public BigDecimal saldo() {
         BigDecimal saldo = monto.subtract(pagado());
         return saldo.signum() < 0 ? ZERO : saldo;
     }
 
+    /** Devuelve PENDIENTE, PARCIAL o PAGADA según los pagos registrados. */
     public EstatusCuentaPorPagar estatus() {
         if (pagos.isEmpty()) {
             return EstatusCuentaPorPagar.PENDIENTE;
@@ -94,10 +100,15 @@ public class CuentaPorPagar {
         return saldo().signum() == 0 ? EstatusCuentaPorPagar.PAGADA : EstatusCuentaPorPagar.PARCIAL;
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el id de la orden de compra. */
     public UUID getOrdenId() { return ordenId; }
+    /** Devuelve el id del proveedor. */
     public UUID getProveedorId() { return proveedorId; }
+    /** Devuelve la moneda. */
     public String getMoneda() { return moneda; }
+    /** Devuelve el monto total de la cuenta. */
     public BigDecimal getMonto() { return monto; }
 
     /** Vista de solo lectura de los pagos. */

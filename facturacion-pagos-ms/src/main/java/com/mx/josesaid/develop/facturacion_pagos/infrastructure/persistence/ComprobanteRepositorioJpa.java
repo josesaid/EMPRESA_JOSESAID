@@ -26,6 +26,7 @@ class ComprobanteRepositorioJpa implements ComprobanteRepositorio {
         this.jpa = jpa;
     }
 
+    /** Guarda un comprobante con sus pagos y devuelve el guardado. */
     @Override
     public Comprobante guardar(Comprobante comprobante) {
         ComprobanteEntity entidad = jpa.findById(comprobante.getId())
@@ -34,6 +35,7 @@ class ComprobanteRepositorioJpa implements ComprobanteRepositorio {
         return aDominio(jpa.save(entidad));
     }
 
+    /** Busca un comprobante por id. */
     @Override
     public Optional<Comprobante> buscarPorId(UUID id) {
         return jpa.findById(id).map(this::aDominio);
@@ -63,11 +65,13 @@ class ComprobanteRepositorioJpa implements ComprobanteRepositorio {
         return resultado;
     }
 
+    /** Busca un comprobante por folio. */
     @Override
     public Optional<Comprobante> buscarPorFolio(String folio) {
         return jpa.findByFolio(folio).map(this::aDominio);
     }
 
+    /** Convierte la fila en el comprobante del dominio. */
     private Comprobante aDominio(ComprobanteEntity e) {
         List<Pago> pagos = e.getPagos().stream()
                 .map(p -> new Pago(p.getId(), p.getMonto(), p.getFechaPago(), p.getReferencia()))

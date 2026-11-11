@@ -25,6 +25,7 @@ public class CuentasPorPagarService {
     private final PublicadorEventos eventos;
     private final Clock reloj;
 
+    /** Recibe el repositorio de cuentas, el publicador de eventos y el reloj. */
     public CuentasPorPagarService(CuentaPorPagarRepositorio cuentas, PublicadorEventos eventos, Clock reloj) {
         this.cuentas = cuentas;
         this.eventos = eventos;
@@ -40,6 +41,7 @@ public class CuentasPorPagarService {
         cuentas.guardar(CuentaPorPagar.crear(ordenId, proveedorId, moneda, total));
     }
 
+    /** Registra un pago contra el saldo de la cuenta. Si no trae fecha, usa la fecha de hoy. */
     @Transactional
     public CuentaPorPagar registrarPago(UUID cuentaId, BigDecimal monto, LocalDate fechaPago, String referencia) {
         CuentaPorPagar cuenta = obtener(cuentaId);
@@ -62,6 +64,7 @@ public class CuentasPorPagarService {
         return cuentas.listarPagosRecientes(LIMITE_LISTADO_PAGOS);
     }
 
+    /** Devuelve una cuenta por id o lanza RecursoNoEncontradoException. */
     @Transactional(readOnly = true)
     public CuentaPorPagar obtener(UUID id) {
         return cuentas.buscarPorId(id)
