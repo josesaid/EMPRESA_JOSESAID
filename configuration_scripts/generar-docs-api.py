@@ -386,14 +386,14 @@ PLANTILLA_FICHA = r"""<!doctype html>
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:40px}
 a{color:hsl(var(--h) 70% 45%)}
 .cabecera{background:linear-gradient(135deg,hsl(var(--h) 72% 40%),hsl(calc(var(--h) + 30) 78% 26%));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 64px}
-.cabecera-in{max-width:1000px;margin:0 auto;min-width:0}
+.cabecera-in{max-width:1400px;margin:0 auto;min-width:0}
 .volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
 .etiqueta{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin:14px 0 10px}
 h1{margin:0 0 8px;font-size:30px;line-height:1.2;text-wrap:balance;overflow-wrap:anywhere}
 .lead{margin:0;opacity:.92;max-width:70ch}
 .pildoras{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .pildora{background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;font-size:13px}
-main{max-width:1000px;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));min-width:0}
+main{max-width:1400px;margin:-40px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));min-width:0}
 nav.tabs{display:flex;gap:4px;overflow-x:auto;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:6px;box-shadow:0 6px 20px var(--sombra)}
 nav.tabs button{flex:1 0 auto;border:0;background:transparent;color:var(--muted);font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:10px;cursor:pointer}
 nav.tabs button[aria-selected="true"]{background:hsl(var(--h) 80% 50% / .14);color:hsl(var(--h) 70% 35%)}
@@ -410,7 +410,7 @@ dl.datos dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
 .subtitulo{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
 .tabla-wrap{overflow-x:auto;max-width:100%}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--linea);vertical-align:top;overflow-wrap:anywhere}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--linea);vertical-align:top;overflow-wrap:break-word}
 th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
 .verbo{font:700 12px ui-monospace,monospace;border-radius:6px;padding:3px 7px;background:hsl(var(--h) 80% 50% / .18);color:hsl(var(--h) 70% 35%)}
 .md{overflow-wrap:anywhere;max-width:100%}
@@ -726,18 +726,29 @@ CSS_TEC = (
     "body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,'Segoe UI',sans-serif;padding-bottom:40px}"
     "a{color:hsl(var(--h) 70% 45%)}"
     ".cab{background:linear-gradient(135deg,hsl(var(--h) 72% 40%),hsl(calc(var(--h) + 30) 78% 26%));color:#fff;padding:28px max(16px,env(safe-area-inset-left,0px)) 56px}"
-    ".in{max-width:900px;margin:0 auto;min-width:0}"
+    ".in{max-width:1400px;margin:0 auto;min-width:0}"
     ".volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}"
     ".etq{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;margin:14px 0 10px}"
     "h1{margin:0 0 8px;font-size:28px;line-height:1.2;overflow-wrap:anywhere}"
     ".lead{margin:0;opacity:.92;max-width:70ch}"
-    "main{max-width:900px;margin:-32px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px))}"
-    ".panel{background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;margin-bottom:16px;min-width:0;overflow-wrap:anywhere}"
+    "main{max-width:1400px;margin:-32px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px))}"
+    ".panel{background:var(--superficie);border:1px solid var(--linea);border-radius:14px;padding:20px;margin-bottom:16px;min-width:0;overflow-wrap:break-word}"
     "h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}"
     "pre{overflow-x:auto;background:rgba(127,127,127,.12);padding:12px;border-radius:10px;font-size:13px}"
     "table{width:100%;border-collapse:collapse;font-size:14px}"
-    "th,td{text-align:left;padding:8px;border-bottom:1px solid var(--linea);vertical-align:top}"
+    "th,td{text-align:left;padding:8px;border-bottom:1px solid var(--linea);vertical-align:top;overflow-wrap:anywhere}"
     "th{color:var(--muted);font-size:12px;text-transform:uppercase}"
+    ".nw{white-space:nowrap}"
+    ".badge{display:inline-block;padding:2px 9px;border-radius:999px;font:600 12px system-ui,sans-serif;white-space:nowrap}"
+    ".b-rojo{background:rgba(220,38,38,.14);color:#b91c1c}"
+    ".b-ambar{background:rgba(217,119,6,.16);color:#b45309}"
+    ".b-verde{background:rgba(5,150,105,.16);color:#047857}"
+    ".b-azul{background:rgba(37,99,235,.14);color:#1d4ed8}"
+    "@media (prefers-color-scheme: dark){:root:not([data-theme=\"light\"]) .b-rojo{color:#fca5a5}:root:not([data-theme=\"light\"]) .b-ambar{color:#fcd34d}:root:not([data-theme=\"light\"]) .b-verde{color:#6ee7b7}:root:not([data-theme=\"light\"]) .b-azul{color:#93c5fd}}"
+    ":root[data-theme=\"dark\"] .b-rojo{color:#fca5a5}:root[data-theme=\"dark\"] .b-ambar{color:#fcd34d}:root[data-theme=\"dark\"] .b-verde{color:#6ee7b7}:root[data-theme=\"dark\"] .b-azul{color:#93c5fd}"
+    "tbody tr:nth-child(even) td{background:rgba(127,127,127,.06)}"
+    "tbody tr:hover td{background:rgba(37,99,235,.08)}"
+    "th{background:rgba(127,127,127,.08)}"
     ".chip{display:inline-block;font:600 12px ui-monospace,monospace;background:hsl(var(--h) 80% 50% / .16);color:hsl(var(--h) 70% 35%);border-radius:6px;padding:3px 8px;margin:2px 4px 2px 0}"
 )
 
@@ -748,6 +759,25 @@ def bloque_plugin(texto, artefacto):
             return bloque
     return None
 
+
+TONOS_CELDA = {
+    "Severidad": {"Error": "rojo", "Warning": "ambar", "Info": "azul"},
+    "Resultado": {"Pasa": "verde", "Falla": "rojo", "Error": "rojo", "Omitida": "ambar"},
+}
+
+
+def insignia(columna, valor):
+    """Escapa el valor y, si la columna tiene tono, lo muestra como insignia de color."""
+    texto = str(valor)
+    if columna == "Prioridad":
+        tono = "rojo" if texto == "1" else "ambar" if texto == "2" else "azul" if texto.isdigit() else None
+    else:
+        tono = TONOS_CELDA.get(columna, {}).get(texto)
+    esc = html.escape(texto)
+    return f"<span class='badge b-{tono}'>{esc}</span>" if tono else esc
+
+
+COLUMNAS_CORTAS = {"Línea", "Severidad", "Prioridad", "Resultado", "Tiempo", "Categoría", "Tipo", "Líneas", "Ramas", "Métodos"}
 
 ENCABEZADOS_DETALLE = {
     "pruebas": ["Clase", "Prueba", "Resultado", "Tiempo"],
@@ -948,9 +978,11 @@ def seccion_resultados(svc_dir, tid):
     tabla = "<table>" + "".join(f"<tr><th>{e(str(k))}</th><td>{e(str(v))}</td></tr>" for k, v in filas) + "</table>"
     if detalle:
         cab = ENCABEZADOS_DETALLE.get(tid, [])
-        cuerpo = "".join("<tr>" + "".join(f"<td>{e(str(c))}</td>" for c in fila) + "</tr>" for fila in detalle)
+        cortas = {i for i, h in enumerate(cab) if h in COLUMNAS_CORTAS}
+        clase = lambda i: " class='nw'" if i in cortas else ""
+        cuerpo = "".join("<tr>" + "".join(f"<td{clase(i)}>{insignia(cab[i] if i < len(cab) else '', c)}</td>" for i, c in enumerate(fila)) + "</tr>" for fila in detalle)
         lista = ("<h2 style='margin-top:16px'>Detalle</h2><div style='overflow-x:auto'><table><tr>"
-                 + "".join(f"<th>{e(h)}</th>" for h in cab) + "</tr>" + cuerpo + "</table></div>")
+                 + "".join(f"<th{clase(i)}>{e(h)}</th>" for i, h in enumerate(cab)) + "</tr>" + cuerpo + "</table></div>")
     else:
         lista = "<p class='aviso'>Sin elementos que mostrar.</p>"
     return f"<section class='panel'><h2>Resultados · {e(fecha)}</h2>{tabla}{lista}</section>"
@@ -1079,13 +1111,18 @@ def main():
         print(f"✅ {svc}: {n} endpoints · {len(diagramas)} diagramas · README {'sí' if readme else 'no'}")
     with open(os.path.join(SALIDA, "index.html"), "w", encoding="utf-8") as f:
         f.write(pagina_indice(resumen))
+    with open(os.path.join(RAIZ, "index.html"), "w", encoding="utf-8") as f:
+        f.write(pagina_indice(resumen, desde_raiz=True))
     print(f"🏁 Fichas generadas en {SALIDA}")
 
 
-def pagina_indice(resumen):
+def pagina_indice(resumen, desde_raiz=False):
     total = sum(n for _, n in resumen)
+    pre_api = "docs/api/" if desde_raiz else ""
+    pre_raiz = "" if desde_raiz else "../../"
+    pre_docs = "docs/" if desde_raiz else "../"
     tarjetas = "\n".join(
-        f'<a class="tarjeta" style="--h:{(i * 137.508) % 360:.0f}" href="{html.escape(svc)}.html">'
+        f'<a class="tarjeta" style="--h:{(i * 137.508) % 360:.0f}" href="{pre_api}{html.escape(svc)}.html">'
         f'<span class="nombre">{html.escape(svc)}</span>'
         f'<span class="conteo">{texto_conteo(n)}</span>'
         f'<span class="ver">Abrir ficha →</span></a>'
@@ -1217,6 +1254,15 @@ footer{{margin-top:32px;color:var(--muted);font-size:13px}}
     <div class="stat"><b>{len(resumen)}</b><span>Servicios documentados</span></div>
     <div class="stat"><b>{total}</b><span>Endpoints</span></div>
     <div class="stat"><b>{fecha}</b><span>Fecha de generación</span></div>
+  </div>
+  <h2>Guías</h2>
+  <div class="grid">
+<a class="tarjeta" style="--h:200" href="{pre_raiz}instrucciones.html"><span class="nombre">Instrucciones</span><span class="conteo">Arrancar y apagar el proyecto</span><span class="ver">Abrir guía →</span></a>
+<a class="tarjeta" style="--h:20" href="{pre_raiz}diagramas.html"><span class="nombre">Diagramas</span><span class="conteo">Arquitectura y flujos del sistema</span><span class="ver">Abrir diagramas →</span></a>
+<a class="tarjeta" style="--h:110" href="{pre_raiz}manual.html"><span class="nombre">Manual</span><span class="conteo">Manual completo del proyecto</span><span class="ver">Abrir manual →</span></a>
+<a class="tarjeta" style="--h:160" href="{pre_docs}guias/README.html"><span class="nombre">Guías de procesos</span><span class="conteo">Órdenes, pagos, usuarios y más</span><span class="ver">Abrir guías →</span></a>
+<a class="tarjeta" style="--h:260" href="{pre_docs}seguridad/inventario-de-claves.md"><span class="nombre">Seguridad</span><span class="conteo">Auditoría de cifrado y rotación de claves</span><span class="ver">Abrir notas →</span></a>
+<a class="tarjeta" style="--h:320" href="{pre_docs}registro-prs.md"><span class="nombre">Registro de PRs</span><span class="conteo">Historial de pull requests</span><span class="ver">Abrir registro →</span></a>
   </div>
   <h2>Servicios</h2>
   <div class="grid">
