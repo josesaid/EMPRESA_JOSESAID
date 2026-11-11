@@ -9,9 +9,9 @@ import java.util.List;
 /**
  * Subtotal, IVA y total redondeados a los decimales de la moneda con redondeo bancario.
  *
- * @param subtotal componente de tipo {@code BigDecimal}.
- * @param iva componente de tipo {@code BigDecimal}.
- * @param total componente de tipo {@code BigDecimal}.
+ * @param subtotal subtotal antes de impuestos, de tipo {@code BigDecimal}.
+ * @param iva iva, de tipo {@code BigDecimal}.
+ * @param total importe total, de tipo {@code BigDecimal}.
  */
 public record Totales(BigDecimal subtotal, BigDecimal iva, BigDecimal total) {
 

@@ -19,9 +19,9 @@ public interface ReservasPedidoRepositorio {
     /**
      * Reserva registrada para un pedido: artículo, almacén y cantidad.
      *
-     * @param articuloId componente de tipo {@code UUID}.
-     * @param almacenId componente de tipo {@code UUID}.
-     * @param cantidad componente de tipo {@code BigDecimal}.
+     * @param articuloId identificador del artículo, de tipo {@code UUID}.
+     * @param almacenId identificador del almacen, de tipo {@code UUID}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code BigDecimal}.
      */
     record Reserva(UUID articuloId, UUID almacenId, BigDecimal cantidad) {
     }

@@ -123,11 +123,11 @@ public class InventarioControlador {
     /**
      * Datos para dar de alta un artículo.
      *
-     * @param sku componente de tipo {@code String}.
-     * @param nombre componente de tipo {@code String}.
-     * @param unidad componente de tipo {@code String}.
-     * @param loteObligatorio componente de tipo {@code Boolean}.
-     * @param minimo componente de tipo {@code BigDecimal}.
+     * @param sku clave SKU del artículo, de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param unidad unidad, de tipo {@code String}.
+     * @param loteObligatorio lote obligatorio, de tipo {@code Boolean}.
+     * @param minimo minimo, de tipo {@code BigDecimal}.
      */
     public record CrearArticuloSolicitud(
             @NotBlank @Size(max = 40) String sku,
@@ -140,8 +140,8 @@ public class InventarioControlador {
     /**
      * Datos para dar de alta un almacén.
      *
-     * @param nombre componente de tipo {@code String}.
-     * @param ubicacion componente de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param ubicacion ubicacion, de tipo {@code String}.
      */
     public record CrearAlmacenSolicitud(@NotBlank @Size(max = 100) String nombre,
                                         @NotBlank @Size(max = 200) String ubicacion) {
@@ -150,12 +150,12 @@ public class InventarioControlador {
     /**
      * Datos de un movimiento: artículo, almacén, tipo, cantidad, lote y referencia.
      *
-     * @param articuloId componente de tipo {@code UUID}.
-     * @param almacenId componente de tipo {@code UUID}.
-     * @param tipo componente de tipo {@code TipoMovimiento}.
-     * @param cantidad componente de tipo {@code BigDecimal}.
-     * @param lote componente de tipo {@code String}.
-     * @param referencia componente de tipo {@code String}.
+     * @param articuloId identificador del artículo, de tipo {@code UUID}.
+     * @param almacenId identificador del almacen, de tipo {@code UUID}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoMovimiento}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code BigDecimal}.
+     * @param lote lote, de tipo {@code String}.
+     * @param referencia referencia externa o interna del documento, de tipo {@code String}.
      */
     public record RegistrarMovimientoSolicitud(
             @NotNull UUID articuloId,
@@ -169,8 +169,8 @@ public class InventarioControlador {
     /**
      * Datos para crear una orden: tipo y cantidad objetivo.
      *
-     * @param tipo componente de tipo {@code TipoOrden}.
-     * @param cantidadObjetivo componente de tipo {@code BigDecimal}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoOrden}.
+     * @param cantidadObjetivo cantidad objetivo, de tipo {@code BigDecimal}.
      */
     public record CrearOrdenSolicitud(@NotNull TipoOrden tipo, @NotNull @Digits(integer = 9, fraction = 3) BigDecimal cantidadObjetivo) {
     }
@@ -178,7 +178,7 @@ public class InventarioControlador {
     /**
      * Datos para cerrar una orden: cantidad real.
      *
-     * @param cantidadReal componente de tipo {@code BigDecimal}.
+     * @param cantidadReal cantidad real, de tipo {@code BigDecimal}.
      */
     public record CerrarOrdenSolicitud(@NotNull @Digits(integer = 9, fraction = 3) BigDecimal cantidadReal) {
     }
@@ -186,12 +186,12 @@ public class InventarioControlador {
     /**
      * Respuesta de un artículo.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param sku componente de tipo {@code String}.
-     * @param nombre componente de tipo {@code String}.
-     * @param unidad componente de tipo {@code String}.
-     * @param loteObligatorio componente de tipo {@code boolean}.
-     * @param minimo componente de tipo {@code BigDecimal}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param sku clave SKU del artículo, de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param unidad unidad, de tipo {@code String}.
+     * @param loteObligatorio lote obligatorio, de tipo {@code boolean}.
+     * @param minimo minimo, de tipo {@code BigDecimal}.
      */
     public record ArticuloRespuesta(UUID id, String sku, String nombre, String unidad, boolean loteObligatorio,
                                     BigDecimal minimo) {
@@ -205,9 +205,9 @@ public class InventarioControlador {
     /**
      * Respuesta de un almacén.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param nombre componente de tipo {@code String}.
-     * @param ubicacion componente de tipo {@code String}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param ubicacion ubicacion, de tipo {@code String}.
      */
     public record AlmacenRespuesta(UUID id, String nombre, String ubicacion) {
         /** Convierte un almacén en su respuesta. */
@@ -219,14 +219,14 @@ public class InventarioControlador {
     /**
      * Respuesta de un movimiento.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param articuloId componente de tipo {@code UUID}.
-     * @param almacenId componente de tipo {@code UUID}.
-     * @param tipo componente de tipo {@code TipoMovimiento}.
-     * @param cantidad componente de tipo {@code BigDecimal}.
-     * @param lote componente de tipo {@code String}.
-     * @param referencia componente de tipo {@code String}.
-     * @param creadoUtc componente de tipo {@code Instant}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param articuloId identificador del artículo, de tipo {@code UUID}.
+     * @param almacenId identificador del almacen, de tipo {@code UUID}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoMovimiento}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code BigDecimal}.
+     * @param lote lote, de tipo {@code String}.
+     * @param referencia referencia externa o interna del documento, de tipo {@code String}.
+     * @param creadoUtc creado utc, de tipo {@code Instant}.
      */
     public record MovimientoRespuesta(UUID id, UUID articuloId, UUID almacenId, TipoMovimiento tipo,
                                       BigDecimal cantidad, String lote, String referencia, Instant creadoUtc) {
@@ -240,13 +240,13 @@ public class InventarioControlador {
     /**
      * Respuesta de un artículo que está por debajo de su mínimo.
      *
-     * @param articuloId componente de tipo {@code UUID}.
-     * @param sku componente de tipo {@code String}.
-     * @param nombre componente de tipo {@code String}.
-     * @param unidad componente de tipo {@code String}.
-     * @param minimo componente de tipo {@code BigDecimal}.
-     * @param existencia componente de tipo {@code BigDecimal}.
-     * @param faltante componente de tipo {@code BigDecimal}.
+     * @param articuloId identificador del artículo, de tipo {@code UUID}.
+     * @param sku clave SKU del artículo, de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param unidad unidad, de tipo {@code String}.
+     * @param minimo minimo, de tipo {@code BigDecimal}.
+     * @param existencia existencia, de tipo {@code BigDecimal}.
+     * @param faltante faltante, de tipo {@code BigDecimal}.
      */
     public record ArticuloBajoMinimoRespuesta(UUID articuloId, String sku, String nombre, String unidad,
                                               BigDecimal minimo, BigDecimal existencia, BigDecimal faltante) {
@@ -260,10 +260,10 @@ public class InventarioControlador {
     /**
      * Respuesta de la existencia de un artículo en un almacén.
      *
-     * @param almacenId componente de tipo {@code UUID}.
-     * @param cantidad componente de tipo {@code BigDecimal}.
-     * @param reservado componente de tipo {@code BigDecimal}.
-     * @param disponible componente de tipo {@code BigDecimal}.
+     * @param almacenId identificador del almacen, de tipo {@code UUID}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code BigDecimal}.
+     * @param reservado reservado, de tipo {@code BigDecimal}.
+     * @param disponible disponible, de tipo {@code BigDecimal}.
      */
     public record ExistenciaRespuesta(UUID almacenId, BigDecimal cantidad, BigDecimal reservado, BigDecimal disponible) {
         /** Convierte una existencia en su respuesta, con el disponible calculado. */
@@ -275,11 +275,11 @@ public class InventarioControlador {
     /**
      * Respuesta de una orden de operación.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param tipo componente de tipo {@code TipoOrden}.
-     * @param estatus componente de tipo {@code EstatusOrden}.
-     * @param cantidadObjetivo componente de tipo {@code BigDecimal}.
-     * @param cantidadReal componente de tipo {@code BigDecimal}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoOrden}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusOrden}.
+     * @param cantidadObjetivo cantidad objetivo, de tipo {@code BigDecimal}.
+     * @param cantidadReal cantidad real, de tipo {@code BigDecimal}.
      */
     public record OrdenRespuesta(UUID id, TipoOrden tipo, EstatusOrden estatus, BigDecimal cantidadObjetivo,
                                  BigDecimal cantidadReal) {

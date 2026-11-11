@@ -13,11 +13,11 @@ import java.util.UUID;
 /**
  * Balanza de comprobación de un periodo. Solo incluye lo que sí está calculado:
  * balanza de comprobación. Estado de resultados y balance general son pendientes.
-  * @param periodo componente de tipo {@code String}.
-  * @param lineas componente de tipo {@code List<Linea>}.
-  * @param totalCargos componente de tipo {@code BigDecimal}.
-  * @param totalAbonos componente de tipo {@code BigDecimal}.
-  * @param cuadra componente de tipo {@code boolean}.
+  * @param periodo periodo de referencia (por ejemplo, año y mes), de tipo {@code String}.
+  * @param lineas líneas o renglones del documento, de tipo {@code List<Linea>}.
+  * @param totalCargos total cargos, de tipo {@code BigDecimal}.
+  * @param totalAbonos total abonos, de tipo {@code BigDecimal}.
+  * @param cuadra cuadra, de tipo {@code boolean}.
  */
 public record Balanza(String periodo, List<Linea> lineas, BigDecimal totalCargos, BigDecimal totalAbonos,
                       boolean cuadra) {
@@ -25,12 +25,12 @@ public record Balanza(String periodo, List<Linea> lineas, BigDecimal totalCargos
     /**
      * Línea de la balanza: cuenta, cargos, abonos y saldo según la naturaleza de la cuenta.
      *
-     * @param cuentaId componente de tipo {@code UUID}.
-     * @param codigo componente de tipo {@code String}.
-     * @param nombre componente de tipo {@code String}.
-     * @param cargos componente de tipo {@code BigDecimal}.
-     * @param abonos componente de tipo {@code BigDecimal}.
-     * @param saldo componente de tipo {@code BigDecimal}.
+     * @param cuentaId identificador de la cuenta contable, de tipo {@code UUID}.
+     * @param codigo código legible que identifica el registro, de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param cargos cargos, de tipo {@code BigDecimal}.
+     * @param abonos abonos, de tipo {@code BigDecimal}.
+     * @param saldo saldo pendiente, de tipo {@code BigDecimal}.
      */
     public record Linea(UUID cuentaId, String codigo, String nombre, BigDecimal cargos, BigDecimal abonos,
                         BigDecimal saldo) {

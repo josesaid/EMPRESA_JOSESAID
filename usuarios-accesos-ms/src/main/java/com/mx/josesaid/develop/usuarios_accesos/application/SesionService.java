@@ -39,8 +39,8 @@ public class SesionService {
     /**
      * Access token y refresh token en texto plano. Solo se devuelven al cliente, nunca se guardan.
      *
-     * @param accessToken componente de tipo {@code String}.
-     * @param refreshToken componente de tipo {@code String}.
+     * @param accessToken access token, de tipo {@code String}.
+     * @param refreshToken refresh token, de tipo {@code String}.
      */
     public record Par(String accessToken, String refreshToken) {
     }

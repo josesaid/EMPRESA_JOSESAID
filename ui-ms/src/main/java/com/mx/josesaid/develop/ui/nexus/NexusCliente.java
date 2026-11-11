@@ -49,7 +49,7 @@ public class NexusCliente {
     /**
      * Respuesta de nexus-ms a una consulta.
      *
-     * @param respuesta componente de tipo {@code String}.
+     * @param respuesta respuesta, de tipo {@code String}.
      */
     public record RespuestaConsulta(String respuesta) {
     }

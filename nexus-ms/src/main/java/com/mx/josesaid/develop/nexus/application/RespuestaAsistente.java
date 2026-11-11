@@ -5,10 +5,10 @@ import java.util.List;
 /**
  * Respuesta del asistente con los datos de consumo y herramientas para la auditoría.
  *
- * @param texto componente de tipo {@code String}.
- * @param tokensEntrada componente de tipo {@code Integer}.
- * @param tokensSalida componente de tipo {@code Integer}.
- * @param herramientas componente de tipo {@code List<String>}.
+ * @param texto texto libre, de tipo {@code String}.
+ * @param tokensEntrada tokens entrada, de tipo {@code Integer}.
+ * @param tokensSalida tokens salida, de tipo {@code Integer}.
+ * @param herramientas herramientas, de tipo {@code List<String>}.
  */
 public record RespuestaAsistente(String texto, Integer tokensEntrada, Integer tokensSalida, List<String> herramientas) {
 

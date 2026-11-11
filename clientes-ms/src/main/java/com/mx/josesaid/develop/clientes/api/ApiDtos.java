@@ -37,10 +37,10 @@ public final class ApiDtos {
     /**
      * Datos para registrar un prospecto: nombre, correo, RFC, fuente y confirmación de duplicado si ya fue revisado.
      *
-     * @param nombre componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param fuente componente de tipo {@code Fuente}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param fuente fuente, de tipo {@code Fuente}.
      */
     public record NuevoProspectoRequest(
             @NotBlank @Size(max = 200) String nombre,
@@ -52,7 +52,7 @@ public final class ApiDtos {
     /**
      * Cambio de estatus de un prospecto.
      *
-     * @param estatus componente de tipo {@code EstatusProspecto}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusProspecto}.
      */
     public record CambioEstatusProspectoRequest(@NotNull EstatusProspecto estatus) {
     }
@@ -60,7 +60,7 @@ public final class ApiDtos {
     /**
      * Cambio de estatus de un cliente.
      *
-     * @param estatus componente de tipo {@code EstatusCliente}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusCliente}.
      */
     public record CambioEstatusClienteRequest(@NotNull EstatusCliente estatus) {
     }
@@ -68,9 +68,9 @@ public final class ApiDtos {
     /**
      * Datos de un contacto: nombre, correo y rol.
      *
-     * @param nombre componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
-     * @param rol componente de tipo {@code RolContacto}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param rol rol asignado, de tipo {@code RolContacto}.
      */
     public record DatosContactoRequest(
             @NotBlank @Size(max = 200) String nombre,
@@ -81,9 +81,9 @@ public final class ApiDtos {
     /**
      * Datos para convertir un prospecto en cliente: razón social, RFC y contacto principal.
      *
-     * @param razonSocial componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param contactoPrincipal componente de tipo {@code DatosContactoRequest}.
+     * @param razonSocial razón social, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param contactoPrincipal contacto principal, de tipo {@code DatosContactoRequest}.
      */
     public record ConvertirProspectoRequest(
             @NotBlank @Size(max = 250) String razonSocial,
@@ -94,9 +94,9 @@ public final class ApiDtos {
     /**
      * Datos para dar de alta un cliente directo, con su contacto principal.
      *
-     * @param razonSocial componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param contactoPrincipal componente de tipo {@code DatosContactoRequest}.
+     * @param razonSocial razón social, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param contactoPrincipal contacto principal, de tipo {@code DatosContactoRequest}.
      */
     public record NuevoClienteRequest(
             @NotBlank @Size(max = 250) String razonSocial,
@@ -107,7 +107,7 @@ public final class ApiDtos {
     /**
      * Cambio de la razón social de un cliente.
      *
-     * @param razonSocial componente de tipo {@code String}.
+     * @param razonSocial razón social, de tipo {@code String}.
      */
     public record ActualizarClienteRequest(@NotBlank @Size(max = 250) String razonSocial) {
     }
@@ -115,10 +115,10 @@ public final class ApiDtos {
     /**
      * Datos para agregar un contacto a un cliente, con indicador de principal.
      *
-     * @param nombre componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
-     * @param rol componente de tipo {@code RolContacto}.
-     * @param principal componente de tipo {@code boolean}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param rol rol asignado, de tipo {@code RolContacto}.
+     * @param principal principal, de tipo {@code boolean}.
      */
     public record ContactoRequest(
             @NotBlank @Size(max = 200) String nombre,
@@ -130,9 +130,9 @@ public final class ApiDtos {
     /**
      * Datos de una interacción comercial: tipo, fecha y resumen.
      *
-     * @param tipo componente de tipo {@code TipoInteraccion}.
-     * @param fecha componente de tipo {@code Instant}.
-     * @param resumen componente de tipo {@code String}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoInteraccion}.
+     * @param fecha fecha del registro, de tipo {@code Instant}.
+     * @param resumen resumen breve, de tipo {@code String}.
      */
     public record NuevaInteraccionRequest(
             @NotNull TipoInteraccion tipo,
@@ -143,10 +143,10 @@ public final class ApiDtos {
     /**
      * Datos de un consentimiento: finalidad, fecha, medio y vigencia.
      *
-     * @param finalidad componente de tipo {@code String}.
-     * @param fechaOtorgado componente de tipo {@code Instant}.
-     * @param medio componente de tipo {@code MedioConsentimiento}.
-     * @param vigencia componente de tipo {@code LocalDate}.
+     * @param finalidad finalidad, de tipo {@code String}.
+     * @param fechaOtorgado fecha otorgado, de tipo {@code Instant}.
+     * @param medio medio, de tipo {@code MedioConsentimiento}.
+     * @param vigencia vigencia del registro, de tipo {@code LocalDate}.
      */
     public record NuevoConsentimientoRequest(
             @NotBlank @Size(max = 100) String finalidad,
@@ -160,14 +160,14 @@ public final class ApiDtos {
     /**
      * Respuesta de un prospecto. El correo, el nombre y el RFC van enmascarados.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param nombre componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param fuente componente de tipo {@code Fuente}.
-     * @param estatus componente de tipo {@code EstatusProspecto}.
-     * @param fechaRegistro componente de tipo {@code LocalDate}.
-     * @param fechaConversion componente de tipo {@code OffsetDateTime}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param fuente fuente, de tipo {@code Fuente}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusProspecto}.
+     * @param fechaRegistro fecha registro, de tipo {@code LocalDate}.
+     * @param fechaConversion fecha conversion, de tipo {@code OffsetDateTime}.
      */
     public record ProspectoResponse(
             UUID id,
@@ -190,12 +190,12 @@ public final class ApiDtos {
     /**
      * Respuesta de un cliente.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param razonSocial componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param estatus componente de tipo {@code EstatusCliente}.
-     * @param prospectoId componente de tipo {@code UUID}.
-     * @param fechaAlta componente de tipo {@code LocalDate}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param razonSocial razón social, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusCliente}.
+     * @param prospectoId identificador del prospecto, de tipo {@code UUID}.
+     * @param fechaAlta fecha alta, de tipo {@code LocalDate}.
      */
     public record ClienteResponse(
             UUID id,
@@ -215,8 +215,8 @@ public final class ApiDtos {
     /**
      * Resumen de un cliente con su última interacción.
      *
-     * @param cliente componente de tipo {@code ClienteResponse}.
-     * @param ultimaInteraccion componente de tipo {@code InteraccionResponse}.
+     * @param cliente cliente, de tipo {@code ClienteResponse}.
+     * @param ultimaInteraccion ultima interaccion, de tipo {@code InteraccionResponse}.
      */
     public record ClienteResumenResponse(ClienteResponse cliente, InteraccionResponse ultimaInteraccion) {
     }
@@ -224,12 +224,12 @@ public final class ApiDtos {
     /**
      * Respuesta de un contacto. El correo va enmascarado.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param clienteId componente de tipo {@code UUID}.
-     * @param nombre componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
-     * @param rol componente de tipo {@code RolContacto}.
-     * @param principal componente de tipo {@code boolean}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param clienteId identificador del cliente, de tipo {@code UUID}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param rol rol asignado, de tipo {@code RolContacto}.
+     * @param principal principal, de tipo {@code boolean}.
      */
     public record ContactoResponse(
             UUID id,
@@ -249,12 +249,12 @@ public final class ApiDtos {
     /**
      * Respuesta de una interacción.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param clienteId componente de tipo {@code UUID}.
-     * @param tipo componente de tipo {@code TipoInteraccion}.
-     * @param fecha componente de tipo {@code OffsetDateTime}.
-     * @param responsableId componente de tipo {@code UUID}.
-     * @param resumen componente de tipo {@code String}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param clienteId identificador del cliente, de tipo {@code UUID}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoInteraccion}.
+     * @param fecha fecha del registro, de tipo {@code OffsetDateTime}.
+     * @param responsableId identificador del responsable, de tipo {@code UUID}.
+     * @param resumen resumen breve, de tipo {@code String}.
      */
     public record InteraccionResponse(
             UUID id,
@@ -274,13 +274,13 @@ public final class ApiDtos {
     /**
      * Respuesta de un consentimiento.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param contactoId componente de tipo {@code UUID}.
-     * @param finalidad componente de tipo {@code String}.
-     * @param fechaOtorgado componente de tipo {@code OffsetDateTime}.
-     * @param medio componente de tipo {@code MedioConsentimiento}.
-     * @param vigencia componente de tipo {@code LocalDate}.
-     * @param revocadoEn componente de tipo {@code OffsetDateTime}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param contactoId identificador del contacto, de tipo {@code UUID}.
+     * @param finalidad finalidad, de tipo {@code String}.
+     * @param fechaOtorgado fecha otorgado, de tipo {@code OffsetDateTime}.
+     * @param medio medio, de tipo {@code MedioConsentimiento}.
+     * @param vigencia vigencia del registro, de tipo {@code LocalDate}.
+     * @param revocadoEn revocado en, de tipo {@code OffsetDateTime}.
      */
     public record ConsentimientoResponse(
             UUID id,
@@ -302,8 +302,8 @@ public final class ApiDtos {
     /**
      * Conversiones de prospectos a clientes por mes.
      *
-     * @param mes componente de tipo {@code String}.
-     * @param conversiones componente de tipo {@code long}.
+     * @param mes mes, de tipo {@code String}.
+     * @param conversiones conversiones, de tipo {@code long}.
      */
     public record MetricaConversionResponse(String mes, long conversiones) {
     }

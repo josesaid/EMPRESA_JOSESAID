@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 /**
  * Precio por millón de tokens, en la moneda que se configure (por ejemplo USD).
  * Los valores se pasan desde configuración; este módulo no fija precios.
-  * @param entradaPorMillon componente de tipo {@code BigDecimal}.
-  * @param salidaPorMillon componente de tipo {@code BigDecimal}.
+  * @param entradaPorMillon entrada por millon, de tipo {@code BigDecimal}.
+  * @param salidaPorMillon salida por millon, de tipo {@code BigDecimal}.
  */
 public record PreciosTokens(BigDecimal entradaPorMillon, BigDecimal salidaPorMillon) {
 

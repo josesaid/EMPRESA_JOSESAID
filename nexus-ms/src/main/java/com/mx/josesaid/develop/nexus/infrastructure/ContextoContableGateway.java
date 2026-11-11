@@ -73,9 +73,9 @@ public final class ContextoContableGateway implements ContextoContable {
     /**
      * Cuenta tal como la devuelve el gateway.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param codigo componente de tipo {@code String}.
-     * @param nombre componente de tipo {@code String}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param codigo código legible que identifica el registro, de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
      */
     record RespuestaCuenta(UUID id, String codigo, String nombre) {
     }
@@ -83,10 +83,10 @@ public final class ContextoContableGateway implements ContextoContable {
     /**
      * Póliza tal como la devuelve el gateway.
      *
-     * @param tipo componente de tipo {@code String}.
-     * @param fecha componente de tipo {@code LocalDate}.
-     * @param estatus componente de tipo {@code String}.
-     * @param movimientos componente de tipo {@code List<RespuestaMovimiento>}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code String}.
+     * @param fecha fecha del registro, de tipo {@code LocalDate}.
+     * @param estatus estado actual del registro, de tipo {@code String}.
+     * @param movimientos movimientos, de tipo {@code List<RespuestaMovimiento>}.
      */
     record RespuestaPoliza(String tipo, LocalDate fecha, String estatus, List<RespuestaMovimiento> movimientos) {
     }
@@ -94,9 +94,9 @@ public final class ContextoContableGateway implements ContextoContable {
     /**
      * Movimiento de una póliza: cuenta, cargo y abono.
      *
-     * @param cuentaId componente de tipo {@code UUID}.
-     * @param cargo componente de tipo {@code BigDecimal}.
-     * @param abono componente de tipo {@code BigDecimal}.
+     * @param cuentaId identificador de la cuenta contable, de tipo {@code UUID}.
+     * @param cargo importe del cargo, de tipo {@code BigDecimal}.
+     * @param abono importe del abono, de tipo {@code BigDecimal}.
      */
     record RespuestaMovimiento(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
     }

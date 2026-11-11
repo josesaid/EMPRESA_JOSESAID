@@ -83,11 +83,11 @@ public class PublicadorIndicadoresClientes {
     /**
      * Formato que espera reportes-ejecutivos-ms (ListenerIndicadores.IndicadorEvento).
      *
-     * @param area componente de tipo {@code String}.
-     * @param nombre componente de tipo {@code String}.
-     * @param periodo componente de tipo {@code String}.
-     * @param valor componente de tipo {@code BigDecimal}.
-     * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
+     * @param area área de negocio a la que pertenece, de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param periodo periodo de referencia (por ejemplo, año y mes), de tipo {@code String}.
+     * @param valor valor registrado, de tipo {@code BigDecimal}.
+     * @param fuenteActualizadaUtc fecha y hora (UTC) de la última actualización de la fuente, de tipo {@code Instant}.
      */
     public record IndicadorEvento(String area, String nombre, String periodo, BigDecimal valor,
                                   Instant fuenteActualizadaUtc) {

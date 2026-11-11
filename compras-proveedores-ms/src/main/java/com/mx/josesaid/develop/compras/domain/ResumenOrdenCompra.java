@@ -6,10 +6,10 @@ import java.util.UUID;
 /**
  * Datos de una orden que el listado necesita: sin líneas ni montos.
  *
- * @param id componente de tipo {@code UUID}.
- * @param proveedorId componente de tipo {@code UUID}.
- * @param estatus componente de tipo {@code EstatusOrdenCompra}.
- * @param creadaUtc componente de tipo {@code Instant}.
+ * @param id identificador único del registro, de tipo {@code UUID}.
+ * @param proveedorId identificador del proveedor, de tipo {@code UUID}.
+ * @param estatus estado actual del registro, de tipo {@code EstatusOrdenCompra}.
+ * @param creadaUtc creada utc, de tipo {@code Instant}.
  */
 public record ResumenOrdenCompra(UUID id, UUID proveedorId, EstatusOrdenCompra estatus, Instant creadaUtc) {
 }

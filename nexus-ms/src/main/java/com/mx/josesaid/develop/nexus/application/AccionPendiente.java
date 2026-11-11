@@ -6,14 +6,14 @@ import java.util.UUID;
 /**
  * Acción de escritura que Nexus preparó y que espera la confirmación del usuario.
  *
- * @param id componente de tipo {@code UUID}.
- * @param usuario componente de tipo {@code String}.
- * @param tipo componente de tipo {@code String}.
- * @param payload componente de tipo {@code String}.
- * @param resumen componente de tipo {@code String}.
- * @param estatus componente de tipo {@code String}.
- * @param creadaUtc componente de tipo {@code Instant}.
- * @param expiraUtc componente de tipo {@code Instant}.
+ * @param id identificador único del registro, de tipo {@code UUID}.
+ * @param usuario usuario, de tipo {@code String}.
+ * @param tipo tipo o clasificación del registro, de tipo {@code String}.
+ * @param payload payload, de tipo {@code String}.
+ * @param resumen resumen breve, de tipo {@code String}.
+ * @param estatus estado actual del registro, de tipo {@code String}.
+ * @param creadaUtc creada utc, de tipo {@code Instant}.
+ * @param expiraUtc expira utc, de tipo {@code Instant}.
  */
 public record AccionPendiente(UUID id, String usuario, String tipo, String payload, String resumen,
                               String estatus, Instant creadaUtc, Instant expiraUtc) {

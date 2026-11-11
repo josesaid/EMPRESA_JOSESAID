@@ -68,9 +68,9 @@ public class CuentasPorPagarControlador {
     /**
      * Datos de un pago a proveedor: monto, fecha opcional y referencia.
      *
-     * @param monto componente de tipo {@code BigDecimal}.
-     * @param fechaPago componente de tipo {@code LocalDate}.
-     * @param referencia componente de tipo {@code String}.
+     * @param monto monto del movimiento, de tipo {@code BigDecimal}.
+     * @param fechaPago fecha en que se realizó el pago, de tipo {@code LocalDate}.
+     * @param referencia referencia externa o interna del documento, de tipo {@code String}.
      */
     public record RegistrarPagoSolicitud(
             @NotNull @Positive BigDecimal monto,
@@ -81,14 +81,14 @@ public class CuentasPorPagarControlador {
     /**
      * Respuesta de una cuenta por pagar.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param ordenId componente de tipo {@code UUID}.
-     * @param proveedorId componente de tipo {@code UUID}.
-     * @param moneda componente de tipo {@code String}.
-     * @param monto componente de tipo {@code BigDecimal}.
-     * @param saldo componente de tipo {@code BigDecimal}.
-     * @param estatus componente de tipo {@code String}.
-     * @param pagos componente de tipo {@code List<PagoRespuesta>}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param ordenId identificador del orden, de tipo {@code UUID}.
+     * @param proveedorId identificador del proveedor, de tipo {@code UUID}.
+     * @param moneda código de moneda (por ejemplo, MXN), de tipo {@code String}.
+     * @param monto monto del movimiento, de tipo {@code BigDecimal}.
+     * @param saldo saldo pendiente, de tipo {@code BigDecimal}.
+     * @param estatus estado actual del registro, de tipo {@code String}.
+     * @param pagos pagos, de tipo {@code List<PagoRespuesta>}.
      */
     public record CuentaRespuesta(UUID id, UUID ordenId, UUID proveedorId, String moneda, BigDecimal monto,
                                   BigDecimal saldo, String estatus, List<PagoRespuesta> pagos) {
@@ -103,11 +103,11 @@ public class CuentasPorPagarControlador {
     /**
      * Pago dentro de un listado, con la cuenta a la que pertenece.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param cuentaId componente de tipo {@code UUID}.
-     * @param monto componente de tipo {@code BigDecimal}.
-     * @param fechaPago componente de tipo {@code LocalDate}.
-     * @param referencia componente de tipo {@code String}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param cuentaId identificador de la cuenta contable, de tipo {@code UUID}.
+     * @param monto monto del movimiento, de tipo {@code BigDecimal}.
+     * @param fechaPago fecha en que se realizó el pago, de tipo {@code LocalDate}.
+     * @param referencia referencia externa o interna del documento, de tipo {@code String}.
      */
     public record PagoListadoRespuesta(UUID id, UUID cuentaId, BigDecimal monto, LocalDate fechaPago,
                                        String referencia) {
@@ -116,10 +116,10 @@ public class CuentasPorPagarControlador {
     /**
      * Respuesta de un pago a proveedor.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param monto componente de tipo {@code BigDecimal}.
-     * @param fechaPago componente de tipo {@code LocalDate}.
-     * @param referencia componente de tipo {@code String}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param monto monto del movimiento, de tipo {@code BigDecimal}.
+     * @param fechaPago fecha en que se realizó el pago, de tipo {@code LocalDate}.
+     * @param referencia referencia externa o interna del documento, de tipo {@code String}.
      */
     public record PagoRespuesta(UUID id, BigDecimal monto, LocalDate fechaPago, String referencia) {
 

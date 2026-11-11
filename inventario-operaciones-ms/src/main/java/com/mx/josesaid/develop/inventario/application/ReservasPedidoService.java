@@ -34,8 +34,8 @@ public class ReservasPedidoService {
     /**
      * Línea de un pedido: artículo y cantidad a reservar.
      *
-     * @param articuloId componente de tipo {@code UUID}.
-     * @param cantidad componente de tipo {@code BigDecimal}.
+     * @param articuloId identificador del artículo, de tipo {@code UUID}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code BigDecimal}.
      */
     public record LineaPedido(UUID articuloId, BigDecimal cantidad) {
     }

@@ -80,8 +80,8 @@ public class AuthController {
     /**
      * Datos de inicio de sesión: correo y contraseña.
      *
-     * @param correo componente de tipo {@code String}.
-     * @param password componente de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param password password, de tipo {@code String}.
      */
     public record LoginSolicitud(@NotBlank @Email String correo, @NotBlank String password) {
     }
@@ -89,7 +89,7 @@ public class AuthController {
     /**
      * Refresh token a rotar o a cerrar.
      *
-     * @param refreshToken componente de tipo {@code String}.
+     * @param refreshToken refresh token, de tipo {@code String}.
      */
     public record RefrescoSolicitud(@NotBlank String refreshToken) {
     }
@@ -97,9 +97,9 @@ public class AuthController {
     /**
      * Datos para cambiar la contraseña temporal. La nueva debe tener entre 12 y 100 caracteres.
      *
-     * @param correo componente de tipo {@code String}.
-     * @param passwordActual componente de tipo {@code String}.
-     * @param passwordNueva componente de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param passwordActual password actual, de tipo {@code String}.
+     * @param passwordNueva password nueva, de tipo {@code String}.
      */
     public record CambioPasswordSolicitud(
             @NotBlank @Email String correo,
@@ -110,10 +110,10 @@ public class AuthController {
     /**
      * Respuesta con los tokens. expiresIn va en segundos.
      *
-     * @param accessToken componente de tipo {@code String}.
-     * @param tokenType componente de tipo {@code String}.
-     * @param expiresIn componente de tipo {@code long}.
-     * @param refreshToken componente de tipo {@code String}.
+     * @param accessToken access token, de tipo {@code String}.
+     * @param tokenType token type, de tipo {@code String}.
+     * @param expiresIn expires in, de tipo {@code long}.
+     * @param refreshToken refresh token, de tipo {@code String}.
      */
     public record TokenRespuesta(String accessToken, String tokenType, long expiresIn, String refreshToken) {
     }

@@ -137,9 +137,9 @@ public class ComprasControlador {
     /**
      * Datos para dar de alta un proveedor.
      *
-     * @param razonSocial componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
+     * @param razonSocial razón social, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
      */
     public record CrearProveedorSolicitud(
             @NotBlank @Size(max = 200) String razonSocial,
@@ -150,9 +150,9 @@ public class ComprasControlador {
     /**
      * Línea de una orden: SKU, cantidad y precio unitario.
      *
-     * @param articuloSku componente de tipo {@code String}.
-     * @param cantidad componente de tipo {@code BigDecimal}.
-     * @param precioUnitario componente de tipo {@code BigDecimal}.
+     * @param articuloSku articulo sku, de tipo {@code String}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code BigDecimal}.
+     * @param precioUnitario precio unitario, de tipo {@code BigDecimal}.
      */
     public record LineaSolicitud(
             @NotBlank @Size(max = 40) String articuloSku,
@@ -163,9 +163,9 @@ public class ComprasControlador {
     /**
      * Datos para crear una orden: proveedor, moneda y líneas.
      *
-     * @param proveedorId componente de tipo {@code UUID}.
-     * @param moneda componente de tipo {@code String}.
-     * @param lineas componente de tipo {@code List<LineaSolicitud>}.
+     * @param proveedorId identificador del proveedor, de tipo {@code UUID}.
+     * @param moneda código de moneda (por ejemplo, MXN), de tipo {@code String}.
+     * @param lineas líneas o renglones del documento, de tipo {@code List<LineaSolicitud>}.
      */
     public record CrearOrdenSolicitud(
             @NotNull UUID proveedorId,
@@ -176,8 +176,8 @@ public class ComprasControlador {
     /**
      * Línea recibida: SKU y cantidad.
      *
-     * @param articuloSku componente de tipo {@code String}.
-     * @param cantidad componente de tipo {@code BigDecimal}.
+     * @param articuloSku articulo sku, de tipo {@code String}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code BigDecimal}.
      */
     public record LineaRecepcionSolicitud(@NotBlank String articuloSku, @NotNull @Positive @Digits(integer = 9, fraction = 3) BigDecimal cantidad) {
     }
@@ -185,7 +185,7 @@ public class ComprasControlador {
     /**
      * Lista de líneas recibidas en una recepción.
      *
-     * @param lineas componente de tipo {@code List<LineaRecepcionSolicitud>}.
+     * @param lineas líneas o renglones del documento, de tipo {@code List<LineaRecepcionSolicitud>}.
      */
     public record RecepcionSolicitud(@NotEmpty @Size(max = 100) List<@Valid LineaRecepcionSolicitud> lineas) {
     }
@@ -193,7 +193,7 @@ public class ComprasControlador {
     /**
      * Motivo de la cancelación, de hasta 200 caracteres.
      *
-     * @param motivo componente de tipo {@code String}.
+     * @param motivo motivo del registro o de la acción, de tipo {@code String}.
      */
     public record CancelarSolicitud(@NotBlank @Size(max = 200) String motivo) {
     }
@@ -201,11 +201,11 @@ public class ComprasControlador {
     /**
      * Respuesta de un proveedor.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param razonSocial componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
-     * @param estatus componente de tipo {@code EstatusProveedor}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param razonSocial razón social, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusProveedor}.
      */
     public record ProveedorRespuesta(UUID id, String razonSocial, String rfc, String correo, EstatusProveedor estatus) {
         /** Convierte un proveedor en su respuesta. */
@@ -232,11 +232,11 @@ public class ComprasControlador {
     /**
      * Respuesta de una línea de orden, con las cantidades ordenada y recibida.
      *
-     * @param articuloSku componente de tipo {@code String}.
-     * @param cantidadOrdenada componente de tipo {@code BigDecimal}.
-     * @param cantidadRecibida componente de tipo {@code BigDecimal}.
-     * @param precioUnitario componente de tipo {@code BigDecimal}.
-     * @param subtotal componente de tipo {@code BigDecimal}.
+     * @param articuloSku articulo sku, de tipo {@code String}.
+     * @param cantidadOrdenada cantidad ordenada, de tipo {@code BigDecimal}.
+     * @param cantidadRecibida cantidad recibida, de tipo {@code BigDecimal}.
+     * @param precioUnitario precio unitario, de tipo {@code BigDecimal}.
+     * @param subtotal subtotal antes de impuestos, de tipo {@code BigDecimal}.
      */
     public record LineaRespuesta(String articuloSku, BigDecimal cantidadOrdenada, BigDecimal cantidadRecibida,
                                  BigDecimal precioUnitario, BigDecimal subtotal) {
@@ -245,10 +245,10 @@ public class ComprasControlador {
     /**
      * Resumen de una orden para los listados.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param estatus componente de tipo {@code EstatusOrdenCompra}.
-     * @param razonSocialProveedor componente de tipo {@code String}.
-     * @param creadaUtc componente de tipo {@code java.time.Instant}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusOrdenCompra}.
+     * @param razonSocialProveedor razon social proveedor, de tipo {@code String}.
+     * @param creadaUtc creada utc, de tipo {@code java.time.Instant}.
      */
     public record ResumenOrdenRespuesta(UUID id, EstatusOrdenCompra estatus, String razonSocialProveedor,
                                         java.time.Instant creadaUtc) {
@@ -257,13 +257,13 @@ public class ComprasControlador {
     /**
      * Respuesta de una orden de compra.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param proveedorId componente de tipo {@code UUID}.
-     * @param estatus componente de tipo {@code EstatusOrdenCompra}.
-     * @param moneda componente de tipo {@code String}.
-     * @param total componente de tipo {@code BigDecimal}.
-     * @param motivoCancelacion componente de tipo {@code String}.
-     * @param lineas componente de tipo {@code List<LineaRespuesta>}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param proveedorId identificador del proveedor, de tipo {@code UUID}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusOrdenCompra}.
+     * @param moneda código de moneda (por ejemplo, MXN), de tipo {@code String}.
+     * @param total importe total, de tipo {@code BigDecimal}.
+     * @param motivoCancelacion motivo cancelacion, de tipo {@code String}.
+     * @param lineas líneas o renglones del documento, de tipo {@code List<LineaRespuesta>}.
      */
     public record OrdenRespuesta(UUID id, UUID proveedorId, EstatusOrdenCompra estatus, String moneda,
                                  BigDecimal total, String motivoCancelacion, List<LineaRespuesta> lineas) {

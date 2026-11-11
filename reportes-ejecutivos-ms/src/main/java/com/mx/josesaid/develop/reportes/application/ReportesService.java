@@ -51,8 +51,8 @@ public class ReportesService {
     /**
      * Indicador con la marca de si su fuente está desactualizada.
      *
-     * @param indicador componente de tipo {@code Indicador}.
-     * @param desactualizado componente de tipo {@code boolean}.
+     * @param indicador indicador, de tipo {@code Indicador}.
+     * @param desactualizado desactualizado, de tipo {@code boolean}.
      */
     public record IndicadorVista(Indicador indicador, boolean desactualizado) {
     }
@@ -60,8 +60,8 @@ public class ReportesService {
     /**
      * Reporte con sus indicadores consolidados.
      *
-     * @param reporte componente de tipo {@code Reporte}.
-     * @param indicadores componente de tipo {@code List<IndicadorConsolidado>}.
+     * @param reporte reporte, de tipo {@code Reporte}.
+     * @param indicadores indicadores, de tipo {@code List<IndicadorConsolidado>}.
      */
     public record ReporteVista(Reporte reporte, List<IndicadorConsolidado> indicadores) {
     }
@@ -69,9 +69,9 @@ public class ReportesService {
     /**
      * Resultado de exportar: contenido binario, formato y nombre de archivo sugerido.
      *
-     * @param contenido componente de tipo {@code byte[]}.
-     * @param formato componente de tipo {@code FormatoExportacion}.
-     * @param nombreArchivo componente de tipo {@code String}.
+     * @param contenido contenido, de tipo {@code byte[]}.
+     * @param formato formato, de tipo {@code FormatoExportacion}.
+     * @param nombreArchivo nombre archivo, de tipo {@code String}.
      */
     public record Exportacion(byte[] contenido, FormatoExportacion formato, String nombreArchivo) {
     }

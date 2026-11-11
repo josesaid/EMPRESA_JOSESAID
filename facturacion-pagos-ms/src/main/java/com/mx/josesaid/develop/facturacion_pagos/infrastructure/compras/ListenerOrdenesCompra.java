@@ -69,10 +69,10 @@ public class ListenerOrdenesCompra {
     /**
      * Datos extraídos del evento: orden, proveedor, moneda y total.
      *
-     * @param ordenId componente de tipo {@code UUID}.
-     * @param proveedorId componente de tipo {@code UUID}.
-     * @param moneda componente de tipo {@code String}.
-     * @param total componente de tipo {@code BigDecimal}.
+     * @param ordenId identificador del orden, de tipo {@code UUID}.
+     * @param proveedorId identificador del proveedor, de tipo {@code UUID}.
+     * @param moneda código de moneda (por ejemplo, MXN), de tipo {@code String}.
+     * @param total importe total, de tipo {@code BigDecimal}.
      */
     private record Datos(UUID ordenId, UUID proveedorId, String moneda, BigDecimal total) {
     }
@@ -80,9 +80,9 @@ public class ListenerOrdenesCompra {
     /**
      * Sobre que publica compras-proveedores-ms por el outbox.
      *
-     * @param tipo componente de tipo {@code String}.
-     * @param agregadoId componente de tipo {@code String}.
-     * @param datos componente de tipo {@code Map<String, Object>}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code String}.
+     * @param agregadoId identificador del agregado de dominio al que pertenece el evento, de tipo {@code String}.
+     * @param datos datos específicos de la operación, de tipo {@code Map<String, Object>}.
      */
     public record Sobre(String tipo, String agregadoId, Map<String, Object> datos) {
     }

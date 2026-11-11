@@ -117,9 +117,9 @@ public class ContabilidadControlador {
     /**
      * Datos para dar de alta una cuenta contable.
      *
-     * @param codigo componente de tipo {@code String}.
-     * @param nombre componente de tipo {@code String}.
-     * @param naturaleza componente de tipo {@code Naturaleza}.
+     * @param codigo código legible que identifica el registro, de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param naturaleza naturaleza, de tipo {@code Naturaleza}.
      */
     public record CrearCuentaSolicitud(
             @NotBlank @Size(max = 20) String codigo,
@@ -130,9 +130,9 @@ public class ContabilidadControlador {
     /**
      * Movimiento de una póliza: cuenta, cargo y abono.
      *
-     * @param cuentaId componente de tipo {@code UUID}.
-     * @param cargo componente de tipo {@code BigDecimal}.
-     * @param abono componente de tipo {@code BigDecimal}.
+     * @param cuentaId identificador de la cuenta contable, de tipo {@code UUID}.
+     * @param cargo importe del cargo, de tipo {@code BigDecimal}.
+     * @param abono importe del abono, de tipo {@code BigDecimal}.
      */
     public record MovimientoSolicitud(
             @NotNull UUID cuentaId,
@@ -143,9 +143,9 @@ public class ContabilidadControlador {
     /**
      * Datos para registrar una póliza: tipo, fecha y movimientos.
      *
-     * @param tipo componente de tipo {@code TipoPoliza}.
-     * @param fecha componente de tipo {@code LocalDate}.
-     * @param movimientos componente de tipo {@code List<MovimientoSolicitud>}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoPoliza}.
+     * @param fecha fecha del registro, de tipo {@code LocalDate}.
+     * @param movimientos movimientos, de tipo {@code List<MovimientoSolicitud>}.
      */
     public record RegistrarPolizaSolicitud(
             @NotNull TipoPoliza tipo,
@@ -156,11 +156,11 @@ public class ContabilidadControlador {
     /**
      * Respuesta de una cuenta contable.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param codigo componente de tipo {@code String}.
-     * @param nombre componente de tipo {@code String}.
-     * @param naturaleza componente de tipo {@code Naturaleza}.
-     * @param activa componente de tipo {@code boolean}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param codigo código legible que identifica el registro, de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param naturaleza naturaleza, de tipo {@code Naturaleza}.
+     * @param activa activa, de tipo {@code boolean}.
      */
     public record CuentaRespuesta(UUID id, String codigo, String nombre, Naturaleza naturaleza, boolean activa) {
         /** Convierte una cuenta en su respuesta. */
@@ -172,9 +172,9 @@ public class ContabilidadControlador {
     /**
      * Movimiento de una póliza en la respuesta.
      *
-     * @param cuentaId componente de tipo {@code UUID}.
-     * @param cargo componente de tipo {@code BigDecimal}.
-     * @param abono componente de tipo {@code BigDecimal}.
+     * @param cuentaId identificador de la cuenta contable, de tipo {@code UUID}.
+     * @param cargo importe del cargo, de tipo {@code BigDecimal}.
+     * @param abono importe del abono, de tipo {@code BigDecimal}.
      */
     public record MovimientoRespuesta(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
     }
@@ -182,14 +182,14 @@ public class ContabilidadControlador {
     /**
      * Respuesta de una póliza.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param periodo componente de tipo {@code String}.
-     * @param tipo componente de tipo {@code TipoPoliza}.
-     * @param fecha componente de tipo {@code LocalDate}.
-     * @param estatus componente de tipo {@code EstatusPoliza}.
-     * @param reversaDe componente de tipo {@code UUID}.
-     * @param total componente de tipo {@code BigDecimal}.
-     * @param movimientos componente de tipo {@code List<MovimientoRespuesta>}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param periodo periodo de referencia (por ejemplo, año y mes), de tipo {@code String}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoPoliza}.
+     * @param fecha fecha del registro, de tipo {@code LocalDate}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusPoliza}.
+     * @param reversaDe reversa de, de tipo {@code UUID}.
+     * @param total importe total, de tipo {@code BigDecimal}.
+     * @param movimientos movimientos, de tipo {@code List<MovimientoRespuesta>}.
      */
     public record PolizaRespuesta(UUID id, String periodo, TipoPoliza tipo, LocalDate fecha, EstatusPoliza estatus,
                                   UUID reversaDe, BigDecimal total, List<MovimientoRespuesta> movimientos) {
@@ -206,8 +206,8 @@ public class ContabilidadControlador {
     /**
      * Estatus de un periodo contable.
      *
-     * @param anioMes componente de tipo {@code String}.
-     * @param estatus componente de tipo {@code EstatusPeriodo}.
+     * @param anioMes anio mes, de tipo {@code String}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusPeriodo}.
      */
     public record PeriodoRespuesta(String anioMes, EstatusPeriodo estatus) {
         /** Convierte un periodo en su respuesta. */

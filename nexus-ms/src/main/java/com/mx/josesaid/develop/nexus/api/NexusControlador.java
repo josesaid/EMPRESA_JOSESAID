@@ -115,7 +115,7 @@ public class NexusControlador {
     /**
      * Código de confirmación de 8 dígitos que el usuario escribe para ejecutar una acción pendiente.
      *
-     * @param codigo componente de tipo {@code String}.
+     * @param codigo código legible que identifica el registro, de tipo {@code String}.
      */
     public record ConfirmacionSolicitud(@NotBlank @Pattern(regexp = "\\d{8}") String codigo) {
     }

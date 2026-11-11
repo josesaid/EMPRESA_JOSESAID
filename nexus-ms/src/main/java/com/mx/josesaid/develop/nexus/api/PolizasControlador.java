@@ -64,7 +64,7 @@ public class PolizasControlador {
     /**
      * Cuerpo de la petición: descripción de la póliza, de 1 a 500 caracteres.
      *
-     * @param descripcion componente de tipo {@code String}.
+     * @param descripcion descripcion, de tipo {@code String}.
      */
     public record SugerenciaPolizaSolicitud(@NotBlank @Size(max = 500) String descripcion) {
     }
@@ -72,12 +72,12 @@ public class PolizasControlador {
     /**
      * Respuesta de una sugerencia. Incluye el código de confirmación de una sola vez, que solo recibe
      * quien pidió la sugerencia (CONTADOR). Sin el código la acción no puede confirmarse.
-      * @param id componente de tipo {@code UUID}.
-      * @param tipo componente de tipo {@code String}.
-      * @param resumen componente de tipo {@code String}.
-      * @param estatus componente de tipo {@code String}.
-      * @param expiraUtc componente de tipo {@code Instant}.
-      * @param codigoConfirmacion componente de tipo {@code String}.
+      * @param id identificador único del registro, de tipo {@code UUID}.
+      * @param tipo tipo o clasificación del registro, de tipo {@code String}.
+      * @param resumen resumen breve, de tipo {@code String}.
+      * @param estatus estado actual del registro, de tipo {@code String}.
+      * @param expiraUtc expira utc, de tipo {@code Instant}.
+      * @param codigoConfirmacion codigo confirmacion, de tipo {@code String}.
      */
     public record SugerenciaRespuesta(UUID id, String tipo, String resumen, String estatus,
                                       Instant expiraUtc, String codigoConfirmacion) {

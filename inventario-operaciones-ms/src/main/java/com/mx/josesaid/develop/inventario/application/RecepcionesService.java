@@ -31,8 +31,8 @@ public class RecepcionesService {
     /**
      * Línea recibida: SKU del artículo y cantidad.
      *
-     * @param sku componente de tipo {@code String}.
-     * @param cantidad componente de tipo {@code BigDecimal}.
+     * @param sku clave SKU del artículo, de tipo {@code String}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code BigDecimal}.
      */
     public record LineaRecibida(String sku, BigDecimal cantidad) {
     }
