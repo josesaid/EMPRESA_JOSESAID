@@ -22,6 +22,24 @@ Estos procedimientos todavía no tienen guía porque el procedimiento no está d
 - **Derechos ARCO** (acceso, rectificación, cancelación y oposición) de datos personales en `clientes-ms`: falta definir el proceso de anonimización.
 - **Rotación de la clave de cifrado y de la clave HMAC de `compras-proveedores-ms`:** falta el diseño de la rotación y de su prueba.
 
+## Java Docs
+
+Javadoc de cada microservicio. Se genera con `configuration_scripts/build.sh` y se abre desde tu equipo; no está publicado en GitHub.
+
+- [clientes-ms](../../clientes-ms/target/reports/apidocs/index.html)
+- [compras-proveedores-ms](../../compras-proveedores-ms/target/reports/apidocs/index.html)
+- [contabilidad-ms](../../contabilidad-ms/target/reports/apidocs/index.html)
+- [discovery-ms](../../discovery-ms/target/reports/apidocs/index.html)
+- [documentos-cumplimiento-ms](../../documentos-cumplimiento-ms/target/reports/apidocs/index.html)
+- [facturacion-pagos-ms](../../facturacion-pagos-ms/target/reports/apidocs/index.html)
+- [gateway-ms](../../gateway-ms/target/reports/apidocs/index.html)
+- [inventario-operaciones-ms](../../inventario-operaciones-ms/target/reports/apidocs/index.html)
+- [nexus-ms](../../nexus-ms/target/reports/apidocs/index.html)
+- [pedidos-ventas-ms](../../pedidos-ventas-ms/target/reports/apidocs/index.html)
+- [reportes-ejecutivos-ms](../../reportes-ejecutivos-ms/target/reports/apidocs/index.html)
+- [ui-ms](../../ui-ms/target/reports/apidocs/index.html)
+- [usuarios-accesos-ms](../../usuarios-accesos-ms/target/reports/apidocs/index.html)
+
 ## Convenciones
 
 - `HOST` es la dirección del gateway (por ejemplo `localhost:8080`). Las rutas de API van bajo el prefijo del servicio, por ejemplo `/compras-proveedores-ms/v1`.
