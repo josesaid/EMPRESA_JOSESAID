@@ -33,6 +33,7 @@ Levanta los servicios de ${NEG}EMPRESA_JOSESAID${RST} (incluye ui-ms) y espera a
   ${TENUE}---------------------  ----------------------------------------------------------${RST}
   🟢 ${VERDE}(sin opciones)${RST}      Levanta los contenedores con las imágenes ya construidas
   🏗️  ${AMARILLO}--build${RST}             Reconstruye las imágenes antes de levantar ${TENUE}(tarda varios minutos)${RST}
+  🧪 ${AMARILLO}--cargar-datos${RST}       Carga datos de demo al terminar ${TENUE}(borra los datos de negocio locales)${RST}
   ❓ ${CIAN}-h, --help${RST}          Muestra esta ayuda
 
 ${NEG}${MAGENTA}Variables de entorno opcionales:${RST}
@@ -48,16 +49,19 @@ ${NEG}${MAGENTA}Requisitos:${RST}
 ${NEG}${MAGENTA}Ejemplos:${RST}
   ${VERDE}bash configuration_scripts/start.sh${RST}
   ${VERDE}bash configuration_scripts/start.sh --build${RST}
+  ${VERDE}bash configuration_scripts/start.sh --cargar-datos${RST}
 EOF
 }
 
 BUILD=""
+CARGAR_DATOS=""
 for arg in "$@"; do
   case "$arg" in
     --build)   BUILD="--build" ;;
+    --cargar-datos) CARGAR_DATOS=1 ;;
     -h|--help) ayuda; exit 0 ;;
     *)         echo "Argumento desconocido: $arg"
-               echo "Uso: bash configuration_scripts/start.sh [--build] [--help]"
+               echo "Uso: bash configuration_scripts/start.sh [--build] [--cargar-datos] [--help]"
                exit 1 ;;
   esac
 done
@@ -286,6 +290,11 @@ while ! curl -fsS "$SALUD_UI" >/dev/null 2>&1; do
   sleep 5
 done
 echo "   ✅ UI lista"
+
+if [ -n "$CARGAR_DATOS" ]; then
+  paso "🧪 Cargando datos de demo (python3 seed/cargar_datos.py --reset)"
+  python3 seed/cargar_datos.py --reset || fallo "No se pudieron cargar los datos de demo. Revisa el mensaje anterior."
+fi
 
 duracion=$(( $(date +%s) - inicio ))
 echo ""
