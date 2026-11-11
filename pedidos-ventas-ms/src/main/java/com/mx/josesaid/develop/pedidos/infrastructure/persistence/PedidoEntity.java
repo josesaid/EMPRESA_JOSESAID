@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Fila de la tabla de pedidos, con sus líneas embebidas. */
 @Entity
 @Table(name = "pedidos")
 public class PedidoEntity {
@@ -68,9 +69,11 @@ public class PedidoEntity {
     @OrderColumn(name = "posicion")
     private List<LineaEmbebible> lineas = new ArrayList<>();
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected PedidoEntity() {
     }
 
+    /** Crea una fila a partir de un pedido del dominio. */
     static PedidoEntity nuevo(Pedido p) {
         PedidoEntity e = new PedidoEntity();
         e.id = p.getId();
@@ -78,6 +81,7 @@ public class PedidoEntity {
         return e;
     }
 
+    /** Actualiza la fila con los datos del pedido. */
     void actualizar(Pedido p) {
         this.clienteId = p.getClienteId();
         this.cotizacionId = p.getCotizacionId();
@@ -92,6 +96,7 @@ public class PedidoEntity {
         p.getLineas().forEach(l -> this.lineas.add(new LineaEmbebible(l)));
     }
 
+    /** Convierte la fila en el pedido del dominio. */
     Pedido aDominio() {
         return Pedido.reconstruir(id, clienteId, cotizacionId, canal, moneda, tasa, estatus,
                 lineas.stream().map(LineaEmbebible::aLinea).toList(),

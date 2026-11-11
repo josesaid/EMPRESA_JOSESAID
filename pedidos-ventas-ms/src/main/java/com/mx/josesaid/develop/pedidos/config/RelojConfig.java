@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RelojConfig {
 
+    /** Reloj del sistema en UTC, usado para las fechas de ventas. */
     @Bean
     Clock reloj() {
         return Clock.system(ZoneId.of("America/Mexico_City"));

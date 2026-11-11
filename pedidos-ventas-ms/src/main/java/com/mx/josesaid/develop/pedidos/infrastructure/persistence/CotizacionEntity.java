@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Fila de la tabla de cotizaciones, con sus líneas embebidas. */
 @Entity
 @Table(name = "cotizaciones")
 public class CotizacionEntity {
@@ -60,9 +61,11 @@ public class CotizacionEntity {
     @OrderColumn(name = "posicion")
     private List<LineaEmbebible> lineas = new ArrayList<>();
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected CotizacionEntity() {
     }
 
+    /** Crea una fila a partir de una cotización del dominio. */
     static CotizacionEntity nueva(Cotizacion c) {
         CotizacionEntity e = new CotizacionEntity();
         e.id = c.getId();
@@ -70,6 +73,7 @@ public class CotizacionEntity {
         return e;
     }
 
+    /** Actualiza la fila con los datos de la cotización. */
     void actualizar(Cotizacion c) {
         this.clienteId = c.getClienteId();
         this.canal = c.getCanal();
@@ -82,6 +86,7 @@ public class CotizacionEntity {
         c.getLineas().forEach(l -> this.lineas.add(new LineaEmbebible(l)));
     }
 
+    /** Convierte la fila en la cotización del dominio. */
     Cotizacion aDominio() {
         return Cotizacion.reconstruir(id, clienteId, canal, moneda, tasa, vigenteHasta,
                 lineas.stream().map(LineaEmbebible::aLinea).toList(), estatus, pedidoId);

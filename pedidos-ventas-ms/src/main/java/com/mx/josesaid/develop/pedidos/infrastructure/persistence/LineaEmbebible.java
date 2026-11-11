@@ -22,6 +22,7 @@ public class LineaEmbebible {
     @Column(name = "precio_unitario", nullable = false, precision = 14, scale = 2)
     private BigDecimal precioUnitario;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected LineaEmbebible() {
     }
 
@@ -32,6 +33,7 @@ public class LineaEmbebible {
         this.precioUnitario = linea.getPrecioUnitario();
     }
 
+    /** Convierte la línea guardada en la línea del dominio. */
     Linea aLinea() {
         return Linea.reconstruir(productoId, descripcion, cantidad, precioUnitario);
     }

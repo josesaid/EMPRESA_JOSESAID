@@ -14,6 +14,7 @@ public enum TasaIva {
         this.valor = valor;
     }
 
+    /** Devuelve el valor decimal de la tasa, por ejemplo 0.16 para el IVA general. */
     public BigDecimal valor() {
         return valor;
     }

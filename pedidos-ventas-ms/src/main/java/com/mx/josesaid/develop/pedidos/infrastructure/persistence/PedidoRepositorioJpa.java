@@ -13,15 +13,18 @@ import java.util.UUID;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+/** Implementa el puerto de pedidos con JPA. */
 @Repository
 public class PedidoRepositorioJpa implements PedidoRepositorio {
 
     private final PedidoJpaRepository jpa;
 
+    /** Recibe el repositorio JPA de pedidos. */
     public PedidoRepositorioJpa(PedidoJpaRepository jpa) {
         this.jpa = jpa;
     }
 
+    /** Guarda un pedido y devuelve el guardado. */
     @Override
     public Pedido guardar(Pedido pedido) {
         PedidoEntity e = jpa.findById(pedido.getId())
@@ -33,11 +36,13 @@ public class PedidoRepositorioJpa implements PedidoRepositorio {
         return jpa.save(e).aDominio();
     }
 
+    /** Busca un pedido por id. */
     @Override
     public Optional<Pedido> buscarPorId(UUID id) {
         return jpa.findById(id).map(PedidoEntity::aDominio);
     }
 
+    /** Busca pedidos por cliente, estatus y canal. Cada filtro es opcional. */
     @Override
     public List<Pedido> buscarFiltrados(UUID clienteId, EstatusPedido estatus, Canal canal) {
         Specification<PedidoEntity> spec = (raiz, consulta, cb) -> {
@@ -56,6 +61,7 @@ public class PedidoRepositorioJpa implements PedidoRepositorio {
         return jpa.findAll(spec).stream().map(PedidoEntity::aDominio).toList();
     }
 
+    /** Devuelve los pedidos confirmados dentro de un rango de fechas. */
     @Override
     public List<Pedido> buscarConfirmadosEntre(Instant desde, Instant hasta) {
         return jpa.buscarVigentesEntre(List.of(EstatusPedido.CONFIRMADO, EstatusPedido.ENTREGADO), desde, hasta)

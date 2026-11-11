@@ -15,10 +15,12 @@ public class ValidadorRevocacion implements OAuth2TokenValidator<Jwt> {
 
     private final RevocacionSesiones revocaciones;
 
+    /** Recibe la copia local de revocaciones. */
     public ValidadorRevocacion(RevocacionSesiones revocaciones) {
         this.revocaciones = revocaciones;
     }
 
+    /** Rechaza el JWT si su sesión o su usuario fueron revocados, aunque la firma y el vencimiento sean válidos. */
     @Override
     public OAuth2TokenValidatorResult validate(Jwt jwt) {
         boolean revocado = revocaciones.revocado(jwt.getClaimAsString("sid"), jwt.getSubject(), jwt.getIssuedAt());

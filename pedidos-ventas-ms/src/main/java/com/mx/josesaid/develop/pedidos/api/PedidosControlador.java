@@ -53,6 +53,7 @@ public class PedidosControlador {
     private final PedidosService servicio;
     private final Idempotencia idempotencia;
 
+    /** Recibe el servicio de ventas y el control de idempotencia. */
     public PedidosControlador(PedidosService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
         this.idempotencia = idempotencia;
@@ -60,6 +61,7 @@ public class PedidosControlador {
 
     // ---- Cotizaciones ----
 
+    /** Crea una cotización en borrador para un cliente activo. */
     @PostMapping("/cotizaciones")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
     public ResponseEntity<CotizacionRespuesta> crearCotizacion(@Valid @RequestBody CrearCotizacionPeticion p) {
@@ -68,24 +70,28 @@ public class PedidosControlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(CotizacionRespuesta.de(c));
     }
 
+    /** Devuelve una cotización por id. */
     @GetMapping("/cotizaciones/{id}")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION','FINANZAS')")
     public CotizacionRespuesta obtenerCotizacion(@PathVariable UUID id) {
         return CotizacionRespuesta.de(servicio.obtenerCotizacion(id));
     }
 
+    /** Envía la cotización al cliente: pasa de borrador a enviada. */
     @PostMapping("/cotizaciones/{id}/envio")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
     public CotizacionRespuesta enviarCotizacion(@PathVariable UUID id) {
         return CotizacionRespuesta.de(servicio.enviarCotizacion(id));
     }
 
+    /** Acepta la cotización. Si ya venció, responde 410 y la marca como vencida. */
     @PostMapping("/cotizaciones/{id}/aceptacion")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
     public CotizacionRespuesta aceptarCotizacion(@PathVariable UUID id) {
         return CotizacionRespuesta.de(servicio.aceptarCotizacion(id));
     }
 
+    /** Convierte una cotización aceptada en un pedido en borrador. Solo puede hacerse una vez. */
     @PostMapping("/cotizaciones/{id}/pedido")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
     public ResponseEntity<PedidoRespuesta> convertirEnPedido(@PathVariable UUID id) {
@@ -95,6 +101,7 @@ public class PedidosControlador {
 
     // ---- Pedidos ----
 
+    /** Crea un pedido en borrador directamente, sin cotización. Acepta Idempotency-Key. */
     @PostMapping("/pedidos")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
     public ResponseEntity<?> crearPedido(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
@@ -103,6 +110,7 @@ public class PedidosControlador {
                 () -> PedidoRespuesta.de(servicio.crearPedido(p.clienteId(), p.canal(), p.moneda(), p.tasaIva(), aComandos(p.lineas()))));
     }
 
+    /** Busca pedidos por cliente, estatus o canal. Todos los filtros son opcionales. */
     @GetMapping("/pedidos")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION','FINANZAS')")
     public List<PedidoRespuesta> buscarPedidos(@RequestParam(required = false) UUID clienteId,
@@ -111,36 +119,42 @@ public class PedidosControlador {
         return servicio.buscarPedidos(clienteId, estatus, canal).stream().map(PedidoRespuesta::de).toList();
     }
 
+    /** Devuelve un pedido por id. */
     @GetMapping("/pedidos/{id}")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION','FINANZAS','ALMACEN')")
     public PedidoRespuesta obtenerPedido(@PathVariable UUID id) {
         return PedidoRespuesta.de(servicio.obtenerPedido(id));
     }
 
+    /** Reemplaza las líneas de un pedido. Solo se permite mientras está en borrador. */
     @PutMapping("/pedidos/{id}/lineas")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
     public PedidoRespuesta reemplazarLineas(@PathVariable UUID id, @Valid @RequestBody LineasPeticion p) {
         return PedidoRespuesta.de(servicio.reemplazarLineas(id, aComandos(p.lineas())));
     }
 
+    /** Confirma el pedido y publica el evento para que inventario reserve las piezas. */
     @PostMapping("/pedidos/{id}/confirmacion")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
     public PedidoRespuesta confirmarPedido(@PathVariable UUID id) {
         return PedidoRespuesta.de(servicio.confirmarPedido(id));
     }
 
+    /** Marca el pedido como entregado y publica el evento para que inventario descuente las piezas. */
     @PostMapping("/pedidos/{id}/entrega")
     @PreAuthorize("hasAnyRole('ALMACEN','DIRECCION')")
     public PedidoRespuesta entregarPedido(@PathVariable UUID id) {
         return PedidoRespuesta.de(servicio.entregarPedido(id));
     }
 
+    /** Cancela un pedido en borrador o confirmado. Requiere el motivo. */
     @PostMapping("/pedidos/{id}/cancelacion")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
     public PedidoRespuesta cancelarPedido(@PathVariable UUID id, @Valid @RequestBody CancelacionPeticion p) {
         return PedidoRespuesta.de(servicio.cancelarPedido(id, p.motivo()));
     }
 
+    /** Registra la devolución total de un pedido entregado. Lo pasa a cancelado con motivo de devolución. */
     @PostMapping("/pedidos/{id}/devolucion")
     @PreAuthorize("hasAnyRole('VENTAS','DIRECCION')")
     public PedidoRespuesta devolverPedido(@PathVariable UUID id) {
@@ -149,6 +163,7 @@ public class PedidosControlador {
 
     // ---- Métricas y catálogos ----
 
+    /** Devuelve el resumen de ventas netas del mes indicado, por moneda. */
     @GetMapping("/metricas/ventas")
     @PreAuthorize("hasAnyRole('DIRECCION','FINANZAS')")
     public ResumenVentasRespuesta resumenVentas(
@@ -157,6 +172,7 @@ public class PedidosControlador {
         return new ResumenVentasRespuesta(r.mes().toString(), r.pedidos(), r.ventasPorMoneda());
     }
 
+    /** Catálogo de tasas de IVA disponibles. */
     @GetMapping("/catalogos/tasas-iva")
     @PreAuthorize("isAuthenticated()")
     public List<Map<String, Object>> tasasIva() {
@@ -165,6 +181,7 @@ public class PedidosControlador {
                 .toList();
     }
 
+    /** Catálogo de monedas con sus decimales. */
     @GetMapping("/catalogos/monedas")
     @PreAuthorize("isAuthenticated()")
     public Map<String, Integer> monedas() {
@@ -173,6 +190,7 @@ public class PedidosControlador {
 
     // ---- Mapeo de peticiones ----
 
+    /** Convierte las líneas recibidas en la API en comandos de la capa de aplicación. */
     private static List<LineaComando> aComandos(List<LineaPeticion> lineas) {
         if (lineas == null) {
             return List.of();
@@ -184,6 +202,7 @@ public class PedidosControlador {
 
     // ---- Peticiones ----
 
+    /** Línea de una cotización o pedido: producto, cantidad y precio. */
     public record LineaPeticion(
             @NotNull UUID productoId,
             @Size(max = 200) String descripcion,
@@ -191,6 +210,7 @@ public class PedidosControlador {
             @NotNull @DecimalMin("0.00") BigDecimal precioUnitario) {
     }
 
+    /** Datos para crear una cotización. */
     public record CrearCotizacionPeticion(
             @NotNull UUID clienteId,
             @NotNull Canal canal,
@@ -200,6 +220,7 @@ public class PedidosControlador {
             @NotEmpty @Size(max = 100) List<@Valid LineaPeticion> lineas) {
     }
 
+    /** Datos para crear un pedido directo. */
     public record CrearPedidoPeticion(
             @NotNull UUID clienteId,
             @NotNull Canal canal,
@@ -208,16 +229,20 @@ public class PedidosControlador {
             @NotEmpty @Size(max = 100) List<@Valid LineaPeticion> lineas) {
     }
 
+    /** Lista de líneas para reemplazar las del pedido. */
     public record LineasPeticion(@NotNull @Size(max = 100) List<@Valid LineaPeticion> lineas) {
     }
 
+    /** Motivo de la cancelación. */
     public record CancelacionPeticion(@NotNull MotivoCancelacion motivo) {
     }
 
     // ---- Respuestas ----
 
+    /** Respuesta de una línea. */
     public record LineaRespuesta(UUID productoId, String descripcion, int cantidad,
                                  BigDecimal precioUnitario, BigDecimal subtotal) {
+        /** Convierte las líneas del dominio en su respuesta. */
         static List<LineaRespuesta> de(List<Linea> lineas) {
             return lineas.stream()
                     .map(l -> new LineaRespuesta(l.getProductoId(), l.getDescripcion(), l.getCantidad(),
@@ -226,9 +251,11 @@ public class PedidosControlador {
         }
     }
 
+    /** Respuesta de una cotización. */
     public record CotizacionRespuesta(UUID id, UUID clienteId, Canal canal, String moneda, TasaIva tasaIva,
                                       LocalDate vigenteHasta, EstatusCotizacion estatus, UUID pedidoId,
                                       List<LineaRespuesta> lineas, Totales totales) {
+        /** Convierte una cotización en su respuesta. */
         static CotizacionRespuesta de(Cotizacion c) {
             return new CotizacionRespuesta(c.getId(), c.getClienteId(), c.getCanal(), c.getMoneda(), c.getTasa(),
                     c.getVigenteHasta(), c.getEstatus(), c.getPedidoId(),
@@ -236,10 +263,12 @@ public class PedidosControlador {
         }
     }
 
+    /** Respuesta de un pedido. */
     public record PedidoRespuesta(UUID id, UUID clienteId, UUID cotizacionId, Canal canal, String moneda,
                                   TasaIva tasaIva, EstatusPedido estatus, List<LineaRespuesta> lineas,
                                   Totales totales, Instant fechaConfirmacion, Instant fechaEntrega,
                                   MotivoCancelacion motivoCancelacion) {
+        /** Convierte un pedido en su respuesta. */
         static PedidoRespuesta de(Pedido p) {
             return new PedidoRespuesta(p.getId(), p.getClienteId(), p.getCotizacionId(), p.getCanal(),
                     p.getMoneda(), p.getTasa(), p.getEstatus(), LineaRespuesta.de(p.getLineas()),
@@ -247,6 +276,7 @@ public class PedidosControlador {
         }
     }
 
+    /** Resumen de ventas de un mes. */
     public record ResumenVentasRespuesta(String mes, long pedidos, Map<String, BigDecimal> ventasPorMoneda) {
     }
 }

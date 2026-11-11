@@ -19,6 +19,7 @@ public class Cotizacion {
     private EstatusCotizacion estatus;
     private UUID pedidoId;
 
+    /** Constructor privado: las cotizaciones se crean con sus fábricas. */
     private Cotizacion(UUID id, UUID clienteId, Canal canal, String moneda, TasaIva tasa, LocalDate vigenteHasta,
                        List<Linea> lineas, EstatusCotizacion estatus, UUID pedidoId) {
         this.id = id;
@@ -32,6 +33,7 @@ public class Cotizacion {
         this.pedidoId = pedidoId;
     }
 
+    /** Crea una cotización en borrador. Requiere vigencia y al menos una línea. */
     public static Cotizacion crear(UUID clienteId, Canal canal, String moneda, TasaIva tasa, LocalDate vigenteHasta,
                                    List<Linea> lineas) {
         validarCabecera(clienteId, canal, moneda, tasa);
@@ -45,12 +47,14 @@ public class Cotizacion {
                 EstatusCotizacion.BORRADOR, null);
     }
 
+    /** Reconstruye una cotización desde la base de datos sin aplicar reglas. */
     public static Cotizacion reconstruir(UUID id, UUID clienteId, Canal canal, String moneda, TasaIva tasa,
                                          LocalDate vigenteHasta, List<Linea> lineas, EstatusCotizacion estatus,
                                          UUID pedidoId) {
         return new Cotizacion(id, clienteId, canal, moneda, tasa, vigenteHasta, lineas, estatus, pedidoId);
     }
 
+    /** Valida cliente, canal, moneda y tasa de IVA de la cotización. */
     static void validarCabecera(UUID clienteId, Canal canal, String moneda, TasaIva tasa) {
         if (clienteId == null) {
             throw new ReglaDeNegocioException("El cliente es obligatorio");
@@ -64,6 +68,7 @@ public class Cotizacion {
         }
     }
 
+    /** Envía la cotización: de borrador a enviada. */
     public void enviar() {
         if (estatus != EstatusCotizacion.BORRADOR) {
             throw new ConflictoException("Solo una cotización en borrador puede enviarse");
@@ -97,17 +102,27 @@ public class Cotizacion {
         this.pedidoId = pedidoId;
     }
 
+    /** Calcula subtotal, IVA y total de la cotización. */
     public Totales totales() {
         return Totales.calcular(lineas, moneda, tasa);
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el id del cliente. */
     public UUID getClienteId() { return clienteId; }
+    /** Devuelve el canal. */
     public Canal getCanal() { return canal; }
+    /** Devuelve la moneda. */
     public String getMoneda() { return moneda; }
+    /** Devuelve la tasa de IVA. */
     public TasaIva getTasa() { return tasa; }
+    /** Devuelve la fecha hasta la que es vigente. */
     public LocalDate getVigenteHasta() { return vigenteHasta; }
+    /** Devuelve las líneas, en una vista de solo lectura. */
     public List<Linea> getLineas() { return Collections.unmodifiableList(lineas); }
+    /** Devuelve el estatus. */
     public EstatusCotizacion getEstatus() { return estatus; }
+    /** Devuelve el id del pedido creado a partir de esta cotización, o nulo. */
     public UUID getPedidoId() { return pedidoId; }
 }

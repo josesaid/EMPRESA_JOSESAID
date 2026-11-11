@@ -11,6 +11,7 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class ClienteHttpConfig {
 
+    /** Builder de RestClient con los tiempos de espera para llamar a otros servicios. */
     @Bean
     RestClient.Builder restClientBuilder() {
         return RestClient.builder();
