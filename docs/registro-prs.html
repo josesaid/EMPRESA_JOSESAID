@@ -39,6 +39,18 @@ blockquote p{margin:4px 0}
 hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 @media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+
+main{max-width:1080px}
+.tabla-wrap{overflow-x:auto;max-width:100%;border:1px solid var(--line);border-radius:12px;margin:14px 0}
+table{font-size:13.5px;margin:0;min-width:880px}
+th{background:var(--acento-suave);padding:10px 12px;white-space:nowrap}
+td{padding:11px 12px;line-height:1.5;vertical-align:top}
+td code{font-size:12.5px;white-space:normal;overflow-wrap:anywhere}
+td:nth-child(1),td:nth-child(5),td:nth-child(6){white-space:nowrap}
+td:nth-child(2){min-width:260px}
+td:nth-child(3){min-width:200px}
+td:nth-child(4){min-width:170px}
+@media (max-width:560px){table{min-width:720px}}
 </style>
 </head>
 <body>
@@ -53,7 +65,7 @@ PRs de la sesión de seguridad y pruebas</h1>
 fecha y servicios afectados. Los servicios salen de los archivos que
 cambió cada PR.</p>
 <p>Enlace desde el <a href="../README.md">README principal</a>.</p>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>PR</th>
@@ -453,7 +465,7 @@ build</td>
 <td>2026-11-08</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h2 id="decisiones-registradas">Decisiones registradas</h2>
 <ul>
 <li><strong>#64 bloqueo de cuenta a 5 minutos:</strong> decisión de Said
