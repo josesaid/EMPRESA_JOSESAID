@@ -21,6 +21,7 @@ public final class CodigoConfirmacion {
 
     private final byte[] secreto;
 
+    /** Recibe el secreto que firma los códigos. Debe tener al menos MINIMO_BYTES_SECRETO bytes; si no, la aplicación no arranca. */
     public CodigoConfirmacion(byte[] secreto) {
         if (secreto == null || secreto.length < MINIMO_BYTES_SECRETO) {
             throw new IllegalArgumentException("El secreto de confirmación debe tener al menos " + MINIMO_BYTES_SECRETO + " bytes");
@@ -28,6 +29,7 @@ public final class CodigoConfirmacion {
         this.secreto = secreto.clone();
     }
 
+    /** Genera el código de 8 dígitos para una acción y usuario. El código sale de un HMAC, así que no se puede adivinar sin el secreto ni reutilizar en otra acción. */
     public String generar(UUID accionId, String usuario) {
         byte[] mac = hmac(accionId + "|" + usuario);
         int numero = ((mac[0] & 0x7f) << 24) | ((mac[1] & 0xff) << 16) | ((mac[2] & 0xff) << 8) | (mac[3] & 0xff);
@@ -44,6 +46,7 @@ public final class CodigoConfirmacion {
         return MessageDigest.isEqual(esperado, codigo.trim().getBytes(StandardCharsets.UTF_8));
     }
 
+    /** Calcula el HMAC-SHA256 del texto con el secreto. Si falla el algoritmo, lanza una excepción, porque significa que el entorno no es válido. */
     private byte[] hmac(String texto) {
         try {
             Mac mac = Mac.getInstance(ALGORITMO);

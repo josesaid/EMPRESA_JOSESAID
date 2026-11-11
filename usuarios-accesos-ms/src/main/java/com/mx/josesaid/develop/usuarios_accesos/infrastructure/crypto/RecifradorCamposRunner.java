@@ -19,6 +19,7 @@ public class RecifradorCamposRunner implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(RecifradorCamposRunner.class);
     private static final int TAMANO_LOTE = 500;
+    /** Columnas personales de usuarios que se re-cifran a la versión activa. */
     private static final List<String[]> CAMPOS = List.of(
             new String[] {"usuarios", "correo"},
             new String[] {"usuarios", "nombre_completo"});
@@ -26,10 +27,12 @@ public class RecifradorCamposRunner implements ApplicationRunner {
     private final RecifradorJdbc almacen;
     private final CampoCifradoConverter convertidor = new CampoCifradoConverter();
 
+    /** Recibe el acceso JDBC a las columnas. */
     public RecifradorCamposRunner(RecifradorJdbc almacen) {
         this.almacen = almacen;
     }
 
+    /** Al arrancar, re-cifra las columnas de la lista a la versión activa. */
     @Override
     public void run(ApplicationArguments args) {
         RecifradorPorLotes recifrador = new RecifradorPorLotes(almacen, TAMANO_LOTE,

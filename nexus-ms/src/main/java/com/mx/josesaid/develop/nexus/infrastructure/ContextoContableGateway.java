@@ -24,11 +24,13 @@ public final class ContextoContableGateway implements ContextoContable {
     private final RestClient gateway;
     private final ZoneId zona;
 
+    /** Recibe el cliente del gateway y la zona horaria para calcular el mes actual. */
     public ContextoContableGateway(RestClient gateway, ZoneId zona) {
         this.gateway = gateway;
         this.zona = zona;
     }
 
+    /** Trae el catálogo de cuentas del gateway. Si no hay respuesta, devuelve una lista vacía. */
     @Override
     public List<CuentaCatalogo> catalogo() {
         RespuestaCuenta[] cuentas = gateway.get().uri(RUTA_CUENTAS).retrieve().body(RespuestaCuenta[].class);
@@ -40,6 +42,7 @@ public final class ContextoContableGateway implements ContextoContable {
                 .toList();
     }
 
+    /** Trae hasta cinco pólizas registradas del mes y del mes anterior, como ejemplos de formato para el modelo. */
     @Override
     public List<PolizaEjemplo> ejemplosRecientes() {
         YearMonth actual = YearMonth.now(zona);
@@ -67,12 +70,15 @@ public final class ContextoContableGateway implements ContextoContable {
         return ejemplos;
     }
 
+    /** Cuenta tal como la devuelve el gateway. */
     record RespuestaCuenta(UUID id, String codigo, String nombre) {
     }
 
+    /** Póliza tal como la devuelve el gateway. */
     record RespuestaPoliza(String tipo, LocalDate fecha, String estatus, List<RespuestaMovimiento> movimientos) {
     }
 
+    /** Movimiento de una póliza: cuenta, cargo y abono. */
     record RespuestaMovimiento(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
     }
 }

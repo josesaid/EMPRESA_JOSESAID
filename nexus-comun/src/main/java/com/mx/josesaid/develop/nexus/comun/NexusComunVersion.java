@@ -9,6 +9,7 @@ public final class NexusComunVersion {
 
     public static final String VERSION = "0.1.0";
 
+    /** Clase de utilidad: no se instancia. */
     private NexusComunVersion() {
     }
 }

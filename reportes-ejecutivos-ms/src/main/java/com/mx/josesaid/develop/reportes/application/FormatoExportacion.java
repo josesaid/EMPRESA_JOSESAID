@@ -16,10 +16,12 @@ public enum FormatoExportacion {
         this.extension = extension;
     }
 
+    /** Tipo MIME del archivo que se devuelve al cliente. */
     public String mediaType() {
         return mediaType;
     }
 
+    /** Extensión del archivo exportado, sin punto. */
     public String extension() {
         return extension;
     }

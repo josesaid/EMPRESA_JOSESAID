@@ -15,6 +15,7 @@ public class CryptoConfig {
     private static final int LONGITUD_CLAVE = 32;
     private static final int VERSION_UNICA = 1;
 
+    /** Recibe la clave de cifrado única y la lista de claves por versión, desde la configuración. */
     public CryptoConfig(@Value("${USUARIOS_CIFRADO_CLAVE:}") String claveCifrado,
                         @Value("${USUARIOS_CIFRADO_CLAVES:}") String clavesCifrado,
                         @Value("${USUARIOS_CIFRADO_VERSION_ACTIVA:1}") int versionActiva,
@@ -29,6 +30,7 @@ public class CryptoConfig {
         ClavesCripto.configurar(cifrado, versionActiva, indice);
     }
 
+    /** Construye el mapa de claves de cifrado por versión a partir de la configuración. */
     private static Map<Integer, byte[]> clavesCifrado(String claveUnica, String lista) {
         Map<Integer, byte[]> claves = new HashMap<>();
         if (lista != null && !lista.isBlank()) {
@@ -48,6 +50,7 @@ public class CryptoConfig {
         return claves;
     }
 
+    /** Decodifica una clave en Base64 y valida su longitud. */
     private static byte[] decodificar(String nombre, String valor) {
         if (valor == null || valor.isBlank()) {
             throw new IllegalStateException("Falta " + nombre);

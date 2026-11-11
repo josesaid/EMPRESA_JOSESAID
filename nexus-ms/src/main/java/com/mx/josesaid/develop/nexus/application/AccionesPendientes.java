@@ -49,12 +49,14 @@ public final class AccionesPendientes {
     private final EjecutorAcciones ejecutor;
     private final Clock reloj;
 
+    /** Recibe el almacén donde se guardan las acciones, el ejecutor que las aplica y el reloj para calcular vencimientos. */
     public AccionesPendientes(AlmacenAcciones almacen, EjecutorAcciones ejecutor, Clock reloj) {
         this.almacen = almacen;
         this.ejecutor = ejecutor;
         this.reloj = reloj;
     }
 
+    /** Guarda una acción nueva en estado PENDIENTE. Vence a los 10 minutos (VIGENCIA). Nada se ejecuta todavía. */
     public AccionPendiente preparar(String usuario, String tipo, String payload, String resumen) {
         Instant ahora = reloj.instant();
         AccionPendiente accion = new AccionPendiente(UUID.randomUUID(), usuario, tipo, payload, resumen,
@@ -129,6 +131,7 @@ public final class AccionesPendientes {
         return accion;
     }
 
+    /** Busca la acción y verifica que pertenezca al usuario indicado. Si no existe o es de otro usuario responde lo mismo, para no revelar que existe. */
     private AccionPendiente propia(UUID id, String usuario) {
         return almacen.buscar(id)
                 .filter(a -> a.usuario().equals(usuario))

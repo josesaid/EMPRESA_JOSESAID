@@ -44,6 +44,7 @@ public class PublicadorIndicadoresUsuarios {
     private final Clock reloj;
     private final String topico;
 
+    /** Recibe JDBC para contar y Kafka para publicar. */
     public PublicadorIndicadoresUsuarios(JdbcTemplate jdbc, KafkaTemplate<String, String> kafka,
                                          ObjectMapper mapper, Clock reloj,
                                          @Value("${indicadores.topico:indicadores-areas}") String topico) {
@@ -54,6 +55,7 @@ public class PublicadorIndicadoresUsuarios {
         this.topico = topico;
     }
 
+    /** Calcula y publica el indicador de usuarios del periodo para reportes-ejecutivos-ms. */
     @Scheduled(fixedDelayString = "${indicadores.intervalo-ms:3600000}",
             initialDelayString = "${indicadores.inicio-ms:30000}")
     public void publicar() {

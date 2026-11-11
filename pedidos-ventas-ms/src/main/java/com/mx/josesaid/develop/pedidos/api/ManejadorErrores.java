@@ -18,26 +18,31 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ManejadorErrores {
 
+    /** Convierte una regla de negocio incumplida en un problema HTTP. */
     @ExceptionHandler(ReglaDeNegocioException.class)
     ResponseEntity<ProblemDetail> reglaDeNegocio(ReglaDeNegocioException e) {
         return respuesta(HttpStatus.UNPROCESSABLE_ENTITY, "regla-de-negocio", e.getMessage());
     }
 
+    /** Convierte un recurso inexistente en un problema HTTP. */
     @ExceptionHandler(RecursoNoEncontradoException.class)
     ResponseEntity<ProblemDetail> noEncontrado(RecursoNoEncontradoException e) {
         return respuesta(HttpStatus.NOT_FOUND, "recurso-no-encontrado", e.getMessage());
     }
 
+    /** Convierte un conflicto de estado, por ejemplo confirmar un pedido que ya no está en borrador, en un problema HTTP. */
     @ExceptionHandler(ConflictoException.class)
     ResponseEntity<ProblemDetail> conflicto(ConflictoException e) {
         return respuesta(HttpStatus.CONFLICT, "conflicto-de-estado", e.getMessage());
     }
 
+    /** Convierte una solicitud inválida en un problema HTTP. */
     @ExceptionHandler(SolicitudInvalidaException.class)
     ResponseEntity<ProblemDetail> solicitudInvalida(SolicitudInvalidaException e) {
         return respuesta(HttpStatus.BAD_REQUEST, "solicitud-invalida", e.getMessage());
     }
 
+    /** Responde 410 cuando la cotización ya venció. La cotización no se reactiva: hay que crear una nueva. */
     @ExceptionHandler(CotizacionVencidaException.class)
     ResponseEntity<ProblemDetail> cotizacionVencida(CotizacionVencidaException e) {
         return respuesta(HttpStatus.GONE, "cotizacion-vencida", e.getMessage());
@@ -50,11 +55,13 @@ public class ManejadorErrores {
                 "El registro cambió mientras se procesaba. Vuelva a leerlo e intente de nuevo.");
     }
 
+    /** Responde cuando un servicio externo, como clientes-ms, no está disponible. */
     @ExceptionHandler(com.mx.josesaid.develop.pedidos.domain.ServicioNoDisponibleException.class)
     ResponseEntity<ProblemDetail> servicioNoDisponible(com.mx.josesaid.develop.pedidos.domain.ServicioNoDisponibleException e) {
         return respuesta(HttpStatus.SERVICE_UNAVAILABLE, "servicio-no-disponible", e.getMessage());
     }
 
+    /** Construye la respuesta de error con su estatus, código y detalle. */
     private static ResponseEntity<ProblemDetail> respuesta(HttpStatus estado, String slug, String detalle) {
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(estado, detalle);
         problema.setTitle(estado.getReasonPhrase());

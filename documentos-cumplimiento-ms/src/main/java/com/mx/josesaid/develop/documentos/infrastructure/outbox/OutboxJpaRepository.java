@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/** Acceso a la tabla outbox con Spring Data JPA. */
 public interface OutboxJpaRepository extends JpaRepository<OutboxEntity, UUID> {
 
     /** Eventos pendientes, del más antiguo al más nuevo, en lotes de 100. */

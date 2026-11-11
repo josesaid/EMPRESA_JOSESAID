@@ -36,6 +36,7 @@ public class PagoProveedorEntity {
     @Column(name = "creado_utc", nullable = false)
     private Instant creadoUtc;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected PagoProveedorEntity() {
     }
 
@@ -48,11 +49,16 @@ public class PagoProveedorEntity {
         this.creadoUtc = Instant.now();
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el monto. */
     public BigDecimal getMonto() { return monto; }
+    /** Devuelve la fecha del pago. */
     public LocalDate getFechaPago() { return fechaPago; }
+    /** Devuelve la referencia. */
     public String getReferencia() { return referencia; }
 
+    /** Devuelve la cuenta a la que pertenece el pago. */
     public CuentaPorPagarEntity getCuenta() {
         return cuenta;
     }

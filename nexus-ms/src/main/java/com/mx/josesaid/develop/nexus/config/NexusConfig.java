@@ -52,16 +52,19 @@ import com.mx.josesaid.develop.nexus.infrastructure.HerramientasReportes;
 
 import io.micrometer.core.instrument.MeterRegistry;
 
+/** Configuración de Nexus: crea los beans de prompts, RAG, presupuesto, herramientas del asistente y servicio de pólizas. */
 @Configuration
 public class NexusConfig {
 
     private static final Logger log = LoggerFactory.getLogger(NexusConfig.class);
 
+    /** Repositorio de prompts versionados, leído de los recursos de nexus-comun. */
     @Bean
     RepositorioPrompts repositorioPrompts() {
         return new RepositorioPrompts();
     }
 
+    /** Cliente de embeddings de Voyage. La URL, la clave y el modelo se configuran por entorno. */
     @Bean
     Embedder embedder(@Value("${nexus.rag.voyage.url:https://api.voyageai.com}") String url,
                       @Value("${nexus.rag.voyage.api-key:}") String clave,
@@ -69,16 +72,19 @@ public class NexusConfig {
         return new VoyageEmbedder(RestClient.builder().baseUrl(url).build(), clave, modelo);
     }
 
+    /** Almacén de fragmentos de políticas en PostgreSQL. Las escrituras van dentro de una transacción. */
     @Bean
     AlmacenFragmentos almacenFragmentos(JdbcTemplate jdbc, PlatformTransactionManager transacciones) {
         return new AlmacenFragmentosJdbc(jdbc, new TransactionTemplate(transacciones));
     }
 
+    /** Servicio que indexa las políticas para la búsqueda. */
     @Bean
     IngestaPoliticas ingestaPoliticas(Embedder embedder, AlmacenFragmentos almacen) {
         return new IngestaPoliticas(embedder, almacen);
     }
 
+    /** Servicio que busca políticas vigentes. Usa hora de México para que una política aplique desde su fecha local. */
     @Bean
     RecuperadorPoliticas recuperadorPoliticas(Embedder embedder, AlmacenFragmentos almacen) {
         // Vigencia en hora de México: una política que entra en vigor el 1 de noviembre aplica desde esa fecha local
@@ -107,6 +113,7 @@ public class NexusConfig {
         };
     }
 
+    /** Control de presupuesto de tokens. Los límites mensual, diario y del servicio se configuran por entorno. */
     @Bean
     PresupuestoTokens presupuestoTokens(ConsumoTokens consumo, MeterRegistry registro,
                                         @Value("${nexus.presupuesto.tokens-mensuales:150000}") long mensuales,
@@ -115,63 +122,75 @@ public class NexusConfig {
         return new PresupuestoTokens(consumo, mensuales, diarios, servicio, Clock.systemUTC(), registro);
     }
 
+    /** Registro de consumo de tokens. Los precios aún no están configurados, así que el costo estimado queda en cero. */
     @Bean
     RegistroTokens registroTokens(MeterRegistry registro) {
         // Precios por millón de tokens: se configuran por entorno en un paso posterior.
         return new RegistroTokens(registro, PreciosTokens.SIN_PRECIO);
     }
 
+    /** Herramienta de reportes para el asistente, con acceso al gateway. */
     @Bean
     HerramientasReportes herramientasReportes(RestClient gatewayClient, AccionesPendientes acciones) {
         return new HerramientasReportes(gatewayClient, acciones);
     }
 
+    /** Herramienta de clientes para el asistente. */
     @Bean
     HerramientasClientes herramientasClientes(RestClient gatewayClient, AccionesPendientes acciones) {
         return new HerramientasClientes(gatewayClient, acciones);
     }
 
+    /** Ejecutor de acciones aprobadas, que las envía al gateway con la hora de UTC. */
     @Bean
     AccionesPendientes accionesPendientes(AlmacenAcciones almacen, RestClient gatewayClient) {
         return new AccionesPendientes(almacen, new EjecutorAccionesGateway(gatewayClient), Clock.systemUTC());
     }
 
+    /** Herramienta de ventas para el asistente. */
     @Bean
     HerramientasVentas herramientasVentas(RestClient gatewayClient, AccionesPendientes acciones) {
         return new HerramientasVentas(gatewayClient, acciones);
     }
 
+    /** Herramienta de compras para el asistente. */
     @Bean
     HerramientasCompras herramientasCompras(RestClient gatewayClient, AccionesPendientes acciones) {
         return new HerramientasCompras(gatewayClient, acciones);
     }
 
+    /** Herramienta de finanzas para el asistente. */
     @Bean
     HerramientasFinanzas herramientasFinanzas(RestClient gatewayClient, AccionesPendientes acciones) {
         return new HerramientasFinanzas(gatewayClient, acciones);
     }
 
+    /** Herramienta de contabilidad. Solo lectura, por eso no recibe el registro de acciones. */
     @Bean
     HerramientasContabilidad herramientasContabilidad(RestClient gatewayClient) {
         return new HerramientasContabilidad(gatewayClient);
     }
 
+    /** Herramienta de inventario para el asistente. */
     @Bean
     HerramientasInventario herramientasInventario(RestClient gatewayClient, AccionesPendientes acciones) {
         return new HerramientasInventario(gatewayClient, acciones);
     }
 
+    /** Herramienta de documentos para el asistente. */
     @Bean
     HerramientasDocumentos herramientasDocumentos(RestClient gatewayClient, AccionesPendientes acciones) {
         return new HerramientasDocumentos(gatewayClient, acciones);
     }
 
+    /** Herramienta de usuarios. Recibe el generador de códigos porque las altas usan confirmación. */
     @Bean
     HerramientasUsuarios herramientasUsuarios(RestClient gatewayClient, AccionesPendientes acciones,
                                               CodigoConfirmacion codigos) {
         return new HerramientasUsuarios(gatewayClient, acciones, codigos);
     }
 
+    /** Asistente principal con todas sus herramientas y el modelo de Claude. */
     @Bean
     AsistenteIA asistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts,
                             HerramientasReportes reportes, HerramientasClientes clientes,
@@ -183,21 +202,25 @@ public class NexusConfig {
                 contabilidad, inventario, documentos, usuarios, politicas);
     }
 
+    /** Herramienta que consulta las políticas de la empresa. */
     @Bean
     HerramientasPoliticas herramientasPoliticas(RecuperadorPoliticas recuperador) {
         return new HerramientasPoliticas(recuperador);
     }
 
+    /** Contexto contable (catálogo y ejemplos) leído del gateway, con la zona de México. */
     @Bean
     ContextoContable contextoContable(RestClient gatewayClient) {
         return new ContextoContableGateway(gatewayClient, ZoneId.of("America/Mexico_City"));
     }
 
+    /** Sugeridor de pólizas basado en el modelo de Claude. */
     @Bean
     SugeridorPolizas sugeridorPolizas(ChatModel modelo, RegistroTokens registro) {
         return new ClaudeSugeridorPolizas(modelo, registro);
     }
 
+    /** Servicio de pólizas con el reloj de México. */
     @Bean
     ServicioPolizas servicioPolizas(ContextoContable contexto, SugeridorPolizas sugeridor,
                                     AccionesPendientes acciones, PresupuestoTokens presupuesto) {

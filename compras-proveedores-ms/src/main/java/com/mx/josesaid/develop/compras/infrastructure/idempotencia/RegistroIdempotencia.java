@@ -20,6 +20,7 @@ class RegistroIdempotencia {
     static final Duration VIGENCIA = Duration.ofHours(24);
     static final Duration CONCESION_RESERVA = Duration.ofMinutes(2);
 
+    /** Fila guardada para una clave: huella, estatus HTTP, cuerpo de la respuesta y si ya terminó. */
     record Registro(String huella, int estatus, String cuerpo, boolean completada) {}
 
     private final JdbcTemplate jdbc;
@@ -30,6 +31,7 @@ class RegistroIdempotencia {
         this.reloj = reloj;
     }
 
+    /** Busca el registro de una clave que sigue vigente. */
     Optional<Registro> buscar(String clave) {
         return jdbc.query(
                 "SELECT huella, estatus_http, cuerpo, completada FROM idempotencia WHERE clave = ? AND creado_utc > ?",
@@ -61,6 +63,7 @@ class RegistroIdempotencia {
         return filas == 1;
     }
 
+    /** Guarda la respuesta de una operación terminada. */
     void completar(String clave, int estatus, String cuerpo) {
         jdbc.update("UPDATE idempotencia SET estatus_http = ?, cuerpo = ?, completada = TRUE WHERE clave = ?",
                 estatus, cuerpo, clave);
@@ -71,10 +74,12 @@ class RegistroIdempotencia {
         jdbc.update("DELETE FROM idempotencia WHERE clave = ? AND completada = FALSE", clave);
     }
 
+    /** Calcula el límite de vigencia de las claves. */
     private Instant vencimiento() {
         return reloj.instant().minus(VIGENCIA);
     }
 
+    /** Convierte un instante a Timestamp para la base de datos. */
     private static Timestamp enTiempo(Instant instante) {
         return Timestamp.from(instante);
     }

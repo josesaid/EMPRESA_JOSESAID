@@ -30,6 +30,7 @@ public final class RecifradorPorLotes {
     private final int tamanoLote;
     private final UnaryOperator<String> recifrar;
 
+    /** Recibe el acceso a la base, el tamaño de lote y la función que re-cifra un valor. */
     public RecifradorPorLotes(Almacen almacen, int tamanoLote, UnaryOperator<String> recifrar) {
         if (tamanoLote < 1) {
             throw new IllegalArgumentException("El tamaño de lote debe ser al menos 1");

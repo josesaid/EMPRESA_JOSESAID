@@ -37,6 +37,7 @@ public class DocumentosService {
     private final MeterRegistry metricas;
     private final int umbralDias;
 
+    /** Recibe el repositorio, el almacén de archivos, el publicador de eventos, las métricas y el reloj. */
     public DocumentosService(DocumentoRepositorio documentos, AlmacenDocumentos almacen, PublicadorEventos eventos,
                              Clock reloj, MeterRegistry metricas,
                              @Value("${documentos.alertas.umbral-dias:30}") int umbralDias) {
@@ -52,6 +53,7 @@ public class DocumentosService {
     public record DescargaVersion(VersionDocumento version, byte[] contenido) {
     }
 
+    /** Crea el documento y guarda su primera versión. Calcula la huella SHA-256 del contenido y guarda el archivo en el almacén. Rechaza contenido vacío. */
     @Transactional
     public Documento crearDocumento(TipoDocumento tipo, String titulo, String area, LocalDate venceEn, byte[] contenido) {
         exigirContenido(contenido);
@@ -66,6 +68,7 @@ public class DocumentosService {
         return guardado;
     }
 
+    /** Agrega una versión nueva. La versión anterior no se modifica: el historial siempre se conserva. */
     @Transactional
     public Documento agregarVersion(UUID id, byte[] contenido) {
         exigirContenido(contenido);
@@ -83,11 +86,13 @@ public class DocumentosService {
         return guardado;
     }
 
+    /** Devuelve un documento por identificador. Si no existe, lanza RecursoNoEncontradoException. */
     @Transactional(readOnly = true)
     public Documento obtener(UUID id) {
         return cargar(id);
     }
 
+    /** Devuelve el archivo de una versión. Antes de devolverlo verifica que su huella coincida con la guardada; si no coincide, falla. */
     @Transactional(readOnly = true)
     public DescargaVersion descargar(UUID id, int numero, String usuario) {
         Documento d = cargar(id);
@@ -104,6 +109,7 @@ public class DocumentosService {
         return new DescargaVersion(v, contenido);
     }
 
+    /** Elimina el documento con un motivo, de forma lógica. Dentro del periodo de retención se rechaza. */
     @Transactional
     public Documento eliminar(UUID id, String motivo) {
         Documento d = cargar(id);
@@ -134,6 +140,7 @@ public class DocumentosService {
         return documentos.buscarPorTitulo(limpio, 15);
     }
 
+    /** Lista los documentos que vencen en los próximos días. */
     @Transactional(readOnly = true)
     public List<Documento> porVencer(int dias) {
         if (dias < 0 || dias > MAX_DIAS) {
@@ -168,27 +175,32 @@ public class DocumentosService {
         return alertas;
     }
 
+    /** Carga un documento o lanza RecursoNoEncontradoException si no existe. */
     private Documento cargar(UUID id) {
         return documentos.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Documento no encontrado: " + id));
     }
 
+    /** Publica el evento de la nueva versión para que otros servicios lo reciban. */
     private void publicarVersion(Documento d, int numero) {
         eventos.publicar(new EventoDominio("documento-version-creada", d.getId().toString(), Map.of(
                 "documento_id", d.getId().toString(),
                 "numero", numero)));
     }
 
+    /** Devuelve la fecha de hoy en la zona de México. */
     private LocalDate hoy() {
         return LocalDate.now(reloj);
     }
 
+    /** Rechaza un contenido nulo o vacío antes de guardarlo. */
     private static void exigirContenido(byte[] contenido) {
         if (contenido == null || contenido.length == 0) {
             throw new SolicitudInvalidaException("El archivo es obligatorio y no puede estar vacío");
         }
     }
 
+    /** Calcula la huella SHA-256 del contenido en hexadecimal. Sirve para detectar cambios en el archivo guardado. */
     static String sha256(byte[] contenido) {
         try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(contenido));

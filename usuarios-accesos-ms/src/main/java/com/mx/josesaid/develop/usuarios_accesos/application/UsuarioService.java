@@ -41,6 +41,7 @@ public class UsuarioService {
     private final Clock reloj;
     private final MeterRegistry metricas;
 
+    /** Recibe las dependencias de usuarios: repositorio, codificador de contraseñas y demás colaboradores. */
     public UsuarioService(UsuarioRepositorio repositorio, PasswordEncoder passwordEncoder,
                           PublicadorEventos publicador, Clock reloj, MeterRegistry metricas) {
         this.repositorio = repositorio;
@@ -50,10 +51,12 @@ public class UsuarioService {
         this.metricas = metricas;
     }
 
+    /** Cuenta una operación en las métricas de usuarios, por nombre. */
     private void contar(String nombre) {
         metricas.counter(nombre).increment();
     }
 
+    /** Crea un usuario activo con contraseña temporal. Valida el correo, que no esté registrado y que los roles sean válidos. */
     @Transactional
     public Usuario crear(String correo, String nombreCompleto, String passwordPlano, Set<Rol> roles) {
         String correoNormalizado = Usuario.normalizarCorreo(correo);
@@ -142,6 +145,7 @@ public class UsuarioService {
         repositorio.guardar(usuario);
     }
 
+    /** Reemplaza los roles del usuario y registra la operación con su motivo. */
     @Transactional
     public Usuario asignarRoles(UUID id, Set<Rol> nuevosRoles, String motivo) {
         Usuario usuario = obtener(id);
@@ -158,6 +162,7 @@ public class UsuarioService {
         return guardado;
     }
 
+    /** Asigna el área del usuario y registra la operación con su motivo. */
     @Transactional
     public Usuario asignarArea(UUID id, String area, String motivo) {
         Usuario usuario = obtener(id);
@@ -174,6 +179,7 @@ public class UsuarioService {
         return guardado;
     }
 
+    /** Da de baja al usuario de forma definitiva. */
     @Transactional
     public Usuario darDeBaja(UUID id) {
         Usuario usuario = obtener(id);
@@ -188,12 +194,14 @@ public class UsuarioService {
         return repositorio.listarRecientes(15);
     }
 
+    /** Devuelve un usuario por id o lanza RecursoNoEncontradoException. */
     @Transactional(readOnly = true)
     public Usuario obtener(UUID id) {
         return repositorio.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
     }
 
+    /** Convierte roles en sus nombres, para eventos y registros. */
     private static List<String> nombres(Collection<Rol> roles) {
         return roles.stream().map(Enum::name).sorted().collect(Collectors.toList());
     }

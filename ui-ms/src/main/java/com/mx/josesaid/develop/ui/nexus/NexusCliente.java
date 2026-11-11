@@ -17,11 +17,13 @@ public class NexusCliente {
     private final RestClient gateway;
     private final ServicioSesion sesion;
 
+    /** Recibe el cliente del gateway y el servicio de sesión. */
     public NexusCliente(RestClient gatewayClient, ServicioSesion sesion) {
         this.gateway = gatewayClient;
         this.sesion = sesion;
     }
 
+    /** Pide a Nexus una sugerencia de póliza a partir de una descripción en lenguaje natural. Solo sugiere; no registra nada. */
     public SugerenciaDto sugerirPoliza(String descripcion) {
         return sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/polizas/sugerencias")
@@ -48,6 +50,7 @@ public class NexusCliente {
     public record RespuestaConsulta(String respuesta) {
     }
 
+    /** Confirma una acción pendiente con su código de verificación. */
     public void confirmar(UUID id, String codigo) {
         sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/acciones/{id}/confirmacion", id)
@@ -67,6 +70,7 @@ public class NexusCliente {
                 .body(DatosAltaDto.class));
     }
 
+    /** Verifica el código de un alta pendiente, sin completarla. */
     public void verificarAlta(UUID id, String codigo) {
         sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/acciones/{id}/alta/verificacion", id)
@@ -77,6 +81,7 @@ public class NexusCliente {
                 .toBodilessEntity());
     }
 
+    /** Completa un alta pendiente con su código de verificación. */
     public void completarAlta(UUID id, String codigo) {
         sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/acciones/{id}/alta/completacion", id)
@@ -87,6 +92,7 @@ public class NexusCliente {
                 .toBodilessEntity());
     }
 
+    /** Cancela una acción pendiente. */
     public void cancelar(UUID id) {
         sesion.ejecutar(token -> gateway.post()
                 .uri("/nexus/acciones/{id}/cancelacion", id)

@@ -14,9 +14,11 @@ public final class TasaIva {
     static final BigDecimal GENERAL = new BigDecimal("0.16");
     static final BigDecimal FRONTERIZO = new BigDecimal("0.08");
 
+    /** Clase de utilidad; no se instancia. */
     private TasaIva() {
     }
 
+    /** Devuelve la tasa de IVA vigente para la fecha: 16 % antes del 1 de noviembre de 2026 y 8 % desde esa fecha. */
     public static BigDecimal paraFecha(LocalDate fecha) {
         return fecha.isBefore(INICIO_FRONTERIZO) ? GENERAL : FRONTERIZO;
     }

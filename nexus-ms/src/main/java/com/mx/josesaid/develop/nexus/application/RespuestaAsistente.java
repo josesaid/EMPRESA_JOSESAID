@@ -9,6 +9,7 @@ public record RespuestaAsistente(String texto, Integer tokensEntrada, Integer to
         herramientas = herramientas == null ? List.of() : List.copyOf(herramientas);
     }
 
+    /** Respuesta sin fuentes ni herramientas usadas. Se usa para respuestas de texto simple, como el rechazo de temas fuera de la empresa. */
     public RespuestaAsistente(String texto) {
         this(texto, null, null, List.of());
     }

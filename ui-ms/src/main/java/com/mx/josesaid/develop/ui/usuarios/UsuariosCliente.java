@@ -21,11 +21,13 @@ public class UsuariosCliente {
     private final RestClient gateway;
     private final ServicioSesion sesion;
 
+    /** Recibe el cliente del gateway y el servicio de sesión. */
     public UsuariosCliente(RestClient gatewayClient, ServicioSesion sesion) {
         this.gateway = gatewayClient;
         this.sesion = sesion;
     }
 
+    /** Da de alta un usuario con su contraseña inicial a través del gateway. */
     public void crear(DatosAltaDto datos, String password) {
         Map<String, Object> cuerpo = new HashMap<>();
         cuerpo.put("correo", datos.correo());

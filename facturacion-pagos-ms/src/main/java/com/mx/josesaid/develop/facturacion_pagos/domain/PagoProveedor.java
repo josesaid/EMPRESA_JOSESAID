@@ -12,6 +12,7 @@ public final class PagoProveedor {
     private final LocalDate fechaPago;
     private final String referencia;
 
+    /** Crea un pago a proveedor registrado contra una cuenta por pagar. */
     public PagoProveedor(UUID id, BigDecimal monto, LocalDate fechaPago, String referencia) {
         this.id = id;
         this.monto = monto;
@@ -19,8 +20,12 @@ public final class PagoProveedor {
         this.referencia = referencia;
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el monto. */
     public BigDecimal getMonto() { return monto; }
+    /** Devuelve la fecha del pago. */
     public LocalDate getFechaPago() { return fechaPago; }
+    /** Devuelve la referencia del pago. */
     public String getReferencia() { return referencia; }
 }

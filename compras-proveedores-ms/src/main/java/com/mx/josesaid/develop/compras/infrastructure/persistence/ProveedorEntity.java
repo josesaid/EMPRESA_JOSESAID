@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import java.util.UUID;
 
+/** Fila de la tabla de proveedores. */
 @Entity
 @Table(name = "proveedores")
 class ProveedorEntity {
@@ -21,6 +22,7 @@ class ProveedorEntity {
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 12) EstatusProveedor estatus;
     @Version Long version;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected ProveedorEntity() {
     }
 }

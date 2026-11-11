@@ -33,15 +33,18 @@ public final class HerramientasCompras {
     private final RestClient gateway;
     private final AccionesPendientes acciones;
 
+    /** Versión sin registro de acciones: solo permite consultar. */
     public HerramientasCompras(RestClient gateway) {
         this(gateway, null);
     }
 
+    /** Recibe el cliente del gateway y el registro de acciones para preparar operaciones de compra. */
     public HerramientasCompras(RestClient gateway, AccionesPendientes acciones) {
         this.gateway = gateway;
         this.acciones = acciones;
     }
 
+    /** Herramienta del asistente: devuelve los datos de un proveedor. */
     @Tool(name = "consultar_proveedor",
           description = "Devuelve los datos de un proveedor por su identificador UUID: razón social, RFC enmascarado, correo enmascarado y estatus.")
     public String consultarProveedor(
@@ -54,6 +57,7 @@ public final class HerramientasCompras {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: devuelve una orden de compra. */
     @Tool(name = "consultar_orden_compra",
           description = "Devuelve una orden de compra por su identificador UUID: proveedor, moneda, líneas, cantidades recibidas, subtotales y estatus.")
     public String consultarOrdenCompra(
@@ -66,6 +70,7 @@ public final class HerramientasCompras {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: busca proveedores por razón social, con mínimo 3 caracteres. */
     @Tool(name = "buscar_proveedores",
           description = "Busca proveedores por parte de la razón social (mínimo 3 caracteres). Devuelve hasta 20 resultados con RFC y correo enmascarados.")
     public String buscarProveedores(
@@ -83,6 +88,7 @@ public final class HerramientasCompras {
     private static final java.util.Set<String> ESTATUS_ORDEN =
             java.util.Set.of("BORRADOR", "APROBADA", "RECIBIDA_PARCIAL", "RECIBIDA", "CANCELADA");
 
+    /** Herramienta del asistente: lista órdenes de compra, opcionalmente filtradas por estatus. */
     @Tool(name = "listar_ordenes_compra",
           description = "Lista las órdenes de compra más recientes primero, hasta 15. Filtro opcional por un solo estatus: BORRADOR, APROBADA, RECIBIDA_PARCIAL, RECIBIDA o CANCELADA. Muestra la razón social del proveedor y la fecha de creación.")
     public String listarOrdenesCompra(
@@ -105,6 +111,7 @@ public final class HerramientasCompras {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: prepara el alta de un proveedor. */
     @Tool(name = "crear_proveedor",
           description = "Prepara el alta de un proveedor. NO lo crea: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. Solo COMPRAS puede usarla.")
@@ -134,6 +141,7 @@ public final class HerramientasCompras {
         return guardar(AccionesPendientes.TIPO_PROVEEDOR_CREAR, cuerpo, resumen, "Alta preparada, no creada.");
     }
 
+    /** Herramienta del asistente: prepara una orden de compra para un proveedor. */
     @Tool(name = "crear_orden_compra",
           description = "Prepara una orden de compra en borrador para un proveedor, con una sola línea. "
                   + "NO la crea: devuelve un resumen y un accion_id. El usuario debe confirmarlo en la aplicación. "
@@ -183,6 +191,7 @@ public final class HerramientasCompras {
         return guardar(AccionesPendientes.TIPO_ORDEN_COMPRA_CREAR, cuerpo, resumen, "Orden preparada, no creada.");
     }
 
+    /** Herramienta del asistente: prepara el registro de la recepción de una orden de compra. */
     @Tool(name = "registrar_recepcion_orden",
           description = "Prepara el registro de una recepción de mercancía en una orden aprobada o recibida parcialmente. "
                   + "NO la registra: devuelve un resumen y un accion_id. El usuario debe confirmarlo en la aplicación. "
@@ -225,6 +234,7 @@ public final class HerramientasCompras {
         return guardar(AccionesPendientes.TIPO_ORDEN_COMPRA_RECEPCION, cuerpo, resumen, "Recepción preparada, no registrada.");
     }
 
+    /** Herramienta del asistente: prepara la cancelación de una orden de compra, con su motivo. */
     @Tool(name = "cancelar_orden_compra",
           description = "Prepara la cancelación de una orden de compra que no esté recibida ni cancelada. "
                   + "NO la cancela: devuelve un resumen y un accion_id. El usuario debe confirmarlo en la aplicación. "
@@ -258,6 +268,7 @@ public final class HerramientasCompras {
         return guardar(AccionesPendientes.TIPO_ORDEN_COMPRA_CANCELAR, cuerpo, resumen, "Cancelación preparada, no ejecutada.");
     }
 
+    /** Guarda la acción pendiente del usuario y devuelve un texto con su identificador. Redacta los RFC de la respuesta. */
     private String guardar(String tipo, Map<String, Object> cuerpo, String resumen, String encabezado) {
         AccionPendiente accion = acciones.preparar(usuarioActual(), tipo, aJson(cuerpo), resumen);
         return FiltroDatosSensibles.redactar(encabezado + " " + resumen + ". accion_id: " + accion.id()
@@ -289,6 +300,7 @@ public final class HerramientasCompras {
         }
     }
 
+    /** Convierte un texto en UUID. Devuelve nulo si el valor es nulo; lanza excepción si no tiene formato de UUID. */
     private static UUID identificador(String valor) {
         try {
             return valor == null ? null : UUID.fromString(valor.trim());
@@ -297,22 +309,27 @@ public final class HerramientasCompras {
         }
     }
 
+    /** Indica si el texto es nulo o está en blanco. */
     private static boolean vacio(String valor) {
         return valor == null || valor.isBlank();
     }
 
+    /** Revisa que el correo tenga máximo 254 caracteres y contenga @. Es una validación básica. */
     private static boolean correoValido(String correo) {
         return !vacio(correo) && correo.trim().length() <= 254 && correo.contains("@");
     }
 
+    /** Quita espacios y pasa el texto a mayúsculas. Un valor nulo se convierte en cadena vacía. */
     private static String normalizar(String valor) {
         return valor == null ? "" : valor.trim().toUpperCase(java.util.Locale.ROOT);
     }
 
+    /** Devuelve el nombre del usuario autenticado. */
     private static String usuarioActual() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    /** Convierte un mapa en JSON para guardarlo en la acción pendiente. */
     private static String aJson(Map<String, Object> datos) {
         try {
             return JSON.writeValueAsString(datos);

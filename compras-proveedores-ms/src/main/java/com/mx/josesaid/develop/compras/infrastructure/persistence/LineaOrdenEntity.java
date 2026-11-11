@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/** Fila de una línea de orden de compra, embebida en la orden. */
 @Entity
 @Table(name = "lineas_orden")
 class LineaOrdenEntity {
@@ -20,6 +21,7 @@ class LineaOrdenEntity {
     @Column(name = "cantidad_recibida", nullable = false, precision = 14, scale = 3) BigDecimal cantidadRecibida;
     @Column(name = "precio_unitario", nullable = false, precision = 14, scale = 2) BigDecimal precioUnitario;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected LineaOrdenEntity() {
     }
 }

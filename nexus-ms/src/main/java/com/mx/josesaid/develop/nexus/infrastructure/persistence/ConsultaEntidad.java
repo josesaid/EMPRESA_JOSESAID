@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/** Fila de la auditoría de consultas. Guarda la pregunta ya redactada, nunca el texto sensible original. */
 @Entity
 @Table(name = "nexus_consultas")
 public class ConsultaEntidad {
@@ -36,9 +37,11 @@ public class ConsultaEntidad {
     @Column(name = "creado_utc", nullable = false)
     private Instant creadoUtc;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected ConsultaEntidad() {
     }
 
+    /** Crea una fila de auditoría con los datos de la consulta. */
     public ConsultaEntidad(UUID id, String usuario, String preguntaRedactada, String respuestaResumen,
                            String herramientas, Integer tokensEntrada, Integer tokensSalida, Instant creadoUtc) {
         this.id = id;

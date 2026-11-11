@@ -23,6 +23,7 @@ public class ProtectorArchivos {
     private final SecretKeySpec clave;
     private final SecureRandom aleatorio = new SecureRandom();
 
+    /** Recibe la clave de cifrado en Base64, configurada en documentos.cifrado.clave. Sin clave, los archivos se guardan sin cifrar y se registra la advertencia. */
     public ProtectorArchivos(@Value("${documentos.cifrado.clave:}") String claveBase64) {
         byte[] bytes;
         try {
@@ -36,6 +37,7 @@ public class ProtectorArchivos {
         this.clave = new SecretKeySpec(bytes, "AES");
     }
 
+    /** Cifra el contenido de un archivo antes de guardarlo. */
     public byte[] cifrar(byte[] claro) {
         byte[] iv = new byte[IV_BYTES];
         aleatorio.nextBytes(iv);
@@ -49,6 +51,7 @@ public class ProtectorArchivos {
         }
     }
 
+    /** Descifra el contenido de un archivo leído del disco. */
     public byte[] descifrar(byte[] cifrado) {
         if (cifrado.length <= IV_BYTES) {
             throw new IllegalStateException("Archivo cifrado inválido");

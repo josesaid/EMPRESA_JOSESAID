@@ -37,6 +37,7 @@ public class Usuario {
     private String area;
     private boolean debeCambiarPassword;
 
+    /** Constructor privado: los usuarios se crean con sus fábricas, nunca con new. */
     private Usuario(UUID id, String correo, String nombreCompleto, String passwordHash,
                     Set<Rol> roles, EstatusUsuario estatus, int intentosFallidos, Instant bloqueadoHasta) {
         this.id = id;
@@ -159,7 +160,6 @@ public class Usuario {
         return this;
     }
 
-    /** Da de baja al usuario. Es definitivo: no se puede reactivar; se debe crear uno nuevo. */
     /** Marca la contraseña como temporal: la cuenta no podrá iniciar sesión hasta cambiarla. */
     public void marcarPasswordTemporal() {
         this.debeCambiarPassword = true;
@@ -171,6 +171,7 @@ public class Usuario {
         return this;
     }
 
+    /** Indica si la contraseña es temporal y debe cambiarse antes de iniciar sesión. */
     public boolean debeCambiarPassword() {
         return debeCambiarPassword;
     }
@@ -184,6 +185,7 @@ public class Usuario {
         this.debeCambiarPassword = false;
     }
 
+    /** Da de baja al usuario. Es definitivo: no se puede reactivar y hay que crear uno nuevo. También quita el bloqueo temporal. */
     public void darDeBaja() {
         if (estatus == EstatusUsuario.BAJA) {
             throw new ReglaDeNegocioException("El usuario ya está dado de baja");
@@ -193,6 +195,7 @@ public class Usuario {
         bloqueadoHasta = null;
     }
 
+    /** Valida que haya al menos un rol y devuelve una copia sin duplicados. */
     private static Set<Rol> validarRoles(Collection<Rol> roles) {
         if (roles == null || roles.isEmpty()) {
             throw new ReglaDeNegocioException("Debe asignar al menos un rol");
@@ -200,10 +203,12 @@ public class Usuario {
         return EnumSet.copyOf(roles);
     }
 
+    /** Valida y recorta el nombre completo. */
     private static String validarNombre(String nombre) {
         return requerido(nombre, "El nombre completo es obligatorio").trim();
     }
 
+    /** Rechaza un valor vacío con el mensaje indicado. */
     private static String requerido(String valor, String mensaje) {
         if (valor == null || valor.isBlank()) {
             throw new ReglaDeNegocioException(mensaje);
@@ -211,18 +216,22 @@ public class Usuario {
         return valor;
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() {
         return id;
     }
 
+    /** Devuelve el correo. */
     public String getCorreo() {
         return correo;
     }
 
+    /** Devuelve el nombre completo. */
     public String getNombreCompleto() {
         return nombreCompleto;
     }
 
+    /** Devuelve el hash de la contraseña, nunca la contraseña en claro. */
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -232,18 +241,22 @@ public class Usuario {
         return EnumSet.copyOf(roles.isEmpty() ? EnumSet.noneOf(Rol.class) : roles);
     }
 
+    /** Devuelve el área. */
     public String getArea() {
         return area;
     }
 
+    /** Devuelve el estatus. */
     public EstatusUsuario getEstatus() {
         return estatus;
     }
 
+    /** Devuelve los intentos fallidos consecutivos. */
     public int getIntentosFallidos() {
         return intentosFallidos;
     }
 
+    /** Devuelve hasta cuándo está bloqueada la cuenta, o nulo si no lo está. */
     public Instant getBloqueadoHasta() {
         return bloqueadoHasta;
     }

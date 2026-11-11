@@ -31,6 +31,7 @@ public class CuentasPorPagarControlador {
     private final CuentasPorPagarService servicio;
     private final Idempotencia idempotencia;
 
+    /** Recibe el servicio de cuentas por pagar y el control de idempotencia. */
     public CuentasPorPagarControlador(CuentasPorPagarService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
         this.idempotencia = idempotencia;
@@ -45,12 +46,14 @@ public class CuentasPorPagarControlador {
                 .toList();
     }
 
+    /** Devuelve una cuenta por pagar con sus pagos. */
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('FINANZAS')")
     public CuentaRespuesta obtener(@PathVariable UUID id) {
         return CuentaRespuesta.de(servicio.obtener(id));
     }
 
+    /** Registra un pago a proveedor contra el saldo de la cuenta. Acepta Idempotency-Key. */
     @PostMapping("/{id}/pagos")
     @PreAuthorize("hasRole('FINANZAS')")
     public ResponseEntity<?> registrarPago(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
@@ -62,27 +65,33 @@ public class CuentasPorPagarControlador {
                         id, solicitud.monto(), solicitud.fechaPago(), solicitud.referencia())));
     }
 
+    /** Datos de un pago a proveedor: monto, fecha opcional y referencia. */
     public record RegistrarPagoSolicitud(
             @NotNull @Positive BigDecimal monto,
             LocalDate fechaPago,
             @Size(max = 100) String referencia) {
     }
 
+    /** Respuesta de una cuenta por pagar. */
     public record CuentaRespuesta(UUID id, UUID ordenId, UUID proveedorId, String moneda, BigDecimal monto,
                                   BigDecimal saldo, String estatus, List<PagoRespuesta> pagos) {
 
+        /** Convierte una cuenta en su respuesta. */
         static CuentaRespuesta de(CuentaPorPagar c) {
             return new CuentaRespuesta(c.getId(), c.getOrdenId(), c.getProveedorId(), c.getMoneda(), c.getMonto(),
                     c.saldo(), c.estatus().name(), c.getPagos().stream().map(PagoRespuesta::de).toList());
         }
     }
 
+    /** Pago dentro de un listado, con la cuenta a la que pertenece. */
     public record PagoListadoRespuesta(UUID id, UUID cuentaId, BigDecimal monto, LocalDate fechaPago,
                                        String referencia) {
     }
 
+    /** Respuesta de un pago a proveedor. */
     public record PagoRespuesta(UUID id, BigDecimal monto, LocalDate fechaPago, String referencia) {
 
+        /** Convierte un pago a proveedor en su respuesta. */
         static PagoRespuesta de(PagoProveedor p) {
             return new PagoRespuesta(p.getId(), p.getMonto(), p.getFechaPago(), p.getReferencia());
         }

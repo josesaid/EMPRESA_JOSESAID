@@ -17,6 +17,7 @@ import java.util.UUID;
 public record Balanza(String periodo, List<Linea> lineas, BigDecimal totalCargos, BigDecimal totalAbonos,
                       boolean cuadra) {
 
+    /** Línea de la balanza: cuenta, cargos, abonos y saldo según la naturaleza de la cuenta. */
     public record Linea(UUID cuentaId, String codigo, String nombre, BigDecimal cargos, BigDecimal abonos,
                         BigDecimal saldo) {
     }

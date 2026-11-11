@@ -5,6 +5,7 @@ import com.mx.josesaid.develop.inventario.domain.MovimientoRepositorio;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de movimientos con JPA. */
 @Component
 class MovimientoRepositorioJpa implements MovimientoRepositorio {
 
@@ -14,6 +15,7 @@ class MovimientoRepositorioJpa implements MovimientoRepositorio {
         this.jpa = jpa;
     }
 
+    /** Guarda un movimiento y devuelve el guardado. */
     @Override
     public MovimientoInventario guardar(MovimientoInventario m) {
         MovimientoInventarioEntity e = new MovimientoInventarioEntity();
@@ -29,6 +31,7 @@ class MovimientoRepositorioJpa implements MovimientoRepositorio {
         return m;
     }
 
+    /** Devuelve los movimientos recientes de un artículo, con límite. */
     @Override
     public List<MovimientoInventario> listarRecientesDeArticulo(java.util.UUID articuloId, int limite) {
         return jpa.findByArticuloIdOrderByCreadoUtcDesc(articuloId,
@@ -38,6 +41,7 @@ class MovimientoRepositorioJpa implements MovimientoRepositorio {
                 .toList();
     }
 
+    /** Devuelve los movimientos de un lote. */
     @Override
     public List<MovimientoInventario> buscarPorLote(String lote) {
         return jpa.findByLoteOrderByCreadoUtcAsc(lote).stream()

@@ -20,12 +20,14 @@ public class PublicadorEventosOutbox implements PublicadorEventos {
     private final ObjectMapper mapper;
     private final Clock reloj;
 
+    /** Recibe el repositorio del outbox, el serializador JSON y el reloj. */
     public PublicadorEventosOutbox(OutboxJpaRepository outbox, ObjectMapper mapper, Clock reloj) {
         this.outbox = outbox;
         this.mapper = mapper;
         this.reloj = reloj;
     }
 
+    /** Guarda el evento en el outbox dentro de la misma transacción que el cambio de datos. */
     @Override
     public void publicar(EventoDominio evento) {
         String sobre = mapper.writeValueAsString(Map.of(

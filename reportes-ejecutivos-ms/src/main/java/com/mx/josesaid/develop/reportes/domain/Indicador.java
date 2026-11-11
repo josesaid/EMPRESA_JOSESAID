@@ -28,6 +28,7 @@ public record Indicador(UUID id, Area area, String nombre, BigDecimal valor, Per
         nombre = nombre.trim();
     }
 
+    /** Crea un indicador nuevo. La fecha de la fuente se guarda para detectar datos desactualizados. */
     public static Indicador nuevo(Area area, String nombre, Periodo periodo, BigDecimal valor, Instant fuente) {
         return new Indicador(UUID.randomUUID(), area, nombre, valor, periodo, fuente);
     }

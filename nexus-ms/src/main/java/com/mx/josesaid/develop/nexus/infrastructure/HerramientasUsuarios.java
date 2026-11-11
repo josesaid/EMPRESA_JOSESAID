@@ -36,16 +36,19 @@ public final class HerramientasUsuarios {
     private final AccionesPendientes acciones;
     private final CodigoConfirmacion codigos;
 
+    /** Versión sin registro de acciones ni códigos: solo permite consultar. */
     public HerramientasUsuarios(RestClient gateway) {
         this(gateway, null, null);
     }
 
+    /** Recibe el cliente del gateway, el registro de acciones y el generador de códigos. Las altas se confirman con código. */
     public HerramientasUsuarios(RestClient gateway, AccionesPendientes acciones, CodigoConfirmacion codigos) {
         this.gateway = gateway;
         this.acciones = acciones;
         this.codigos = codigos;
     }
 
+    /** Herramienta del asistente: devuelve los datos de un usuario. No expone contraseñas. */
     @Tool(name = "consultar_usuario",
           description = "Devuelve los datos de un usuario por su identificador UUID: correo y nombre enmascarados, estatus, roles y área.")
     public String consultarUsuario(
@@ -96,6 +99,7 @@ public final class HerramientasUsuarios {
                 + ", donde se escribe la contraseña temporal.";
     }
 
+    /** Convierte un mapa en JSON para guardarlo en la acción pendiente. */
     private static String aJson(Map<String, Object> datos) {
         try {
             return JSON.writeValueAsString(datos);
@@ -104,6 +108,7 @@ public final class HerramientasUsuarios {
         }
     }
 
+    /** Herramienta del asistente: lista los usuarios de la empresa. */
     @Tool(name = "listar_usuarios",
           description = "Lista los últimos 15 usuarios, del más reciente al más antiguo: correo y nombre enmascarados, "
                   + "estatus, roles y área. Solo para administradores.")

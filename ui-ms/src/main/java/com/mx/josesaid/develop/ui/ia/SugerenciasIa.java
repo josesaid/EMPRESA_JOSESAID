@@ -33,6 +33,7 @@ public final class SugerenciasIa {
             "ADMIN", "DIRECCION", "FINANZAS", "CONTADOR", "VENTAS", "COMPRAS",
             "ALMACEN", "OPERACIONES", "CALIDAD", "LEGAL", "JEFE_AREA");
 
+    /** Catálogo fijo de sugerencias por opción del menú, con ideas y pasos guiados. Son textos de ayuda, no datos del negocio. */
     static final Map<String, List<Idea>> CATALOGO = Map.ofEntries(
             entry("ADMIN", List.of(
                     idea("Revisar los datos de cada usuario para detectar cuentas que no correspondan a su puesto.",
@@ -151,6 +152,7 @@ public final class SugerenciasIa {
                             "Haz clic en la tarjeta del área que quieres revisar, por ejemplo Compras o Inventario.",
                             "Aplica el filtro que necesites en el listado que se abre."))));
 
+    /** Clase de utilidad con el catálogo; no se instancia. */
     private SugerenciasIa() {
     }
 
@@ -238,6 +240,7 @@ public final class SugerenciasIa {
         return opciones(roles).stream().filter(o -> o.id().equals(id)).findFirst();
     }
 
+    /** Crea una idea con su texto y sus pasos. */
     private static Idea idea(String texto, String... pasos) {
         return new Idea(texto, List.of(pasos));
     }

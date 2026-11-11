@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Fila de la tabla de pólizas, con sus movimientos. */
 @Entity
 @Table(name = "polizas")
 class PolizaEntity {
@@ -49,6 +50,7 @@ class PolizaEntity {
     @OrderBy("id ASC")
     List<MovimientoEntity> movimientos = new ArrayList<>();
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected PolizaEntity() {
     }
 }

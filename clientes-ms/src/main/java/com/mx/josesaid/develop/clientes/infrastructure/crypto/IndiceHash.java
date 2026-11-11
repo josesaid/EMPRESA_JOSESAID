@@ -13,6 +13,7 @@ import javax.crypto.Mac;
  */
 public final class IndiceHash {
 
+    /** Clase de utilidad; no se instancia. */
     private IndiceHash() {
     }
 
@@ -31,11 +32,13 @@ public final class IndiceHash {
         return hmac("nombre:" + normalizarNombre(valor));
     }
 
+    /** Normaliza un nombre: sin acentos, en minúsculas y con espacios simples. */
     static String normalizarNombre(String valor) {
         String sinAcentos = Normalizer.normalize(valor.trim(), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
         return sinAcentos.replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
     }
 
+    /** Calcula el HMAC-SHA256 en hexadecimal con la clave del índice. */
     private static String hmac(String entrada) {
         try {
             Mac mac = Mac.getInstance("HmacSHA256");

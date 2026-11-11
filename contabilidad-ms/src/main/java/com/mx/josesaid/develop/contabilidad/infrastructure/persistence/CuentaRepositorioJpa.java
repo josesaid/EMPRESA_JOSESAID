@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de cuentas con JPA. */
 @Component
 class CuentaRepositorioJpa implements CuentaRepositorio {
 
@@ -16,6 +17,7 @@ class CuentaRepositorioJpa implements CuentaRepositorio {
         this.jpa = jpa;
     }
 
+    /** Guarda una cuenta y devuelve la guardada. */
     @Override
     public CuentaContable guardar(CuentaContable c) {
         CuentaEntity e = new CuentaEntity();
@@ -28,16 +30,19 @@ class CuentaRepositorioJpa implements CuentaRepositorio {
         return c;
     }
 
+    /** Busca una cuenta por id. */
     @Override
     public Optional<CuentaContable> buscarPorId(UUID id) {
         return jpa.findById(id).map(e -> CuentaContable.reconstruir(e.id, e.codigo, e.nombre, e.naturaleza, e.activa));
     }
 
+    /** Indica si ya existe una cuenta con ese código. */
     @Override
     public boolean existePorCodigo(String codigo) {
         return jpa.existsByCodigo(codigo);
     }
 
+    /** Lista las cuentas activas. */
     @Override
     public List<CuentaContable> listarActivas() {
         return jpa.findByActivaTrueOrderByCodigoAsc().stream()

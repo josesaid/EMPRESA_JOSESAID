@@ -14,17 +14,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Endpoints de consentimientos de contactos. */
 @RestController
 public class ConsentimientoController {
 
     private final ConsentimientoService servicio;
     private final Presentacion presentacion;
 
+    /** Recibe el servicio de consentimientos y la zona de presentación. */
     public ConsentimientoController(ConsentimientoService servicio, Presentacion presentacion) {
         this.servicio = servicio;
         this.presentacion = presentacion;
     }
 
+    /** Registra el consentimiento de un contacto para una finalidad. */
     @PostMapping("/v1/contactos/{contactoId}/consentimientos")
     @PreAuthorize("hasAnyRole('LEGAL', 'ADMIN')")
     public ResponseEntity<ConsentimientoResponse> otorgar(@PathVariable UUID contactoId,
@@ -34,6 +37,7 @@ public class ConsentimientoController {
         return ResponseEntity.status(201).body(ConsentimientoResponse.de(otorgado, presentacion));
     }
 
+    /** Revoca un consentimiento. La revocación queda registrada; no se borra. */
     @PostMapping("/v1/consentimientos/{id}/revocacion")
     @PreAuthorize("hasAnyRole('LEGAL', 'ADMIN')")
     public ConsentimientoResponse revocar(@PathVariable UUID id) {

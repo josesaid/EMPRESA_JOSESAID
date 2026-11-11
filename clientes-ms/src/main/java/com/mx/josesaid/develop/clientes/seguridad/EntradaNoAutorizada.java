@@ -17,6 +17,7 @@ public class EntradaNoAutorizada implements AuthenticationEntryPoint {
     private static final String MOTIVO_GENERICO = "Invalid token";
     private static final String ATRIBUTO = EntradaNoAutorizada.class.getName() + ".motivo";
 
+    /** Responde 401 cuando la petición no trae un token válido o el token fue rechazado. */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex)
             throws IOException {
@@ -28,6 +29,7 @@ public class EntradaNoAutorizada implements AuthenticationEntryPoint {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
+    /** Explica por qué se rechazó el token, en texto breve para el log. */
     private static String motivo(Throwable ex) {
         for (Throwable t = ex; t != null; t = t.getCause()) {
             if (t instanceof JwtValidationException jve && jve.getErrors().stream()

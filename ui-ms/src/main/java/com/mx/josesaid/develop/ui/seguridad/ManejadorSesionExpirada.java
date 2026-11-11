@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ManejadorSesionExpirada {
 
+    /** Responde a una petición con sesión expirada: redirige al login con un aviso. */
     @ExceptionHandler(SesionExpiradaException.class)
     public String sesionExpirada(HttpServletRequest peticion) {
         HttpSession sesion = peticion.getSession(false);

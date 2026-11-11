@@ -28,11 +28,13 @@ public class Idempotencia {
     private final RegistroIdempotencia registro;
     private final ObjectMapper mapper;
 
+    /** Recibe el registro de claves y el serializador JSON. */
     public Idempotencia(RegistroIdempotencia registro, ObjectMapper mapper) {
         this.registro = registro;
         this.mapper = mapper;
     }
 
+    /** Ejecuta una operación una sola vez por Idempotency-Key. Una misma clave con la misma petición devuelve la respuesta guardada; con otra petición, rechaza. Si la operación falla, libera la clave para reintentar. */
     public <T> ResponseEntity<?> ejecutar(String clave, String ruta, Object peticion,
                                           HttpStatus estado, Supplier<T> operacion) {
         if (clave == null || clave.isBlank()) {
@@ -63,6 +65,7 @@ public class Idempotencia {
         return ResponseEntity.status(estado).body(cuerpo);
     }
 
+    /** Calcula la huella SHA-256 de la ruta y el cuerpo de la petición, para detectar si una clave se reutiliza con otra petición. */
     private String huella(String ruta, Object peticion) {
         try {
             byte[] digest = MessageDigest.getInstance("SHA-256")
@@ -73,6 +76,7 @@ public class Idempotencia {
         }
     }
 
+    /** Convierte la respuesta en JSON para guardarla. */
     private String serializar(Object cuerpo) {
         try {
             return mapper.writeValueAsString(cuerpo);

@@ -11,6 +11,7 @@ public final class Linea {
     private final int cantidad;
     private final BigDecimal precioUnitario;
 
+    /** Constructor privado: las líneas se crean con sus fábricas. */
     private Linea(UUID productoId, String descripcion, int cantidad, BigDecimal precioUnitario) {
         this.productoId = productoId;
         this.descripcion = descripcion;
@@ -18,6 +19,7 @@ public final class Linea {
         this.precioUnitario = precioUnitario;
     }
 
+    /** Crea una línea. Valida la cantidad y el precio. */
     public static Linea crear(UUID productoId, String descripcion, int cantidad, BigDecimal precioUnitario) {
         if (productoId == null) {
             throw new ReglaDeNegocioException("Cada línea requiere producto");
@@ -31,16 +33,22 @@ public final class Linea {
         return new Linea(productoId, descripcion == null ? "" : descripcion.trim(), cantidad, precioUnitario);
     }
 
+    /** Reconstruye una línea desde la base de datos sin aplicar reglas. */
     public static Linea reconstruir(UUID productoId, String descripcion, int cantidad, BigDecimal precioUnitario) {
         return new Linea(productoId, descripcion, cantidad, precioUnitario);
     }
 
+    /** Devuelve el subtotal de la línea: cantidad por precio unitario. */
     public BigDecimal subtotal() {
         return precioUnitario.multiply(BigDecimal.valueOf(cantidad));
     }
 
+    /** Devuelve el id del producto. */
     public UUID getProductoId() { return productoId; }
+    /** Devuelve la descripción. */
     public String getDescripcion() { return descripcion; }
+    /** Devuelve la cantidad. */
     public int getCantidad() { return cantidad; }
+    /** Devuelve el precio unitario. */
     public BigDecimal getPrecioUnitario() { return precioUnitario; }
 }

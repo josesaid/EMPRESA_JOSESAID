@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
+/** Configuración del cliente HTTP hacia el gateway: URL base y tiempos de espera. */
 @Configuration
 public class ClientesConfig {
 

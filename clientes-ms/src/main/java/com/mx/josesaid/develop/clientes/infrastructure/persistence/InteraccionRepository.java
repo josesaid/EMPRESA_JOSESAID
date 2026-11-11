@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/** Acceso a la tabla de interacciones con Spring Data JPA. */
 public interface InteraccionRepository extends JpaRepository<Interaccion, UUID> {
 
     Page<Interaccion> findByClienteId(UUID clienteId, Pageable pageable);

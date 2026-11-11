@@ -16,6 +16,7 @@ public class Existencia {
     private BigDecimal cantidad;
     private BigDecimal reservado;
 
+    /** Constructor privado: las existencias se crean con sus fábricas. */
     private Existencia(UUID articuloId, UUID almacenId, BigDecimal cantidad, BigDecimal reservado) {
         this.articuloId = articuloId;
         this.almacenId = almacenId;
@@ -23,10 +24,12 @@ public class Existencia {
         this.reservado = reservado;
     }
 
+    /** Crea una existencia en cero para un artículo en un almacén. */
     public static Existencia vacia(UUID articuloId, UUID almacenId) {
         return new Existencia(articuloId, almacenId, ZERO, ZERO);
     }
 
+    /** Reconstruye una existencia desde la base de datos sin aplicar reglas. */
     public static Existencia reconstruir(UUID articuloId, UUID almacenId, BigDecimal cantidad, BigDecimal reservado) {
         return new Existencia(articuloId, almacenId, cantidad, reservado);
     }
@@ -64,10 +67,12 @@ public class Existencia {
         reservado = reservado.subtract(c);
     }
 
+    /** Devuelve lo disponible: existencia menos lo reservado. */
     public BigDecimal disponible() {
         return cantidad.subtract(reservado);
     }
 
+    /** Rechaza la operación si la cantidad pedida supera lo disponible. */
     private void exigirDisponible(BigDecimal c) {
         if (c.compareTo(disponible()) > 0) {
             throw new ConflictoException("Existencia insuficiente: disponible " + disponible().toPlainString()
@@ -75,8 +80,12 @@ public class Existencia {
         }
     }
 
+    /** Devuelve el id del artículo. */
     public UUID getArticuloId() { return articuloId; }
+    /** Devuelve el id del almacén. */
     public UUID getAlmacenId() { return almacenId; }
+    /** Devuelve la cantidad total existente. */
     public BigDecimal getCantidad() { return cantidad; }
+    /** Devuelve la cantidad reservada. */
     public BigDecimal getReservado() { return reservado; }
 }

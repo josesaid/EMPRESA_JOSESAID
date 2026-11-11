@@ -24,6 +24,7 @@ public class AdministradorInicialConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(AdministradorInicialConfig.class);
 
+    /** Crea el administrador inicial al arrancar, si las variables de entorno lo configuran. Si el correo ya existe, no hace nada. */
     @Bean
     ApplicationRunner administradorInicial(UsuarioService servicio, UsuarioRepositorio repositorio,
                                            PropiedadesAdministradorInicial propiedades) {

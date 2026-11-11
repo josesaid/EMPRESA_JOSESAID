@@ -19,6 +19,7 @@ public class Proveedor {
     private final String correo;
     private final EstatusProveedor estatus;
 
+    /** Constructor privado: los proveedores se crean con sus fábricas. */
     private Proveedor(UUID id, String razonSocial, String rfc, String correo, EstatusProveedor estatus) {
         this.id = id;
         this.razonSocial = razonSocial;
@@ -27,6 +28,7 @@ public class Proveedor {
         this.estatus = estatus;
     }
 
+    /** Crea un proveedor nuevo con sus datos de contacto. */
     public static Proveedor crear(String razonSocial, String rfc, String correo) {
         if (razonSocial == null || razonSocial.isBlank()) {
             throw new ReglaDeNegocioException("La razón social es obligatoria");
@@ -43,14 +45,21 @@ public class Proveedor {
                 EstatusProveedor.ACTIVO);
     }
 
+    /** Reconstruye un proveedor desde la base de datos sin validar. */
     public static Proveedor reconstruir(UUID id, String razonSocial, String rfc, String correo, EstatusProveedor estatus) {
         return new Proveedor(id, razonSocial, rfc, correo, estatus);
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve la razón social. */
     public String getRazonSocial() { return razonSocial; }
+    /** Devuelve el RFC. */
     public String getRfc() { return rfc; }
+    /** Devuelve el correo de contacto. */
     public String getCorreo() { return correo; }
+    /** Devuelve el estatus. */
     public EstatusProveedor getEstatus() { return estatus; }
+    /** Indica si el proveedor está en estatus activo. */
     public boolean estaActivo() { return estatus == EstatusProveedor.ACTIVO; }
 }

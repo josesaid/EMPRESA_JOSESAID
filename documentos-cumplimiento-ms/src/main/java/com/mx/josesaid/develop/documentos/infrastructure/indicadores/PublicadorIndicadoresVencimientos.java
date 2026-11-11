@@ -47,6 +47,7 @@ public class PublicadorIndicadoresVencimientos {
     private final Clock reloj;
     private final String topico;
 
+    /** Recibe JDBC para los conteos, Kafka para publicar y el reloj. */
     public PublicadorIndicadoresVencimientos(JdbcTemplate jdbc, KafkaTemplate<String, String> kafka,
                                              ObjectMapper mapper, Clock reloj,
                                              @Value("${indicadores.topico:indicadores-areas}") String topico) {
@@ -57,6 +58,7 @@ public class PublicadorIndicadoresVencimientos {
         this.topico = topico;
     }
 
+    /** Publica en Kafka el conteo de documentos por vencer para que reportes-ejecutivos lo muestre. */
     @Scheduled(fixedDelayString = "${indicadores.intervalo-ms:3600000}",
             initialDelayString = "${indicadores.inicio-ms:30000}")
     public void publicar() {

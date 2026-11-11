@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RelojConfig {
 
+    /** Reloj del sistema en UTC. Todas las fechas de reportes se calculan con este reloj. */
     @Bean
     Clock reloj() {
         return Clock.systemUTC();

@@ -9,6 +9,7 @@ import java.util.List;
 /** Subtotal, IVA y total redondeados a los decimales de la moneda con redondeo bancario. */
 public record Totales(BigDecimal subtotal, BigDecimal iva, BigDecimal total) {
 
+    /** Calcula subtotal, IVA y total. Cada cifra se redondea a los decimales de la moneda con redondeo bancario. */
     public static Totales calcular(List<Linea> lineas, String moneda, TasaIva tasa) {
         int decimales = Monedas.decimales(moneda);
         BigDecimal subtotal = lineas.stream().map(Linea::subtotal).reduce(ZERO, BigDecimal::add)

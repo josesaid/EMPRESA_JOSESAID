@@ -71,6 +71,7 @@ public class ComprobanteEntity {
     @OrderBy("creadoUtc ASC")
     private List<PagoEntity> pagos = new ArrayList<>();
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected ComprobanteEntity() {
     }
 
@@ -100,15 +101,26 @@ public class ComprobanteEntity {
         }
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el id de la orden. */
     public UUID getOrdenId() { return ordenId; }
+    /** Devuelve el folio. */
     public String getFolio() { return folio; }
+    /** Devuelve la moneda. */
     public String getMoneda() { return moneda; }
+    /** Devuelve el subtotal. */
     public BigDecimal getSubtotal() { return subtotal; }
+    /** Devuelve el IVA. */
     public BigDecimal getIva() { return iva; }
+    /** Devuelve el total. */
     public BigDecimal getTotal() { return total; }
+    /** Devuelve la tasa de IVA. */
     public BigDecimal getTasaIva() { return tasaIva; }
+    /** Devuelve el estatus. */
     public EstatusComprobante getEstatus() { return estatus; }
+    /** Devuelve el motivo de cancelación. */
     public String getMotivoCancelacion() { return motivoCancelacion; }
+    /** Devuelve los pagos del comprobante. */
     public List<PagoEntity> getPagos() { return pagos; }
 }

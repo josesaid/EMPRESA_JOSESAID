@@ -44,11 +44,13 @@ public class InventarioControlador {
     private final InventarioService servicio;
     private final Idempotencia idempotencia;
 
+    /** Recibe el servicio de inventario y el control de idempotencia. */
     public InventarioControlador(InventarioService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
         this.idempotencia = idempotencia;
     }
 
+    /** Da de alta un artículo con su SKU, unidad, mínimo y si requiere lote. */
     @PostMapping("/articulos")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('OPERACIONES')")
@@ -57,6 +59,7 @@ public class InventarioControlador {
                 Boolean.TRUE.equals(s.loteObligatorio()), s.minimo()));
     }
 
+    /** Da de alta un almacén. */
     @PostMapping("/almacenes")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ALMACEN')")
@@ -64,6 +67,7 @@ public class InventarioControlador {
         return AlmacenRespuesta.de(servicio.crearAlmacen(s.nombre(), s.ubicacion()));
     }
 
+    /** Registra un movimiento de inventario: entrada, salida, ajuste o reserva. Acepta Idempotency-Key para reintentar sin duplicar el movimiento. */
     @PostMapping("/movimientos")
     @PreAuthorize("hasRole('ALMACEN')")
     public ResponseEntity<?> registrarMovimiento(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
@@ -87,12 +91,14 @@ public class InventarioControlador {
         return servicio.movimientosDeArticulo(articulo).stream().map(MovimientoRespuesta::de).toList();
     }
 
+    /** Devuelve las existencias de un artículo en cada almacén, con lo reservado y lo disponible. */
     @GetMapping("/existencias")
     @PreAuthorize("hasAnyRole('ALMACEN','COMPRAS','VENTAS')")
     public List<ExistenciaRespuesta> existencias(@RequestParam UUID articulo) {
         return servicio.existenciasDe(articulo).stream().map(ExistenciaRespuesta::de).toList();
     }
 
+    /** Crea una orden de producción o de servicio. Acepta Idempotency-Key. */
     @PostMapping("/ordenes-operacion")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('OPERACIONES')")
@@ -100,18 +106,21 @@ public class InventarioControlador {
         return OrdenRespuesta.de(servicio.crearOrden(s.tipo(), s.cantidadObjetivo()));
     }
 
+    /** Cierra una orden con la cantidad real producida o completada. */
     @PostMapping("/ordenes-operacion/{id}/cierre")
     @PreAuthorize("hasRole('OPERACIONES')")
     public OrdenRespuesta cerrarOrden(@PathVariable UUID id, @Valid @RequestBody CerrarOrdenSolicitud s) {
         return OrdenRespuesta.de(servicio.cerrarOrden(id, s.cantidadReal()));
     }
 
+    /** Devuelve los movimientos de un lote, para trazabilidad. */
     @GetMapping("/lotes/{lote}/trazabilidad")
     @PreAuthorize("hasAnyRole('OPERACIONES','CALIDAD')")
     public List<MovimientoRespuesta> trazabilidad(@PathVariable String lote) {
         return servicio.trazabilidad(lote).stream().map(MovimientoRespuesta::de).toList();
     }
 
+    /** Datos para dar de alta un artículo. */
     public record CrearArticuloSolicitud(
             @NotBlank @Size(max = 40) String sku,
             @NotBlank @Size(max = 150) String nombre,
@@ -120,10 +129,12 @@ public class InventarioControlador {
             @DecimalMin("0") BigDecimal minimo) {
     }
 
+    /** Datos para dar de alta un almacén. */
     public record CrearAlmacenSolicitud(@NotBlank @Size(max = 100) String nombre,
                                         @NotBlank @Size(max = 200) String ubicacion) {
     }
 
+    /** Datos de un movimiento: artículo, almacén, tipo, cantidad, lote y referencia. */
     public record RegistrarMovimientoSolicitud(
             @NotNull UUID articuloId,
             @NotNull UUID almacenId,
@@ -133,50 +144,64 @@ public class InventarioControlador {
             @Size(max = 100) String referencia) {
     }
 
+    /** Datos para crear una orden: tipo y cantidad objetivo. */
     public record CrearOrdenSolicitud(@NotNull TipoOrden tipo, @NotNull @Digits(integer = 9, fraction = 3) BigDecimal cantidadObjetivo) {
     }
 
+    /** Datos para cerrar una orden: cantidad real. */
     public record CerrarOrdenSolicitud(@NotNull @Digits(integer = 9, fraction = 3) BigDecimal cantidadReal) {
     }
 
+    /** Respuesta de un artículo. */
     public record ArticuloRespuesta(UUID id, String sku, String nombre, String unidad, boolean loteObligatorio,
                                     BigDecimal minimo) {
+        /** Convierte un artículo en su respuesta. */
         static ArticuloRespuesta de(Articulo a) {
             return new ArticuloRespuesta(a.getId(), a.getSku(), a.getNombre(), a.getUnidad(),
                     a.isLoteObligatorio(), a.getMinimo());
         }
     }
 
+    /** Respuesta de un almacén. */
     public record AlmacenRespuesta(UUID id, String nombre, String ubicacion) {
+        /** Convierte un almacén en su respuesta. */
         static AlmacenRespuesta de(Almacen a) {
             return new AlmacenRespuesta(a.getId(), a.getNombre(), a.getUbicacion());
         }
     }
 
+    /** Respuesta de un movimiento. */
     public record MovimientoRespuesta(UUID id, UUID articuloId, UUID almacenId, TipoMovimiento tipo,
                                       BigDecimal cantidad, String lote, String referencia, Instant creadoUtc) {
+        /** Convierte un movimiento en su respuesta. */
         static MovimientoRespuesta de(MovimientoInventario m) {
             return new MovimientoRespuesta(m.getId(), m.getArticuloId(), m.getAlmacenId(), m.getTipo(),
                     m.getCantidad(), m.getLote(), m.getReferencia(), m.getCreadoUtc());
         }
     }
 
+    /** Respuesta de un artículo que está por debajo de su mínimo. */
     public record ArticuloBajoMinimoRespuesta(UUID articuloId, String sku, String nombre, String unidad,
                                               BigDecimal minimo, BigDecimal existencia, BigDecimal faltante) {
+        /** Convierte el resultado de la consulta en su respuesta. */
         static ArticuloBajoMinimoRespuesta de(com.mx.josesaid.develop.inventario.domain.ArticuloBajoMinimo r) {
             return new ArticuloBajoMinimoRespuesta(r.articuloId(), r.sku(), r.nombre(), r.unidad(), r.minimo(),
                     r.existencia(), r.faltante());
         }
     }
 
+    /** Respuesta de la existencia de un artículo en un almacén. */
     public record ExistenciaRespuesta(UUID almacenId, BigDecimal cantidad, BigDecimal reservado, BigDecimal disponible) {
+        /** Convierte una existencia en su respuesta, con el disponible calculado. */
         static ExistenciaRespuesta de(Existencia e) {
             return new ExistenciaRespuesta(e.getAlmacenId(), e.getCantidad(), e.getReservado(), e.disponible());
         }
     }
 
+    /** Respuesta de una orden de operación. */
     public record OrdenRespuesta(UUID id, TipoOrden tipo, EstatusOrden estatus, BigDecimal cantidadObjetivo,
                                  BigDecimal cantidadReal) {
+        /** Convierte una orden en su respuesta. */
         static OrdenRespuesta de(OrdenOperacion o) {
             return new OrdenRespuesta(o.getId(), o.getTipo(), o.getEstatus(), o.getCantidadObjetivo(),
                     o.getCantidadReal());

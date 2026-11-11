@@ -20,9 +20,11 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_CLIENTES = Set.of("ROLE_VENTAS", "ROLE_ADMIN");
     private static final Set<String> ROLES_PEDIDOS = Set.of("ROLE_VENTAS", "ROLE_DIRECCION");
     private static final Set<String> ROLES_COTIZACION = Set.of("ROLE_VENTAS", "ROLE_DIRECCION", "ROLE_FINANZAS");
+    /** Roles que pueden ver el detalle de un pedido. */
     private static final Set<String> ROLES_PEDIDO_DETALLE = Set.of("ROLE_VENTAS", "ROLE_DIRECCION",
             "ROLE_FINANZAS", "ROLE_ALMACEN");
     // Catálogos que cualquier usuario autenticado puede leer.
+    /** Catálogos que cualquier usuario autenticado puede leer. */
     private static final Set<String> ROLES_TODOS = Set.of("ROLE_ADMIN", "ROLE_FINANZAS", "ROLE_CONTADOR",
             "ROLE_VENTAS", "ROLE_COMPRAS", "ROLE_ALMACEN", "ROLE_OPERACIONES", "ROLE_CALIDAD", "ROLE_DIRECCION",
             "ROLE_LEGAL", "ROLE_JEFE_AREA");
@@ -38,6 +40,7 @@ final class AlcanceHerramientas {
     private static final Set<String> ROLES_RESUMEN_VENTAS = Set.of("ROLE_DIRECCION", "ROLE_FINANZAS");
     private static final Set<String> ROLES_DOCUMENTOS = Set.of("ROLE_LEGAL", "ROLE_DIRECCION");
     private static final Set<String> ROLES_ELIMINAR_DOCUMENTO = Set.of("ROLE_LEGAL");
+    /** Roles que pueden consultar existencias. */
     private static final Set<String> ROLES_EXISTENCIAS = Set.of("ROLE_ALMACEN", "ROLE_COMPRAS", "ROLE_VENTAS",
             "ROLE_ADMIN");
     private static final Set<String> ROLES_TRAZABILIDAD = Set.of("ROLE_OPERACIONES", "ROLE_CALIDAD");
@@ -129,6 +132,7 @@ final class AlcanceHerramientas {
             Map.entry("registrar_entrega_pedido", ROLES_ENTREGA_PEDIDO),
             Map.entry("registrar_indicador", ROLES_REPORTES));
 
+    /** Clase de utilidad: no se instancia. */
     private AlcanceHerramientas() {
     }
 
@@ -143,42 +147,52 @@ final class AlcanceHerramientas {
         return roles != null && tieneAlgunRol(roles);
     }
 
+    /** Indica si el usuario puede consultar reportes. */
     static boolean puedeConsultarReportes() {
         return tieneAlgunRol(ROLES_REPORTES);
     }
 
+    /** Indica si el usuario puede consultar clientes. */
     static boolean puedeConsultarClientes() {
         return tieneAlgunRol(ROLES_CLIENTES);
     }
 
+    /** Indica si el usuario puede consultar pedidos. */
     static boolean puedeConsultarPedidos() {
         return tieneAlgunRol(ROLES_PEDIDOS);
     }
 
+    /** Indica si el usuario puede consultar usuarios. */
     static boolean puedeConsultarUsuarios() {
         return tieneAlgunRol(ROLES_USUARIOS);
     }
 
+    /** Indica si el usuario puede consultar documentos. */
     static boolean puedeConsultarDocumentos() {
         return tieneAlgunRol(ROLES_DOCUMENTOS);
     }
 
+    /** Indica si el usuario puede consultar inventario: existencias o trazabilidad. */
     static boolean puedeConsultarInventario() {
         return tieneAlgunRol(ROLES_EXISTENCIAS) || tieneAlgunRol(ROLES_TRAZABILIDAD);
     }
 
+    /** Indica si el usuario puede consultar contabilidad. */
     static boolean puedeConsultarContabilidad() {
         return tieneAlgunRol(ROLES_CONTABILIDAD);
     }
 
+    /** Indica si el usuario puede consultar comprobantes. */
     static boolean puedeConsultarComprobantes() {
         return tieneAlgunRol(ROLES_COMPROBANTES);
     }
 
+    /** Indica si el usuario puede consultar proveedores. */
     static boolean puedeConsultarProveedores() {
         return tieneAlgunRol(ROLES_PROVEEDORES);
     }
 
+    /** Indica si el usuario puede consultar órdenes de compra. */
     static boolean puedeConsultarOrdenesCompra() {
         return tieneAlgunRol(ROLES_ORDENES_COMPRA);
     }
@@ -196,6 +210,7 @@ final class AlcanceHerramientas {
                 .collect(toUnmodifiableSet());
     }
 
+    /** Indica si el usuario actual tiene alguno de los roles indicados. Sin autenticación, responde que no. */
     private static boolean tieneAlgunRol(Set<String> roles) {
         Authentication autenticacion = SecurityContextHolder.getContext().getAuthentication();
         if (autenticacion == null) {

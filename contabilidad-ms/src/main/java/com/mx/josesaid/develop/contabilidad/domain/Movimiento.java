@@ -13,6 +13,7 @@ public final class Movimiento {
     private final BigDecimal cargo;
     private final BigDecimal abono;
 
+    /** Crea un movimiento de póliza con su cuenta, cargo y abono. */
     public Movimiento(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
         if (cuentaId == null) {
             throw new ReglaDeNegocioException("Cada movimiento requiere una cuenta");
@@ -37,7 +38,10 @@ public final class Movimiento {
         return new Movimiento(cuentaId, abono, cargo);
     }
 
+    /** Devuelve el id de la cuenta. */
     public UUID getCuentaId() { return cuentaId; }
+    /** Devuelve el cargo. */
     public BigDecimal getCargo() { return cargo; }
+    /** Devuelve el abono. */
     public BigDecimal getAbono() { return abono; }
 }

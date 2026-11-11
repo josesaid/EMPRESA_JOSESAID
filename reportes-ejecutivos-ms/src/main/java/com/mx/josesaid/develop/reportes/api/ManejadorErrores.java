@@ -17,32 +17,38 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ManejadorErrores {
 
+    /** Convierte una regla de negocio incumplida en 422. */
     @ExceptionHandler(ReglaDeNegocioException.class)
     ResponseEntity<ProblemDetail> reglaDeNegocio(ReglaDeNegocioException e) {
         return respuesta(HttpStatus.UNPROCESSABLE_ENTITY, "regla-de-negocio", e.getMessage());
     }
 
+    /** Convierte un recurso inexistente en 404. */
     @ExceptionHandler(RecursoNoEncontradoException.class)
     ResponseEntity<ProblemDetail> noEncontrado(RecursoNoEncontradoException e) {
         return respuesta(HttpStatus.NOT_FOUND, "recurso-no-encontrado", e.getMessage());
     }
 
+    /** Convierte un conflicto, por ejemplo modificar un reporte cerrado, en 409. */
     @ExceptionHandler(ConflictoException.class)
     ResponseEntity<ProblemDetail> conflicto(ConflictoException e) {
         return respuesta(HttpStatus.CONFLICT, "conflicto-de-estado", e.getMessage());
     }
 
+    /** Convierte una solicitud inválida en 400. */
     @ExceptionHandler(SolicitudInvalidaException.class)
     ResponseEntity<ProblemDetail> solicitudInvalida(SolicitudInvalidaException e) {
         return respuesta(HttpStatus.BAD_REQUEST, "solicitud-invalida", e.getMessage());
     }
 
+    /** Convierte un conflicto de concurrencia (dos cambios al mismo registro a la vez) en 409. El cliente debe reintentar. */
     @ExceptionHandler(OptimisticLockingFailureException.class)
     ResponseEntity<ProblemDetail> concurrencia(OptimisticLockingFailureException e) {
         return respuesta(HttpStatus.CONFLICT, "conflicto-concurrencia",
                 "El registro cambió mientras se procesaba. Vuelva a leerlo e intente de nuevo.");
     }
 
+    /** Construye la respuesta de error con el estado, el tipo y el detalle indicados. */
     private static ResponseEntity<ProblemDetail> respuesta(HttpStatus estado, String slug, String detalle) {
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(estado, detalle);
         problema.setTitle(estado.getReasonPhrase());
@@ -50,6 +56,7 @@ public class ManejadorErrores {
         return ResponseEntity.status(estado).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(problema);
     }
 
+    /** Convierte parámetros inválidos en 400 con el detalle de cada campo. */
     @org.springframework.web.bind.annotation.ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
     org.springframework.http.ProblemDetail parametrosInvalidos(jakarta.validation.ConstraintViolationException e) {
         return org.springframework.http.ProblemDetail.forStatusAndDetail(

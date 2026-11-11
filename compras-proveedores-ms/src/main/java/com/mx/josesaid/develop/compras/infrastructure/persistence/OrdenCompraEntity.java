@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** Fila de la tabla de órdenes de compra, con sus líneas. */
 @Entity
 @Table(name = "ordenes_compra")
 class OrdenCompraEntity {
@@ -29,6 +30,7 @@ class OrdenCompraEntity {
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     List<LineaOrdenEntity> lineas = new ArrayList<>();
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected OrdenCompraEntity() {
     }
 }

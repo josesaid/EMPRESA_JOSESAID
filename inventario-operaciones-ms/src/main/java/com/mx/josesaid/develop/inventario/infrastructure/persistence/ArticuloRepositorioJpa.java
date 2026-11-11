@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de artículos con JPA. */
 @Component
 class ArticuloRepositorioJpa implements ArticuloRepositorio {
 
@@ -15,6 +16,7 @@ class ArticuloRepositorioJpa implements ArticuloRepositorio {
         this.jpa = jpa;
     }
 
+    /** Guarda un artículo y devuelve el guardado. */
     @Override
     public Articulo guardar(Articulo a) {
         ArticuloEntity e = new ArticuloEntity();
@@ -28,11 +30,13 @@ class ArticuloRepositorioJpa implements ArticuloRepositorio {
         return a;
     }
 
+    /** Busca un artículo por id. */
     @Override
     public Optional<Articulo> buscarPorId(UUID id) {
         return jpa.findById(id).map(e -> Articulo.reconstruir(e.id, e.sku, e.nombre, e.unidad, e.loteObligatorio, e.minimo));
     }
 
+    /** Lista los artículos cuya existencia total está por debajo de su mínimo. */
     @Override
     public java.util.List<Articulo> listarConMinimo() {
         return jpa.findAll().stream()
@@ -41,11 +45,13 @@ class ArticuloRepositorioJpa implements ArticuloRepositorio {
                 .toList();
     }
 
+    /** Indica si ya existe un artículo con ese SKU. */
     @Override
     public boolean existePorSku(String sku) {
         return jpa.existsBySku(sku);
     }
 
+    /** Busca un artículo por SKU. */
     @Override
     public Optional<Articulo> buscarPorSku(String sku) {
         return jpa.findBySku(sku).map(e -> Articulo.reconstruir(e.id, e.sku, e.nombre, e.unidad, e.loteObligatorio, e.minimo));

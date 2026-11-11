@@ -3,6 +3,7 @@ package com.mx.josesaid.develop.usuarios_accesos.api;
 /** Oculta datos personales en las respuestas de la API. Nunca se usa en logs: los logs no registran estos datos. */
 public final class Enmascarado {
 
+    /** Clase de utilidad para enmascarar datos personales; no se instancia. */
     private Enmascarado() {
     }
 

@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/** Fila de la tabla de acciones pendientes. Guarda el payload completo para poder ejecutar la acción al confirmarla. */
 @Entity
 @Table(name = "acciones_pendientes")
 public class AccionPendienteEntidad {
@@ -36,9 +37,11 @@ public class AccionPendienteEntidad {
     @Column(name = "expira_utc", nullable = false)
     private Instant expiraUtc;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected AccionPendienteEntidad() {
     }
 
+    /** Crea una fila con todos los datos de la acción pendiente. */
     public AccionPendienteEntidad(UUID id, String usuario, String tipo, String payload, String resumen,
                                   String estatus, Instant creadaUtc, Instant expiraUtc) {
         this.id = id;
@@ -51,12 +54,20 @@ public class AccionPendienteEntidad {
         this.expiraUtc = expiraUtc;
     }
 
+    /** Devuelve el identificador de la acción. */
     public UUID getId() { return id; }
+    /** Devuelve el usuario que preparó la acción. */
     public String getUsuario() { return usuario; }
+    /** Devuelve el tipo de la acción. */
     public String getTipo() { return tipo; }
+    /** Devuelve el payload JSON de la acción. */
     public String getPayload() { return payload; }
+    /** Devuelve el resumen legible de la acción. */
     public String getResumen() { return resumen; }
+    /** Devuelve el estatus de la acción. */
     public String getEstatus() { return estatus; }
+    /** Devuelve la fecha de creación en UTC. */
     public Instant getCreadaUtc() { return creadaUtc; }
+    /** Devuelve la fecha de vencimiento en UTC. */
     public Instant getExpiraUtc() { return expiraUtc; }
 }

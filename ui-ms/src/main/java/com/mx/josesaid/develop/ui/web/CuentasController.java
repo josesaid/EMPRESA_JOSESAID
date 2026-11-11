@@ -12,16 +12,19 @@ import org.springframework.web.client.RestClientException;
 
 import com.mx.josesaid.develop.ui.contabilidad.ContabilidadCliente;
 
+/** Pantalla del catálogo de cuentas contables. */
 @Controller
 @RequestMapping("/cuentas")
 public class CuentasController {
 
     private final ContabilidadCliente contabilidad;
 
+    /** Recibe el servicio de contabilidad. */
     public CuentasController(ContabilidadCliente contabilidad) {
         this.contabilidad = contabilidad;
     }
 
+    /** Muestra el listado de cuentas. */
     @GetMapping
     public String listado(Authentication usuario, Model modelo) {
         modelo.addAttribute("correo", usuario.getName());

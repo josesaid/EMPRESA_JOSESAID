@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/** Acceso a la tabla de consultas con Spring Data JPA. */
 public interface ConsultaRepositorio extends JpaRepository<ConsultaEntidad, UUID> {
 
     @Query("select coalesce(sum(coalesce(c.tokensEntrada, 0) + coalesce(c.tokensSalida, 0)), 0) "

@@ -12,6 +12,7 @@ public enum TipoDocumento {
         this.retencionAnios = retencionAnios;
     }
 
+    /** Años que el documento debe conservarse antes de poder eliminarse. */
     public int retencionAnios() {
         return retencionAnios;
     }

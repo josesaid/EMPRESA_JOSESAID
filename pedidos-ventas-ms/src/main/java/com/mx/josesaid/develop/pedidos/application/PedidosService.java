@@ -36,6 +36,7 @@ public class PedidosService {
     private final Clock reloj;
     private final ValidadorCliente clientes;
 
+    /** Recibe los repositorios, el publicador de eventos, el reloj y el validador de clientes. */
     public PedidosService(CotizacionRepositorio cotizaciones, PedidoRepositorio pedidos,
                           PublicadorEventos eventos, Clock reloj,
                           ValidadorCliente clientes) {
@@ -54,6 +55,7 @@ public class PedidosService {
     public record ResumenVentas(YearMonth mes, long pedidos, Map<String, BigDecimal> ventasPorMoneda) {
     }
 
+    /** Crea una cotización en borrador. Falla si el cliente no está activo. */
     @Transactional
     public Cotizacion crearCotizacion(UUID clienteId, Canal canal, String moneda, TasaIva tasa,
                                       LocalDate vigenteHasta, List<LineaComando> lineas) {
@@ -61,6 +63,7 @@ public class PedidosService {
         return cotizaciones.guardar(Cotizacion.crear(clienteId, canal, moneda, tasa, vigenteHasta, aLineas(lineas)));
     }
 
+    /** Envía la cotización al cliente. */
     @Transactional
     public Cotizacion enviarCotizacion(UUID id) {
         Cotizacion c = cargarCotizacion(id);
@@ -83,6 +86,7 @@ public class PedidosService {
         return cotizaciones.guardar(c);
     }
 
+    /** Convierte una cotización aceptada en pedido en borrador. Verifica que el cliente siga activo. */
     @Transactional
     public Pedido convertirEnPedido(UUID cotizacionId) {
         Cotizacion c = cargarCotizacion(cotizacionId);
@@ -93,12 +97,14 @@ public class PedidosService {
         return pedidos.guardar(pedido);
     }
 
+    /** Crea un pedido en borrador. Falla si el cliente no está activo. */
     @Transactional
     public Pedido crearPedido(UUID clienteId, Canal canal, String moneda, TasaIva tasa, List<LineaComando> lineas) {
         clientes.exigirActivo(clienteId);
         return pedidos.guardar(Pedido.crear(clienteId, canal, moneda, tasa, aLineas(lineas)));
     }
 
+    /** Reemplaza las líneas de un pedido en borrador. */
     @Transactional
     public Pedido reemplazarLineas(UUID id, List<LineaComando> lineas) {
         Pedido p = cargarPedido(id);
@@ -106,6 +112,7 @@ public class PedidosService {
         return pedidos.guardar(p);
     }
 
+    /** Confirma el pedido y publica PedidoConfirmado con el total y las líneas, para que inventario reserve las piezas. */
     @Transactional
     public Pedido confirmarPedido(UUID id) {
         Pedido p = cargarPedido(id);
@@ -120,6 +127,7 @@ public class PedidosService {
         return guardado;
     }
 
+    /** Entrega el pedido y publica PedidoEntregado con las líneas, para que inventario descuente las piezas. */
     @Transactional
     public Pedido entregarPedido(UUID id) {
         Pedido p = cargarPedido(id);
@@ -141,6 +149,7 @@ public class PedidosService {
                 .toList();
     }
 
+    /** Cancela el pedido y publica PedidoCancelado con el motivo. */
     @Transactional
     public Pedido cancelarPedido(UUID id, MotivoCancelacion motivo) {
         Pedido p = cargarPedido(id);
@@ -150,6 +159,7 @@ public class PedidosService {
         return guardado;
     }
 
+    /** Registra la devolución total y publica PedidoCancelado con motivo de devolución. */
     @Transactional
     public Pedido devolverPedido(UUID id) {
         Pedido p = cargarPedido(id);
@@ -160,21 +170,25 @@ public class PedidosService {
         return guardado;
     }
 
+    /** Devuelve una cotización por id. */
     @Transactional(readOnly = true)
     public Cotizacion obtenerCotizacion(UUID id) {
         return cargarCotizacion(id);
     }
 
+    /** Devuelve un pedido por id. */
     @Transactional(readOnly = true)
     public Pedido obtenerPedido(UUID id) {
         return cargarPedido(id);
     }
 
+    /** Busca pedidos con filtros opcionales. */
     @Transactional(readOnly = true)
     public List<Pedido> buscarPedidos(UUID clienteId, EstatusPedido estatus, Canal canal) {
         return pedidos.buscarFiltrados(clienteId, estatus, canal);
     }
 
+    /** Calcula las ventas netas del mes en UTC: pedidos confirmados o entregados, sin los cancelados ni devueltos, por moneda. */
     @Transactional(readOnly = true)
     public ResumenVentas resumenVentas(YearMonth mes) {
         Instant desde = mes.atDay(1).atStartOfDay(ZoneOffset.UTC).toInstant();
@@ -186,16 +200,19 @@ public class PedidosService {
         return new ResumenVentas(mes, lista.size(), porMoneda);
     }
 
+    /** Carga una cotización por id o lanza RecursoNoEncontradoException. */
     private Cotizacion cargarCotizacion(UUID id) {
         return cotizaciones.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Cotización no encontrada: " + id));
     }
 
+    /** Carga un pedido por id o lanza RecursoNoEncontradoException. */
     private Pedido cargarPedido(UUID id) {
         return pedidos.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Pedido no encontrado: " + id));
     }
 
+    /** Convierte los comandos en líneas del dominio. */
     private static List<Linea> aLineas(List<LineaComando> comandos) {
         if (comandos == null) {
             return List.of();

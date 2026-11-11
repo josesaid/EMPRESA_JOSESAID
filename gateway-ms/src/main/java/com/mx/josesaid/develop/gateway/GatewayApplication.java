@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GatewayApplication {
 
+    /** Arranca gateway-ms. Las rutas no se escriben a mano: se generan desde el registro de Eureka. */
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
     }

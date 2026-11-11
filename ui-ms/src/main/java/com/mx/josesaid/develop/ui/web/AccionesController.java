@@ -23,16 +23,19 @@ public class AccionesController {
 
     private final NexusCliente nexus;
 
+    /** Recibe el cliente de Nexus. */
     public AccionesController(NexusCliente nexus) {
         this.nexus = nexus;
     }
 
+    /** Muestra el formulario para pedir una póliza en lenguaje natural. Solo para contadores. */
     @GetMapping("/polizas/nueva")
     public String formulario(Authentication usuario, Model modelo) {
         preparar(usuario, modelo);
         return VISTA;
     }
 
+    /** Pide a Nexus una sugerencia de póliza. Solo sugiere; la póliza se confirma en otro paso. */
     @PostMapping("/polizas/nueva")
     public String sugerir(@RequestParam String descripcion, Authentication usuario, Model modelo) {
         preparar(usuario, modelo);
@@ -51,6 +54,7 @@ public class AccionesController {
         return VISTA;
     }
 
+    /** Confirma una acción pendiente con su código. Solo para contadores. */
     @PostMapping("/acciones/{id}/confirmacion")
     public String confirmar(@PathVariable UUID id, @RequestParam String codigo, Authentication usuario, Model modelo) {
         preparar(usuario, modelo);
@@ -65,6 +69,7 @@ public class AccionesController {
         return VISTA;
     }
 
+    /** Cancela una acción pendiente. */
     @PostMapping("/acciones/{id}/cancelacion")
     public String cancelar(@PathVariable UUID id, Authentication usuario, Model modelo) {
         preparar(usuario, modelo);
@@ -86,6 +91,7 @@ public class AccionesController {
         return e.getStatusCode().value();
     }
 
+    /** Traduce el estado de la respuesta de Nexus en un mensaje para la sugerencia. */
     private static String mensajeSugerir(int estado) {
         return switch (estado) {
             case 403 -> "Tu rol no puede proponer pólizas.";
@@ -94,6 +100,7 @@ public class AccionesController {
         };
     }
 
+    /** Traduce el estado de la respuesta de Nexus en un mensaje para la confirmación. */
     private static String mensajeConfirmar(int estado) {
         return switch (estado) {
             case 422 -> "El código no coincide. La propuesta se canceló; vuelve a proponer la póliza.";
@@ -104,6 +111,7 @@ public class AccionesController {
         };
     }
 
+    /** Traduce el estado de la respuesta de Nexus en un mensaje para la cancelación. */
     private static String mensajeCancelar(int estado) {
         return switch (estado) {
             case 409 -> "La propuesta ya no está pendiente.";
@@ -112,6 +120,7 @@ public class AccionesController {
         };
     }
 
+    /** Agrega al modelo los datos comunes de la pantalla y el indicador de si el usuario es contador. */
     private void preparar(Authentication usuario, Model modelo) {
         modelo.addAttribute("correo", usuario.getName());
         modelo.addAttribute("titulo", "Proponer póliza");
@@ -122,6 +131,7 @@ public class AccionesController {
         }
     }
 
+    /** Indica si el usuario tiene el rol de contador. */
     private static boolean esContador(Authentication usuario) {
         return usuario.getAuthorities().stream().anyMatch(a -> "ROLE_CONTADOR".equals(a.getAuthority()));
     }

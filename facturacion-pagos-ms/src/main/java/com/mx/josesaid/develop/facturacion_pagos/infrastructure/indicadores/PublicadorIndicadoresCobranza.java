@@ -48,6 +48,7 @@ public class PublicadorIndicadoresCobranza {
     private final Clock reloj;
     private final String topico;
 
+    /** Recibe JDBC para sumar cobros, Kafka para publicar, el serializador, el reloj y el tópico. */
     public PublicadorIndicadoresCobranza(JdbcTemplate jdbc, KafkaTemplate<String, String> kafka,
                                          ObjectMapper mapper, Clock reloj,
                                          @Value("${indicadores.topico:indicadores-areas}") String topico) {
@@ -58,6 +59,7 @@ public class PublicadorIndicadoresCobranza {
         this.topico = topico;
     }
 
+    /** Publica el monto cobrado del mes actual y del anterior. */
     @Scheduled(fixedDelayString = "${indicadores.intervalo-ms:3600000}",
             initialDelayString = "${indicadores.inicio-ms:30000}")
     public void publicar() {

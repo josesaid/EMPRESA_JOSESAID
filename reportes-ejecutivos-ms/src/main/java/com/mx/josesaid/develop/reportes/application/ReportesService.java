@@ -34,6 +34,7 @@ public class ReportesService {
     private final Duration frescura;
     private final Map<FormatoExportacion, ExportadorReporte> exportadores = new EnumMap<>(FormatoExportacion.class);
 
+    /** Recibe los repositorios, el publicador de eventos, los exportadores por formato, las métricas y el reloj. */
     public ReportesService(IndicadorRepositorio indicadores, ReporteRepositorio reportes, PublicadorEventos eventos,
                            Clock reloj, MeterRegistry metricas,
                            @Value("${reportes.frescura-dias:7}") int frescuraDias,
@@ -47,9 +48,11 @@ public class ReportesService {
         listaExportadores.forEach(e -> this.exportadores.put(e.formato(), e));
     }
 
+    /** Indicador con la marca de si su fuente está desactualizada. */
     public record IndicadorVista(Indicador indicador, boolean desactualizado) {
     }
 
+    /** Reporte con sus indicadores consolidados. */
     public record ReporteVista(Reporte reporte, List<IndicadorConsolidado> indicadores) {
     }
 
@@ -57,6 +60,7 @@ public class ReportesService {
     public record Exportacion(byte[] contenido, FormatoExportacion formato, String nombreArchivo) {
     }
 
+    /** Registra un indicador en el periodo. Si el reporte no existe lo abre; si ya está cerrado, la operación se rechaza. */
     @Transactional
     public Indicador registrarIndicador(Area area, String nombre, Periodo periodo, BigDecimal valor, Instant fuente) {
         Reporte reporte = reportes.buscarPorPeriodo(periodo).orElseGet(() -> Reporte.abrir(periodo, Instant.now(reloj)));
@@ -67,6 +71,7 @@ public class ReportesService {
         return guardado;
     }
 
+    /** Devuelve los indicadores de un área y periodo, marcando los que tienen fuente desactualizada. */
     @Transactional(readOnly = true)
     public List<IndicadorVista> consultarIndicadores(Area area, Periodo periodo) {
         Instant ahora = Instant.now(reloj);
@@ -75,12 +80,14 @@ public class ReportesService {
                 .toList();
     }
 
+    /** Devuelve el reporte de un periodo con sus indicadores. */
     @Transactional(readOnly = true)
     public ReporteVista consultarReporte(Periodo periodo) {
         Reporte r = cargarPorPeriodo(periodo);
         return new ReporteVista(r, indicadoresDe(r));
     }
 
+    /** Cierra el reporte del periodo y publica el evento reporte-cerrado. Si el reporte no tiene indicadores, la operación se rechaza. */
     @Transactional
     public Reporte cerrarReporte(Periodo periodo) {
         Reporte r = cargarPorPeriodo(periodo);
@@ -105,6 +112,7 @@ public class ReportesService {
         return new Exportacion(contenido, f, nombre);
     }
 
+    /** Busca un reporte por su identificador. Si no existe, lanza RecursoNoEncontradoException. */
     @Transactional(readOnly = true)
     public Reporte buscarReporte(UUID id) {
         return reportes.buscarPorId(id)
@@ -123,6 +131,7 @@ public class ReportesService {
                 .toList();
     }
 
+    /** Busca un reporte por periodo. Si no existe, lanza RecursoNoEncontradoException. */
     private Reporte cargarPorPeriodo(Periodo periodo) {
         return reportes.buscarPorPeriodo(periodo)
                 .orElseThrow(() -> new RecursoNoEncontradoException("No existe reporte para el periodo " + periodo));

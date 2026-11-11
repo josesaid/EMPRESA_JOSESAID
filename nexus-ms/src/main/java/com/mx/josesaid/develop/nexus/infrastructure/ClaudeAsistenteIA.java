@@ -40,6 +40,7 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
     private final HerramientasPoliticas politicas;
     private final ToolCallback[] herramientas;
 
+    /** Recibe el modelo de Claude, el registro de tokens, los prompts y las herramientas de cada área del asistente. */
     public ClaudeAsistenteIA(ChatModel modelo, RegistroTokens registro, RepositorioPrompts prompts,
                              HerramientasReportes reportes, HerramientasClientes clientes,
                              HerramientasVentas ventas, HerramientasCompras compras,
@@ -73,6 +74,7 @@ public final class ClaudeAsistenteIA implements AsistenteIA {
                 && texto != null && texto.matches("(?is).*\\balta\\b.*");
     }
 
+    /** Responde una pregunta. Antes de llamar al modelo rechaza los temas que no son de la empresa; así no se gasta presupuesto en preguntas ajenas. */
     @Override
     public RespuestaAsistente consultar(PreguntaAsistente pregunta) {
         if (!TemasEmpresa.esDeEmpresa(pregunta.texto())) {

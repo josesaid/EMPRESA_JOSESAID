@@ -30,17 +30,20 @@ public class FacturacionService {
     private final PublicadorEventos eventos;
     private final Clock reloj;
 
+    /** Recibe el repositorio de comprobantes, el publicador de eventos y el reloj. */
     public FacturacionService(ComprobanteRepositorio repositorio, PublicadorEventos eventos, Clock reloj) {
         this.repositorio = repositorio;
         this.eventos = eventos;
         this.reloj = reloj;
     }
 
+    /** Crea un comprobante en borrador para una orden. La fecha de hoy determina la tasa de IVA. */
     @Transactional
     public Comprobante crearBorrador(UUID ordenId, String moneda, BigDecimal subtotal) {
         return repositorio.guardar(Comprobante.crearBorrador(ordenId, moneda, subtotal, LocalDate.now(reloj)));
     }
 
+    /** Emite el comprobante, le asigna su folio y publica el evento de emisión. */
     @Transactional
     public Comprobante emitir(UUID id) {
         Comprobante comprobante = obtener(id);
@@ -53,6 +56,7 @@ public class FacturacionService {
         return guardado;
     }
 
+    /** Cancela un comprobante emitido con motivo y publica el evento de cancelación. */
     @Transactional
     public Comprobante cancelar(UUID id, String motivo) {
         Comprobante comprobante = obtener(id);
@@ -84,12 +88,14 @@ public class FacturacionService {
         return repositorio.listarPendientesDeCobro(LIMITE_LISTADO_PENDIENTES);
     }
 
+    /** Busca un comprobante por folio o lanza RecursoNoEncontradoException. */
     @Transactional(readOnly = true)
     public Comprobante buscarPorFolio(String folio) {
         return repositorio.buscarPorFolio(folio.trim())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Comprobante no encontrado con folio: " + folio));
     }
 
+    /** Devuelve un comprobante por id o lanza RecursoNoEncontradoException. */
     @Transactional(readOnly = true)
     public Comprobante obtener(UUID id) {
         return repositorio.buscarPorId(id)

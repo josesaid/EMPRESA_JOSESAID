@@ -29,6 +29,7 @@ public final class HerramientasReportes {
     static final String RUTA_BASE = "/reportes-ejecutivos-ms/v1";
 
     private static final String NO_DISPONIBLE = "La preparación de acciones no está disponible en este momento.";
+    /** Áreas válidas para consultar reportes ejecutivos. */
     private static final List<String> AREAS = List.of("VENTAS_ATENCION_CLIENTES", "FINANZAS_CONTABILIDAD",
             "OPERACIONES", "COMPRAS_PROVEEDORES", "ADMINISTRACION_LEGAL", "DIRECCION_GENERAL");
     private static final Pattern PERIODO = Pattern.compile("^(\\d{4}-(0[1-9]|1[0-2])|\\d{4}-Q[1-4]|\\d{4})$");
@@ -37,15 +38,18 @@ public final class HerramientasReportes {
     private final RestClient gateway;
     private final AccionesPendientes acciones;
 
+    /** Versión sin registro de acciones: solo permite consultar. */
     public HerramientasReportes(RestClient gateway) {
         this(gateway, null);
     }
 
+    /** Recibe el cliente del gateway y el registro de acciones. */
     public HerramientasReportes(RestClient gateway, AccionesPendientes acciones) {
         this.gateway = gateway;
         this.acciones = acciones;
     }
 
+    /** Herramienta del asistente: devuelve los indicadores de un área y periodo. */
     @Tool(name = "consultar_indicadores",
           description = "Devuelve los indicadores consolidados de un periodo. El periodo es AAAA-MM, AAAA-Qn o AAAA.")
     public String consultarIndicadores(
@@ -66,6 +70,7 @@ public final class HerramientasReportes {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: devuelve un reporte ejecutivo del área y periodo indicados. */
     @Tool(name = "consultar_reporte",
           description = "Devuelve el reporte ejecutivo de un periodo (AAAA-MM, AAAA-Qn o AAAA) con su estatus.")
     public String consultarReporte(
@@ -78,6 +83,7 @@ public final class HerramientasReportes {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: prepara el registro de un indicador. Requiere confirmación del usuario. */
     @Tool(name = "registrar_indicador",
           description = "Prepara el registro de un indicador de un área para un periodo. NO lo registra: devuelve "
                   + "un resumen y un accion_id. El usuario debe confirmarlo en la aplicación. Solo DIRECCION puede usarla.")
@@ -131,10 +137,12 @@ public final class HerramientasReportes {
                 .texto();
     }
 
+    /** Devuelve el nombre del usuario autenticado. */
     private static String usuarioActual() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    /** Convierte un mapa en JSON para guardarlo en la acción pendiente. */
     private static String aJson(Map<String, Object> datos) {
         try {
             return JSON.writeValueAsString(datos);

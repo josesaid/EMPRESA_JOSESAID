@@ -14,11 +14,13 @@ public class RecifradorJdbc implements RecifradorPorLotes.Almacen {
     private final JdbcTemplate jdbc;
     private final ProtectorDatos protector;
 
+    /** Recibe JDBC para leer y actualizar, y el protector de datos. */
     public RecifradorJdbc(JdbcTemplate jdbc, ProtectorDatos protector) {
         this.jdbc = jdbc;
         this.protector = protector;
     }
 
+    /** Devuelve hasta el límite de filas cuyo valor aún no está en la versión activa. */
     @Override
     public List<RecifradorPorLotes.Fila> pendientes(String tabla, String columna, int limite) {
         String sql = "SELECT id, " + columna + " AS valor FROM " + tabla
@@ -29,6 +31,7 @@ public class RecifradorJdbc implements RecifradorPorLotes.Almacen {
                 limite);
     }
 
+    /** Cambia el valor de una fila solo si aún vale lo que se leyó. */
     @Override
     public boolean actualizar(String tabla, String columna, Object id, String valorAnterior, String valorNuevo) {
         String sql = "UPDATE " + tabla + " SET " + columna + " = ? WHERE id = ? AND " + columna + " = ?";

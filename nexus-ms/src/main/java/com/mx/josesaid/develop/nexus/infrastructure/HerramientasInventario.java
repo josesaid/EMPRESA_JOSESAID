@@ -34,15 +34,18 @@ public final class HerramientasInventario {
     private final RestClient gateway;
     private final AccionesPendientes acciones;
 
+    /** Versión sin registro de acciones: solo permite consultar. */
     public HerramientasInventario(RestClient gateway) {
         this(gateway, null);
     }
 
+    /** Recibe el cliente del gateway y el registro de acciones. */
     public HerramientasInventario(RestClient gateway, AccionesPendientes acciones) {
         this.gateway = gateway;
         this.acciones = acciones;
     }
 
+    /** Herramienta del asistente: devuelve las existencias de un artículo. */
     @Tool(name = "consultar_existencias",
           description = "Devuelve las existencias de un artículo por almacén: cantidad, reservado y disponible. Requiere el identificador UUID del artículo.")
     public String consultarExistencias(
@@ -57,6 +60,7 @@ public final class HerramientasInventario {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: devuelve la trazabilidad de un lote. */
     @Tool(name = "consultar_trazabilidad_lote",
           description = "Devuelve los movimientos de un lote para trazabilidad: artículo, almacén, tipo y cantidad.")
     public String consultarTrazabilidadLote(
@@ -70,6 +74,7 @@ public final class HerramientasInventario {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: lista los artículos por debajo del mínimo. */
     @Tool(name = "listar_articulos_bajo_minimo",
           description = "Lista hasta 15 artículos cuya existencia total está por debajo de su mínimo, del mayor "
                   + "faltante al menor: SKU, nombre, unidad, mínimo, existencia y faltante.")
@@ -82,6 +87,7 @@ public final class HerramientasInventario {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: lista los movimientos de un artículo. */
     @Tool(name = "listar_movimientos_articulo",
           description = "Lista los últimos 15 movimientos de inventario de un artículo, del más reciente al más "
                   + "antiguo: tipo, cantidad, almacén, lote y referencia.")
@@ -97,6 +103,7 @@ public final class HerramientasInventario {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: prepara el alta de un artículo. */
     @Tool(name = "crear_articulo",
           description = "Prepara el alta de un artículo. NO lo crea: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. Solo OPERACIONES puede usarla.")
@@ -135,6 +142,7 @@ public final class HerramientasInventario {
         return guardar(AccionesPendientes.TIPO_ARTICULO_CREAR, cuerpo, resumen, "Alta preparada, no creada.");
     }
 
+    /** Herramienta del asistente: prepara un movimiento de inventario. */
     @Tool(name = "registrar_movimiento_inventario",
           description = "Prepara un movimiento de inventario: entrada, salida, ajuste o reserva. NO lo registra: devuelve "
                   + "un resumen y un accion_id. El usuario debe confirmarlo en la aplicación. Solo ALMACEN puede usarla.")
@@ -186,6 +194,7 @@ public final class HerramientasInventario {
         return guardar(AccionesPendientes.TIPO_MOVIMIENTO_REGISTRAR, cuerpo, resumen, "Movimiento preparado, no registrado.");
     }
 
+    /** Herramienta del asistente: prepara una orden de operación de producción o de servicio. */
     @Tool(name = "crear_orden_operacion",
           description = "Prepara una orden de operación de producción o de servicio. NO la crea: devuelve un resumen y un "
                   + "accion_id. El usuario debe confirmarlo en la aplicación. Solo OPERACIONES puede usarla.")
@@ -211,6 +220,7 @@ public final class HerramientasInventario {
         return guardar(AccionesPendientes.TIPO_ORDEN_OPERACION_CREAR, cuerpo, resumen, "Orden preparada, no creada.");
     }
 
+    /** Herramienta del asistente: prepara el alta de un almacén. */
     @Tool(name = "crear_almacen",
           description = "Prepara el alta de un almacén. NO lo crea: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. Solo ALMACEN puede usarla.")
@@ -234,6 +244,7 @@ public final class HerramientasInventario {
                 "Alta de almacén " + nombre.trim(), "Alta preparada, no creada.");
     }
 
+    /** Guarda la acción pendiente del usuario y devuelve un texto con su identificador. */
     private String guardar(String tipo, Map<String, Object> cuerpo, String resumen, String encabezado) {
         AccionPendiente accion = acciones.preparar(usuarioActual(), tipo, aJson(cuerpo), resumen);
         return FiltroDatosSensibles.redactar(encabezado + " " + resumen + ". accion_id: " + accion.id()
@@ -253,6 +264,7 @@ public final class HerramientasInventario {
         }
     }
 
+    /** Convierte un texto en UUID. Devuelve nulo si el valor es nulo. */
     private static UUID identificador(String valor) {
         try {
             return valor == null ? null : UUID.fromString(valor.trim());
@@ -261,18 +273,22 @@ public final class HerramientasInventario {
         }
     }
 
+    /** Indica si el texto es nulo o está en blanco. */
     private static boolean vacio(String valor) {
         return valor == null || valor.isBlank();
     }
 
+    /** Quita espacios y pasa el texto a mayúsculas. Un valor nulo se convierte en cadena vacía. */
     private static String normalizar(String valor) {
         return valor == null ? "" : valor.trim().toUpperCase(java.util.Locale.ROOT);
     }
 
+    /** Devuelve el nombre del usuario autenticado. */
     private static String usuarioActual() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    /** Convierte un mapa en JSON para guardarlo en la acción pendiente. */
     private static String aJson(Map<String, Object> datos) {
         try {
             return JSON.writeValueAsString(datos);

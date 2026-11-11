@@ -24,25 +24,30 @@ public final class AutorizacionMcpCallback implements ToolCallback {
 
     private final ToolCallback delegado;
 
+    /** Envuelve una herramienta MCP para revisar la autorización antes de ejecutarla. */
     public AutorizacionMcpCallback(ToolCallback delegado) {
         this.delegado = delegado;
     }
 
+    /** Devuelve la definición de la herramienta original. */
     @Override
     public ToolDefinition getToolDefinition() {
         return delegado.getToolDefinition();
     }
 
+    /** Devuelve los metadatos de la herramienta original. */
     @Override
     public ToolMetadata getToolMetadata() {
         return delegado.getToolMetadata();
     }
 
+    /** Ejecuta la herramienta sin contexto de seguridad. Por diseño, se rechaza si no hay identidad. */
     @Override
     public String call(String toolInput) {
         return call(toolInput, null);
     }
 
+    /** Ejecuta la herramienta solo si el usuario de la sesión puede usarla. Si no, devuelve un error para el modelo en lugar de ejecutarla. */
     @Override
     public String call(String toolInput, ToolContext toolContext) {
         String nombre = delegado.getToolDefinition().name();
@@ -71,6 +76,7 @@ public final class AutorizacionMcpCallback implements ToolCallback {
         }
     }
 
+    /** Obtiene la identidad del usuario que hace la petición desde el contexto de la herramienta. */
     private static Optional<Authentication> identidad(ToolContext toolContext) {
         if (toolContext == null) {
             return Optional.empty();

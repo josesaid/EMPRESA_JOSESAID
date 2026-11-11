@@ -44,6 +44,7 @@ public class CuentaPorPagarEntity {
     @OneToMany(mappedBy = "cuenta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PagoProveedorEntity> pagos = new ArrayList<>();
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected CuentaPorPagarEntity() {
     }
 
@@ -52,6 +53,7 @@ public class CuentaPorPagarEntity {
         this.creadoUtc = Instant.now();
     }
 
+    /** Actualiza la fila con los datos de la cuenta. */
     void actualizarDesde(CuentaPorPagar c) {
         this.ordenId = c.getOrdenId();
         this.proveedorId = c.getProveedorId();
@@ -65,10 +67,16 @@ public class CuentaPorPagarEntity {
         }
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el id de la orden. */
     public UUID getOrdenId() { return ordenId; }
+    /** Devuelve el id del proveedor. */
     public UUID getProveedorId() { return proveedorId; }
+    /** Devuelve la moneda. */
     public String getMoneda() { return moneda; }
+    /** Devuelve el monto. */
     public BigDecimal getMonto() { return monto; }
+    /** Devuelve los pagos de la cuenta. */
     public List<PagoProveedorEntity> getPagos() { return pagos; }
 }

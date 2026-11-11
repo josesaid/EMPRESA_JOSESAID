@@ -26,6 +26,7 @@ public class OrdenCompra {
     private final List<LineaOrden> lineas;
     private final String creadaPor;
 
+    /** Constructor privado: las órdenes se crean con sus fábricas. */
     private OrdenCompra(UUID id, UUID proveedorId, String moneda, EstatusOrdenCompra estatus,
                         String motivoCancelacion, List<LineaOrden> lineas, String creadaPor) {
         this.id = id;
@@ -57,6 +58,7 @@ public class OrdenCompra {
         return new OrdenCompra(UUID.randomUUID(), proveedor.getId(), moneda, EstatusOrdenCompra.BORRADOR, null, lineas, creadaPor);
     }
 
+    /** Reconstruye una orden desde la base de datos sin aplicar reglas de aprobación. */
     public static OrdenCompra reconstruir(UUID id, UUID proveedorId, String moneda, EstatusOrdenCompra estatus,
                                           String motivoCancelacion, List<LineaOrden> lineas, String creadaPor) {
         return new OrdenCompra(id, proveedorId, moneda, estatus, motivoCancelacion, lineas, creadaPor);
@@ -116,6 +118,7 @@ public class OrdenCompra {
         return new Recepcion(UUID.randomUUID(), id, sku, cantidadRedondeada);
     }
 
+    /** Cancela la orden en borrador o aprobada. El motivo es obligatorio. */
     public void cancelar(String motivo) {
         if (motivo == null || motivo.isBlank()) {
             throw new SolicitudInvalidaException("El motivo de cancelación es obligatorio");
@@ -127,10 +130,12 @@ public class OrdenCompra {
         this.motivoCancelacion = motivo.trim();
     }
 
+    /** Devuelve la suma de los subtotales de las líneas. */
     public BigDecimal total() {
         return lineas.stream().map(LineaOrden::subtotal).reduce(ZERO, BigDecimal::add);
     }
 
+    /** Devuelve la posición de la línea con ese SKU. Falla si la orden no contiene el SKU. */
     private int indiceDe(String sku) {
         for (int i = 0; i < lineas.size(); i++) {
             if (lineas.get(i).getArticuloSku().equals(sku)) {
@@ -140,11 +145,18 @@ public class OrdenCompra {
         throw new ReglaDeNegocioException("La orden no contiene el SKU " + sku);
     }
 
+    /** Devuelve el usuario que creó la orden, o nulo en órdenes antiguas. */
     public String getCreadaPor() { return creadaPor; }
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el id del proveedor. */
     public UUID getProveedorId() { return proveedorId; }
+    /** Devuelve la moneda. */
     public String getMoneda() { return moneda; }
+    /** Devuelve el estatus. */
     public EstatusOrdenCompra getEstatus() { return estatus; }
+    /** Devuelve el motivo de cancelación, o nulo. */
     public String getMotivoCancelacion() { return motivoCancelacion; }
+    /** Devuelve las líneas, en una vista de solo lectura. */
     public List<LineaOrden> getLineas() { return Collections.unmodifiableList(lineas); }
 }

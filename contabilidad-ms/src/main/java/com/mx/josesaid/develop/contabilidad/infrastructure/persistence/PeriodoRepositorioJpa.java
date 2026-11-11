@@ -6,6 +6,7 @@ import java.time.YearMonth;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de periodos con JPA. */
 @Component
 class PeriodoRepositorioJpa implements PeriodoRepositorio {
 
@@ -15,6 +16,7 @@ class PeriodoRepositorioJpa implements PeriodoRepositorio {
         this.jpa = jpa;
     }
 
+    /** Guarda un periodo y devuelve el guardado. */
     @Override
     public Periodo guardar(Periodo p) {
         PeriodoEntity e = jpa.findById(p.getAnioMes().toString()).orElseGet(PeriodoEntity::new);
@@ -24,6 +26,7 @@ class PeriodoRepositorioJpa implements PeriodoRepositorio {
         return p;
     }
 
+    /** Busca un periodo por año y mes. */
     @Override
     public Optional<Periodo> buscarPorAnioMes(YearMonth anioMes) {
         return jpa.findById(anioMes.toString())

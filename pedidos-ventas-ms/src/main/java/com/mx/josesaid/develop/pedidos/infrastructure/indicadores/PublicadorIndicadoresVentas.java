@@ -52,6 +52,7 @@ public class PublicadorIndicadoresVentas {
     private final Clock reloj;
     private final String topico;
 
+    /** Recibe JDBC para sumar ventas, Kafka para publicar, el serializador, el reloj y el tópico. */
     public PublicadorIndicadoresVentas(JdbcTemplate jdbc, KafkaTemplate<String, String> kafka,
                                        ObjectMapper mapper, Clock reloj,
                                        @Value("${pedidos.indicadores.topico:indicadores-areas}") String topico) {
@@ -62,6 +63,7 @@ public class PublicadorIndicadoresVentas {
         this.topico = topico;
     }
 
+    /** Publica las ventas netas del mes actual y del anterior. */
     @Scheduled(fixedDelayString = "${pedidos.indicadores.intervalo-ms:3600000}",
             initialDelayString = "${pedidos.indicadores.inicio-ms:30000}")
     public void publicar() {

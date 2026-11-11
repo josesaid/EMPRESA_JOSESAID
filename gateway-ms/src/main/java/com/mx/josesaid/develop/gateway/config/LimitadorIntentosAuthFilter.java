@@ -27,6 +27,7 @@ public class LimitadorIntentosAuthFilter implements WebFilter {
 
     private static final Logger log = LoggerFactory.getLogger(LimitadorIntentosAuthFilter.class);
 
+    /** Rutas de autenticación sujetas al límite por IP. Solo se cuentan POST a estas rutas. */
     static final Set<String> RUTAS = Set.of(
             "/usuarios-accesos-ms/v1/auth/login",
             "/usuarios-accesos-ms/v1/auth/cambiar-password-inicial");
@@ -34,6 +35,7 @@ public class LimitadorIntentosAuthFilter implements WebFilter {
     private final LimitadorIntentos limitador;
     private final List<String> proxiesConfiables;
 
+    /** Recibe el almacén de límites y la lista de proxies de confianza, separada por comas, desde GATEWAY_PROXIES_CONFIABLES. */
     public LimitadorIntentosAuthFilter(
             LimitadorIntentos limitador,
             @Value("${GATEWAY_PROXIES_CONFIABLES:}") String proxies) {
@@ -41,6 +43,7 @@ public class LimitadorIntentosAuthFilter implements WebFilter {
         this.proxiesConfiables = List.of(proxies.split(","));
     }
 
+    /** Cuenta el intento por IP. Si se excede el límite responde 429 con Retry-After. Si el almacén falla, deja pasar la solicitud y registra la falla. */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         if (!HttpMethod.POST.equals(exchange.getRequest().getMethod())

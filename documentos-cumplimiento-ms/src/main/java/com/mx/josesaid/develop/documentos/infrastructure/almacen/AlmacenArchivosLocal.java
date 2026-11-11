@@ -17,17 +17,20 @@ public class AlmacenArchivosLocal implements AlmacenDocumentos {
     private final Path raiz;
     private final ProtectorArchivos protector;
 
+    /** Recibe el directorio base donde se guardan los archivos. Ahí se crean las carpetas de cada documento. */
     public AlmacenArchivosLocal(@Value("${documentos.almacen.directorio}") String directorio,
                                 ProtectorArchivos protector) {
         this.raiz = Path.of(directorio).toAbsolutePath().normalize();
         this.protector = protector;
     }
 
+    /** Construye la referencia de almacenamiento de una versión a partir de su documento y número. La referencia nunca sale de la API. */
     @Override
     public String referencia(UUID documentoId, int numero) {
         return documentoId + "/v" + numero + ".bin";
     }
 
+    /** Guarda el contenido en la referencia indicada, cifrado si hay clave configurada. */
     @Override
     public void guardar(String referencia, byte[] contenido) {
         Path destino = resolver(referencia);
@@ -40,6 +43,7 @@ public class AlmacenArchivosLocal implements AlmacenDocumentos {
         }
     }
 
+    /** Lee el contenido de una referencia y lo descifra si corresponde. */
     @Override
     public byte[] leer(String referencia) {
         try {
@@ -49,6 +53,7 @@ public class AlmacenArchivosLocal implements AlmacenDocumentos {
         }
     }
 
+    /** Borra el archivo de una referencia. Si no existe, no hace nada. */
     @Override
     public void borrar(String referencia) {
         try {
@@ -58,6 +63,7 @@ public class AlmacenArchivosLocal implements AlmacenDocumentos {
         }
     }
 
+    /** Convierte una referencia en una ruta del disco, impidiendo salir del directorio base. */
     private Path resolver(String referencia) {
         Path p = raiz.resolve(referencia).normalize();
         if (!p.startsWith(raiz)) {

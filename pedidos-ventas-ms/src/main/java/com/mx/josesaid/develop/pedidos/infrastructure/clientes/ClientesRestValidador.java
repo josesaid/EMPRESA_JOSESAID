@@ -25,6 +25,7 @@ public class ClientesRestValidador implements ValidadorCliente {
     private final RestClient http;
     private final ObjectMapper mapper;
 
+    /** Recibe el constructor de clientes HTTP, la URL de clientes-ms y el serializador JSON. */
     public ClientesRestValidador(RestClient.Builder builder,
                                  @Value("${clientes.url:http://clientes-ms:8080}") String url,
                                  ObjectMapper mapper) {
@@ -32,6 +33,7 @@ public class ClientesRestValidador implements ValidadorCliente {
         this.mapper = mapper;
     }
 
+    /** Verifica en clientes-ms que el cliente exista y esté activo. Usa el token del usuario que hizo la petición. */
     @Override
     public void exigirActivo(UUID clienteId) {
         String cuerpo;
@@ -63,6 +65,7 @@ public class ClientesRestValidador implements ValidadorCliente {
         }
     }
 
+    /** Obtiene el token del usuario autenticado para llamar a clientes-ms. */
     private static String tokenActual() {
         var autenticacion = SecurityContextHolder.getContext().getAuthentication();
         if (autenticacion instanceof JwtAuthenticationToken jwt) {

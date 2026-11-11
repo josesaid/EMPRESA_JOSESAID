@@ -13,6 +13,7 @@ public final class TemasEmpresa {
     public static final String RECHAZO = "Solo puedo ayudarte con consultas de EMPRESA_JOSESAID, "
             + "por ejemplo: \"¿Cuántas existencias hay del SKU-001?\" o \"¿Qué comprobantes siguen pendientes de cobro?\".";
 
+    /** Palabras clave de los temas de la empresa: clientes, pedidos, compras, inventario, contabilidad, etc. Una pregunta que no contiene ninguna se rechaza antes de llamar al modelo. */
     private static final Pattern TEMAS = Pattern.compile(
             "\\b(clientes?|rfc|usuarios?|accesos?|roles?|factur\\w*|comprobantes?|cobros?|cobr\\w*|pagos?|pagar"
             + "|cuentas?|saldos?|cartera|polizas?|contab\\w*|periodos?|compras?|ordenes?|proveedor\\w*|pedidos?"
@@ -28,9 +29,11 @@ public final class TemasEmpresa {
     private static final Pattern UUID = Pattern.compile(
             "\\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\b");
 
+    /** Clase de utilidad: no se instancia. */
     private TemasEmpresa() {
     }
 
+    /** Indica si el texto habla de un tema de la empresa, buscando las palabras clave sin distinguir mayúsculas. */
     public static boolean esDeEmpresa(String texto) {
         if (texto == null || texto.isBlank()) {
             return false;

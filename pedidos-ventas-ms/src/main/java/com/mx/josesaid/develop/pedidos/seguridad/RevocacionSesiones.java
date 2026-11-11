@@ -45,10 +45,12 @@ public class RevocacionSesiones {
         return cerradoEn != null && emitidoEn != null && emitidoEn.isBefore(cerradoEn);
     }
 
+    /** Indica si un registro de revocación ya venció y puede descartarse. */
     private static boolean vencido(Instant ocurridoEn) {
         return ocurridoEn == null || ocurridoEn.plus(VIDA).isBefore(Instant.now());
     }
 
+    /** Elimina las revocaciones vencidas para no crecer sin límite. */
     private void limpiar() {
         Instant limite = Instant.now().minus(VIDA);
         sesiones.values().removeIf(t -> t.isBefore(limite));

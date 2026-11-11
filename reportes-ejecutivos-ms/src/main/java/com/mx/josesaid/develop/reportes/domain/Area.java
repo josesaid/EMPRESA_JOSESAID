@@ -15,6 +15,7 @@ public enum Area {
         this.etiqueta = etiqueta;
     }
 
+    /** Etiqueta legible del área, para mostrarla en pantalla y en exportaciones. */
     public String etiqueta() {
         return etiqueta;
     }

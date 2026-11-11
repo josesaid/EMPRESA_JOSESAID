@@ -37,6 +37,7 @@ public class PagoEntity {
     @Column(name = "creado_utc", nullable = false)
     private Instant creadoUtc;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected PagoEntity() {
     }
 
@@ -48,13 +49,18 @@ public class PagoEntity {
         this.referencia = referencia;
     }
 
+    /** Se ejecuta antes de insertar la fila del pago. */
     @PrePersist
     void alPersistir() {
         this.creadoUtc = Instant.now();
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el monto. */
     public BigDecimal getMonto() { return monto; }
+    /** Devuelve la fecha del pago. */
     public LocalDate getFechaPago() { return fechaPago; }
+    /** Devuelve la referencia. */
     public String getReferencia() { return referencia; }
 }

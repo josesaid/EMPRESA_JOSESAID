@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ConfigurationPropertiesScan
 public class ReportesEjecutivosApplication {
 
+    /** Arranca reportes-ejecutivos-ms. */
     public static void main(String[] args) {
         SpringApplication.run(ReportesEjecutivosApplication.class, args);
     }

@@ -30,6 +30,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SeguridadConfig {
 
+    /** Cadena de seguridad de la API sin estado: exige JWT válido en todo, excepto salud, info y métricas. Los roles salen del claim configurado. */
     @Bean
     public SecurityFilterChain cadenaSeguridad(HttpSecurity http,
                                                @Value("${app.seguridad.claim-roles}") String claimRoles) throws Exception {

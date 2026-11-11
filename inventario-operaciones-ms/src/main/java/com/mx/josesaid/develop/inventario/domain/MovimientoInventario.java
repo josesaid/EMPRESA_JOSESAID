@@ -17,6 +17,7 @@ public final class MovimientoInventario {
     private final String referencia;
     private final Instant creadoUtc;
 
+    /** Constructor privado: los movimientos se crean con sus fábricas. */
     private MovimientoInventario(UUID id, UUID articuloId, UUID almacenId, TipoMovimiento tipo, BigDecimal cantidad,
                                  String lote, String referencia, Instant creadoUtc) {
         this.id = id;
@@ -29,6 +30,7 @@ public final class MovimientoInventario {
         this.creadoUtc = creadoUtc;
     }
 
+    /** Crea un movimiento nuevo y valida su cantidad según el tipo. */
     public static MovimientoInventario crear(UUID articuloId, UUID almacenId, TipoMovimiento tipo, BigDecimal cantidad,
                                              String lote, String referencia, Instant creadoUtc) {
         if (articuloId == null || almacenId == null) {
@@ -43,6 +45,7 @@ public final class MovimientoInventario {
         return new MovimientoInventario(UUID.randomUUID(), articuloId, almacenId, tipo, c, loteLimpio, refLimpia, creadoUtc);
     }
 
+    /** Reconstruye un movimiento desde la base de datos sin aplicar reglas. */
     public static MovimientoInventario reconstruir(UUID id, UUID articuloId, UUID almacenId, TipoMovimiento tipo,
                                                    BigDecimal cantidad, String lote, String referencia, Instant creadoUtc) {
         return new MovimientoInventario(id, articuloId, almacenId, tipo, cantidad, lote, referencia, creadoUtc);
@@ -64,12 +67,20 @@ public final class MovimientoInventario {
         return c;
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el id del artículo. */
     public UUID getArticuloId() { return articuloId; }
+    /** Devuelve el id del almacén. */
     public UUID getAlmacenId() { return almacenId; }
+    /** Devuelve el tipo de movimiento. */
     public TipoMovimiento getTipo() { return tipo; }
+    /** Devuelve la cantidad. */
     public BigDecimal getCantidad() { return cantidad; }
+    /** Devuelve el lote, si aplica. */
     public String getLote() { return lote; }
+    /** Devuelve la referencia que explica el movimiento, por ejemplo el pedido o la orden. */
     public String getReferencia() { return referencia; }
+    /** Devuelve el instante de creación en UTC. */
     public Instant getCreadoUtc() { return creadoUtc; }
 }

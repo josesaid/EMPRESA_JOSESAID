@@ -77,10 +77,12 @@ public class UsuarioEntity {
     @Column(name = "rol", length = 30)
     private Set<Rol> roles = new HashSet<>();
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected UsuarioEntity() {
         // requerido por JPA
     }
 
+    /** Se ejecuta antes de insertar la fila: fija la fecha de creación. */
     @PrePersist
     void alCrear() {
         Instant ahora = Instant.now();
@@ -88,31 +90,54 @@ public class UsuarioEntity {
         actualizadoUtc = ahora;
     }
 
+    /** Se ejecuta antes de actualizar la fila: fija la fecha de modificación. */
     @PreUpdate
     void alActualizar() {
         actualizadoUtc = Instant.now();
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Asigna el identificador. */
     public void setId(UUID id) { this.id = id; }
+    /** Devuelve el correo tal como se guardó (cifrado). */
     public String getCorreo() { return correo; }
+    /** Devuelve el índice de búsqueda del correo. */
     public String getCorreoIndice() { return correoIndice; }
+    /** Asigna el índice de búsqueda del correo. */
     public void setCorreoIndice(String correoIndice) { this.correoIndice = correoIndice; }
+    /** Asigna el correo, cifrado al guardarse. */
     public void setCorreo(String correo) { this.correo = correo; }
+    /** Devuelve el nombre completo tal como se guardó (cifrado). */
     public String getNombreCompleto() { return nombreCompleto; }
+    /** Asigna el nombre completo, cifrado al guardarse. */
     public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }
+    /** Devuelve el hash de la contraseña. */
     public String getPasswordHash() { return passwordHash; }
+    /** Asigna el hash de la contraseña. */
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    /** Devuelve el estatus del usuario. */
     public EstatusUsuario getEstatus() { return estatus; }
+    /** Asigna el estatus del usuario. */
     public void setEstatus(EstatusUsuario estatus) { this.estatus = estatus; }
+    /** Devuelve los intentos fallidos consecutivos. */
     public int getIntentosFallidos() { return intentosFallidos; }
+    /** Asigna los intentos fallidos consecutivos. */
     public void setIntentosFallidos(int intentosFallidos) { this.intentosFallidos = intentosFallidos; }
+    /** Devuelve hasta cuándo está bloqueada la cuenta. */
     public Instant getBloqueadoHasta() { return bloqueadoHasta; }
+    /** Asigna hasta cuándo está bloqueada la cuenta. */
     public void setBloqueadoHasta(Instant bloqueadoHasta) { this.bloqueadoHasta = bloqueadoHasta; }
+    /** Devuelve el área del usuario. */
     public String getArea() { return area; }
+    /** Asigna el área del usuario. */
     public void setArea(String area) { this.area = area; }
+    /** Indica si la contraseña es temporal. */
     public boolean isDebeCambiarPassword() { return debeCambiarPassword; }
+    /** Asigna el indicador de contraseña temporal. */
     public void setDebeCambiarPassword(boolean valor) { this.debeCambiarPassword = valor; }
+    /** Devuelve la versión para control de concurrencia optimista. */
     public Long getVersion() { return version; }
+    /** Devuelve los roles del usuario. */
     public Set<Rol> getRoles() { return roles; }
 }

@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/** Registro en base de datos de los pedidos procesados y sus reservas. */
 @Repository
 class ReservasPedidoJdbc implements ReservasPedidoRepositorio {
 
@@ -20,6 +21,7 @@ class ReservasPedidoJdbc implements ReservasPedidoRepositorio {
         this.reloj = reloj;
     }
 
+    /** Marca el evento del pedido como procesado. Devuelve falso si ya estaba procesado. */
     @Override
     public boolean marcarProcesado(UUID pedidoId, String evento) {
         return jdbc.update(
@@ -27,12 +29,14 @@ class ReservasPedidoJdbc implements ReservasPedidoRepositorio {
                 pedidoId, evento, Timestamp.from(reloj.instant())) == 1;
     }
 
+    /** Guarda la reserva de un artículo para un pedido. */
     @Override
     public void guardarReserva(UUID pedidoId, UUID articuloId, UUID almacenId, BigDecimal cantidad) {
         jdbc.update("INSERT INTO reservas_pedido (pedido_id, articulo_id, almacen_id, cantidad) VALUES (?, ?, ?, ?)",
                 pedidoId, articuloId, almacenId, cantidad);
     }
 
+    /** Devuelve las reservas de un pedido. */
     @Override
     public List<Reserva> reservasDe(UUID pedidoId) {
         return jdbc.query(
@@ -41,6 +45,7 @@ class ReservasPedidoJdbc implements ReservasPedidoRepositorio {
                 pedidoId);
     }
 
+    /** Elimina las reservas de un pedido ya entregado. */
     @Override
     public void eliminarReservas(UUID pedidoId) {
         jdbc.update("DELETE FROM reservas_pedido WHERE pedido_id = ?", pedidoId);

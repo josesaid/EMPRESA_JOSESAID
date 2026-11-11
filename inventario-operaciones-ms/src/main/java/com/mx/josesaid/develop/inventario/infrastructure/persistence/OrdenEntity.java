@@ -12,6 +12,7 @@ import jakarta.persistence.Version;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/** Fila de la tabla de órdenes de operación. */
 @Entity
 @Table(name = "ordenes_operacion")
 class OrdenEntity {
@@ -22,6 +23,7 @@ class OrdenEntity {
     @Column(name = "cantidad_real", precision = 14, scale = 3) BigDecimal cantidadReal;
     @Version Long version;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected OrdenEntity() {
     }
 }

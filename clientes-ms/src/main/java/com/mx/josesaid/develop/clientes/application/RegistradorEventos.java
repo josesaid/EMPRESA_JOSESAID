@@ -21,12 +21,14 @@ public class RegistradorEventos {
     private final ObjectMapper json;
     private final Clock reloj;
 
+    /** Recibe el outbox, el serializador JSON y el reloj. */
     public RegistradorEventos(OutboxRepository outbox, ObjectMapper json, Clock reloj) {
         this.outbox = outbox;
         this.json = json;
         this.reloj = reloj;
     }
 
+    /** Guarda un evento de dominio en el outbox, dentro de la misma transacción que el cambio. Así el evento nunca se pierde si el cambio se confirma. */
     public void registrar(String tipoAgregado, UUID agregadoId, String tipoEvento, Map<String, Object> datos) {
         UUID eventoId = UUID.randomUUID();
         Instant ahora = Instant.now(reloj);

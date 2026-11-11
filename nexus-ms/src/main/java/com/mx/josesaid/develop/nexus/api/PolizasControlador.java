@@ -38,11 +38,13 @@ public class PolizasControlador {
     private final ServicioPolizas servicio;
     private final CodigoConfirmacion codigos;
 
+    /** Recibe el servicio que prepara las sugerencias y el generador de códigos de confirmación. */
     public PolizasControlador(ServicioPolizas servicio, CodigoConfirmacion codigos) {
         this.servicio = servicio;
         this.codigos = codigos;
     }
 
+    /** Prepara una sugerencia de póliza a partir de la descripción del contador. Devuelve la acción pendiente junto con su código de confirmación de una sola vez. Solo CONTADOR puede llamarlo. */
     @PostMapping("/sugerencias")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CONTADOR')")
@@ -53,11 +55,13 @@ public class PolizasControlador {
                 accion.expiraUtc(), codigos.generar(accion.id(), accion.usuario()));
     }
 
+    /** Responde 422 cuando la sugerencia no es válida, con el motivo en el campo error. */
     @ExceptionHandler(SugerenciaPolizaInvalidaException.class)
     ResponseEntity<Map<String, String>> sugerenciaInvalida(SugerenciaPolizaInvalidaException e) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of("error", e.getMessage()));
     }
 
+    /** Cuerpo de la petición: descripción de la póliza, de 1 a 500 caracteres. */
     public record SugerenciaPolizaSolicitud(@NotBlank @Size(max = 500) String descripcion) {
     }
 

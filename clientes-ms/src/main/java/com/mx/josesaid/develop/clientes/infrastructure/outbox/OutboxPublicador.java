@@ -28,6 +28,7 @@ public class OutboxPublicador {
     private final String topico;
     private final Clock reloj;
 
+    /** Recibe el repositorio del outbox, el productor de Kafka y el reloj. */
     public OutboxPublicador(OutboxRepository repositorio,
                             KafkaTemplate<String, String> kafka,
                             @Value("${app.eventos.topico}") String topico,
@@ -38,6 +39,7 @@ public class OutboxPublicador {
         this.reloj = reloj;
     }
 
+    /** Envía a Kafka los eventos pendientes. Si un envío falla, el evento queda para el siguiente ciclo. */
     @Scheduled(fixedDelayString = "${app.eventos.intervalo-publicacion-ms}")
     @Transactional
     public void publicarPendientes() {

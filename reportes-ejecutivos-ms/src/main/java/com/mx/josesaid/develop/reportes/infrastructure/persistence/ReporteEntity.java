@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/** Fila de la tabla de reportes con su periodo, estatus y fechas. */
 @Entity
 @Table(name = "reportes")
 public class ReporteEntity {
@@ -49,9 +50,11 @@ public class ReporteEntity {
     @OrderBy("posicion ASC")
     private List<IndicadorConsolidadoEntity> indicadores = new ArrayList<>();
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected ReporteEntity() {
     }
 
+    /** Crea una fila a partir de un reporte del dominio. */
     static ReporteEntity nuevo(Reporte r) {
         ReporteEntity e = new ReporteEntity();
         e.id = r.getId();
@@ -74,6 +77,7 @@ public class ReporteEntity {
         }
     }
 
+    /** Convierte la fila en el objeto del dominio. */
     Reporte aDominio() {
         return Reporte.reconstruir(id, Periodo.de(periodo), creadoUtc, estatus, cerradoUtc,
                 indicadores.stream().map(IndicadorConsolidadoEntity::aDominio).toList());

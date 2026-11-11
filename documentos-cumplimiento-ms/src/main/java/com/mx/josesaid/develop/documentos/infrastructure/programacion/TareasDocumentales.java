@@ -10,10 +10,12 @@ public class TareasDocumentales {
 
     private final DocumentosService servicio;
 
+    /** Recibe el servicio de documentos para las tareas programadas. */
     public TareasDocumentales(DocumentosService servicio) {
         this.servicio = servicio;
     }
 
+    /** Tarea programada: procesa los vencimientos y las retenciones de los documentos. */
     @Scheduled(cron = "${documentos.alertas.cron:0 0 7 * * *}")
     public void procesarVencimientos() {
         servicio.procesarVencimientos();

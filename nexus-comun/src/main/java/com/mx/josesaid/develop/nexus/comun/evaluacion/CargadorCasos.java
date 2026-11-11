@@ -15,9 +15,11 @@ public final class CargadorCasos {
 
     static final String RECURSO = "nexus/evaluaciones/casos.tsv";
 
+    /** Clase de utilidad: no se instancia. */
     private CargadorCasos() {
     }
 
+    /** Lee los casos del recurso. Ignora líneas vacías y comentarios que empiezan con #. Cada línea necesita cuatro columnas: id, pregunta, "debe contener" y "no debe contener", separadas por tabulador; las listas van separadas por "|". Falla si el recurso no existe o una línea está incompleta. */
     public static List<CasoEvaluacion> cargar(ClassLoader cargador) {
         List<CasoEvaluacion> casos = new ArrayList<>();
         try (InputStream entrada = cargador.getResourceAsStream(RECURSO)) {
@@ -43,6 +45,7 @@ public final class CargadorCasos {
         return casos;
     }
 
+    /** Convierte una celda separada por "|" en una lista sin espacios ni elementos vacíos. Una celda vacía produce una lista vacía. */
     static List<String> lista(String valor) {
         if (valor == null || valor.isBlank()) {
             return List.of();

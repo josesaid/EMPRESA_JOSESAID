@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 
+/** Fila de una versión del documento: número, huella y referencia de almacenamiento. */
 @Entity
 @Table(name = "versiones_documento")
 public class VersionEntity {
@@ -35,6 +36,7 @@ public class VersionEntity {
     @Column(name = "creado_utc", nullable = false)
     private Instant creadoUtc;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected VersionEntity() {
     }
 
@@ -47,10 +49,12 @@ public class VersionEntity {
         this.creadoUtc = v.creadoUtc();
     }
 
+    /** Devuelve el identificador de la versión. */
     UUID getId() {
         return id;
     }
 
+    /** Convierte la fila en la versión del dominio. */
     VersionDocumento aDominio() {
         return new VersionDocumento(id, numero, hashSha256, almacenamientoRef, creadoUtc);
     }

@@ -18,11 +18,13 @@ public final class HerramientasAccionesMcp {
     private final ConfirmacionAcciones confirmaciones;
     private final AccionesPendientes acciones;
 
+    /** Recibe el servicio de confirmación y el registro de acciones para las herramientas MCP. */
     public HerramientasAccionesMcp(ConfirmacionAcciones confirmaciones, AccionesPendientes acciones) {
         this.confirmaciones = confirmaciones;
         this.acciones = acciones;
     }
 
+    /** Herramienta MCP: confirma una acción pendiente con su código. Un código incorrecto cancela la acción. */
     @Tool(name = "confirmar_accion",
           description = "Confirma una acción pendiente con su identificador y su código de confirmación. "
                   + "Solo funciona para la persona que la preparó y dentro de su vigencia. "
@@ -34,6 +36,7 @@ public final class HerramientasAccionesMcp {
         return confirmaciones.confirmarConCodigo(UUID.fromString(accionId), usuarioActual(), codigo);
     }
 
+    /** Herramienta MCP: cancela una acción pendiente del usuario. */
     @Tool(name = "cancelar_accion",
           description = "Cancela una acción pendiente sin ejecutarla. Solo funciona para la persona que la preparó.")
     public String cancelarAccion(
@@ -43,6 +46,7 @@ public final class HerramientasAccionesMcp {
         return "Acción " + accionId + " cancelada.";
     }
 
+    /** Herramienta MCP: devuelve el estado de una acción pendiente del usuario. */
     @Tool(name = "consultar_estado_accion",
           description = "Devuelve el estado de una acción preparada por la persona actual: PENDIENTE, CONFIRMADA o "
                   + "EXPIRADA, con su resumen y su vencimiento. Solo funciona para quien la preparó.")
@@ -65,6 +69,7 @@ public final class HerramientasAccionesMcp {
                 + ". Resumen: " + accion.resumen() + ". Vence: " + accion.expiraUtc() + ".").texto();
     }
 
+    /** Devuelve el nombre del usuario autenticado. */
     private static String usuarioActual() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }

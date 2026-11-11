@@ -19,6 +19,7 @@ public final class LimitadorVentana {
 
     private static final int LIMPIAR_AL_SUPERAR = 10_000;
 
+    /** Contador de una ventana para una clave: inicio de la ventana y número de intentos. */
     private record Cubo(Instant inicio, AtomicInteger conteo) {
     }
 
@@ -27,6 +28,7 @@ public final class LimitadorVentana {
     private final Clock reloj;
     private final Map<String, Cubo> cubos = new ConcurrentHashMap<>();
 
+    /** Valida el máximo (al menos 1) y guarda la duración de la ventana. */
     public LimitadorVentana(int maximo, Duration ventana, Clock reloj) {
         if (maximo < 1) {
             throw new IllegalArgumentException("El máximo de intentos debe ser al menos 1");
@@ -36,6 +38,7 @@ public final class LimitadorVentana {
         this.reloj = reloj;
     }
 
+    /** Registra un intento para la clave. Si la ventana venció, empieza una nueva. Cuando hay más de 10 000 claves, limpia las ventanas vencidas para no crecer sin límite. */
     public Resultado intentar(String clave) {
         Instant ahora = reloj.instant();
         if (cubos.size() > LIMPIAR_AL_SUPERAR) {
@@ -50,6 +53,7 @@ public final class LimitadorVentana {
         return new Resultado(false, Math.max(1, restante));
     }
 
+    /** Indica si la ventana de un cubo ya terminó. */
     private boolean vencido(Cubo cubo, Instant ahora) {
         return Duration.between(cubo.inicio(), ahora).compareTo(ventana) >= 0;
     }

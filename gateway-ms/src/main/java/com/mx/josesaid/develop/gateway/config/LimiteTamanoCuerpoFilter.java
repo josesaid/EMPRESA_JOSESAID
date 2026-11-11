@@ -28,6 +28,7 @@ public class LimiteTamanoCuerpoFilter implements WebFilter {
     private final long maximoGeneral;
     private final long maximoDocumentos;
 
+    /** Recibe los límites en bytes: el general (64 KB por defecto) y el de carga de documentos (21 MB por defecto). */
     public LimiteTamanoCuerpoFilter(
             @Value("${gateway.cuerpo.maximo-bytes:65536}") long maximoGeneral,
             @Value("${gateway.cuerpo.maximo-documentos-bytes:21000000}") long maximoDocumentos) {
@@ -35,6 +36,7 @@ public class LimiteTamanoCuerpoFilter implements WebFilter {
         this.maximoDocumentos = maximoDocumentos;
     }
 
+    /** Compara Content-Length con el límite que corresponde a la ruta y responde 413 si lo supera. Sin Content-Length no corta la solicitud. */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         long tamano = exchange.getRequest().getHeaders().getContentLength();
@@ -49,6 +51,7 @@ public class LimiteTamanoCuerpoFilter implements WebFilter {
         return chain.filter(exchange);
     }
 
+    /** Indica si es una carga de documentos (POST a /documentos-cumplimiento-ms/v1/documentos y sus versiones). */
     private boolean esCargaDocumentos(ServerWebExchange exchange) {
         return HttpMethod.POST.equals(exchange.getRequest().getMethod())
                 && exchange.getRequest().getPath().value().startsWith(PREFIJO_DOCUMENTOS);

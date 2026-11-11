@@ -20,10 +20,12 @@ public class CierreSesionRemoto implements LogoutHandler {
 
     private final RestClient gateway;
 
+    /** Recibe el cliente del gateway para avisarle del cierre de sesión. */
     public CierreSesionRemoto(RestClient gatewayClient) {
         this.gateway = gatewayClient;
     }
 
+    /** Al cerrar sesión en la interfaz, pide al gateway revocar la sesión con el access token. Si la llamada falla, el cierre local sigue. */
     @Override
     public void logout(HttpServletRequest peticion, HttpServletResponse respuesta, Authentication auth) {
         if (auth == null || !(auth.getDetails() instanceof SesionTokens sesion)) {

@@ -41,6 +41,7 @@ public class ComprasService {
     private final BigDecimal tipoCambioMxnPorUsd;
     private final BigDecimal limiteAprobacionUsd;
 
+    /** Recibe los repositorios de proveedores, órdenes y recepciones, el publicador de eventos, el reloj y los parámetros de aprobación por monto. */
     public ComprasService(ProveedorRepositorio proveedores, OrdenCompraRepositorio ordenes,
                           RecepcionRepositorio recepciones, PublicadorEventos eventos,
                           @Value("${compras.tipo-cambio-mxn-por-usd:18}") BigDecimal tipoCambioMxnPorUsd,
@@ -56,6 +57,7 @@ public class ComprasService {
         this.limiteAprobacionUsd = limiteAprobacionUsd;
     }
 
+    /** Da de alta un proveedor. Rechaza el RFC si ya está registrado. */
     @Transactional
     public Proveedor crearProveedor(String razonSocial, String rfc, String correo) {
         Proveedor proveedor = Proveedor.crear(razonSocial, rfc, correo);
@@ -65,6 +67,7 @@ public class ComprasService {
         return proveedores.guardar(proveedor);
     }
 
+    /** Busca proveedores por texto en la razón social. */
     @Transactional(readOnly = true)
     public List<Proveedor> buscarProveedores(String texto) {
         String termino = texto == null ? "" : texto.trim();
@@ -74,17 +77,20 @@ public class ComprasService {
         return proveedores.buscarPorRazonSocial(termino);
     }
 
+    /** Devuelve un proveedor por id o lanza RecursoNoEncontradoException. */
     public Proveedor obtenerProveedor(UUID id) {
         return proveedores.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Proveedor no encontrado: " + id));
     }
 
+    /** Crea una orden de compra en borrador y guarda quién la creó. */
     @Transactional
     public OrdenCompra crearOrden(UUID proveedorId, String moneda, List<LineaOrden> lineas, String creadaPor) {
         Proveedor proveedor = obtenerProveedor(proveedorId);
         return ordenes.guardar(OrdenCompra.crear(proveedor, moneda, lineas, creadaPor));
     }
 
+    /** Lista las órdenes recientes, opcionalmente filtradas por estatus. */
     @Transactional(readOnly = true)
     public List<ResumenListado> listarOrdenesRecientes(EstatusOrdenCompra estatus) {
         return ordenes.listarRecientes(estatus, LIMITE_LISTADO_ORDENES).stream()
@@ -94,12 +100,14 @@ public class ComprasService {
                 .toList();
     }
 
+    /** Devuelve una orden por id o lanza RecursoNoEncontradoException. */
     @Transactional(readOnly = true)
     public OrdenCompra obtenerOrden(UUID id) {
         return ordenes.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Orden de compra no encontrada: " + id));
     }
 
+    /** Aprueba la orden y publica el evento de aprobación con su total. Las reglas de quién puede aprobar están en OrdenCompra.aprobar. */
     @Transactional
     public OrdenCompra aprobarOrden(UUID id, String usuario, boolean esDireccion) {
         OrdenCompra orden = obtenerOrden(id);
@@ -131,6 +139,7 @@ public class ComprasService {
         return guardada;
     }
 
+    /** Cancela la orden con su motivo. */
     @Transactional
     public OrdenCompra cancelarOrden(UUID id, String motivo) {
         OrdenCompra orden = obtenerOrden(id);

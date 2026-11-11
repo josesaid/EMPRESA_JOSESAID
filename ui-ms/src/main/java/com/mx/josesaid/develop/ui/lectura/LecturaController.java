@@ -36,12 +36,14 @@ public class LecturaController {
 
     private final LecturaCliente lectura;
 
+    /** Recibe el cliente de lectura que consulta cada área. */
     public LecturaController(LecturaCliente lectura) {
         this.lectura = lectura;
     }
 
     // ---------- Comercial ----------
 
+    /** Pantalla de clientes. Filtra por RFC si se indica. */
     @GetMapping("/clientes")
     public String clientes(@RequestParam(required = false) String rfc,
             @RequestParam(required = false) String nombre, Authentication usuario, Model modelo) {
@@ -53,6 +55,7 @@ public class LecturaController {
         return vista;
     }
 
+    /** Detalle de un cliente. */
     @GetMapping("/clientes/{id}")
     public String cliente(@PathVariable UUID id, Authentication usuario, Model modelo) {
         String vista = detalle(modelo, usuario, "Cliente", "clientes", "/clientes", "/clientes",
@@ -63,6 +66,7 @@ public class LecturaController {
         return vista;
     }
 
+    /** Pantalla de pedidos. Filtra por cliente si se indica. */
     @GetMapping("/ventas/pedidos")
     public String pedidos(@RequestParam(required = false) String clienteId,
             @RequestParam(required = false) String estatus, Authentication usuario, Model modelo) {
@@ -71,12 +75,14 @@ public class LecturaController {
                 "/pedidos-ventas-ms/v1/pedidos", query("clienteId", clienteId, "estatus", estatus), "/ventas/pedidos", null, true);
     }
 
+    /** Detalle de un pedido. */
     @GetMapping("/ventas/pedidos/{id}")
     public String pedido(@PathVariable UUID id, Authentication usuario, Model modelo) {
         return detalle(modelo, usuario, "Pedido", "pedidos", "/ventas/pedidos", "/ventas/pedidos",
                 "/pedidos-ventas-ms/v1/pedidos/" + id, query(), List.of(), null);
     }
 
+    /** Métricas de ventas del mes indicado, o del mes actual. */
     @GetMapping("/ventas/metricas")
     public String metricasVentas(@RequestParam(required = false) String mes, Authentication usuario, Model modelo) {
         String valor = valorODefault(mes, mesActual());
@@ -87,6 +93,7 @@ public class LecturaController {
 
     // ---------- Compras ----------
 
+    /** Pantalla de proveedores. Filtra por razón social si se indica. */
     @GetMapping("/compras/proveedores")
     public String proveedores(@RequestParam(required = false) String razonSocial, Authentication usuario, Model modelo) {
         String vista = listado(modelo, usuario, "Proveedores", "proveedores", "/compras/proveedores",
@@ -98,12 +105,14 @@ public class LecturaController {
         return vista;
     }
 
+    /** Detalle de un proveedor. */
     @GetMapping("/compras/proveedores/{id}")
     public String proveedor(@PathVariable UUID id, Authentication usuario, Model modelo) {
         return detalle(modelo, usuario, "Proveedor", "proveedores", "/compras/proveedores", "/compras/proveedores",
                 "/compras-proveedores-ms/v1/proveedores/" + id, query(), List.of(), null);
     }
 
+    /** Pantalla de órdenes de compra. Filtra por estatus si se indica. */
     @GetMapping("/compras/ordenes")
     public String ordenes(@RequestParam(required = false) String estatus, Authentication usuario, Model modelo) {
         return listado(modelo, usuario, "Órdenes de compra", "ordenes", "/compras/ordenes",
@@ -111,6 +120,7 @@ public class LecturaController {
                 "/compras-proveedores-ms/v1/ordenes-compra", query("estatus", estatus), "/compras/ordenes", null, true);
     }
 
+    /** Detalle de una orden de compra. */
     @GetMapping("/compras/ordenes/{id}")
     public String orden(@PathVariable UUID id, Authentication usuario, Model modelo) {
         return detalle(modelo, usuario, "Orden de compra", "ordenes", "/compras/ordenes", "/compras/ordenes",
@@ -119,6 +129,7 @@ public class LecturaController {
 
     // ---------- Inventario ----------
 
+    /** Existencias de inventario. Filtra por artículo si se indica. */
     @GetMapping("/inventario/existencias")
     public String existencias(@RequestParam(required = false) String articulo, Authentication usuario, Model modelo) {
         return listado(modelo, usuario, "Existencias", "existencias", "/inventario/existencias",
@@ -126,12 +137,14 @@ public class LecturaController {
                 "/inventario-operaciones-ms/v1/existencias", query("articulo", articulo), null, null, notBlank(articulo));
     }
 
+    /** Artículos que están por debajo de su mínimo. */
     @GetMapping("/inventario/bajo-minimo")
     public String bajoMinimo(Authentication usuario, Model modelo) {
         return listado(modelo, usuario, "Artículos bajo mínimo", "bajo-minimo", "/inventario/bajo-minimo", List.of(),
                 "/inventario-operaciones-ms/v1/articulos/bajo-minimo", query(), null, null, true);
     }
 
+    /** Movimientos de inventario. Filtra por artículo si se indica. */
     @GetMapping("/inventario/movimientos")
     public String movimientos(@RequestParam(required = false) String articulo, Authentication usuario, Model modelo) {
         return listado(modelo, usuario, "Movimientos de inventario", "movimientos", "/inventario/movimientos",
@@ -139,6 +152,7 @@ public class LecturaController {
                 "/inventario-operaciones-ms/v1/movimientos", query("articulo", articulo), null, null, notBlank(articulo));
     }
 
+    /** Trazabilidad de un lote. Filtra por lote si se indica. */
     @GetMapping("/inventario/trazabilidad")
     public String trazabilidad(@RequestParam(required = false) String lote, Authentication usuario, Model modelo) {
         boolean valido = lote == null || lote.isBlank() || LOTE.matcher(lote).matches();
@@ -151,6 +165,7 @@ public class LecturaController {
 
     // ---------- Finanzas ----------
 
+    /** Estados financieros del periodo indicado. */
     @GetMapping("/contabilidad/estados-financieros")
     public String estadosFinancieros(@RequestParam(required = false) String periodo, Authentication usuario, Model modelo) {
         String valor = valorODefault(periodo, mesActual());
@@ -159,6 +174,7 @@ public class LecturaController {
                 List.of(campo("periodo", "Periodo (AAAA-MM)", valor, true)), null);
     }
 
+    /** Lista de comprobantes fiscales. Filtra por folio si se indica. */
     @GetMapping("/facturacion/comprobantes")
     public String comprobantes(@RequestParam(required = false) String folio, Authentication usuario, Model modelo) {
         return listado(modelo, usuario, "Comprobantes", "comprobantes", "/facturacion/comprobantes",
@@ -166,18 +182,21 @@ public class LecturaController {
                 query("folio", folio), "/facturacion/comprobantes", null, notBlank(folio));
     }
 
+    /** Detalle de un comprobante. */
     @GetMapping("/facturacion/comprobantes/{id}")
     public String comprobante(@PathVariable UUID id, Authentication usuario, Model modelo) {
         return detalle(modelo, usuario, "Comprobante", "comprobantes", "/facturacion/comprobantes",
                 "/facturacion/comprobantes", "/facturacion-pagos-ms/v1/comprobantes/" + id, query(), List.of(), null);
     }
 
+    /** Cuentas por cobrar pendientes. */
     @GetMapping("/facturacion/pendientes-cobro")
     public String pendientesCobro(Authentication usuario, Model modelo) {
         return listado(modelo, usuario, "Pendientes de cobro", "pendientes-cobro", "/facturacion/pendientes-cobro", List.of(),
                 "/facturacion-pagos-ms/v1/comprobantes/pendientes-cobro", query(), "/facturacion/comprobantes", null, true);
     }
 
+    /** Pagos pendientes a proveedores. */
     @GetMapping("/facturacion/pagos-proveedor")
     public String pagosProveedor(Authentication usuario, Model modelo) {
         return listado(modelo, usuario, "Pagos a proveedores", "pagos-proveedor", "/facturacion/pagos-proveedor", List.of(),
@@ -186,6 +205,7 @@ public class LecturaController {
 
     // ---------- Cumplimiento ----------
 
+    /** Búsqueda de documentos por título. */
     @GetMapping("/documentos")
     public String documentos(@RequestParam(required = false) String titulo, Authentication usuario, Model modelo) {
         return listado(modelo, usuario, "Documentos", "documentos", "/documentos",
@@ -193,12 +213,14 @@ public class LecturaController {
                 query("titulo", titulo), "/documentos", null, notBlank(titulo));
     }
 
+    /** Detalle de un documento. */
     @GetMapping("/documentos/{id}")
     public String documento(@PathVariable UUID id, Authentication usuario, Model modelo) {
         return detalle(modelo, usuario, "Documento", "documentos", "/documentos", "/documentos",
                 "/documentos-cumplimiento-ms/v1/documentos/" + id, query(), List.of(), null);
     }
 
+    /** Documentos que vencen en los próximos días (30 por omisión). */
     @GetMapping("/documentos/por-vencer")
     public String porVencer(@RequestParam(required = false) String dias, Authentication usuario, Model modelo) {
         String valor = valorODefault(dias, "30");
@@ -209,6 +231,7 @@ public class LecturaController {
 
     // ---------- Dirección ----------
 
+    /** Indicadores ejecutivos del periodo indicado. */
     @GetMapping("/reportes/indicadores")
     public String indicadores(@RequestParam(required = false) String periodo, @RequestParam(required = false) String area,
             Authentication usuario, Model modelo) {
@@ -219,6 +242,7 @@ public class LecturaController {
                 "/reportes-ejecutivos-ms/v1/indicadores", query("periodo", valor, "area", area), null, validacion, true);
     }
 
+    /** Reporte ejecutivo del periodo indicado. */
     @GetMapping("/reportes/reporte")
     public String reporte(@RequestParam(required = false) String periodo, Authentication usuario, Model modelo) {
         String valor = valorODefault(periodo, mesActual());
@@ -231,12 +255,14 @@ public class LecturaController {
 
     // ---------- Accesos ----------
 
+    /** Lista de usuarios del sistema. Solo para administradores (lo valida el gateway). */
     @GetMapping("/usuarios")
     public String usuarios(Authentication usuario, Model modelo) {
         return listado(modelo, usuario, "Usuarios", "usuarios", "/usuarios", List.of(),
                 "/usuarios-accesos-ms/v1/usuarios", query(), "/usuarios", null, true);
     }
 
+    /** Detalle de un usuario. */
     @GetMapping("/usuarios/{id}")
     public String usuario(@PathVariable UUID id, Authentication usuario, Model modelo) {
         return detalle(modelo, usuario, "Usuario", "usuarios", "/usuarios", "/usuarios",
@@ -245,6 +271,7 @@ public class LecturaController {
 
     // ---------- Vistas comunes ----------
 
+    /** Carga una pantalla de listado: consulta la API, llena la tabla y registra la sección activa. */
     private String listado(Model modelo, Authentication usuario, String titulo, String seccion, String rutaVista,
             List<Map<String, String>> campos, String rutaApi, MultiValueMap<String, String> q, String enlace,
             String validacion, boolean ejecutar) {
@@ -265,6 +292,7 @@ public class LecturaController {
         return "lectura/tabla";
     }
 
+    /** Carga una pantalla de detalle: consulta la API y muestra el registro con sus campos y subtablas. */
     private String detalle(Model modelo, Authentication usuario, String titulo, String seccion, String rutaVista,
             String volver, String rutaApi, MultiValueMap<String, String> q, List<Map<String, String>> campos,
             String validacion) {
@@ -283,6 +311,7 @@ public class LecturaController {
         return "lectura/detalle";
     }
 
+    /** Agrega al modelo una subtabla con los datos de otra ruta. Si esa consulta falla, la subtabla queda vacía y la pantalla sigue. */
     private void subtabla(Model modelo, String titulo, String ruta) {
         Object cuerpo = consultar(modelo, "errorSub", ruta, query());
         if (!modelo.containsAttribute("errorSub")) {
@@ -292,12 +321,14 @@ public class LecturaController {
         }
     }
 
+    /** Agrega al modelo los datos comunes de la pantalla: título, sección y usuario. */
     private void base(Model modelo, Authentication usuario, String titulo, String seccion) {
         modelo.addAttribute("titulo", titulo);
         modelo.addAttribute("seccion", seccion);
         modelo.addAttribute("correo", usuario.getName());
     }
 
+    /** Consulta una ruta y guarda el resultado en el modelo. Si falla, muestra el mensaje de error en lugar de romper la pantalla. */
     private Object consultar(Model modelo, String clave, String ruta, MultiValueMap<String, String> q) {
         try {
             return lectura.leer(ruta, q);
@@ -307,6 +338,7 @@ public class LecturaController {
         }
     }
 
+    /** Traduce un error de la API a un mensaje legible para el usuario. */
     private static String mensaje(RestClientException e) {
         if (e instanceof HttpClientErrorException.Forbidden) {
             return SIN_ACCESO;
@@ -322,11 +354,13 @@ public class LecturaController {
 
     // ---------- Utilidades ----------
 
+    /** Describe un campo de formulario: nombre, etiqueta, valor y si es obligatorio. */
     private static Map<String, String> campo(String nombre, String etiqueta, String valor, boolean requerido) {
         return Map.of("nombre", nombre, "etiqueta", etiqueta, "valor", valor == null ? "" : valor,
                 "requerido", String.valueOf(requerido));
     }
 
+    /** Construye los parámetros de consulta a partir de pares nombre, valor. Omite los vacíos. */
     private static MultiValueMap<String, String> query(String... pares) {
         MultiValueMap<String, String> q = new LinkedMultiValueMap<>();
         for (int i = 0; i + 1 < pares.length; i += 2) {
@@ -337,18 +371,22 @@ public class LecturaController {
         return q;
     }
 
+    /** Indica si el texto tiene contenido distinto de espacios. */
     private static boolean notBlank(String valor) {
         return valor != null && !valor.isBlank();
     }
 
+    /** Devuelve el valor, o el predeterminado si viene vacío. */
     private static String valorODefault(String valor, String predeterminado) {
         return valor == null || valor.isBlank() ? predeterminado : valor.trim();
     }
 
+    /** Devuelve el periodo del mes actual en formato AAAA-MM, en zona de México. */
     private static String mesActual() {
         return YearMonth.now(ZONA).toString();
     }
 
+    /** Obtiene la lista de elementos de una respuesta, aceptando lista directa o páginas con contenido. */
     private static List<?> elementos(Object cuerpo) {
         List<?> brutos;
         if (cuerpo instanceof List<?> lista) {
@@ -386,6 +424,7 @@ public class LecturaController {
         return fila;
     }
 
+    /** Obtiene los nombres de las columnas a mostrar a partir de la primera fila. */
     private static List<Map<String, String>> columnas(Object cuerpo) {
         List<Map<String, String>> columnas = new ArrayList<>();
         List<?> elementos = elementos(cuerpo);
@@ -405,6 +444,7 @@ public class LecturaController {
         return elementos.stream().anyMatch(e -> e instanceof Map<?, ?> mapa && mapa.get(clave) != null);
     }
 
+    /** Convierte cada elemento en una fila de tabla. Si se indica enlace, la primera celda lleva el enlace al detalle. */
     private static List<Map<String, String>> filas(Object cuerpo, String enlace) {
         List<Map<String, String>> filas = new ArrayList<>();
         for (Object elemento : elementos(cuerpo)) {
@@ -420,6 +460,7 @@ public class LecturaController {
         return filas;
     }
 
+    /** Convierte un objeto en pares clave-valor para mostrarlo en pantalla. */
     private static List<Map<String, String>> entradas(Object cuerpo) {
         List<Map<String, String>> entradas = new ArrayList<>();
         if (cuerpo instanceof Map<?, ?> mapa) {
@@ -429,6 +470,7 @@ public class LecturaController {
         return entradas;
     }
 
+    /** Muestra un valor como texto. Los nulos se muestran como guion. */
     private static String texto(Object valor) {
         if (valor == null) {
             return "—";

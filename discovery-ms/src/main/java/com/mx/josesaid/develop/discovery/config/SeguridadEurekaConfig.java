@@ -15,6 +15,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SeguridadEurekaConfig {
 
+    /**
+ * Cadena de seguridad de Eureka. Sin autenticación solo quedan abiertos /actuator/health, /info y /prometheus;
+ * el panel y el registro de servicios exigen autenticación básica.
+ */
     @Bean
     SecurityFilterChain cadenaSeguridad(HttpSecurity http) throws Exception {
         http

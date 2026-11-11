@@ -40,11 +40,13 @@ public class ComprobanteControlador {
     private final FacturacionService servicio;
     private final Idempotencia idempotencia;
 
+    /** Recibe el servicio de facturación y el control de idempotencia. */
     public ComprobanteControlador(FacturacionService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
         this.idempotencia = idempotencia;
     }
 
+    /** Crea un comprobante en borrador a partir de una orden. La tasa de IVA la fija el servidor según la fecha. */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('FINANZAS')")
@@ -53,6 +55,7 @@ public class ComprobanteControlador {
                 solicitud.ordenId(), solicitud.moneda(), solicitud.subtotal()));
     }
 
+    /** Busca un comprobante por su folio. */
     @GetMapping(params = "folio")
     @PreAuthorize("hasAnyRole('FINANZAS','VENTAS')")
     public ComprobanteRespuesta buscarPorFolio(@RequestParam @Size(max = 50) String folio) {
@@ -69,24 +72,28 @@ public class ComprobanteControlador {
                 .toList();
     }
 
+    /** Devuelve un comprobante con sus pagos y su saldo. */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('FINANZAS','VENTAS')")
     public ComprobanteRespuesta obtener(@PathVariable UUID id) {
         return ComprobanteRespuesta.de(servicio.obtener(id));
     }
 
+    /** Emite el comprobante y le asigna su folio. */
     @PostMapping("/{id}/emision")
     @PreAuthorize("hasRole('FINANZAS')")
     public ComprobanteRespuesta emitir(@PathVariable UUID id) {
         return ComprobanteRespuesta.de(servicio.emitir(id));
     }
 
+    /** Cancela un comprobante emitido. Requiere motivo. */
     @PostMapping("/{id}/cancelacion")
     @PreAuthorize("hasRole('FINANZAS')")
     public ComprobanteRespuesta cancelar(@PathVariable UUID id, @Valid @RequestBody CancelarSolicitud solicitud) {
         return ComprobanteRespuesta.de(servicio.cancelar(id, solicitud.motivo()));
     }
 
+    /** Registra un pago contra el saldo del comprobante. Acepta Idempotency-Key para reintentar sin duplicar el pago. */
     @PostMapping("/{id}/pagos")
     @PreAuthorize("hasRole('FINANZAS')")
     public ResponseEntity<?> registrarPago(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
@@ -97,31 +104,38 @@ public class ComprobanteControlador {
                         id, solicitud.monto(), solicitud.fechaPago(), solicitud.referencia())));
     }
 
+    /** Datos para crear el borrador: orden, moneda y subtotal. */
     public record CrearComprobanteSolicitud(
             @NotNull UUID ordenId,
             @NotBlank String moneda,
             @NotNull @Positive BigDecimal subtotal) {
     }
 
+    /** Motivo de la cancelación, de hasta 200 caracteres. */
     public record CancelarSolicitud(@NotBlank @Size(max = 200) String motivo) {
     }
 
+    /** Datos de un pago: monto, fecha opcional y referencia. */
     public record RegistrarPagoSolicitud(
             @NotNull @Positive BigDecimal monto,
             LocalDate fechaPago,
             @Size(max = 100) String referencia) {
     }
 
+    /** Comprobante emitido con saldo pendiente de cobro. */
     public record ComprobantePendienteRespuesta(UUID id, String folio, String moneda, BigDecimal total,
                                                 BigDecimal saldo, EstatusCobro estatusCobro) {
     }
 
+    /** Respuesta de un pago. */
     public record PagoRespuesta(UUID id, BigDecimal monto, LocalDate fechaPago, String referencia) {
+        /** Convierte un pago en su respuesta. */
         static PagoRespuesta de(Pago p) {
             return new PagoRespuesta(p.getId(), p.getMonto(), p.getFechaPago(), p.getReferencia());
         }
     }
 
+    /** Respuesta de un comprobante, con sus pagos y su saldo. */
     public record ComprobanteRespuesta(
             UUID id,
             UUID ordenId,
@@ -138,6 +152,7 @@ public class ComprobanteControlador {
             BigDecimal saldo,
             List<PagoRespuesta> pagos) {
 
+        /** Convierte un comprobante en su respuesta. */
         static ComprobanteRespuesta de(Comprobante c) {
             return new ComprobanteRespuesta(c.getId(), c.getOrdenId(), c.getFolio(), c.getMoneda(),
                     c.getSubtotal(), c.getIva(), c.getTotal(), c.getTasaIva(), c.getEstatus(),

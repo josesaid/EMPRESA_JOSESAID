@@ -35,6 +35,7 @@ public class CampoCifradoConverter implements AttributeConverter<String, String>
         return prefijo.matches() ? Integer.parseInt(prefijo.group(1)) : VERSION_SIN_PREFIJO;
     }
 
+    /** Cifra el texto antes de guardarlo en la base. Los datos personales nunca se guardan en claro. */
     @Override
     public String convertToDatabaseColumn(String texto) {
         if (texto == null) {
@@ -54,6 +55,7 @@ public class CampoCifradoConverter implements AttributeConverter<String, String>
         }
     }
 
+    /** Descifra el valor leído de la base. Acepta valores sin prefijo de versión. */
     @Override
     public String convertToEntityAttribute(String columna) {
         if (columna == null) {

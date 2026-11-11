@@ -10,15 +10,18 @@ import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+/** Implementa el puerto de indicadores con JPA. */
 @Repository
 public class IndicadorRepositorioJpa implements IndicadorRepositorio {
 
     private final IndicadorJpaRepository jpa;
 
+    /** Recibe el repositorio JPA de indicadores. */
     public IndicadorRepositorioJpa(IndicadorJpaRepository jpa) {
         this.jpa = jpa;
     }
 
+    /** Guarda un indicador. Si ya existe para el área, nombre y periodo, lo actualiza. */
     @Override
     public Indicador guardar(Indicador indicador) {
         IndicadorEntity e = jpa.findByAreaAndNombreAndPeriodo(indicador.area(), indicador.nombre(),
@@ -31,6 +34,7 @@ public class IndicadorRepositorioJpa implements IndicadorRepositorio {
         return jpa.save(e).aDominio();
     }
 
+    /** Busca los indicadores de un área y periodo. */
     @Override
     public List<Indicador> buscar(Area area, Periodo periodo) {
         Specification<IndicadorEntity> spec = (raiz, consulta, cb) -> {

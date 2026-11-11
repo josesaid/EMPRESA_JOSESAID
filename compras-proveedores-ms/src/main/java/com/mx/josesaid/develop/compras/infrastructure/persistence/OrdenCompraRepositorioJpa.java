@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de órdenes de compra con JPA. */
 @Component
 class OrdenCompraRepositorioJpa implements OrdenCompraRepositorio {
 
@@ -56,6 +57,7 @@ class OrdenCompraRepositorioJpa implements OrdenCompraRepositorio {
         return o;
     }
 
+    /** Busca una orden por id. */
     @Override
     public Optional<OrdenCompra> buscarPorId(UUID id) {
         return jpa.findById(id).map(e -> {
@@ -68,6 +70,7 @@ class OrdenCompraRepositorioJpa implements OrdenCompraRepositorio {
         });
     }
 
+    /** Lista las órdenes más recientes, opcionalmente filtradas por estatus, con límite. */
     @Override
     public List<ResumenOrdenCompra> listarRecientes(EstatusOrdenCompra estatus, int limite) {
         var pagina = PageRequest.of(0, limite);

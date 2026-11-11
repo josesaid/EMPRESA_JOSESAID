@@ -15,6 +15,7 @@ public record RefreshToken(UUID id, UUID usuarioId, UUID familiaId, String hash,
         return usadoUtc == null && revocadoUtc == null && ahora.isBefore(expiraUtc);
     }
 
+    /** Devuelve una copia marcada como usada en el instante indicado. El objeto original no cambia. */
     public RefreshToken comoUsado(Instant ahora) {
         return new RefreshToken(id, usuarioId, familiaId, hash, expiraUtc, ahora, revocadoUtc);
     }

@@ -36,6 +36,7 @@ public class Comprobante {
     private String motivoCancelacion;
     private final List<Pago> pagos;
 
+    /** Constructor privado: los comprobantes se crean con sus fábricas. */
     private Comprobante(UUID id, UUID ordenId, String moneda, BigDecimal subtotal, BigDecimal iva,
                         BigDecimal total, BigDecimal tasaIva, String folio, EstatusComprobante estatus,
                         String motivoCancelacion, List<Pago> pagos) {
@@ -126,15 +127,18 @@ public class Comprobante {
         return pago;
     }
 
+    /** Devuelve la suma de los pagos registrados. */
     public BigDecimal pagado() {
         return pagos.stream().map(Pago::getMonto).reduce(ZERO, BigDecimal::add);
     }
 
+    /** Devuelve el saldo pendiente. Nunca es negativo. */
     public BigDecimal saldo() {
         BigDecimal saldo = total.subtract(pagado());
         return saldo.signum() < 0 ? ZERO : saldo;
     }
 
+    /** Devuelve el estado de cobro: pendiente, parcial o pagado. */
     public EstatusCobro estatusCobro() {
         if (pagado().signum() == 0) {
             return EstatusCobro.PENDIENTE;
@@ -147,15 +151,25 @@ public class Comprobante {
         return "FAC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el id de la orden. */
     public UUID getOrdenId() { return ordenId; }
+    /** Devuelve la moneda. */
     public String getMoneda() { return moneda; }
+    /** Devuelve el subtotal. */
     public BigDecimal getSubtotal() { return subtotal; }
+    /** Devuelve el IVA. */
     public BigDecimal getIva() { return iva; }
+    /** Devuelve el total. */
     public BigDecimal getTotal() { return total; }
+    /** Devuelve la tasa de IVA aplicada al crearlo. */
     public BigDecimal getTasaIva() { return tasaIva; }
+    /** Devuelve el folio, o nulo si aún es borrador. */
     public String getFolio() { return folio; }
+    /** Devuelve el estatus. */
     public EstatusComprobante getEstatus() { return estatus; }
+    /** Devuelve el motivo de cancelación, o nulo. */
     public String getMotivoCancelacion() { return motivoCancelacion; }
 
     /** Vista de solo lectura de los pagos. */

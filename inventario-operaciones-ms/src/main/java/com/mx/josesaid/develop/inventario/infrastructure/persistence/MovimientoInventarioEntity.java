@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+/** Fila de la tabla de movimientos de inventario. */
 @Entity
 @Table(name = "movimientos_inventario")
 class MovimientoInventarioEntity {
@@ -23,6 +24,7 @@ class MovimientoInventarioEntity {
     @Column(length = 100) String referencia;
     @Column(name = "creado_utc", nullable = false) Instant creadoUtc;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected MovimientoInventarioEntity() {
     }
 }

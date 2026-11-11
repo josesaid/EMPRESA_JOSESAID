@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/** Acceso a la tabla de cuentas con Spring Data JPA. */
 interface CuentaJpaRepository extends JpaRepository<CuentaEntity, UUID> {
     boolean existsByCodigo(String codigo);
     List<CuentaEntity> findByActivaTrueOrderByCodigoAsc();

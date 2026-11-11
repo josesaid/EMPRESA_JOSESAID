@@ -40,15 +40,18 @@ public final class HerramientasClientes {
     private final RestClient gateway;
     private final AccionesPendientes acciones;
 
+    /** Versión sin registro de acciones: solo permite consultar. */
     public HerramientasClientes(RestClient gateway) {
         this(gateway, null);
     }
 
+    /** Recibe el cliente del gateway y el registro de acciones para preparar altas y cambios. */
     public HerramientasClientes(RestClient gateway, AccionesPendientes acciones) {
         this.gateway = gateway;
         this.acciones = acciones;
     }
 
+    /** Herramienta del asistente: busca clientes por RFC exacto o por nombre. */
     @Tool(name = "buscar_clientes",
           description = "Busca clientes por RFC o por nombre. Devuelve hasta 10 resultados con su última interacción.")
     public String buscarClientes(
@@ -71,6 +74,7 @@ public final class HerramientasClientes {
         return redactar(cuerpo);
     }
 
+    /** Herramienta del asistente: devuelve el detalle de un cliente. */
     @Tool(name = "obtener_cliente",
           description = "Devuelve el detalle de un cliente por su identificador (UUID).")
     public String obtenerCliente(
@@ -83,6 +87,7 @@ public final class HerramientasClientes {
         return redactar(cuerpo);
     }
 
+    /** Herramienta del asistente: devuelve las interacciones registradas de un cliente. */
     @Tool(name = "consultar_interacciones_cliente",
           description = "Lista las interacciones registradas de un cliente: tipo, fecha y resumen.")
     public String consultarInteraccionesCliente(
@@ -95,6 +100,7 @@ public final class HerramientasClientes {
         return lectura(RUTA_BASE + "/" + id + "/interacciones", NO_ENCONTRADO_CLIENTE);
     }
 
+    /** Herramienta del asistente: devuelve el detalle de un prospecto. */
     @Tool(name = "obtener_prospecto",
           description = "Devuelve un prospecto por su identificador UUID: nombre, fuente, estatus y fecha de alta.")
     public String obtenerProspecto(
@@ -107,6 +113,7 @@ public final class HerramientasClientes {
         return lectura(RUTA_PROSPECTOS + "/" + id, "No encontré ese prospecto.");
     }
 
+    /** Herramienta del asistente: devuelve las métricas de conversión de un mes. */
     @Tool(name = "consultar_metricas_conversion",
           description = "Devuelve la conversión de prospectos a clientes de un mes. El mes es AAAA-MM.")
     public String consultarMetricasConversion(
@@ -123,6 +130,7 @@ public final class HerramientasClientes {
         return redactar(cuerpo);
     }
 
+    /** Herramienta del asistente: prepara el alta de un cliente. No lo crea; el usuario debe confirmarlo. */
     @Tool(name = "crear_cliente",
           description = "Prepara el alta de un cliente con su contacto principal. NO lo crea: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. Solo ADMIN puede usarla.")
@@ -165,6 +173,7 @@ public final class HerramientasClientes {
         return guardarAccion(AccionesPendientes.TIPO_CLIENTE_CREAR, cuerpo, resumen, "Alta preparada, no creada.");
     }
 
+    /** Herramienta del asistente: prepara la actualización de la razón social de un cliente. */
     @Tool(name = "actualizar_cliente",
           description = "Prepara el cambio de razón social de un cliente. NO lo cambia: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. Solo ADMIN puede usarla.")
@@ -192,6 +201,7 @@ public final class HerramientasClientes {
         return guardarAccion(AccionesPendientes.TIPO_CLIENTE_ACTUALIZAR, cuerpo, resumen, "Cambio preparado, no aplicado.");
     }
 
+    /** Herramienta del asistente: prepara agregar un contacto a un cliente. Valida el correo antes de preparar la acción. */
     @Tool(name = "agregar_contacto_cliente",
           description = "Prepara el alta de un contacto en un cliente existente. NO lo agrega: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. Solo ADMIN puede usarla.")
@@ -235,6 +245,7 @@ public final class HerramientasClientes {
                 "Alta de contacto preparada, no agregada.");
     }
 
+    /** Herramienta del asistente: prepara el cambio de estatus de un cliente. Solo acepta ACTIVO, SUSPENDIDO o BAJA. */
     @Tool(name = "cambiar_estatus_cliente",
           description = "Prepara el cambio de estatus de un cliente a ACTIVO, SUSPENDIDO o BAJA. NO lo cambia: "
                   + "devuelve un resumen y un accion_id. El usuario debe confirmarlo en la aplicación. Solo ADMIN puede usarla.")
@@ -263,12 +274,14 @@ public final class HerramientasClientes {
                 "Cambiar estatus del cliente " + id + " a " + nuevo, "Cambio preparado, no ejecutado.");
     }
 
+    /** Guarda la acción pendiente del usuario y devuelve un texto con su identificador. Los RFC se redactan en la respuesta. */
     private String guardarAccion(String tipo, Map<String, Object> cuerpo, String resumen, String encabezado) {
         AccionPendiente accion = acciones.preparar(usuarioActual(), tipo, aJson(cuerpo), resumen);
         return redactar(encabezado + " " + resumen + ". accion_id: " + accion.id()
                 + ". Vence en 10 minutos; el usuario debe confirmarlo en la aplicación.");
     }
 
+    /** Indica si el cliente existe consultando el gateway. Si falla la consulta, lanza excepción en lugar de contestar que no existe. */
     private boolean existeCliente(UUID id) {
         try {
             gateway.get().uri(RUTA_BASE + "/" + id).retrieve().body(String.class);
@@ -278,6 +291,7 @@ public final class HerramientasClientes {
         }
     }
 
+    /** Consulta un recurso del gateway y devuelve su contenido, o un mensaje si no existe. */
     private String lectura(String ruta, String noEncontrado) {
         try {
             String cuerpo = gateway.get().uri(ruta).retrieve().body(String.class);
@@ -287,10 +301,12 @@ public final class HerramientasClientes {
         }
     }
 
+    /** Redacta los RFC del texto antes de devolverlo al modelo. */
     private static String redactar(String texto) {
         return FiltroDatosSensibles.redactar(texto, EnumSet.of(FiltroDatosSensibles.Tipo.RFC)).texto();
     }
 
+    /** Convierte un texto en UUID. Devuelve nulo si el valor es nulo y lanza excepción si no tiene formato de UUID. */
     private static UUID identificador(String valor) {
         try {
             return valor == null ? null : UUID.fromString(valor.trim());
@@ -299,22 +315,27 @@ public final class HerramientasClientes {
         }
     }
 
+    /** Indica si el texto es nulo o está en blanco. */
     private static boolean vacio(String valor) {
         return valor == null || valor.isBlank();
     }
 
+    /** Revisa que el correo no esté vacío, tenga máximo 254 caracteres y contenga @. Es una validación básica, no de formato completo. */
     private static boolean correoValido(String correo) {
         return !vacio(correo) && correo.trim().length() <= 254 && correo.contains("@");
     }
 
+    /** Quita espacios y pasa el texto a mayúsculas. Un valor nulo se convierte en cadena vacía. */
     private static String normalizar(String valor) {
         return valor == null ? "" : valor.trim().toUpperCase();
     }
 
+    /** Devuelve el nombre del usuario autenticado. */
     private static String usuarioActual() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    /** Convierte un mapa en JSON para guardarlo en la acción pendiente. */
     private static String aJson(Map<String, Object> datos) {
         try {
             return JSON.writeValueAsString(datos);

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/** Puerto para guardar y consultar proveedores, sin depender de JPA. */
 public interface ProveedorRepositorio {
     Proveedor guardar(Proveedor proveedor);
     Optional<Proveedor> buscarPorId(UUID id);

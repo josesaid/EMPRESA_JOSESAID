@@ -10,6 +10,7 @@ import java.util.List;
  */
 public final class IpCliente {
 
+    /** Clase de utilidad: no se instancia. */
     private IpCliente() {
     }
 
@@ -29,6 +30,7 @@ public final class IpCliente {
         return esIpValida(candidata) ? candidata : ipDirecta;
     }
 
+    /** Indica si la IP pertenece a alguno de los rangos CIDR de proxies de confianza. Un rango vacío se ignora. */
     static boolean esDeConfianza(String ip, List<String> proxies) {
         for (String rango : proxies) {
             if (!rango.isBlank() && perteneceAlRango(ip, rango.trim())) {
@@ -68,6 +70,7 @@ public final class IpCliente {
         return true;
     }
 
+    /** Convierte una IP literal en sus bytes para compararla contra un rango CIDR. No hace búsqueda DNS. */
     private static byte[] literal(String ip) {
         if (!esIpValida(ip)) {
             throw new IllegalArgumentException("IP inválida: " + ip);

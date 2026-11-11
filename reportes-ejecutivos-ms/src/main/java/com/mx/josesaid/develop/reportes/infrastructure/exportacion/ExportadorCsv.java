@@ -11,11 +11,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExportadorCsv implements ExportadorReporte {
 
+    /** Devuelve el formato CSV. */
     @Override
     public FormatoExportacion formato() {
         return FormatoExportacion.CSV;
     }
 
+    /** Genera el CSV del reporte con una fila por indicador. Los campos con comas o comillas se escapan. */
     @Override
     public byte[] exportar(DatosExportacion datos) {
         StringBuilder csv = new StringBuilder("﻿")
@@ -31,6 +33,7 @@ public class ExportadorCsv implements ExportadorReporte {
         return csv.toString().getBytes(StandardCharsets.UTF_8);
     }
 
+    /** Escapa un campo CSV: si tiene comas, comillas o saltos de línea, lo encierra en comillas y duplica las comillas internas. */
     private static String escapar(String valor) {
         return "\"" + valor.replace("\"", "\"\"") + "\"";
     }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/** Acceso a la tabla de acciones pendientes con Spring Data JPA. */
 public interface AccionPendienteRepositorio extends JpaRepository<AccionPendienteEntidad, UUID> {
 
     @Modifying

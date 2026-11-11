@@ -24,11 +24,13 @@ public class ListenerOrdenesCompra {
     private final CuentasPorPagarService servicio;
     private final ObjectMapper mapper;
 
+    /** Recibe el servicio de cuentas por pagar y el lector JSON. */
     public ListenerOrdenesCompra(CuentasPorPagarService servicio, ObjectMapper mapper) {
         this.servicio = servicio;
         this.mapper = mapper;
     }
 
+    /** Recibe desde Kafka la orden de compra aprobada y crea su cuenta por pagar. */
     @KafkaListener(topics = "${cuentas.topico-compras:compras.eventos}",
                    groupId = "facturacion-pagos-ms-cuentas-por-pagar",
                    properties = "auto.offset.reset=earliest")
@@ -64,6 +66,7 @@ public class ListenerOrdenesCompra {
                 UUID.fromString(String.valueOf(d.get("proveedor_id"))), moneda, total);
     }
 
+    /** Datos extraídos del evento: orden, proveedor, moneda y total. */
     private record Datos(UUID ordenId, UUID proveedorId, String moneda, BigDecimal total) {
     }
 

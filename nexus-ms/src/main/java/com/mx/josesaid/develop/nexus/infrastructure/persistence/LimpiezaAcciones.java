@@ -20,6 +20,7 @@ public class LimpiezaAcciones {
     private final AccionPendienteRepositorio repositorio;
     private final Clock reloj;
 
+    /** Recibe el repositorio de acciones pendientes para la limpieza programada. */
     @Autowired
     public LimpiezaAcciones(AccionPendienteRepositorio repositorio) {
         this(repositorio, Clock.systemUTC());
@@ -30,6 +31,7 @@ public class LimpiezaAcciones {
         this.reloj = reloj;
     }
 
+    /** Borra las acciones que ya no se pueden confirmar y tienen más de un día de vencidas. Se ejecuta de forma programada. */
     @Scheduled(fixedDelayString = "PT5M", initialDelayString = "PT1M")
     @Transactional
     public int borrarVencidas() {

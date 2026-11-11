@@ -9,9 +9,11 @@ import javax.crypto.Mac;
 /** Índice de búsqueda por correo: HMAC-SHA256 en hexadecimal sobre el correo normalizado. */
 public final class IndiceCorreo {
 
+    /** Clase de utilidad; no se instancia. */
     private IndiceCorreo() {
     }
 
+    /** Calcula el índice de búsqueda del correo normalizado, para buscar sin descifrar todos los usuarios. */
     public static String de(String correo) {
         try {
             Mac mac = Mac.getInstance("HmacSHA256");

@@ -15,6 +15,10 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SeguridadGatewayConfig {
 
+    /**
+ * Cadena de seguridad del gateway. Sin token permite solo login, refresh, logout, cambio de contraseña inicial
+ * y el JWKS de cada servicio; el resto exige un JWT válido. CSRF se desactiva porque la API no usa cookies de sesión.
+ */
     @Bean
     SecurityWebFilterChain cadenaSeguridad(ServerHttpSecurity http) {
         return http

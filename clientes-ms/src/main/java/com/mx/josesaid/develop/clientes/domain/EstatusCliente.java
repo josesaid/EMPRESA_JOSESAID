@@ -9,6 +9,7 @@ public enum EstatusCliente {
     SUSPENDIDO,
     BAJA;
 
+    /** Indica si el cliente puede pasar al estatus indicado. Las transiciones no permitidas se rechazan. */
     public boolean puedePasarA(EstatusCliente destino) {
         if (this == destino) {
             return true;

@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/** Fila de un movimiento de póliza, embebida en la póliza. */
 @Entity
 @Table(name = "movimientos")
 class MovimientoEntity {
@@ -30,6 +31,7 @@ class MovimientoEntity {
     @Column(nullable = false, precision = 14, scale = 2)
     BigDecimal abono;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected MovimientoEntity() {
     }
 }

@@ -40,6 +40,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SeguridadConfig {
 
+    /** Cadena de seguridad: deja abiertos el inicio de sesión, la renovación, el cambio de contraseña temporal, el cierre de una sesión y las claves públicas. El resto exige JWT válido. */
     @Bean
     SecurityFilterChain cadenaSeguridad(HttpSecurity http) throws Exception {
         http
@@ -96,6 +97,7 @@ public class SeguridadConfig {
         return new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(claveRsa)));
     }
 
+    /** Codificador de contraseñas BCrypt. */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

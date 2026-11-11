@@ -37,12 +37,14 @@ public class ServicioSesion {
     private final StringRedisTemplate redis;
     private final SessionRepository<?> sesiones;
 
+    /** Recibe el cliente del gateway, Redis para el lock de renovación y el repositorio de sesiones de Spring Session. */
     public ServicioSesion(RestClient gatewayClient, StringRedisTemplate redis, SessionRepository<?> sesiones) {
         this.gateway = gatewayClient;
         this.redis = redis;
         this.sesiones = sesiones;
     }
 
+    /** Entrega un access token vigente. Renueva la sesión si le quedan menos de 60 segundos de vida. */
     public String accessTokenVigente() {
         SesionTokens sesion = sesionActual();
         if (Instant.now().plus(MARGEN).isAfter(sesion.getExpiraEn())) {
@@ -68,6 +70,7 @@ public class ServicioSesion {
         }
     }
 
+    /** Devuelve los tokens guardados en la sesión del usuario actual. Si no hay sesión, lanza SesionExpiradaException. */
     private SesionTokens sesionActual() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getDetails() instanceof SesionTokens sesion)) {
@@ -76,6 +79,7 @@ public class ServicioSesion {
         return sesion;
     }
 
+    /** Renueva la sesión del usuario actual. */
     private void renovarSesion(SesionTokens sesion) {
         renovarProtegido(idSesionActual(), sesion);
     }
@@ -107,6 +111,7 @@ public class ServicioSesion {
         persistir();
     }
 
+    /** Pide un nuevo access token con el refresh token. El refresh token rota en cada uso. Si el servicio rechaza la petición, la sesión expiró. */
     private void refrescar(SesionTokens sesion) {
         RespuestaLogin nueva;
         try {
@@ -159,6 +164,7 @@ public class ServicioSesion {
         return null;
     }
 
+    /** Devuelve el identificador de la sesión HTTP actual, o nulo si no hay una petición web. */
     private static String idSesionActual() {
         if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes atributos) {
             HttpSession sesion = atributos.getRequest().getSession(false);

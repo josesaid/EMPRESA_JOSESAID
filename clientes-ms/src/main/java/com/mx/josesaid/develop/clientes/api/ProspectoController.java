@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
+/** Endpoints de prospectos: alta, detalle, cambio de estatus y conversión a cliente. */
 @RestController
 @RequestMapping("/v1/prospectos")
 public class ProspectoController {
@@ -33,12 +34,14 @@ public class ProspectoController {
     private final Auditoria auditoria;
     private final Presentacion presentacion;
 
+    /** Recibe el servicio de prospectos, la auditoría y la zona de presentación. */
     public ProspectoController(ProspectoService servicio, Auditoria auditoria, Presentacion presentacion) {
         this.servicio = servicio;
         this.auditoria = auditoria;
         this.presentacion = presentacion;
     }
 
+    /** Registra un prospecto. Si hay posibles duplicados, responde con las coincidencias para que el usuario confirme. */
     @PostMapping
     @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public ResponseEntity<ProspectoResponse> crear(@Valid @RequestBody NuevoProspectoRequest req,
@@ -49,6 +52,7 @@ public class ProspectoController {
                 .body(ProspectoResponse.de(creado, presentacion));
     }
 
+    /** Devuelve el detalle de un prospecto. Registra en la auditoría quién lo consultó. */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public ProspectoResponse obtener(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
@@ -57,6 +61,7 @@ public class ProspectoController {
         return ProspectoResponse.de(prospecto, presentacion);
     }
 
+    /** Cambia el estatus de un prospecto. */
     @PatchMapping("/{id}/estatus")
     @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public ProspectoResponse cambiarEstatus(@PathVariable UUID id,
@@ -64,6 +69,7 @@ public class ProspectoController {
         return ProspectoResponse.de(servicio.cambiarEstatus(id, req.estatus()), presentacion);
     }
 
+    /** Convierte un prospecto calificado en cliente con su contacto principal. */
     @PostMapping("/{id}/conversion")
     @PreAuthorize("hasAnyRole('VENTAS', 'ADMIN')")
     public ResponseEntity<ClienteResponse> convertir(@PathVariable UUID id,

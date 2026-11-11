@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Registra y revoca consentimientos de contactos. */
 @Service
 @Transactional
 public class ConsentimientoService {
@@ -20,6 +21,7 @@ public class ConsentimientoService {
     private final RegistradorEventos eventos;
     private final Clock reloj;
 
+    /** Recibe los repositorios de contactos y consentimientos, y el reloj. */
     public ConsentimientoService(ContactoRepository contactos, ConsentimientoRepository consentimientos,
                                  RegistradorEventos eventos, Clock reloj) {
         this.contactos = contactos;
@@ -28,6 +30,7 @@ public class ConsentimientoService {
         this.reloj = reloj;
     }
 
+    /** Registra el consentimiento de un contacto para una finalidad. Falla si el contacto no existe. */
     public Consentimiento otorgar(UUID contactoId, NuevoConsentimiento cmd) {
         if (!contactos.existsById(contactoId)) {
             throw new EntidadNoEncontradaException("contacto", contactoId);

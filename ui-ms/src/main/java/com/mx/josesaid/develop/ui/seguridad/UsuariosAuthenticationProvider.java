@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
+/** Valida el inicio de sesión llamando al servicio de acceso. Aplica el bloqueo por intentos fallidos y reenvía la IP real del cliente para que el gateway limite por usuario y no por la IP de ui-ms. */
 @Component
 public class UsuariosAuthenticationProvider implements AuthenticationProvider {
 
@@ -24,12 +25,14 @@ public class UsuariosAuthenticationProvider implements AuthenticationProvider {
     private final BloqueoLogin bloqueos;
     private final IpOrigen ipOrigen;
 
+    /** Recibe el cliente del gateway, el control de bloqueos y el resolutor de IP. */
     public UsuariosAuthenticationProvider(RestClient gatewayClient, BloqueoLogin bloqueos, IpOrigen ipOrigen) {
         this.gateway = gatewayClient;
         this.bloqueos = bloqueos;
         this.ipOrigen = ipOrigen;
     }
 
+    /** Autentica el correo y la contraseña. 403 indica contraseña temporal; 400 o 401 cuentan como fallo; otros errores se tratan como servicio no disponible. Al éxito, guarda los tokens en los detalles de la sesión y da al usuario los roles del JWT. */
     @Override
     public Authentication authenticate(Authentication intento) throws AuthenticationException {
         String correo = intento.getName();
@@ -80,6 +83,7 @@ public class UsuariosAuthenticationProvider implements AuthenticationProvider {
         return autenticado;
     }
 
+    /** Indica que este proveedor atiende inicios de sesión con correo y contraseña. */
     @Override
     public boolean supports(Class<?> tipo) {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(tipo);

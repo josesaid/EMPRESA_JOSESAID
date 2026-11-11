@@ -16,6 +16,7 @@ public class LimitadorIntentosRedis implements LimitadorIntentos {
     private final Duration ventana;
     private final Clock reloj;
 
+    /** Crea el límite compartido en Redis. El reloj se inyecta para poder probar las ventanas. */
     public LimitadorIntentosRedis(ReactiveStringRedisTemplate redis, int maximo, Duration ventana, Clock reloj) {
         this.redis = redis;
         this.maximo = maximo;
@@ -23,6 +24,7 @@ public class LimitadorIntentosRedis implements LimitadorIntentos {
         this.reloj = reloj;
     }
 
+    /** Incrementa el contador de la ventana actual. La clave lleva el inicio de la ventana, así cada ventana empieza en cero. Al primer intento se fija su expiración. */
     @Override
     public Mono<LimitadorVentana.Resultado> intentar(String clave) {
         long segundos = ventana.toSeconds();

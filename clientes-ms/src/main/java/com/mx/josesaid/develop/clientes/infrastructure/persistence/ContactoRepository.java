@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/** Acceso a la tabla de contactos con Spring Data JPA. */
 public interface ContactoRepository extends JpaRepository<Contacto, UUID> {
 
     List<Contacto> findByCorreoHash(String correoHash);

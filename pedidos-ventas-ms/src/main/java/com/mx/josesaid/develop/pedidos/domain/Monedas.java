@@ -7,13 +7,16 @@ public final class Monedas {
 
     private static final Map<String, Integer> DECIMALES = Map.of("MXN", 2, "USD", 2);
 
+    /** Clase de utilidad; no se instancia. */
     private Monedas() {
     }
 
+    /** Devuelve las monedas aceptadas con sus decimales. */
     public static Map<String, Integer> catalogo() {
         return DECIMALES;
     }
 
+    /** Devuelve los decimales de una moneda. Falla si la moneda no está en el catálogo. */
     public static int decimales(String moneda) {
         Integer d = DECIMALES.get(moneda);
         if (d == null) {

@@ -9,6 +9,7 @@ import java.util.UUID;
 public record PolizaDto(UUID id, String periodo, String tipo, LocalDate fecha, String estatus,
                         UUID reversaDe, BigDecimal total, List<MovimientoDto> movimientos) {
 
+    /** Línea de una póliza: cuenta afectada y los importes de cargo y abono. */
     public record MovimientoDto(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
     }
 }

@@ -24,6 +24,7 @@ public class Pedido {
     private Instant fechaEntrega;
     private MotivoCancelacion motivoCancelacion;
 
+    /** Constructor privado: los pedidos se crean con sus fábricas. */
     private Pedido(UUID id, UUID clienteId, UUID cotizacionId, Canal canal, String moneda, TasaIva tasa,
                    EstatusPedido estatus, List<Linea> lineas, Instant fechaConfirmacion, Instant fechaEntrega,
                    MotivoCancelacion motivoCancelacion) {
@@ -40,6 +41,7 @@ public class Pedido {
         this.motivoCancelacion = motivoCancelacion;
     }
 
+    /** Crea un pedido en borrador. Requiere al menos una línea. */
     public static Pedido crear(UUID clienteId, Canal canal, String moneda, TasaIva tasa, List<Linea> lineas) {
         Cotizacion.validarCabecera(clienteId, canal, moneda, tasa);
         if (lineas == null || lineas.isEmpty()) {
@@ -58,6 +60,7 @@ public class Pedido {
                 EstatusPedido.BORRADOR, c.getLineas(), null, null, null);
     }
 
+    /** Reconstruye un pedido desde la base de datos sin aplicar reglas. */
     public static Pedido reconstruir(UUID id, UUID clienteId, UUID cotizacionId, Canal canal, String moneda,
                                      TasaIva tasa, EstatusPedido estatus, List<Linea> lineas, Instant fechaConfirmacion,
                                      Instant fechaEntrega, MotivoCancelacion motivoCancelacion) {
@@ -65,6 +68,7 @@ public class Pedido {
                 fechaEntrega, motivoCancelacion);
     }
 
+    /** Reemplaza las líneas. Solo en borrador. */
     public void reemplazarLineas(List<Linea> nuevas) {
         if (estatus != EstatusPedido.BORRADOR) {
             throw new ConflictoException("Solo un pedido en borrador admite cambios en sus líneas");
@@ -75,6 +79,7 @@ public class Pedido {
         this.lineas = new ArrayList<>(nuevas);
     }
 
+    /** Confirma el pedido. Solo desde borrador y con al menos una línea de cantidad mayor a cero. */
     public void confirmar(Instant ahora) {
         if (estatus != EstatusPedido.BORRADOR) {
             throw new ConflictoException("Solo un pedido en borrador puede confirmarse");
@@ -86,6 +91,7 @@ public class Pedido {
         this.fechaConfirmacion = ahora;
     }
 
+    /** Marca el pedido como entregado. Solo desde confirmado. */
     public void entregar(Instant ahora) {
         if (estatus != EstatusPedido.CONFIRMADO) {
             throw new ConflictoException("Solo un pedido confirmado puede entregarse");
@@ -94,6 +100,7 @@ public class Pedido {
         this.fechaEntrega = ahora;
     }
 
+    /** Cancela el pedido desde borrador o confirmado. El motivo es obligatorio y la devolución tiene su propio camino. */
     public void cancelar(MotivoCancelacion motivo) {
         if (motivo == null) {
             throw new SolicitudInvalidaException("El motivo de cancelación es obligatorio");
@@ -117,19 +124,31 @@ public class Pedido {
         this.motivoCancelacion = MotivoCancelacion.DEVOLUCION_TOTAL;
     }
 
+    /** Calcula subtotal, IVA y total del pedido. */
     public Totales totales() {
         return Totales.calcular(lineas, moneda, tasa);
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el id del cliente. */
     public UUID getClienteId() { return clienteId; }
+    /** Devuelve el id de la cotización de origen, si existe. */
     public UUID getCotizacionId() { return cotizacionId; }
+    /** Devuelve el canal. */
     public Canal getCanal() { return canal; }
+    /** Devuelve la moneda. */
     public String getMoneda() { return moneda; }
+    /** Devuelve la tasa de IVA. */
     public TasaIva getTasa() { return tasa; }
+    /** Devuelve el estatus. */
     public EstatusPedido getEstatus() { return estatus; }
+    /** Devuelve las líneas, en una vista de solo lectura. */
     public List<Linea> getLineas() { return Collections.unmodifiableList(lineas); }
+    /** Devuelve la fecha de confirmación en UTC, o nula. */
     public Instant getFechaConfirmacion() { return fechaConfirmacion; }
+    /** Devuelve la fecha de entrega en UTC, o nula. */
     public Instant getFechaEntrega() { return fechaEntrega; }
+    /** Devuelve el motivo de cancelación, o nulo. */
     public MotivoCancelacion getMotivoCancelacion() { return motivoCancelacion; }
 }

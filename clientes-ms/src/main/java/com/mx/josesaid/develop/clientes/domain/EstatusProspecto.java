@@ -16,6 +16,7 @@ public enum EstatusProspecto {
 
     private static final Set<EstatusProspecto> ABIERTOS = EnumSet.of(NUEVO, CONTACTADO, CALIFICADO);
 
+    /** Indica si el prospecto sigue abierto, es decir, no está convertido ni descartado. */
     public boolean esAbierto() {
         return ABIERTOS.contains(this);
     }

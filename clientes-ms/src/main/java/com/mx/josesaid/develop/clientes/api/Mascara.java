@@ -3,6 +3,7 @@ package com.mx.josesaid.develop.clientes.api;
 /** Enmascarado de datos personales para respuestas. Los logs nunca usan estos valores. */
 public final class Mascara {
 
+    /** Clase de utilidad; no se instancia. */
     private Mascara() {
     }
 

@@ -14,6 +14,7 @@ public class Auditoria {
 
     private static final Logger LOG = LoggerFactory.getLogger("auditoria.datos_personales");
 
+    /** Registra en el log quién hizo una operación sobre un recurso. Solo guarda ids, nunca datos personales. */
     public void registrar(String operacion, UUID recurso, UUID actor) {
         LOG.info("operacion={} recurso={} actor={}", operacion, recurso, actor);
     }

@@ -19,11 +19,13 @@ public final class RegistroTokens {
     private final MeterRegistry registro;
     private final PreciosTokens precios;
 
+    /** Recibe el registro de métricas de Micrometer y la tabla de precios. Si no se pasa tabla, el costo queda en cero. */
     public RegistroTokens(MeterRegistry registro, PreciosTokens precios) {
         this.registro = registro;
         this.precios = precios == null ? PreciosTokens.SIN_PRECIO : precios;
     }
 
+    /** Suma los tokens de entrada y salida, y el costo estimado, a las métricas del servicio y usuario indicados. Los valores negativos se tratan como cero y las etiquetas vacías como "desconocido". */
     public void registrar(String servicio, String usuario, long tokensEntrada, long tokensSalida) {
         String svc = etiqueta(servicio);
         String usr = etiqueta(usuario);
@@ -40,11 +42,13 @@ public final class RegistroTokens {
         }
     }
 
+    /** Obtiene o crea el contador de una métrica con sus etiquetas. Micrometer reutiliza el mismo contador para las mismas etiquetas. */
     private Counter contador(String nombre, String servicio, String usuario, String clave, String valor) {
         return Counter.builder(nombre).tags("servicio", servicio, "usuario", usuario, clave, valor)
                 .register(registro);
     }
 
+    /** Convierte un valor vacío en "desconocido" para no dejar etiquetas en blanco en las métricas. */
     private static String etiqueta(String valor) {
         return valor == null || valor.isBlank() ? "desconocido" : valor;
     }

@@ -14,11 +14,13 @@ public class LecturaCliente {
     private final RestClient gateway;
     private final ServicioSesion sesion;
 
+    /** Recibe el cliente del gateway y el servicio de sesión. */
     public LecturaCliente(RestClient gatewayClient, ServicioSesion sesion) {
         this.gateway = gatewayClient;
         this.sesion = sesion;
     }
 
+    /** Lee una ruta del gateway con parámetros de consulta, usando el token del usuario actual. */
     public Object leer(String ruta, MultiValueMap<String, String> query) {
         return sesion.ejecutar(token -> gateway.get()
                 .uri(constructor -> constructor.path(ruta).queryParams(query).build())

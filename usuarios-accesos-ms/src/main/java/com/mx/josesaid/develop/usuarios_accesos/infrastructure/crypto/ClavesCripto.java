@@ -16,6 +16,7 @@ public final class ClavesCripto {
     private static volatile int versionActiva = 1;
     private static volatile SecretKey indice;
 
+    /** Clase de utilidad; no se instancia. */
     private ClavesCripto() {
     }
 
@@ -36,10 +37,12 @@ public final class ClavesCripto {
         indice = new SecretKeySpec(claveIndice, "HmacSHA256");
     }
 
+    /** Devuelve la versión de clave usada para cifrar nuevos valores. */
     static int versionActiva() {
         return versionActiva;
     }
 
+    /** Devuelve la clave AES de una versión. Falla si esa versión no está configurada. */
     static SecretKey cifrado(int version) {
         SecretKey clave = cifrados.get(version);
         if (clave == null) {
@@ -48,10 +51,12 @@ public final class ClavesCripto {
         return clave;
     }
 
+    /** Devuelve la clave del índice de búsqueda. */
     static SecretKey indice() {
         return requerida(indice, "indice");
     }
 
+    /** Verifica que la clave requerida esté configurada antes de usarla. */
     private static SecretKey requerida(SecretKey clave, String nombre) {
         if (clave == null) {
             throw new IllegalStateException("La clave de " + nombre + " no está configurada");

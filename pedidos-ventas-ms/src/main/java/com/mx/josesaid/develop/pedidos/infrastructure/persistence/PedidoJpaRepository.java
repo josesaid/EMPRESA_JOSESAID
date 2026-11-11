@@ -10,8 +10,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/** Acceso a la tabla de pedidos con Spring Data JPA y consultas con filtros. */
 public interface PedidoJpaRepository extends JpaRepository<PedidoEntity, UUID>, JpaSpecificationExecutor<PedidoEntity> {
 
+    /** Devuelve los pedidos con esos estatus confirmados dentro de un rango de fechas. */
     @Query("select p from PedidoEntity p where p.estatus in :estatus "
             + "and p.fechaConfirmacion >= :desde and p.fechaConfirmacion < :hasta")
     List<PedidoEntity> buscarVigentesEntre(@Param("estatus") Collection<EstatusPedido> estatus,

@@ -8,6 +8,7 @@ import jakarta.persistence.Version;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/** Fila de la tabla de existencias: artículo, almacén, cantidad y reservado. */
 @Entity
 @Table(name = "existencias")
 class ExistenciaEntity {
@@ -18,6 +19,7 @@ class ExistenciaEntity {
     @Column(nullable = false, precision = 14, scale = 3) BigDecimal reservado;
     @Version Long version;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected ExistenciaEntity() {
     }
 }

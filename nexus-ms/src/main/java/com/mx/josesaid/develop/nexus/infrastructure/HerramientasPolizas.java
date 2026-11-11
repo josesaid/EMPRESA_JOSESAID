@@ -17,11 +17,13 @@ public final class HerramientasPolizas {
     private final Supplier<ServicioPolizas> servicio;
     private final CodigoConfirmacion codigos;
 
+    /** Recibe un proveedor del servicio de pólizas. Así el servicio puede no existir todavía al crear la herramienta. */
     public HerramientasPolizas(Supplier<ServicioPolizas> servicio, CodigoConfirmacion codigos) {
         this.servicio = servicio;
         this.codigos = codigos;
     }
 
+    /** Herramienta del asistente: pide al servicio una sugerencia de póliza. Solo prepara la acción; el contador debe confirmarla. */
     @Tool(name = "sugerir_poliza",
           description = "Propone una póliza contable a partir de la descripción de una operación. No la registra. "
                   + "Devuelve el identificador de la acción y un código de confirmación de una sola vez; "
@@ -35,6 +37,7 @@ public final class HerramientasPolizas {
                 + ". Nada se ha registrado todavía.";
     }
 
+    /** Devuelve el nombre del usuario autenticado. */
     private static String usuarioActual() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }

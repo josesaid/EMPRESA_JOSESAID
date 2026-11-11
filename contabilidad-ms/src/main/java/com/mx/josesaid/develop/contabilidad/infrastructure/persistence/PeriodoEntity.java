@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
+/** Fila de la tabla de periodos contables. */
 @Entity
 @Table(name = "periodos")
 class PeriodoEntity {
@@ -24,6 +25,7 @@ class PeriodoEntity {
     @Version
     Long version;
 
+    /** Constructor exigido por JPA. No se usa en el código de la aplicación. */
     protected PeriodoEntity() {
     }
 }

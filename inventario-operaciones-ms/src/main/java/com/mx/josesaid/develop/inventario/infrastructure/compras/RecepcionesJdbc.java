@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/** Registro en base de datos de las recepciones ya aplicadas. */
 @Repository
 class RecepcionesJdbc implements RecepcionesRepositorio {
 
@@ -18,6 +19,7 @@ class RecepcionesJdbc implements RecepcionesRepositorio {
         this.reloj = reloj;
     }
 
+    /** Marca el evento como procesado. Devuelve falso si ya estaba procesado, para no aplicarlo dos veces. */
     @Override
     public boolean marcarProcesada(UUID eventoId) {
         return jdbc.update(

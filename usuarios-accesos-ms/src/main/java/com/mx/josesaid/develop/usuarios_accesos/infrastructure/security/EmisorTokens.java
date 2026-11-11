@@ -22,12 +22,14 @@ public class EmisorTokens {
     private final PropiedadesJwt propiedades;
     private final Clock reloj;
 
+    /** Recibe el codificador JWT, las propiedades y el reloj. */
     public EmisorTokens(JwtEncoder encoder, PropiedadesJwt propiedades, Clock reloj) {
         this.encoder = encoder;
         this.propiedades = propiedades;
         this.reloj = reloj;
     }
 
+    /** Emite un access token RS256 con el id del usuario como sujeto, sus roles, su área y el id de sesión (sid). */
     public String emitir(Usuario usuario, UUID sesion) {
         Instant ahora = Instant.now(reloj);
         JwtClaimsSet.Builder reclamaciones = JwtClaimsSet.builder()

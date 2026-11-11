@@ -34,6 +34,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SeguridadConfig {
 
+    /** Cadena de seguridad de la API sin estado. Exige JWT válido en todo, excepto salud, info y métricas. */
     @Bean
     SecurityFilterChain cadenaSeguridad(HttpSecurity http) throws Exception {
         http
@@ -66,6 +67,7 @@ public class SeguridadConfig {
         return decoder;
     }
 
+    /** Codificador de contraseñas BCrypt. */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

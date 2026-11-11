@@ -43,6 +43,7 @@ public class ProtectorDatos {
         this(claveCifradoBase64, "", VERSION_UNICA, claveIndiceBase64);
     }
 
+    /** Carga las claves de cifrado y de índice desde la configuración. Falla al arrancar si la versión activa no existe o la clave de índice tiene menos de 32 bytes. */
     @Autowired
     public ProtectorDatos(@Value("${compras.cifrado.clave:}") String claveCifradoBase64,
                           @Value("${compras.cifrado.claves:}") String clavesCifradoBase64,
@@ -60,6 +61,7 @@ public class ProtectorDatos {
         this.claveIndice = new SecretKeySpec(indice, "HmacSHA256");
     }
 
+    /** Construye el mapa de claves AES por versión a partir de la clave única y la lista configurada. */
     private static Map<Integer, SecretKeySpec> cargarClavesCifrado(String claveUnica, String lista) {
         Map<Integer, SecretKeySpec> claves = new HashMap<>();
         if (lista != null && !lista.isBlank()) {
@@ -79,6 +81,7 @@ public class ProtectorDatos {
         return claves;
     }
 
+    /** Crea una clave AES a partir de sus bytes. */
     private static SecretKeySpec claveAes(byte[] bytes) {
         if (bytes.length != 32) {
             throw new IllegalStateException("La clave de cifrado debe ser AES-256 de 32 bytes en base64");
@@ -86,6 +89,7 @@ public class ProtectorDatos {
         return new SecretKeySpec(bytes, "AES");
     }
 
+    /** Decodifica un valor en Base64. Un valor vacío devuelve un arreglo vacío. */
     private static byte[] decodificar(String base64) {
         if (base64 == null || base64.isBlank()) {
             return new byte[0];
@@ -93,6 +97,7 @@ public class ProtectorDatos {
         return Base64.getDecoder().decode(base64.trim());
     }
 
+    /** Cifra un texto con AES-256-GCM y un IV aleatorio. Devuelve el valor con el prefijo de versión. */
     public String cifrar(String claro) {
         try {
             byte[] iv = new byte[TAMANO_IV];
@@ -107,6 +112,7 @@ public class ProtectorDatos {
         }
     }
 
+    /** Descifra un valor usando la versión de clave indicada en su prefijo. Falla si esa versión no está configurada. */
     public String descifrar(String cifradoBase64) {
         int version = VERSION_UNICA;
         String cuerpo = cifradoBase64;

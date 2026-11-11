@@ -23,11 +23,13 @@ public class ExportadorPdf implements ExportadorReporte {
 
     private static final DateTimeFormatter FECHA = DateTimeFormatter.ISO_INSTANT;
 
+    /** Devuelve el formato PDF. */
     @Override
     public FormatoExportacion formato() {
         return FormatoExportacion.PDF;
     }
 
+    /** Genera el PDF del reporte con una tabla de indicadores. */
     @Override
     public byte[] exportar(DatosExportacion datos) {
         ByteArrayOutputStream salida = new ByteArrayOutputStream();
@@ -62,6 +64,7 @@ public class ExportadorPdf implements ExportadorReporte {
         return salida.toByteArray();
     }
 
+    /** Crea una celda de la tabla del PDF con el texto indicado. */
     private static PdfPCell celda(String texto) {
         return new PdfPCell(new Phrase(texto, FontFactory.getFont(FontFactory.HELVETICA, 9)));
     }

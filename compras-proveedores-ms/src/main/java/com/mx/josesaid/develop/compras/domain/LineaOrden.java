@@ -13,6 +13,7 @@ public final class LineaOrden {
     private final BigDecimal cantidadRecibida;
     private final BigDecimal precioUnitario;
 
+    /** Constructor privado: las líneas se crean con sus fábricas. */
     private LineaOrden(String articuloSku, BigDecimal cantidadOrdenada, BigDecimal cantidadRecibida,
                        BigDecimal precioUnitario) {
         this.articuloSku = articuloSku;
@@ -21,6 +22,7 @@ public final class LineaOrden {
         this.precioUnitario = precioUnitario;
     }
 
+    /** Crea una línea nueva con cantidad y precio. La cantidad recibida empieza en cero. */
     public static LineaOrden nueva(String sku, BigDecimal cantidad, BigDecimal precioUnitario) {
         if (sku == null || sku.isBlank()) {
             throw new ReglaDeNegocioException("Cada línea requiere SKU");
@@ -35,6 +37,7 @@ public final class LineaOrden {
                 precioUnitario.setScale(2, RoundingMode.HALF_EVEN));
     }
 
+    /** Reconstruye una línea desde la base de datos sin aplicar reglas. */
     public static LineaOrden reconstruir(String sku, BigDecimal ordenada, BigDecimal recibida, BigDecimal precio) {
         return new LineaOrden(sku, ordenada, recibida, precio);
     }
@@ -44,16 +47,22 @@ public final class LineaOrden {
         return new LineaOrden(articuloSku, cantidadOrdenada, cantidadRecibida.add(cantidad), precioUnitario);
     }
 
+    /** Devuelve el subtotal: cantidad ordenada por precio unitario. */
     public BigDecimal subtotal() {
         return cantidadOrdenada.multiply(precioUnitario).setScale(2, RoundingMode.HALF_EVEN);
     }
 
+    /** Indica si ya se recibió toda la cantidad ordenada. */
     public boolean completa() {
         return cantidadRecibida.compareTo(cantidadOrdenada) >= 0;
     }
 
+    /** Devuelve el SKU del artículo. */
     public String getArticuloSku() { return articuloSku; }
+    /** Devuelve la cantidad ordenada. */
     public BigDecimal getCantidadOrdenada() { return cantidadOrdenada; }
+    /** Devuelve la cantidad recibida. */
     public BigDecimal getCantidadRecibida() { return cantidadRecibida; }
+    /** Devuelve el precio unitario. */
     public BigDecimal getPrecioUnitario() { return precioUnitario; }
 }
