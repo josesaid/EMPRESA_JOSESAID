@@ -59,5 +59,11 @@ public class ListenerRevocaciones {
      * @param datos datos específicos de la operación, de tipo {@code Map<String, Object>}.
      */
     public record Sobre(String tipo, String agregadoId, Map<String, Object> datos) {
+
+        /** Copia defensiva: el sobre no comparte el mapa con quien lo construyó. */
+        public Sobre {
+            datos = datos == null ? null
+                    : java.util.Collections.unmodifiableMap(new java.util.LinkedHashMap<>(datos));
+        }
     }
 }
