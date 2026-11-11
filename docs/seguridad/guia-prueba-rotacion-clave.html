@@ -39,6 +39,14 @@ blockquote p{margin:4px 0}
 hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 @media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+
+main{max-width:1080px}
+.tabla-wrap{overflow-x:auto;width:95%;margin:14px auto;border:1px solid var(--line);border-radius:12px}
+table{font-size:13.5px;margin:0;width:100%}
+th{background:var(--acento-suave);padding:10px 12px;white-space:nowrap}
+td{padding:11px 12px;line-height:1.5;vertical-align:top}
+td code{font-size:12.5px;white-space:normal;overflow-wrap:anywhere}
+@media (max-width:560px){.tabla-wrap{width:100%}}
 </style>
 </head>
 <body>
@@ -76,7 +84,7 @@ archivo del repositorio.</strong> Las claves se escriben solo en el
 <code>.env</code> de la raíz, que está en <code>.gitignore</code>.</p>
 </blockquote>
 <h2 id="variables-que-vas-a-usar">Variables que vas a usar</h2>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Variable</th>
@@ -120,7 +128,7 @@ archivo del repositorio.</strong> Las claves se escriben solo en el
 <td>Igual que arriba</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>Cada vez que cambies código o variables de clave, reconstruye
 (<code>docker compose build</code>) y reinicia el servicio afectado.
 Cada servicio necesita que la <strong>misma</strong> clave de la versión
@@ -262,7 +270,7 @@ la lista.</li>
 <code>psql</code> y la clave 1 original.</li>
 </ol>
 <h2 id="resultados-esperados">Resultados esperados</h2>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Paso</th>
@@ -307,9 +315,9 @@ la lista.</li>
 <td>Datos legibles</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h2 id="problemas-comunes">Problemas comunes</h2>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Síntoma</th>
@@ -347,7 +355,7 @@ de línea</td>
 <td>Revisa los logs y vuelve a correrlo</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h2 id="lo-que-esta-guía-no-prueba">Lo que esta guía no prueba</h2>
 <ul>
 <li>Los índices HMAC: siguen con sus claves originales.</li>
