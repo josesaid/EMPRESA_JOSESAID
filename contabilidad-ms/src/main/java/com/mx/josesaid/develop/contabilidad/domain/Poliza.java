@@ -21,6 +21,7 @@ public class Poliza {
     private final UUID reversaDe;
     private final List<Movimiento> movimientos;
 
+    /** Constructor privado: las pólizas se crean con sus fábricas. */
     private Poliza(UUID id, YearMonth periodo, TipoPoliza tipo, LocalDate fecha, EstatusPoliza estatus,
                    UUID reversaDe, List<Movimiento> movimientos) {
         this.id = id;
@@ -73,15 +74,23 @@ public class Poliza {
         return new Poliza(id, periodo, tipo, fecha, estatus, reversaDe, movimientos);
     }
 
+    /** Devuelve el total de la póliza: la suma de sus cargos. */
     public BigDecimal total() {
         return movimientos.stream().map(Movimiento::getCargo).reduce(ZERO, BigDecimal::add);
     }
 
+    /** Devuelve el identificador. */
     public UUID getId() { return id; }
+    /** Devuelve el periodo de la póliza. */
     public YearMonth getPeriodo() { return periodo; }
+    /** Devuelve el tipo de póliza. */
     public TipoPoliza getTipo() { return tipo; }
+    /** Devuelve la fecha de la póliza. */
     public LocalDate getFecha() { return fecha; }
+    /** Devuelve el estatus: aplicada o reversada. */
     public EstatusPoliza getEstatus() { return estatus; }
+    /** Devuelve el id de la póliza que esta reversa anula, o nulo. */
     public UUID getReversaDe() { return reversaDe; }
+    /** Devuelve los movimientos, en una vista de solo lectura. */
     public List<Movimiento> getMovimientos() { return Collections.unmodifiableList(movimientos); }
 }

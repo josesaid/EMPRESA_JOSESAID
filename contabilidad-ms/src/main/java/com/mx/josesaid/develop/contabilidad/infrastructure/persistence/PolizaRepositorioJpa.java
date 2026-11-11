@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
+/** Implementa el puerto de pólizas con JPA. */
 @Component
 class PolizaRepositorioJpa implements PolizaRepositorio {
 
@@ -49,16 +50,19 @@ class PolizaRepositorioJpa implements PolizaRepositorio {
         return p;
     }
 
+    /** Busca una póliza por id. */
     @Override
     public Optional<Poliza> buscarPorId(UUID id) {
         return jpa.findById(id).map(this::aDominio);
     }
 
+    /** Devuelve las pólizas de un periodo. */
     @Override
     public List<Poliza> buscarPorPeriodo(YearMonth anioMes) {
         return jpa.findByAnioMes(anioMes.toString()).stream().map(this::aDominio).toList();
     }
 
+    /** Convierte la fila en la póliza del dominio. */
     private Poliza aDominio(PolizaEntity e) {
         List<Movimiento> movs = e.movimientos.stream()
                 .map(m -> new Movimiento(m.cuentaId, m.cargo, m.abono))

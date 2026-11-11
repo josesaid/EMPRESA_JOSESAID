@@ -44,11 +44,13 @@ public class ContabilidadControlador {
     private final ContabilidadService servicio;
     private final Idempotencia idempotencia;
 
+    /** Recibe el servicio de contabilidad y el control de idempotencia. */
     public ContabilidadControlador(ContabilidadService servicio, Idempotencia idempotencia) {
         this.servicio = servicio;
         this.idempotencia = idempotencia;
     }
 
+    /** Da de alta una cuenta contable con código, nombre y naturaleza. */
     @PostMapping("/cuentas")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CONTADOR')")
@@ -63,6 +65,7 @@ public class ContabilidadControlador {
         return servicio.listarCuentasActivas().stream().map(CuentaRespuesta::de).toList();
     }
 
+    /** Registra una póliza. Primero valida que cuadre; luego que las cuentas estén activas y que el periodo esté abierto. Acepta Idempotency-Key. */
     @PostMapping("/polizas")
     @PreAuthorize("hasRole('CONTADOR')")
     public ResponseEntity<?> registrarPoliza(@RequestHeader(value = Idempotencia.CABECERA, required = false) String clave,
@@ -75,6 +78,7 @@ public class ContabilidadControlador {
         });
     }
 
+    /** Reversa una póliza aplicada. La original queda reversada y la reversa se registra con la fecha de hoy. Nada se borra. */
     @PostMapping("/polizas/{id}/reversa")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CONTADOR')")
@@ -82,59 +86,71 @@ public class ContabilidadControlador {
         return PolizaRespuesta.de(servicio.reversarPoliza(id));
     }
 
+    /** Lista las pólizas de un periodo con formato AAAA-MM. */
     @GetMapping("/polizas")
     @PreAuthorize("hasAnyRole('CONTADOR','DIRECCION')")
     public List<PolizaRespuesta> listarPolizas(@RequestParam @Size(max = 20) String periodo) {
         return servicio.listarPolizas(YearMonth.parse(periodo)).stream().map(PolizaRespuesta::de).toList();
     }
 
+    /** Devuelve una póliza con sus movimientos. */
     @GetMapping("/polizas/{id}")
     @PreAuthorize("hasAnyRole('CONTADOR','DIRECCION')")
     public PolizaRespuesta obtenerPoliza(@PathVariable UUID id) {
         return PolizaRespuesta.de(servicio.obtenerPoliza(id));
     }
 
+    /** Cierra un periodo contable. Después no admite pólizas ni reversas. */
     @PostMapping("/periodos/{anioMes}/cierre")
     @PreAuthorize("hasRole('CONTADOR')")
     public PeriodoRespuesta cerrarPeriodo(@PathVariable String anioMes) {
         return PeriodoRespuesta.de(servicio.cerrarPeriodo(YearMonth.parse(anioMes)));
     }
 
+    /** Devuelve la balanza de comprobación del periodo indicado. */
     @GetMapping("/estados-financieros")
     @PreAuthorize("hasAnyRole('CONTADOR','DIRECCION')")
     public Balanza estadosFinancieros(@RequestParam @Size(max = 20) String periodo) {
         return servicio.estadosFinancieros(YearMonth.parse(periodo));
     }
 
+    /** Datos para dar de alta una cuenta contable. */
     public record CrearCuentaSolicitud(
             @NotBlank @Size(max = 20) String codigo,
             @NotBlank @Size(max = 150) String nombre,
             @NotNull Naturaleza naturaleza) {
     }
 
+    /** Movimiento de una póliza: cuenta, cargo y abono. */
     public record MovimientoSolicitud(
             @NotNull UUID cuentaId,
             @DecimalMin("0") BigDecimal cargo,
             @DecimalMin("0") BigDecimal abono) {
     }
 
+    /** Datos para registrar una póliza: tipo, fecha y movimientos. */
     public record RegistrarPolizaSolicitud(
             @NotNull TipoPoliza tipo,
             @NotNull LocalDate fecha,
             @NotNull @Size(min = 2) List<@Valid MovimientoSolicitud> movimientos) {
     }
 
+    /** Respuesta de una cuenta contable. */
     public record CuentaRespuesta(UUID id, String codigo, String nombre, Naturaleza naturaleza, boolean activa) {
+        /** Convierte una cuenta en su respuesta. */
         static CuentaRespuesta de(CuentaContable c) {
             return new CuentaRespuesta(c.getId(), c.getCodigo(), c.getNombre(), c.getNaturaleza(), c.isActiva());
         }
     }
 
+    /** Movimiento de una póliza en la respuesta. */
     public record MovimientoRespuesta(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
     }
 
+    /** Respuesta de una póliza. */
     public record PolizaRespuesta(UUID id, String periodo, TipoPoliza tipo, LocalDate fecha, EstatusPoliza estatus,
                                   UUID reversaDe, BigDecimal total, List<MovimientoRespuesta> movimientos) {
+        /** Convierte una póliza en su respuesta. */
         static PolizaRespuesta de(Poliza p) {
             return new PolizaRespuesta(p.getId(), p.getPeriodo().toString(), p.getTipo(), p.getFecha(),
                     p.getEstatus(), p.getReversaDe(), p.total(),
@@ -144,7 +160,9 @@ public class ContabilidadControlador {
         }
     }
 
+    /** Estatus de un periodo contable. */
     public record PeriodoRespuesta(String anioMes, EstatusPeriodo estatus) {
+        /** Convierte un periodo en su respuesta. */
         static PeriodoRespuesta de(Periodo p) {
             return new PeriodoRespuesta(p.getAnioMes().toString(), p.getEstatus());
         }

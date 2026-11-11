@@ -36,6 +36,7 @@ public class ContabilidadService {
     private final PublicadorEventos eventos;
     private final Clock reloj;
 
+    /** Recibe los repositorios de cuentas, periodos y pólizas, el publicador de eventos y el reloj. */
     public ContabilidadService(CuentaRepositorio cuentas, PeriodoRepositorio periodos, PolizaRepositorio polizas,
                                PublicadorEventos eventos, Clock reloj) {
         this.cuentas = cuentas;
@@ -45,6 +46,7 @@ public class ContabilidadService {
         this.reloj = reloj;
     }
 
+    /** Crea una cuenta contable activa. */
     @Transactional
     public CuentaContable crearCuenta(String codigo, String nombre, Naturaleza naturaleza) {
         if (codigo != null && cuentas.existePorCodigo(codigo.trim())) {
@@ -53,6 +55,7 @@ public class ContabilidadService {
         return cuentas.guardar(CuentaContable.crear(codigo, nombre, naturaleza));
     }
 
+    /** Lista las cuentas activas. */
     @Transactional(readOnly = true)
     public List<CuentaContable> listarCuentasActivas() {
         return cuentas.listarActivas();
@@ -88,17 +91,20 @@ public class ContabilidadService {
         return guardada;
     }
 
+    /** Lista las pólizas de un periodo. */
     @Transactional(readOnly = true)
     public List<Poliza> listarPolizas(YearMonth anioMes) {
         return polizas.buscarPorPeriodo(anioMes);
     }
 
+    /** Devuelve una póliza por id o lanza RecursoNoEncontradoException. */
     @Transactional(readOnly = true)
     public Poliza obtenerPoliza(UUID id) {
         return polizas.buscarPorId(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Póliza no encontrada: " + id));
     }
 
+    /** Cierra el periodo y publica el evento de cierre. Falla si el periodo no existe. */
     @Transactional
     public Periodo cerrarPeriodo(YearMonth anioMes) {
         Periodo periodo = periodos.buscarPorAnioMes(anioMes)
@@ -110,6 +116,7 @@ public class ContabilidadService {
         return guardado;
     }
 
+    /** Calcula la balanza de comprobación del periodo. Falla si el periodo no existe. */
     @Transactional(readOnly = true)
     public Balanza estadosFinancieros(YearMonth anioMes) {
         periodos.buscarPorAnioMes(anioMes)
@@ -134,6 +141,7 @@ public class ContabilidadService {
         return periodo;
     }
 
+    /** Verifica que cada cuenta de la póliza exista y esté activa. */
     private void validarCuentas(List<Movimiento> movimientos) {
         for (UUID cuentaId : movimientos.stream().map(Movimiento::getCuentaId).distinct().toList()) {
             CuentaContable cuenta = cuentas.buscarPorId(cuentaId)

@@ -22,11 +22,13 @@ public class ListenerRevocaciones {
     private final RevocacionSesiones revocaciones;
     private final ObjectMapper mapper;
 
+    /** Recibe la copia local de revocaciones y el lector JSON. */
     public ListenerRevocaciones(RevocacionSesiones revocaciones, ObjectMapper mapper) {
         this.revocaciones = revocaciones;
         this.mapper = mapper;
     }
 
+    /** Aplica al instante un evento de cierre de sesión recibido por Kafka. */
     @KafkaListener(topics = "${seguridad.revocaciones.topico:usuarios-accesos.eventos}",
                    groupId = "contabilidad-ms-revocaciones-#{T(java.util.UUID).randomUUID()}",
                    properties = "auto.offset.reset=earliest")
