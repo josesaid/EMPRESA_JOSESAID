@@ -288,17 +288,23 @@ while IFS= read -r img; do
   fi
 done <<< "$imagenes"
 
-paso "📚 Paso 6/6 · Generando documentación Swagger y Javadoc (docs/api)"
-# Javadoc: -Djavadoc.skip del paso 2 impide generar target/site/apidocs, así que se genera aquí.
-# No bloquea el build: si un servicio falla, la ficha solo muestra "sin resultados" para él.
+paso "📚 Paso 6/6 · Generando reportes de calidad y documentación (docs/api)"
+# Reportes de calidad y pruebas: el paso 2 los omite (-Dxxx.skip) para compilar rápido, así que se generan aquí.
+# Ninguno bloquea el build: si una herramienta falla, la ficha solo queda sin resultados para ella.
 if [ "$SIN_MAVEN" != "1" ] && command -v mvn >/dev/null 2>&1; then
   for d in */; do
     d="${d%/}"
     [ -f "$d/pom.xml" ] || continue
-    if (cd "$d" && mvn -B -q javadoc:javadoc) > "$LOGS/javadoc-$d.log" 2>&1; then
-      echo "   ${VERDE}✅ Javadoc generado: $d${RST}"
+    echo "   ⏳ Reportes de calidad en $d..."
+    if (cd "$d" && mvn -B -q test jacoco:report checkstyle:checkstyle pmd:pmd spotbugs:spotbugs javadoc:javadoc) > "$LOGS/reportes-$d.log" 2>&1; then
+      echo "      ${VERDE}✅ pruebas, JaCoCo, Checkstyle, PMD, SpotBugs y Javadoc: $d${RST}"
     else
-      echo "   ${AMARILLO}⚠️  Javadoc falló en $d (log: $LOGS/javadoc-$d.log)${RST}"
+      echo "      ${AMARILLO}⚠️  Algún reporte falló en $d (log: $LOGS/reportes-$d.log)${RST}"
+    fi
+    if (cd "$d" && mvn -B -q cobertura:cobertura) > "$LOGS/cobertura-$d.log" 2>&1; then
+      echo "      ${VERDE}✅ cobertura: $d${RST}"
+    else
+      echo "      ${AMARILLO}⚠️  Cobertura falló en $d (log: $LOGS/cobertura-$d.log)${RST}"
     fi
   done
 fi
