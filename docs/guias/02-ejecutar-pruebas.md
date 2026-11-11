@@ -62,7 +62,7 @@
 
 ## Verificación
 
-El resumen final indica cuántas etapas pasaron y cuántas fallaron. Una corrida correcta termina sin fallos. La cobertura y el estilo (JaCoCo, Checkstyle, PMD, SpotBugs) están en modo reporte: no cortan el build, así que revisa sus reportes si quieres detalles (ver la sección 2 de `pendientes/pendientes-documentacion.md`).
+El resumen final indica cuántas etapas pasaron y cuántas fallaron. Una corrida correcta termina sin fallos. Checkstyle, PMD y SpotBugs están en modo reporte: no cortan el build. La cobertura (JaCoCo) sí: cada servicio falla si baja de su piso de cobertura (PR #149). Revisa los reportes si quieres detalles (ver la sección 2 de `pendientes/pendientes-documentacion.md`).
 
 ## Problemas comunes
 
