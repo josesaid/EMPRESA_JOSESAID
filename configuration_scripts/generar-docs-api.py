@@ -1401,15 +1401,15 @@ def bloque_reportes(estados):
         for tid, _ in herramientas:
             fecha = por_tid.get(tid)
             if fecha:
-                celdas.append(f'<td class="ok" title="{e(fecha)}">✓</td>')
+                celdas.append(f'<td class="ok" title="{e(fecha)}"><span class="pastilla-ok">✓</span></td>')
             else:
-                celdas.append('<td class="no">—</td>')
+                celdas.append('<td class="no"><span class="pastilla-no">—</span></td>')
         completos += all(por_tid.get(tid) for tid, _ in herramientas)
         filas.append(f'<tr><th scope="row">{e(svc)}</th>{"".join(celdas)}</tr>')
     cabecera = "".join(f"<th>{e(nombre)}</th>" for _, nombre in herramientas)
     return (f"  <h2>Reportes de calidad</h2>\n"
-            f"  <p class=\"lead-tabla\">{completos} de {len(estados)} servicios con todos los reportes generados. "
-            f"Pasa el cursor sobre ✓ para ver la fecha de cada reporte.</p>\n"
+            f"  <p class=\"resumen-reportes\"><span class=\"insignia-total\">{completos}/{len(estados)}</span> "
+            f"servicios con todos los reportes generados · pasa el cursor sobre ✓ para ver la fecha.</p>\n"
             f"  <div class=\"tabla-wrap\"><table class=\"reportes\">\n"
             f"    <thead><tr><th>Servicio</th>{cabecera}</tr></thead>\n"
             f"    <tbody>{''.join(filas)}</tbody>\n"
@@ -1493,9 +1493,18 @@ table.reportes{{width:100%;border-collapse:collapse;background:var(--superficie)
 table.reportes th,table.reportes td{{padding:10px 12px;border-bottom:1px solid var(--linea);text-align:center;white-space:nowrap}}
 table.reportes th{{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--superficie)}}
 table.reportes tbody th{{text-align:left;text-transform:none;letter-spacing:0;font-size:14px;color:var(--fg);font-weight:600}}
-table.reportes td.ok{{color:var(--acento);font-weight:700;cursor:help}}
-table.reportes td.no{{color:var(--muted)}}
-.lead-tabla{{color:var(--muted);font-size:14px;margin:0 0 10px}}
+table.reportes th:first-child,table.reportes td:first-child{{position:sticky;left:0;background:var(--superficie);z-index:1}}
+table.reportes thead th:first-child{{background:linear-gradient(180deg,color-mix(in srgb,var(--acento) 10%,var(--superficie)),var(--superficie))}}
+table.reportes tbody tr:nth-child(even) td{{background:color-mix(in srgb,var(--acento) 4%,var(--superficie))}}
+table.reportes tbody tr:nth-child(even) th:first-child{{background:color-mix(in srgb,var(--acento) 4%,var(--superficie))}}
+table.reportes tbody tr:hover td{{background:color-mix(in srgb,var(--acento) 9%,var(--superficie))}}
+table.reportes thead th{{background:linear-gradient(180deg,color-mix(in srgb,var(--acento) 10%,var(--superficie)),var(--superficie));color:var(--fg);font-size:11px;letter-spacing:.07em}}
+table.reportes td{{padding:12px 10px}}
+table.reportes tbody th{{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}}
+.pastilla-ok{{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:999px;background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;font-weight:700;font-size:13px;box-shadow:0 2px 8px rgba(16,185,129,.35);cursor:help}}
+.pastilla-no{{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:999px;border:1px dashed var(--muted);color:var(--muted);font-size:12px}}
+.resumen-reportes{{color:var(--muted);font-size:14px;margin:0 0 12px}}
+.insignia-total{{display:inline-block;font-weight:800;color:#fff;background:linear-gradient(135deg,#6366f1,#06b6d4);border-radius:999px;padding:2px 12px;margin-right:4px;font-size:13px}}
 footer{{margin-top:32px;color:var(--muted);font-size:13px}}
 @media (prefers-color-scheme: dark){{:root:not([data-theme="light"]) .tarjeta{{background:linear-gradient(160deg,hsl(var(--h) 45% 16%),var(--superficie) 60%)}}
 :root:not([data-theme="light"]) .tarjeta{{border-left-color:hsl(var(--h) 85% 66%)}}
