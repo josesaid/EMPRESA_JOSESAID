@@ -1136,7 +1136,7 @@ PAGINA_VISOR = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Código fuente · EMPRESA_JOSESAID</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link id="tema-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
 <style>
@@ -1154,23 +1154,24 @@ body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-app
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .chip{font-size:12.5px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 10px}
 main{max-width:1100px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.visor{background:var(--superficie);border:1px solid var(--linea);border-radius:14px;box-shadow:0 10px 30px var(--sombra);overflow:hidden;min-width:0}
-.barra{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--code-barra);color:var(--code-fg);padding:10px 14px;border-bottom:1px solid #30363d;font:13px ui-monospace,SFMono-Regular,Menlo,monospace}
+.visor{background:var(--code-bg);border:1px solid var(--linea);border-radius:14px;box-shadow:0 10px 30px var(--sombra);overflow:hidden;min-width:0}
+.barra{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--code-barra);color:var(--code-fg);padding:10px 14px;border-bottom:1px solid var(--code-borde);font:13px ui-monospace,SFMono-Regular,Menlo,monospace}
 .puntos{display:flex;gap:6px;flex:none}
-.puntos i{width:11px;height:11px;border-radius:50%;background:#30363d;display:block}
+.puntos i{width:11px;height:11px;border-radius:50%;background:var(--code-borde);display:block}
 .puntos i:nth-child(1){background:#ff5f56}.puntos i:nth-child(2){background:#ffbd2e}.puntos i:nth-child(3){background:#27c93f}
 .nombre-archivo{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
-.copiar{flex:none;font:600 12.5px system-ui,sans-serif;color:var(--code-fg);background:#21262d;border:1px solid #30363d;border-radius:8px;padding:5px 11px;cursor:pointer}
-.copiar:hover{background:#30363d}
+.copiar,.tema-sel{flex:none;font:600 12.5px system-ui,sans-serif;color:var(--code-fg);background:var(--code-borde);border:1px solid var(--code-num);border-radius:8px;padding:5px 10px;cursor:pointer}
+.copiar:hover{filter:brightness(1.12)}
+.tema-sel{font-weight:500}
 .codigo{display:flex;background:var(--code-bg);overflow:auto;max-width:100%}
-.nums{flex:none;margin:0;padding:14px 12px 14px 14px;text-align:right;color:var(--code-num);font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none;border-right:1px solid #21262d}
+.nums{flex:none;margin:0;padding:14px 12px 14px 14px;text-align:right;color:var(--code-num);font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none;border-right:1px solid var(--code-borde)}
 .codigo .texto{margin:0;padding:14px 16px 14px 14px;flex:1;min-width:0}
 .codigo code{font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre;background:transparent;color:var(--code-fg)}
 .codigo code.hljs{background:transparent;padding:0}
 .pie{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 14px;font-size:13px;color:var(--muted);border-top:1px solid var(--linea)}
 .aviso{padding:24px;color:var(--muted)}
 .aviso a{color:inherit}
-.copiado{color:#3fb950}
+.copiado{color:#2da44e}
 </style>
 </head>
 <body>
@@ -1185,6 +1186,13 @@ main{max-width:1100px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset
     <div class="barra">
       <div class="puntos" aria-hidden="true"><i></i><i></i><i></i></div>
       <span class="nombre-archivo" id="nombre"></span>
+      <select class="tema-sel" id="tema" aria-label="Tema de color del código">
+        <option value="github-dark">GitHub Dark</option>
+        <option value="github">GitHub Light</option>
+        <option value="atom-one-dark">Atom One Dark</option>
+        <option value="atom-one-light">Atom One Light</option>
+        <option value="monokai">Monokai</option>
+      </select>
       <button class="copiar" id="copiar" type="button">Copiar</button>
     </div>
     <div id="contenido" class="aviso">Cargando código…</div>
@@ -1221,6 +1229,35 @@ main{max-width:1100px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset
       respaldo();
     }
   }
+
+  var TEMAS = {
+    'github-dark':    { bg: '#0d1117', barra: '#161b22', fg: '#c9d1d9', num: '#6e7681', borde: '#21262d' },
+    'github':         { bg: '#ffffff', barra: '#f6f8fa', fg: '#24292f', num: '#8c959f', borde: '#d0d7de' },
+    'atom-one-dark':  { bg: '#282c34', barra: '#21252b', fg: '#abb2bf', num: '#5c6370', borde: '#181a1f' },
+    'atom-one-light': { bg: '#fafafa', barra: '#eaeaeb', fg: '#383a42', num: '#9d9d9f', borde: '#d4d4d5' },
+    'monokai':        { bg: '#272822', barra: '#1e1f1c', fg: '#f8f8f2', num: '#75715e', borde: '#3e3d32' }
+  };
+
+  function aplicarTema(id) {
+    if (!TEMAS[id]) { id = 'github-dark'; }
+    var t = TEMAS[id];
+    var visor = document.getElementById('visor');
+    visor.style.setProperty('--code-bg', t.bg);
+    visor.style.setProperty('--code-barra', t.barra);
+    visor.style.setProperty('--code-fg', t.fg);
+    visor.style.setProperty('--code-num', t.num);
+    visor.style.setProperty('--code-borde', t.borde);
+    document.getElementById('tema-css').href =
+      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/' + id + '.min.css';
+    document.getElementById('tema').value = id;
+    try { localStorage.setItem('visor-tema', id); } catch (e) { /* sin almacenamiento: se usa el tema por defecto */ }
+  }
+
+  var selector = document.getElementById('tema');
+  selector.addEventListener('change', function () { aplicarTema(this.value); });
+  var guardado = null;
+  try { guardado = localStorage.getItem('visor-tema'); } catch (e) { guardado = null; }
+  aplicarTema(guardado || 'github-dark');
 
   function pintar(codigo) {
     var nombre = ruta.split('/').pop();
