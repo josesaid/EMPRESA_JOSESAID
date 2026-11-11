@@ -1,0 +1,24 @@
+
+== 1. Java 21 y Maven ==
+openjdk version "21.0.11" 2026-04-21 LTS
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+
+== 2. Docker ==
+OK: Docker responde
+
+== 3. Validar archivos de Compose ==
+OK: Compose de la raíz válido (valores de prueba; no crea nada)
+OK: Compose de inventario-operaciones-ms válido
+
+== 4. Pruebas completas (unitarias + integración con Testcontainers) ==
+FALLO: mvn verify
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.764 s -- in com.mx.josesaid.develop.inventario.infrastructure.indicadores.PublicadorIndicadoresMovimientosIT
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.321 s -- in com.mx.josesaid.develop.inventario.infrastructure.idempotencia.RegistroIdempotenciaIT
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+
+== 5. Construir la imagen ==
+OK: docker build
+
+== Resumen: 4 OK, 1 fallos ==
+Logs: .verify-inventario.log y .build-inventario.log en la raíz del repositorio.
+== Fin. Pega esta salida en el chat ==

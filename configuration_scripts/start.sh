@@ -23,8 +23,44 @@ else
   RST=""; NEG=""; TENUE=""; ROJO=""; VERDE=""; AMARILLO=""; AZUL=""; MAGENTA=""; CIAN=""
 fi
 
+ayuda() {
+cat <<EOF
+${NEG}${AZUL}Uso:${RST} bash configuration_scripts/start.sh ${CIAN}[opciones]${RST}
+
+Levanta los servicios de ${NEG}EMPRESA_JOSESAID${RST} (incluye ui-ms) y espera a que estén listos.
+
+  ${NEG}Opción                 Qué hace${RST}
+  ${TENUE}---------------------  ----------------------------------------------------------${RST}
+  🟢 ${VERDE}(sin opciones)${RST}      Levanta los contenedores con las imágenes ya construidas
+  🏗️  ${AMARILLO}--build${RST}             Reconstruye las imágenes antes de levantar ${TENUE}(tarda varios minutos)${RST}
+  ❓ ${CIAN}-h, --help${RST}          Muestra esta ayuda
+
+${NEG}${MAGENTA}Variables de entorno opcionales:${RST}
+  ⏱️  ${AMARILLO}TIMEOUT_SEG${RST}          Espera máxima por los servicios ${TENUE}(300 s)${RST}
+  ⏱️  ${AMARILLO}TIMEOUT_UI_SEG${RST}       Espera máxima por ui-ms ${TENUE}(120 s)${RST}
+  ⏱️  ${AMARILLO}TIMEOUT_DOCKER_SEG${RST}   Espera máxima por Docker Desktop ${TENUE}(180 s)${RST}
+  🌐 ${AMARILLO}LOGIN_URL${RST}            URL que se abre al terminar ${TENUE}(http://localhost:8098/login)${RST}
+
+${NEG}${MAGENTA}Requisitos:${RST}
+  🐳 Docker Desktop corriendo
+  📄 Archivo ${NEG}.env${RST} en la raíz del proyecto
+
+${NEG}${MAGENTA}Ejemplos:${RST}
+  ${VERDE}bash configuration_scripts/start.sh${RST}
+  ${VERDE}bash configuration_scripts/start.sh --build${RST}
+EOF
+}
+
 BUILD=""
-if [ "${1:-}" = "--build" ]; then BUILD="--build"; fi
+for arg in "$@"; do
+  case "$arg" in
+    --build)   BUILD="--build" ;;
+    -h|--help) ayuda; exit 0 ;;
+    *)         echo "Argumento desconocido: $arg"
+               echo "Uso: bash configuration_scripts/start.sh [--build] [--help]"
+               exit 1 ;;
+  esac
+done
 
 inicio=$(date +%s)
 
@@ -67,7 +103,7 @@ paso() {
 echo ""
 echo "${NEG}${AZUL}🚀 Iniciando EMPRESA_JOSESAID${RST}"
 
-paso "🐳 Paso 1/6 · Verificando Docker"
+paso "🐳 Paso 1/7 · Verificando Docker"
 if docker info >/dev/null 2>&1; then
   echo "   ${VERDE}✅ Docker responde${RST}"
 elif [ "$(uname -s)" = "Darwin" ]; then
@@ -87,13 +123,13 @@ else
   fallo "El daemon de Docker no responde. Abre Docker Desktop y vuelve a intentar."
 fi
 
-paso "📄 Paso 2/6 · Verificando archivo .env"
+paso "📄 Paso 2/7 · Verificando archivo .env"
 if [ ! -f .env ]; then
   fallo "No existe .env en la raíz del proyecto. Crea el archivo con las variables requeridas."
 fi
 echo "   ${VERDE}✅ .env encontrado${RST}"
 
-paso "🌐 Paso 3/6 · Verificando la red empresa-net"
+paso "🌐 Paso 3/7 · Verificando la red empresa-net"
 if docker network inspect empresa-net >/dev/null 2>&1; then
   echo "   ${VERDE}✅ La red ya existe${RST}"
 else
@@ -103,16 +139,78 @@ else
 fi
 
 if [ -n "$BUILD" ]; then
-  paso "🔨 Paso 4/6 · Construyendo imágenes y levantando contenedores (puede tardar varios minutos)"
+  paso "🔨 Paso 4/7 · Construyendo imágenes y levantando contenedores (puede tardar varios minutos)"
 else
-  paso "⬆️  Paso 4/6 · Levantando contenedores"
+  paso "⬆️  Paso 4/7 · Levantando contenedores"
+fi
+# Descarga las imágenes que falten localmente (compose usa --pull never y no las bajaría).
+# Muestra el avance de cada una (porcentaje por capas). Si una no está en el registro
+# (imagen construida en local), se avisa y compose usa la local.
+pendientes=()
+while IFS= read -r img; do
+  [ -z "$img" ] && continue
+  docker image inspect "$img" >/dev/null 2>&1 || pendientes+=("$img")
+done < <(docker compose config --images 2>/dev/null | sort -u)
+
+if [ "${#pendientes[@]}" -gt 0 ]; then
+  n=${#pendientes[@]}
+  echo "   ${TENUE}⬇️  Imágenes por descargar: $n${RST}"
+  logdir=$(mktemp -d)
+  pids=(); logs=(); codigos=()
+  for i in "${!pendientes[@]}"; do
+    img=${pendientes[$i]}
+    log="$logdir/$i.log"
+    logs+=("$log")
+    docker pull "$img" > "$log" 2>&1 &
+    pids+=("$!")
+    codigos+=("")
+  done
+
+  primera=1
+  while :; do
+    activos=0
+    for i in "${!pendientes[@]}"; do
+      if kill -0 "${pids[$i]}" 2>/dev/null; then
+        activos=$((activos + 1))
+      elif [ -z "${codigos[$i]}" ]; then
+        if wait "${pids[$i]}"; then codigos[$i]=0; else codigos[$i]=1; fi
+      fi
+    done
+
+    # Redibuja el bloque en la misma posición si la salida es una terminal
+    if [ -t 1 ] && [ "$primera" -eq 0 ]; then printf "\033[%dA" "$n"; fi
+    primera=0
+
+    for i in "${!pendientes[@]}"; do
+      img=${pendientes[$i]}; log=${logs[$i]}
+      total=$(grep -c "Pulling fs layer" "$log" 2>/dev/null || true); total=${total:-0}
+      hechas=$(grep -c -E "Pull complete|Already exists" "$log" 2>/dev/null || true); hechas=${hechas:-0}
+      if [ "${codigos[$i]}" = "0" ]; then
+        hechas=$total; pct=100; estado="${VERDE}✅ listo${RST}"
+      else
+        if [ "$total" -gt 0 ]; then pct=$(( hechas * 100 / total )); else pct=0; fi
+        if [ "${codigos[$i]}" = "1" ]; then
+          estado="${TENUE}⚠️  no está en el registro (se usará la local)${RST}"
+        else
+          estado="${AMARILLO}⬇️  $hechas/$total capas${RST}"
+        fi
+      fi
+      printf "\033[2K   %-32s [%s] %3d%%  %s\n" "$img" "$(barra "$hechas" "$total")" "$pct" "$estado"
+    done
+
+    [ "$activos" -eq 0 ] && break
+    sleep 2
+  done
+  rm -rf "$logdir"
+  echo ""
 fi
 docker compose up -d --pull never $BUILD || fallo "docker compose up falló. Revisa el mensaje anterior."
 echo "   ${VERDE}✅ Contenedores creados${RST}"
 echo "   ${TENUE}⏸️  Pausa de 10 s para que PostgreSQL, Kafka y Redis arranquen...${RST}"
 sleep 10
 
-paso "⏳ Paso 5/6 · Esperando a que los servicios estén listos (máximo $(formatear "$TIMEOUT_SEG"))"
+max_espera=$(formatear "$TIMEOUT_SEG")
+paso "⏳ Paso 5/7 · Esperando a que los servicios estén listos (máximo $max_espera)"
 espera_inicio=$(date +%s)
 anterior=""
 while true; do
@@ -155,7 +253,7 @@ while true; do
   sleep "$INTERVALO"
 done
 
-paso "🔍 Paso 6/6 · Estado final"
+paso "🔍 Paso 6/7 · Estado final"
 docker compose ps -a --format '{{.Service}}|{{.State}}|{{.Health}}' 2>/dev/null | sort | while IFS='|' read -r servicio estado salud; do
   if [ -n "$salud" ]; then
     if [ "$salud" = "healthy" ] && [ "$estado" = "running" ]; then
@@ -203,4 +301,13 @@ if [ "$(uname -s)" = "Darwin" ] && open "$LOGIN_URL" 2>/dev/null; then
   echo "   ${VERDE}✅ Navegador abierto en el login${RST}"
 else
   echo "   ${AMARILLO}⚠️  No se pudo abrir el navegador. Abre manualmente: $LOGIN_URL${RST}"
+fi
+
+# Después del login, abre también el índice de documentación de la raíz del proyecto
+INDICE="$(pwd)/index.html"
+sleep 1
+if [ "$(uname -s)" = "Darwin" ] && [ -f "$INDICE" ] && open "$INDICE" 2>/dev/null; then
+  echo "   ${VERDE}✅ Índice de documentación abierto${RST}"
+elif [ -f "$INDICE" ]; then
+  echo "   ${AMARILLO}⚠️  No se pudo abrir el índice. Ábrelo manualmente: $INDICE${RST}"
 fi

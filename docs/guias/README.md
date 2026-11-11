@@ -13,6 +13,7 @@ Procedimientos completos, con pasos numerados, diagramas y verificación. Cada g
 | 7 | [Registrar un pago a proveedor](07-pago-a-proveedor.md) | Pagar una cuenta por pagar (rol FINANZAS) |
 | 8 | [Emitir un comprobante, registrar un cobro y cancelar](08-comprobantes-y-cobros.md) | Facturación y cobranza (rol FINANZAS) |
 | 9 | [Consultar indicadores y generar reportes](09-indicadores-y-reportes.md) | Reporte ejecutivo mensual, trimestral o anual |
+| 10 | [Rastrear un request en Jaeger](10-rastrear-request-jaeger.md) | Ver por dónde pasó un request y en qué paso se tardó o falló |
 
 ## Pendientes de diseño
 
