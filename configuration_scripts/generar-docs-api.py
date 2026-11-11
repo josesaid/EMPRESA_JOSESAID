@@ -931,8 +931,10 @@ def resultados_de(svc_dir, tid):
         return filas, detalle, fecha_de([ruta])
 
     if tid == "javadoc":
-        base = os.path.join(tgt, "site", "apidocs")
-        if not os.path.isdir(base):
+        # Maven escribe en target/site/apidocs, o en target/reports/apidocs si el plugin falla a medias
+        base = next((b for b in (os.path.join(tgt, "site", "apidocs"), os.path.join(tgt, "reports", "apidocs"))
+                     if os.path.isdir(b)), None)
+        if base is None:
             return None
         paquetes = [d for d, _, fs in os.walk(base) if "package-summary.html" in fs]
         detalle = []
