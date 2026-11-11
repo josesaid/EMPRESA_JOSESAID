@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Código fuente · EMPRESA_JOSESAID</title>
+<link id="tema-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+<style>
+:root{--bg:#f5f7fb;--superficie:#ffffff;--fg:#0f172a;--muted:#64748b;--linea:#e2e8f0;--sombra:rgba(15,23,42,.08);--cabecera-a:#4338ca;--cabecera-b:#0e7490;--code-bg:#0d1117;--code-barra:#161b22;--code-fg:#c9d1d9;--code-num:#484f58;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1020;--superficie:#131a2e;--fg:#e2e8f0;--muted:#94a3b8;--linea:#23304f;--sombra:rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:40px}
+.cabecera{background:linear-gradient(135deg,var(--cabecera-a),var(--cabecera-b));color:#fff;padding:24px max(16px,env(safe-area-inset-left,0px)) 56px}
+.cabecera .in{max-width:1100px;margin:0 auto}
+.volver{color:#fff;opacity:.9;font-size:14px;text-decoration:none}
+.volver:hover{opacity:1;text-decoration:underline}
+.miga{font-size:13px;opacity:.85;margin:14px 0 6px;word-break:break-all}
+.cabecera h1{margin:0;font:700 clamp(20px,4vw,28px)/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.01em;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{font-size:12.5px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 10px}
+main{max-width:1100px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.visor{background:var(--code-bg);border:1px solid var(--linea);border-radius:14px;box-shadow:0 10px 30px var(--sombra);overflow:hidden;min-width:0}
+.barra{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--code-barra);color:var(--code-fg);padding:10px 14px;border-bottom:1px solid var(--code-borde);font:13px ui-monospace,SFMono-Regular,Menlo,monospace}
+.puntos{display:flex;gap:6px;flex:none}
+.puntos i{width:11px;height:11px;border-radius:50%;background:var(--code-borde);display:block}
+.puntos i:nth-child(1){background:#ff5f56}.puntos i:nth-child(2){background:#ffbd2e}.puntos i:nth-child(3){background:#27c93f}
+.nombre-archivo{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.copiar,.tema-sel{flex:none;font:600 12.5px system-ui,sans-serif;color:var(--code-fg);background:var(--code-borde);border:1px solid var(--code-num);border-radius:8px;padding:5px 10px;cursor:pointer}
+.copiar:hover{filter:brightness(1.12)}
+.tema-sel{font-weight:500}
+.codigo{display:flex;background:var(--code-bg);overflow:auto;max-width:100%}
+.nums{flex:none;margin:0;padding:14px 12px 14px 14px;text-align:right;color:var(--code-num);font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none;border-right:1px solid var(--code-borde)}
+.codigo .texto{margin:0;padding:14px 16px 14px 14px;flex:1;min-width:0}
+.codigo code{font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre;background:transparent;color:var(--code-fg)}
+.codigo code.hljs{background:transparent;padding:0}
+.pie{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 14px;font-size:13px;color:var(--muted);border-top:1px solid var(--linea)}
+.aviso{padding:24px;color:var(--muted)}
+.aviso a{color:inherit}
+.copiado{color:#2da44e}
+</style>
+</head>
+<body>
+<header class="cabecera"><div class="in">
+  <a class="volver" id="volver" href="#">← Volver a la ficha</a>
+  <div class="miga" id="miga"></div>
+  <h1 id="titulo">Código fuente</h1>
+  <div class="chips" id="chips"></div>
+</div></header>
+<main>
+  <div class="visor" id="visor">
+    <div class="barra">
+      <div class="puntos" aria-hidden="true"><i></i><i></i><i></i></div>
+      <span class="nombre-archivo" id="nombre"></span>
+      <select class="tema-sel" id="tema" aria-label="Tema de color del código">
+        <option value="github">GitHub Light</option>
+        <option value="github-dark">GitHub Dark</option>
+        <option value="atom-one-dark">Atom One Dark</option>
+        <option value="atom-one-light">Atom One Light</option>
+        <option value="monokai">Monokai</option>
+      </select>
+      <button class="copiar" id="copiar" type="button">Copiar</button>
+    </div>
+    <div id="contenido" class="aviso">Cargando código…</div>
+  </div>
+</main>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var svc = params.get('svc') || '';
+  var ruta = params.get('f') || '';
+  var contenido = document.getElementById('contenido');
+
+  function mostrarError(mensaje) {
+    contenido.className = 'aviso';
+    contenido.textContent = mensaje;
+    document.getElementById('copiar').hidden = true;
+  }
+
+  function escapar(texto) {
+    return texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function copiar(texto, boton) {
+    function listo() { boton.textContent = 'Copiado'; boton.classList.add('copiado'); setTimeout(function () { boton.textContent = 'Copiar'; boton.classList.remove('copiado'); }, 1600); }
+    function respaldo() {
+      var area = document.createElement('textarea');
+      area.value = texto; document.body.appendChild(area); area.select();
+      try { document.execCommand('copy'); listo(); } catch (e) { boton.textContent = 'Selecciona y copia'; }
+      document.body.removeChild(area);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto).then(listo, respaldo);
+    } else {
+      respaldo();
+    }
+  }
+
+  var TEMAS = {
+    'github-dark':    { bg: '#0d1117', barra: '#161b22', fg: '#c9d1d9', num: '#6e7681', borde: '#21262d' },
+    'github':         { bg: '#ffffff', barra: '#f6f8fa', fg: '#24292f', num: '#8c959f', borde: '#d0d7de' },
+    'atom-one-dark':  { bg: '#282c34', barra: '#21252b', fg: '#abb2bf', num: '#5c6370', borde: '#181a1f' },
+    'atom-one-light': { bg: '#fafafa', barra: '#eaeaeb', fg: '#383a42', num: '#9d9d9f', borde: '#d4d4d5' },
+    'monokai':        { bg: '#272822', barra: '#1e1f1c', fg: '#f8f8f2', num: '#75715e', borde: '#3e3d32' }
+  };
+
+  function aplicarTema(id) {
+    if (!TEMAS[id]) { id = 'github'; }
+    var t = TEMAS[id];
+    var visor = document.getElementById('visor');
+    visor.style.setProperty('--code-bg', t.bg);
+    visor.style.setProperty('--code-barra', t.barra);
+    visor.style.setProperty('--code-fg', t.fg);
+    visor.style.setProperty('--code-num', t.num);
+    visor.style.setProperty('--code-borde', t.borde);
+    document.getElementById('tema-css').href =
+      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/' + id + '.min.css';
+    document.getElementById('tema').value = id;
+    try { localStorage.setItem('visor-tema', id); } catch (e) { /* sin almacenamiento: se usa el tema por defecto */ }
+  }
+
+  var selector = document.getElementById('tema');
+  selector.addEventListener('change', function () { aplicarTema(this.value); });
+  var guardado = null;
+  try { guardado = localStorage.getItem('visor-tema'); } catch (e) { guardado = null; }
+  aplicarTema(guardado || 'github');
+
+  function pintar(codigo) {
+    var nombre = ruta.split('/').pop();
+    var paquete = ruta.replace(/^src\/(main|test)\/java\//, '').split('/').slice(0, -1).join('.');
+    var lineas = codigo.split('\n');
+    if (lineas.length > 1 && lineas[lineas.length - 1] === '') { lineas.pop(); }
+    var resaltado = (window.hljs && hljs.getLanguage('java'))
+      ? hljs.highlight(codigo, { language: 'java', ignoreIllegals: true }).value
+      : escapar(codigo);
+
+    document.title = nombre + ' · ' + svc;
+    document.getElementById('volver').href = '../' + svc + '.html';
+    document.getElementById('miga').textContent = svc + ' / ' + ruta;
+    document.getElementById('titulo').textContent = nombre;
+    document.getElementById('nombre').textContent = ruta;
+
+    var tipo = ruta.indexOf('src/test/') === 0 ? 'Prueba' : 'Código principal';
+    var chips = [svc, tipo, 'Java'];
+    if (paquete) { chips.push(paquete); }
+    chips.push(lineas.length + (lineas.length === 1 ? ' línea' : ' líneas'));
+    var zona = document.getElementById('chips');
+    zona.innerHTML = '';
+    chips.forEach(function (texto) {
+      var c = document.createElement('span'); c.className = 'chip'; c.textContent = texto; zona.appendChild(c);
+    });
+
+    var numeros = [];
+    for (var i = 1; i <= lineas.length; i++) { numeros.push(i); }
+    contenido.className = '';
+    contenido.innerHTML = '';
+    var bloque = document.createElement('div');
+    bloque.className = 'codigo';
+    bloque.innerHTML =
+      '<pre class="nums" aria-hidden="true">' + numeros.join('\n') + '</pre>' +
+      '<pre class="texto"><code class="hljs language-java">' + resaltado + '</code></pre>';
+    contenido.appendChild(bloque);
+
+    var pie = document.createElement('div');
+    pie.className = 'pie';
+    pie.innerHTML = '<span>Vista de solo lectura</span><span></span>';
+    pie.lastChild.textContent = svc;
+    contenido.appendChild(pie);
+
+    document.getElementById('copiar').onclick = function () { copiar(codigo, this); };
+  }
+
+  if (!/^[a-z0-9-]+$/.test(svc) || !ruta || ruta.indexOf('..') !== -1) {
+    mostrarError('Falta el servicio o el archivo que quieres ver.');
+    return;
+  }
+  var datos = document.createElement('script');
+  datos.src = svc + '.js';
+  datos.onload = function () {
+    var archivos = (window.CODIGO_JAVA || {})[svc] || {};
+    if (!Object.prototype.hasOwnProperty.call(archivos, ruta)) {
+      mostrarError('No encontré este archivo en ' + svc + ': ' + ruta);
+      return;
+    }
+    pintar(archivos[ruta]);
+  };
+  datos.onerror = function () {
+    mostrarError('No se pudo cargar el código de ' + svc + '. Genera de nuevo la documentación.');
+  };
+  document.head.appendChild(datos);
+})();
+</script>
+</body>
+</html>
