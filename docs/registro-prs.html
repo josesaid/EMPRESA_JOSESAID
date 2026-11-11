@@ -51,6 +51,15 @@ td:nth-child(2){min-width:260px}
 td:nth-child(3){min-width:200px}
 td:nth-child(4){min-width:170px}
 @media (max-width:560px){table{min-width:720px}}
+
+.paginacion{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 0;font-size:14px}
+.paginacion .controles{display:flex;flex-wrap:wrap;gap:6px}
+.paginacion button{font:inherit;border:1px solid var(--linea);background:var(--superficie);color:var(--fg);border-radius:8px;padding:6px 11px;cursor:pointer}
+.paginacion button[aria-current="page"]{background:var(--acento);color:#fff;border-color:var(--acento)}
+.paginacion button:disabled{opacity:.45;cursor:default}
+.estado{display:inline-block;font-size:12px;border-radius:999px;padding:2px 9px;font-weight:600;border:1px solid currentColor}
+.estado-fusionado{color:#15803d}.estado-cerrado{color:#b45309}.estado-abierto{color:#1d4ed8}
+.resumen-total{color:var(--muted);font-size:14px;margin:0 0 10px}
 </style>
 </head>
 <body>
@@ -61,411 +70,272 @@ PRs de la sesión de seguridad y pruebas</h1>
 </div></header>
 <main>
   <article class="panel">
-<p>Lista de los PR fusionados de #109 a #149, con su commit de fusión,
-fecha y servicios afectados. Los servicios salen de los archivos que
-cambió cada PR.</p>
-<p>Enlace desde el <a href="../README.md">README principal</a>.</p>
-<div class="tabla-wrap"><table>
-<thead>
-<tr class="header">
-<th>PR</th>
-<th>Título</th>
-<th>Rama</th>
-<th>Servicios</th>
-<th>Commit de fusión</th>
-<th>Fecha</th>
-</tr>
-</thead>
+<p>Listado completo de los 258 pull requests del repositorio (fusionados, cerrados y abiertos), del más reciente al más antiguo. Los servicios salen de los archivos que cambió cada PR.</p>
+<p class="resumen-total">Mostrando páginas de 20 · <span id="rango"></span></p>
+<div class="tabla-wrap"><table id="prs">
+<thead><tr><th>PR</th><th>Título</th><th>Rama</th><th>Servicios</th><th>Estado</th><th>Commit de fusión</th><th>Fecha</th></tr></thead>
 <tbody>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/109">#109</a></td>
-<td>Documentar avances de seguridad del 2026-11-05 en los pendientes del
-backend</td>
-<td><code>seguridad/actualizar-pendientes</code></td>
-<td>pendientes</td>
-<td><code>b3ebe0f</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/110">#110</a></td>
-<td>Fijar el digest de la imagen base de runtime en los Dockerfiles</td>
-<td><code>seguridad/digest-imagen-jre</code></td>
-<td>Todos los servicios</td>
-<td><code>9c46a00</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/111">#111</a></td>
-<td>Fijar el digest de la imagen base de build en los Dockerfiles</td>
-<td><code>seguridad/digest-imagen-maven</code></td>
-<td>Todos los servicios</td>
-<td><code>b0ce870</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/112">#112</a></td>
-<td>No registrar montos agregados en los logs de indicadores</td>
-<td><code>seguridad/logs-sin-montos</code></td>
-<td>clientes-ms, compras-proveedores-ms, contabilidad-ms,
-documentos-cumplimiento-ms, facturacion-pagos-ms,
-inventario-operaciones-ms, pedidos-ventas-ms, usuarios-accesos-ms</td>
-<td><code>b9aa691</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/113">#113</a></td>
-<td>No registrar mensajes de excepción en los logs de advertencia</td>
-<td><code>seguridad/logs-excepciones</code></td>
-<td>Todos los servicios</td>
-<td><code>74acd30</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/114">#114</a></td>
-<td>Usar la IP del cliente para el límite de intentos cuando el proxy es
-de confianza</td>
-<td><code>seguridad/gateway-ip-cliente</code></td>
-<td>gateway-ms</td>
-<td><code>7e708f6</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/115">#115</a></td>
-<td>Enviar la IP del navegador al gateway en el login de la UI</td>
-<td><code>seguridad/ui-envia-ip</code></td>
-<td>ui-ms</td>
-<td><code>0038a72</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/116">#116</a></td>
-<td>Compartir el límite de intentos del gateway entre réplicas con
-Redis</td>
-<td><code>seguridad/limite-redis</code></td>
-<td>gateway-ms</td>
-<td><code>24a0837</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/117">#117</a></td>
-<td>Registrar resultados de mvn verify en los pendientes del
-backend</td>
-<td><code>seguridad/resultados-verify</code></td>
-<td>pendientes</td>
-<td><code>0400b76</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/118">#118</a></td>
-<td>Responder 400 cuando un parámetro de búsqueda excede su
-longitud</td>
-<td><code>seguridad/clientes-pruebas-400</code></td>
-<td>clientes-ms</td>
-<td><code>5879296</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/119">#119</a></td>
-<td>Responder 400 cuando un parámetro de búsqueda excede su longitud en
-cinco servicios</td>
-<td><code>seguridad/400-parametros-servicios</code></td>
-<td>compras-proveedores-ms, contabilidad-ms, documentos-cumplimiento-ms,
-facturacion-pagos-ms, reportes-ejecutivos-ms</td>
-<td><code>43afbc4</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/120">#120</a></td>
-<td>Marcar como hecha la sustitución de las variables de clave
-única</td>
-<td><code>seguridad/inventario-claves-estado</code></td>
-<td>docs</td>
-<td><code>1da88eb</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/121">#121</a></td>
-<td>Probar el 400 del parámetro razonSocial en compras</td>
-<td><code>seguridad/compras-pruebas-400</code></td>
-<td>compras-proveedores-ms</td>
-<td><code>135eb15</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/122">#122</a></td>
-<td>Probar el 400 de los parámetros de búsqueda en cuatro servicios</td>
-<td><code>seguridad/400-pruebas-restantes</code></td>
-<td>contabilidad-ms, documentos-cumplimiento-ms, facturacion-pagos-ms,
-reportes-ejecutivos-ms</td>
-<td><code>68062fc</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/123">#123</a></td>
-<td>Documentar la auditoría de cobertura del cifrado de campos</td>
-<td><code>seguridad/auditoria-cifrado</code></td>
-<td>docs</td>
-<td><code>df96f42</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/124">#124</a></td>
-<td>Corregir la fecha de la auditoría de cifrado</td>
-<td><code>seguridad/auditoria-cifrado-fecha</code></td>
-<td>docs</td>
-<td><code>a60ca31</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/125">#125</a></td>
-<td>No guardar nombre ni correo del prospecto en el resumen de la
-acción</td>
-<td><code>seguridad/nexus-resumen-sin-datos</code></td>
-<td>nexus-ms</td>
-<td><code>6f49128</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/126">#126</a></td>
-<td>Actualizar pendientes y la auditoría de cifrado</td>
-<td><code>docs/pendientes-avances-2026-11-05</code></td>
-<td>docs, pendientes</td>
-<td><code>4e0b39e</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/127">#127</a></td>
-<td>Borrar acciones pendientes vencidas de nexus</td>
-<td><code>seguridad/nexus-payload-cifrado</code></td>
-<td>nexus-ms</td>
-<td><code>2c8b21b</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/128">#128</a></td>
-<td>Actualizar la auditoría de cifrado con la limpieza del payload de
-nexus</td>
-<td><code>docs/auditoria-payload-nexus</code></td>
-<td>docs</td>
-<td><code>8f74012</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/129">#129</a></td>
-<td>Registrar la IP de los intentos de login a nivel DEBUG</td>
-<td><code>seguridad/log-debug-ip-login</code></td>
-<td>gateway-ms</td>
-<td><code>1bddfd1</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/130">#130</a></td>
-<td>Agregar script para verificar el login de la UI</td>
-<td><code>docs/script-verificar-login</code></td>
-<td>scripts</td>
-<td><code>42c8eac</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/131">#131</a></td>
-<td>Fijar la versión de la imagen del gateway en Kubernetes</td>
-<td><code>seguridad/k8s-gateway-tag</code></td>
-<td>infra</td>
-<td><code>de4d90c</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/132">#132</a></td>
-<td>Agregar prueba de humo del stack</td>
-<td><code>docs/script-smoke-e2e</code></td>
-<td>scripts</td>
-<td><code>4f644a6</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/133">#133</a></td>
-<td>Corregir el arranque de nexus: LimpiezaAcciones no inyecta
-Clock</td>
-<td><code>seguridad/fix-limpieza-bean</code></td>
-<td>nexus-ms</td>
-<td><code>fa5daaf</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/134">#134</a></td>
-<td>Pruebas de autorización por rol en clientes (piloto)</td>
-<td><code>test/autorizacion-clientes</code></td>
-<td>clientes-ms</td>
-<td><code>d81ed01</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/135">#135</a></td>
-<td>Pruebas de autorización por rol en compras</td>
-<td><code>test/autorizacion-compras</code></td>
-<td>compras-proveedores-ms</td>
-<td><code>b019f65</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/136">#136</a></td>
-<td>Pruebas de autorización por rol en contabilidad</td>
-<td><code>test/autorizacion-contabilidad</code></td>
-<td>contabilidad-ms</td>
-<td><code>b74b449</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/137">#137</a></td>
-<td>Pruebas de autorización por rol en documentos</td>
-<td><code>test/autorizacion-documentos</code></td>
-<td>documentos-cumplimiento-ms</td>
-<td><code>cfc9655</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/138">#138</a></td>
-<td>test(facturacion): matriz de autorización por rol</td>
-<td><code>test/autorizacion-facturacion</code></td>
-<td>facturacion-pagos-ms</td>
-<td><code>01118c4</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/139">#139</a></td>
-<td>test(inventario): matriz de autorización por rol</td>
-<td><code>test/autorizacion-inventario</code></td>
-<td>inventario-operaciones-ms</td>
-<td><code>a680b7d</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/140">#140</a></td>
-<td>test(pedidos): matriz de autorización por rol</td>
-<td><code>test/autorizacion-pedidos</code></td>
-<td>pedidos-ventas-ms</td>
-<td><code>1685d76</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/141">#141</a></td>
-<td>test(reportes): matriz de autorización por rol</td>
-<td><code>test/autorizacion-reportes</code></td>
-<td>reportes-ejecutivos-ms</td>
-<td><code>d13ec16</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/142">#142</a></td>
-<td>test(nexus): matriz de autorización por rol</td>
-<td><code>test/autorizacion-nexus</code></td>
-<td>nexus-ms</td>
-<td><code>ceedf98</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/143">#143</a></td>
-<td>test(usuarios-accesos): matriz de autorización de /v1/usuarios</td>
-<td><code>test/autorizacion-usuarios</code></td>
-<td>usuarios-accesos-ms</td>
-<td><code>6fdc504</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/144">#144</a></td>
-<td>docs(pendientes): registrar decisiones de TLS y límite de
-cuerpo</td>
-<td><code>docs/decisiones-tls-limite-cuerpo</code></td>
-<td>pendientes</td>
-<td><code>9156d83</code></td>
-<td>2026-11-06</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/145">#145</a></td>
-<td>docs(pendientes): resultado de pruebas de integración con
-Docker</td>
-<td><code>docs/resultado-failsafe</code></td>
-<td>pendientes</td>
-<td><code>1bcd1b1</code></td>
-<td>2026-11-08</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/146">#146</a></td>
-<td>fix(seguridad): versiones corregidas de dependencias
-transitivas</td>
-<td><code>seguridad/dependencias-versiones</code></td>
-<td>Todos los servicios</td>
-<td><code>75a4c12</code></td>
-<td>2026-11-08</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/147">#147</a></td>
-<td>fix(seguridad): actualizar OpenTelemetry a 1.67.0</td>
-<td><code>seguridad/opentelemetry</code></td>
-<td>Todos los servicios</td>
-<td><code>aeeddd0</code></td>
-<td>2026-11-08</td>
-</tr>
-<tr class="even">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/148">#148</a></td>
-<td>fix(seguridad): actualizar apt en la imagen de runtime</td>
-<td><code>seguridad/base-apt</code></td>
-<td>Todos los servicios</td>
-<td><code>bf15aea</code></td>
-<td>2026-11-08</td>
-</tr>
-<tr class="odd">
-<td><a
-href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/149">#149</a></td>
-<td>build(calidad): piso de cobertura por servicio y fallo del
-build</td>
-<td><code>calidad/umbrales-cobertura</code></td>
-<td>Todos los servicios</td>
-<td><code>4d4ae13</code></td>
-<td>2026-11-08</td>
-</tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/258">#258</a></td><td>docs: tabla de reportes de calidad con formato profesional</td><td><code>docs/tabla-reportes-pro</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>6ad1bb5</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/257">#257</a></td><td>docs(guias): páginas HTML de cada guía en tono fucsia</td><td><code>docs/guias-fucsia</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>7a67135</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/256">#256</a></td><td>docs(seguridad): tabla de inventario al 95% del ancho</td><td><code>docs/inventario-ancho</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b839bae</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/255">#255</a></td><td>docs(registro-prs): mejorar el formato de la tabla de PRs</td><td><code>docs/registro-tablas</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>826c2c7</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/254">#254</a></td><td>docs(seguridad): mejorar el formato de la tabla de inventario de claves</td><td><code>docs/seguridad-tablas</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>13c983c</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/253">#253</a></td><td>docs(registro-prs): cabecera en negro y amarillo</td><td><code>docs/registro-amarillo</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>826c2c7</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/252">#252</a></td><td>docs: páginas HTML para Seguridad y Registro de PRs</td><td><code>docs/seguridad-html</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>8e9ddec</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/251">#251</a></td><td>docs(guias): cabecera del índice en tonos vino</td><td><code>docs/guias-readme-lima</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a5ce075</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/250">#250</a></td><td>docs(manual): cabecera en tonos dorados</td><td><code>docs/manual-dorado</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>6db59cf</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/249">#249</a></td><td>docs: afinar @param y resumen de reportes en la portada</td><td><code>docs/params-y-resumen</code></td><td>clientes-ms, compras-proveedores-ms, contabilidad-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>8166358</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/248">#248</a></td><td>docs(manual): mejorar el tema visual del manual</td><td><code>docs/manual-tema</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e3ac178</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/247">#247</a></td><td>docs: regenerar docs/api tras los cambios de @param y reportes</td><td><code>docs/regenerar-api</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a6622df</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/246">#246</a></td><td>build: contador [n/total] en reportes de calidad (paso 6)</td><td><code>feature/build-contador-reportes</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>09e2a95</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/245">#245</a></td><td>docs: estilo para la página de guías; se quita Pendientes de diseño</td><td><code>feature/guias-estilo</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>dd4c6ab</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/244">#244</a></td><td>build: quita Cobertura del proyecto y de las fichas</td><td><code>feature/quitar-cobertura</code></td><td>clientes-ms, compras-proveedores-ms, contabilidad-ms, discovery-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>73ee8f3</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/243">#243</a></td><td>docs: @param para los componentes de los records documentados</td><td><code>feature/params-records</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>0034714</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/242">#242</a></td><td>build: genera reportes de calidad, pruebas y Javadoc; visor de código en las fichas</td><td><code>feature/build-javadoc</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>2f6a20b</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/241">#241</a></td><td>chore: sube cambios pendientes del Mac (start.sh, guías, index, salidas de pruebas)</td><td><code>feature/sync-pendientes-mac</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>42629c6</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/240">#240</a></td><td>docs: regenera fichas API con colores y componentes nuevos</td><td><code>feature/fichas-api-colores</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>ee133e0</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/239">#239</a></td><td>docs: javadoc en todos los microservicios y nexus-comun</td><td><code>feature/javadoc-todo</code></td><td>clientes-ms, compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>3b62f32</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/238">#238</a></td><td>docs(api): regenerar fichas con resultados reales de pruebas</td><td><code>feature/fichas-api-regeneradas</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>307c62c</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/237">#237</a></td><td>test(inventario): cubrir listeners y revocaciones para cobertura 0.80</td><td><code>feature/tests-inventario-cobertura</code></td><td>inventario-operaciones-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>0686797</code></td><td>2026-11-11</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/236">#236</a></td><td>fix(pruebas): variables de Eureka en validación de clientes-ms</td><td><code>fix/pruebas-clientes-eureka</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>54f0597</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/235">#235</a></td><td>docs: fichas con resultados de calidad, navegación y ajustes de textos</td><td><code>feature/docs-calidad-y-fichas</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d39db99</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/234">#234</a></td><td>nexus: trabajo local en herramientas y temas, y documentación de scripts</td><td><code>feature/trabajo-local-nexus</code></td><td>nexus-ms, ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d02734f</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/233">#233</a></td><td>build: spotbugs 4.10.5.0 y pmd 3.28.0</td><td><code>fix/spotbugs-pmd-versiones</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>6d4b2b1</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/232">#232</a></td><td>docs: resultados reales de pruebas y calidad en las fichas técnicas</td><td><code>feature/resultados-tecnologias</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>86a9789</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/231">#231</a></td><td>build: javadoc y cobertura en los microservicios, y páginas de tecnologías</td><td><code>feature/javadoc-cobertura-plugins</code></td><td>clientes-ms, compras-proveedores-ms, contabilidad-ms, discovery-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>fd23642</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/230">#230</a></td><td>docs: fichas por microservicio con README, permisos, diagramas y Swagger</td><td><code>feature/fichas-microservicios</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d71cf3c</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/229">#229</a></td><td>ui: iconos en el menú lateral de ui-ms</td><td><code>feature/menu-iconos-ui</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e75b440</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/228">#228</a></td><td>fix(start): usar imágenes locales con --pull never</td><td><code>fix/start-pull-never</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>8d1495f</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/227">#227</a></td><td>fix(stop): apagar también el proyecto ui-ms</td><td><code>fix/stop-ui-ms</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b9a563f</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/226">#226</a></td><td>chore(scripts): stop.sh con flags y build.sh con candado</td><td><code>chore/scripts-stop-build</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>752edc5</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/225">#225</a></td><td>feat(docs): documentación Swagger/OpenAPI de cada microservicio</td><td><code>feature/swagger-docs</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>21ab03f</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/224">#224</a></td><td>feat(infra): healthchecks en todos los servicios y mejoras de build/start</td><td><code>feature/configuration-scripts</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>fdae7c9</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/223">#223</a></td><td>feat(scripts): agregar rm-target-directories.sh para borrar targets de Maven</td><td><code>feature/rm-target-directories</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c72c498</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/222">#222</a></td><td>fix(scripts): stop.sh informa cuando Docker ya está apagado</td><td><code>feature/stop-sh-docker-apagado</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>59818ed</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/221">#221</a></td><td>feat(scripts): start.sh abre Docker Desktop y espera a que esté listo</td><td><code>feature/start-sh-docker-auto</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>80d8764</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/220">#220</a></td><td>refactor(scripts): aplicar el mismo estilo visual a stop.sh</td><td><code>feature/stop-sh-estilo</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>12e9422</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/219">#219</a></td><td>feat(scripts): agregar start.sh para levantar el entorno</td><td><code>feature/start-sh-script-file</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>187b606</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/218">#218</a></td><td>feat(scripts): agregar stop.sh para apagar el entorno</td><td><code>feature/stop-sh-script-file</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>5b2d769</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/217">#217</a></td><td>fix(seguridad): ADMIN hereda todos los roles de negocio</td><td><code>fix/admin-jerarquia-roles</code></td><td>clientes-ms, compras-proveedores-ms, contabilidad-ms, documentos-cumplimiento-ms, facturacion-pagos-ms, inventario-operaciones-ms, pedidos-ventas-ms, reportes-ejecutivos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>280b05e</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/216">#216</a></td><td>feat(nexus): limitar el asistente a la operación de la empresa</td><td><code>feat/nexus-guardrail-alcance</code></td><td>nexus-comun</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>30d5604</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/215">#215</a></td><td>fix(clientes): permitir rol ADMIN en endpoints de ventas y legal</td><td><code>fix/admin-acceso-clientes</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>8cb35a0</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/214">#214</a></td><td>feat(nexus): tope diario de tokens configurable desde el .env de la raíz</td><td><code>feat/nexus-presupuesto-env</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>7d436c0</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/213">#213</a></td><td>fix(ui): Mensaje del asistente Nexus serializable para la sesión en Redis</td><td><code>fix/asistente-rutas</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>cfa654f</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/212">#212</a></td><td>feat(ui): pantalla Asistente Nexus (chat con /nexus/consultas) bajo Inicio</td><td><code>feat/asistente-nexus</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>883dfa4</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/211">#211</a></td><td>feat(ui): panel de sugerencias 20% más ancho y 40% menos alto; login rediseñado</td><td><code>feat/panel-y-login-visual</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>f69ff38</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/210">#210</a></td><td>fix(ui): el correo del usuario logueado aparece en el encabezado en todas las pantallas</td><td><code>fix/correo-en-header</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a8e5c8a</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/209">#209</a></td><td>feat(ui): Agiliza con IA con radiobotones debajo del texto y sin pasos</td><td><code>feat/agiliza-radios</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>955a35d</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/208">#208</a></td><td>feat(ui): Agiliza con IA muestra el dato a capturar y lleva a la pantalla</td><td><code>feat/agiliza-tareas-dinamicas</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a962a07</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/207">#207</a></td><td>feat(ui): opción Agiliza con IA y panel de sugerencias colapsable</td><td><code>feat/agiliza-ia</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c8f4daa</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/206">#206</a></td><td>fix(ui): sugerencias usan solo pantallas, filtros y botones existentes</td><td><code>feat/sugerencias-pasos-verificados</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>059b828</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/205">#205</a></td><td>fix(ui): pasos de contador usan solo controles existentes</td><td><code>feat/sugerencias-pasos-existentes</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>09ab450</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/204">#204</a></td><td>feat(ui): panel de sugerencias con tamaño automático y pasos concretos</td><td><code>feat/ui-panel-pasos-concretos</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d63ee1d</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/203">#203</a></td><td>feat(ui): pasos para llevar a cabo cada sugerencia de IA y panel más ancho</td><td><code>feat/ui-panel-sugerencias-pasos</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>2a18d58</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/202">#202</a></td><td>feat(ui): panel de sugerencias de IA en la esquina inferior derecha</td><td><code>feat/ui-panel-sugerencias-ia</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>81ef76d</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/201">#201</a></td><td>feat(ui): formularios de alta de clientes y proveedores</td><td><code>feat/ui-altas-clientes-proveedores</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>9cde83a</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/200">#200</a></td><td>feat(ui): color de la barra lateral según el rol del usuario</td><td><code>feat/ui-color-por-rol</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>34ab704</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/199">#199</a></td><td>fix(ui): ocultar columnas sin valor en los listados</td><td><code>fix/clientes-prospecto-id</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4d54535</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/198">#198</a></td><td>feat(inventario): sumar existencias con las recepciones de compras</td><td><code>feat/inventario-consume-recepciones</code></td><td>compras-proveedores-ms, inventario-operaciones-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c393b95</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/197">#197</a></td><td>feat(inventario): reservar al confirmar y descontar al entregar pedidos</td><td><code>feat/inventario-consume-pedidos</code></td><td>inventario-operaciones-ms, pedidos-ventas-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>61f7927</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/196">#196</a></td><td>fix(nexus-ms): omitir controles de calidad al compilar nexus-comun en Docker</td><td><code>fix/nexus-comun-build-sin-checks</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>9170034</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/195">#195</a></td><td>fix(ui-ms): mostrar listados paginados y clientes anidados</td><td><code>fix/clientes-listado-anidado</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>aae816c</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/194">#194</a></td><td>feat(ui-ms): panel con barra lateral y pantallas de consulta por módulo</td><td><code>feat/ui-dashboard-modulos</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>6b0de4b</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/193">#193</a></td><td>docs: reordena el diagrama de arquitectura general</td><td><code>docs/arquitectura-general-layout-2</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>97290b3</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/192">#192</a></td><td>docs: actualiza backlog de diagramas tras PR #191</td><td><code>docs/backlog-arquitectura-mmd</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>50901dd</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/191">#191</a></td><td>docs: fuentes Mermaid para los 12 diagramas de arquitectura</td><td><code>docs/arquitectura-fuentes-mermaid</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a5d83b9</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/190">#190</a></td><td>docs(reportes): ajusta la etiqueta de periodo en el diagrama de reglas de estado</td><td><code>docs/reportes-ajuste-periodo-diagrama</code></td><td>reportes-ejecutivos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>840c641</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/189">#189</a></td><td>fix(nexus-comun): cierra streams, copia colecciones y filtra EI_EXPOSE_REP2 en dos clases</td><td><code>fix/nexus-comun-spotbugs</code></td><td>nexus-comun</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a7c1c1e</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/188">#188</a></td><td>test(nexus): LineaBaseIT solo corre con NEXUS_LINEA_BASE=1</td><td><code>fix/nexus-linea-base-compuerta</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>798622f</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/187">#187</a></td><td>docs(pendientes): marca como completados los diagramas ya fusionados</td><td><code>docs/backlog-diagramas-completo</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>9183da1</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/186">#186</a></td><td>docs(nexus): diagramas de arquitectura, acciones con confirmación y acciones por MCP</td><td><code>docs/nexus-diagramas-arquitectura-acciones-mcp</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>df36f65</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/185">#185</a></td><td>docs(ui): diagramas de arquitectura, login, renovación con lock y cierre</td><td><code>docs/ui-diagramas-login-renovacion-cierre</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>fd5ba9c</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/184">#184</a></td><td>docs(clientes): diagrama de roles y datos personales enmascarados</td><td><code>docs/clientes-diagrama-roles-datos-personales</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>30fb024</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/183">#183</a></td><td>docs(documentos): diagramas de reglas de estado, duplicados y retención</td><td><code>docs/documentos-diagramas-estado-duplicados-retencion</code></td><td>documentos-cumplimiento-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>5ee90bd</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/182">#182</a></td><td>docs(reportes): diagramas de reglas de estado, duplicados y lectura por área</td><td><code>docs/reportes-diagramas-estado-duplicados-lectura-area</code></td><td>reportes-ejecutivos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>020b2a8</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/181">#181</a></td><td>docs(inventario): diagramas de orden, existencia, duplicados e Idempotency-Key</td><td><code>docs/inventario-diagramas-estado-duplicados-idempotencia</code></td><td>inventario-operaciones-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>2122cdc</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/180">#180</a></td><td>docs(contabilidad): diagramas de póliza, duplicados e Idempotency-Key</td><td><code>docs/contabilidad-diagramas-estado-duplicados-idempotencia</code></td><td>contabilidad-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>54748df</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/179">#179</a></td><td>docs(usuarios): diagramas de estados, duplicados, rotación RS256, área y contraseña temporal</td><td><code>docs/usuarios-diagramas-estado-duplicados-y-mas</code></td><td>usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c9caafa</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/178">#178</a></td><td>docs(facturacion): diagramas del servicio</td><td><code>docs/diagramas-facturacion</code></td><td>facturacion-pagos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>efaa994</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/177">#177</a></td><td>docs(compras): diagramas del servicio</td><td><code>docs/diagramas-compras</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>5cab580</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/176">#176</a></td><td>docs(pedidos): diagramas del servicio</td><td><code>docs/diagramas-pedidos</code></td><td>pedidos-ventas-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>1c317bf</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/175">#175</a></td><td>docs: diagramas de gateway y discovery</td><td><code>docs/diagramas-gateway-discovery</code></td><td>discovery-ms, gateway-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>23b2f3c</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/174">#174</a></td><td>docs: diagramas de flujos entre áreas</td><td><code>docs/diagramas-areas</code></td><td>pedidos-ventas-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>cac1438</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/173">#173</a></td><td>docs(nexus-comun): README del módulo compartido de Nexus</td><td><code>docs/readme-nexus-comun</code></td><td>nexus-comun</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e42891c</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/172">#172</a></td><td>test(clientes): cubre Interaccion y RecifradorCamposRunner</td><td><code>test/clientes-cobertura-interaccion-recifrador</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>2a387a0</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/171">#171</a></td><td>feat(nexus): prompt asistente-base v2, no suponer significados de números</td><td><code>feat/nexus-no-suponer-significados</code></td><td>nexus-comun</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>266a7ba</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/170">#170</a></td><td>docs: piloto de Nexus por áreas (2026-11-08)</td><td><code>docs/piloto-nexus-2026-11-08</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>aade8d0</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/169">#169</a></td><td>fix(nexus): no redactar UUID como teléfono en el filtro de datos sensibles</td><td><code>fix/filtro-telefono-uuid</code></td><td>nexus-comun</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b739dbb</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/168">#168</a></td><td>fix: fechas de negocio en hora de Mexico (contabilidad, pedidos, facturacion, documentos, compras)</td><td><code>fix/fechas-negocio-utc</code></td><td>compras-proveedores-ms, contabilidad-ms, documentos-cumplimiento-ms, facturacion-pagos-ms, pedidos-ventas-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>3e276cd</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/167">#167</a></td><td>fix(clientes): fecha de alta y registro en hora de Mexico</td><td><code>fix/clientes-fecha-negocio</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>12bbd4c</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/166">#166</a></td><td>test(smoke): usar parametros validos en inventario y reportes</td><td><code>chore/smoke-e2e-parametros-validos</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>964afaa</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/165">#165</a></td><td>feat(nexus): cuatro escrituras de bajo riesgo como herramientas</td><td><code>feat/nexus-escrituras-seguras</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>451c181</code></td><td>2026-11-10</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/164">#164</a></td><td>feat(nexus): consulta del estado de una acción y catálogo actualizado</td><td><code>feat/nexus-estado-accion</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c6f46eb</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/163">#163</a></td><td>feat(nexus): consulta del catálogo de tipos de documento</td><td><code>feat/nexus-documentos-catalogo</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>7faca7d</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/162">#162</a></td><td>feat(nexus): cobro de comprobantes y consulta de cuentas por pagar</td><td><code>feat/nexus-facturacion</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>130628c</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/161">#161</a></td><td>feat(nexus): herramientas de inventario (artículos, movimientos, órdenes de operación)</td><td><code>feat/nexus-inventario</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>2b6dec5</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/160">#160</a></td><td>feat(nexus): herramientas de compras (proveedores, órdenes, recepción, cancelación)</td><td><code>feat/nexus-compras</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>fd57d9b</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/159">#159</a></td><td>feat(nexus): herramientas de clientes, contactos y prospectos</td><td><code>feat/nexus-clientes</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4b186ee</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/158">#158</a></td><td>feat(nexus): lecturas de cotizaciones, pedidos y catálogos de ventas</td><td><code>feat/nexus-lecturas-pedidos</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>2932dec</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/157">#157</a></td><td>feat(nexus): herramienta solicitar_eliminacion_documento</td><td><code>feat/nexus-eliminacion-documento</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>6a65059</code></td><td>2026-11-09</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/156">#156</a></td><td>docs(nexus): catálogo de endpoints para consumo desde IA</td><td><code>docs/catalogo-endpoints-ia</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>61c4d5a</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/155">#155</a></td><td>docs(pendientes): marcar como omitidos Kubernetes y validación del título</td><td><code>docs/omitidos-cierre</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b167ae4</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/154">#154</a></td><td>docs(ui-ms): agregar README con rutas, configuración y guías</td><td><code>docs/ui-readme</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>215da40</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/153">#153</a></td><td>docs(pendientes): marcar lo completado en calidad y seguridad</td><td><code>docs/checkboxes-pendientes</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>33dc79f</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/152">#152</a></td><td>build(nexus): JaCoCo mide cobertura y piso de 0.85</td><td><code>calidad/nexus-jacoco</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e75bda6</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/151">#151</a></td><td>docs: guías publicadas en HTML y enlazadas desde los READMEs de servicio</td><td><code>docs/guias-html</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>839ec8d</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/150">#150</a></td><td>docs: registro de PRs de la sesión (#109 a #149)</td><td><code>docs/registro-prs</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>34f8c77</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/149">#149</a></td><td>build(calidad): piso de cobertura por servicio y fallo del build</td><td><code>calidad/umbrales-cobertura</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4d4ae13</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/148">#148</a></td><td>fix(seguridad): actualizar apt en la imagen de runtime</td><td><code>seguridad/base-apt</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>bf15aea</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/147">#147</a></td><td>fix(seguridad): actualizar OpenTelemetry a 1.67.0</td><td><code>seguridad/opentelemetry</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>aeeddd0</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/146">#146</a></td><td>fix(seguridad): versiones corregidas de dependencias transitivas</td><td><code>seguridad/dependencias-versiones</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>75a4c12</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/145">#145</a></td><td>docs(pendientes): resultado de pruebas de integración con Docker</td><td><code>docs/resultado-failsafe</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>1bcd1b1</code></td><td>2026-11-08</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/144">#144</a></td><td>docs(pendientes): registrar decisiones de TLS y límite de cuerpo</td><td><code>docs/decisiones-tls-limite-cuerpo</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>9156d83</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/143">#143</a></td><td>test(usuarios-accesos): matriz de autorización de /v1/usuarios</td><td><code>test/autorizacion-usuarios</code></td><td>usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>6fdc504</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/142">#142</a></td><td>test(nexus): matriz de autorización por rol</td><td><code>test/autorizacion-nexus</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>ceedf98</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/141">#141</a></td><td>test(reportes): matriz de autorización por rol</td><td><code>test/autorizacion-reportes</code></td><td>reportes-ejecutivos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d13ec16</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/140">#140</a></td><td>test(pedidos): matriz de autorización por rol</td><td><code>test/autorizacion-pedidos</code></td><td>pedidos-ventas-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>1685d76</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/139">#139</a></td><td>test(inventario): matriz de autorización por rol</td><td><code>test/autorizacion-inventario</code></td><td>inventario-operaciones-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a680b7d</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/138">#138</a></td><td>test(facturacion): matriz de autorización por rol</td><td><code>test/autorizacion-facturacion</code></td><td>facturacion-pagos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>01118c4</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/137">#137</a></td><td>Pruebas de autorización por rol en documentos</td><td><code>test/autorizacion-documentos</code></td><td>documentos-cumplimiento-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>cfc9655</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/136">#136</a></td><td>Pruebas de autorización por rol en contabilidad</td><td><code>test/autorizacion-contabilidad</code></td><td>contabilidad-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b74b449</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/135">#135</a></td><td>Pruebas de autorización por rol en compras</td><td><code>test/autorizacion-compras</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b019f65</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/134">#134</a></td><td>Pruebas de autorización por rol en clientes (piloto)</td><td><code>test/autorizacion-clientes</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d81ed01</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/133">#133</a></td><td>Corregir el arranque de nexus: LimpiezaAcciones no inyecta Clock</td><td><code>seguridad/fix-limpieza-bean</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>fa5daaf</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/132">#132</a></td><td>Agregar prueba de humo del stack</td><td><code>docs/script-smoke-e2e</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4f644a6</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/131">#131</a></td><td>Fijar la versión de la imagen del gateway en Kubernetes</td><td><code>seguridad/k8s-gateway-tag</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>de4d90c</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/130">#130</a></td><td>Agregar script para verificar el login de la UI</td><td><code>docs/script-verificar-login</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>42c8eac</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/129">#129</a></td><td>Registrar la IP de los intentos de login a nivel DEBUG</td><td><code>seguridad/log-debug-ip-login</code></td><td>gateway-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>1bddfd1</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/128">#128</a></td><td>Actualizar la auditoría de cifrado con la limpieza del payload de nexus</td><td><code>docs/auditoria-payload-nexus</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>8f74012</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/127">#127</a></td><td>Borrar acciones pendientes vencidas de nexus</td><td><code>seguridad/nexus-payload-cifrado</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>2c8b21b</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/126">#126</a></td><td>Actualizar pendientes y la auditoría de cifrado</td><td><code>docs/pendientes-avances-2026-11-05</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4e0b39e</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/125">#125</a></td><td>No guardar nombre ni correo del prospecto en el resumen de la acción</td><td><code>seguridad/nexus-resumen-sin-datos</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>6f49128</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/124">#124</a></td><td>Corregir la fecha de la auditoría de cifrado</td><td><code>seguridad/auditoria-cifrado-fecha</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a60ca31</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/123">#123</a></td><td>Documentar la auditoría de cobertura del cifrado de campos</td><td><code>seguridad/auditoria-cifrado</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>df96f42</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/122">#122</a></td><td>Probar el 400 de los parámetros de búsqueda en cuatro servicios</td><td><code>seguridad/400-pruebas-restantes</code></td><td>contabilidad-ms, documentos-cumplimiento-ms, facturacion-pagos-ms, reportes-ejecutivos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>68062fc</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/121">#121</a></td><td>Probar el 400 del parámetro razonSocial en compras</td><td><code>seguridad/compras-pruebas-400</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>135eb15</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/120">#120</a></td><td>Marcar como hecha la sustitución de las variables de clave única</td><td><code>seguridad/inventario-claves-estado</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>1da88eb</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/119">#119</a></td><td>Responder 400 cuando un parámetro de búsqueda excede su longitud en cinco servicios</td><td><code>seguridad/400-parametros-servicios</code></td><td>compras-proveedores-ms, contabilidad-ms, documentos-cumplimiento-ms, facturacion-pagos-ms, reportes-ejecutivos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>43afbc4</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/118">#118</a></td><td>Responder 400 cuando un parámetro de búsqueda excede su longitud</td><td><code>seguridad/clientes-pruebas-400</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>5879296</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/117">#117</a></td><td>Registrar resultados de mvn verify en los pendientes del backend</td><td><code>seguridad/resultados-verify</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>0400b76</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/116">#116</a></td><td>Compartir el límite de intentos del gateway entre réplicas con Redis</td><td><code>seguridad/limite-redis</code></td><td>gateway-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>24a0837</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/115">#115</a></td><td>Enviar la IP del navegador al gateway en el login de la UI</td><td><code>seguridad/ui-envia-ip</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>0038a72</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/114">#114</a></td><td>Usar la IP del cliente para el límite de intentos cuando el proxy es de confianza</td><td><code>seguridad/gateway-ip-cliente</code></td><td>gateway-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>7e708f6</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/113">#113</a></td><td>No registrar mensajes de excepción en los logs de advertencia</td><td><code>seguridad/logs-excepciones</code></td><td>clientes-ms, compras-proveedores-ms, contabilidad-ms, documentos-cumplimiento-ms, facturacion-pagos-ms, inventario-operaciones-ms, pedidos-ventas-ms, reportes-ejecutivos-ms, usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>74acd30</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/112">#112</a></td><td>No registrar montos agregados en los logs de indicadores</td><td><code>seguridad/logs-sin-montos</code></td><td>clientes-ms, compras-proveedores-ms, contabilidad-ms, documentos-cumplimiento-ms, facturacion-pagos-ms, inventario-operaciones-ms, pedidos-ventas-ms, usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b9aa691</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/111">#111</a></td><td>Fijar el digest de la imagen base de build en los Dockerfiles</td><td><code>seguridad/digest-imagen-maven</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b0ce870</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/110">#110</a></td><td>Fijar el digest de la imagen base de runtime en los Dockerfiles</td><td><code>seguridad/digest-imagen-jre</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>9c46a00</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/109">#109</a></td><td>Documentar avances de seguridad del 2026-11-05 en los pendientes del backend</td><td><code>seguridad/actualizar-pendientes</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b3ebe0f</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/108">#108</a></td><td>Limitar la longitud de periodo y formato en reportes</td><td><code>seguridad/reportes-limites-parametros</code></td><td>reportes-ejecutivos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>07f6af3</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/107">#107</a></td><td>Limitar la longitud del parámetro folio en la búsqueda de comprobantes</td><td><code>seguridad/facturacion-limites-busqueda</code></td><td>facturacion-pagos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a8bca68</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/106">#106</a></td><td>Limitar la longitud del parámetro de búsqueda de documentos por título</td><td><code>seguridad/documentos-limites-busqueda</code></td><td>documentos-cumplimiento-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4fc25f8</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/105">#105</a></td><td>Limitar la longitud del parámetro periodo en contabilidad</td><td><code>seguridad/contabilidad-limites-busqueda</code></td><td>contabilidad-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c1f6660</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/104">#104</a></td><td>Limitar la longitud del parámetro de búsqueda de proveedores</td><td><code>seguridad/compras-limites-busqueda</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>bf6c887</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/103">#103</a></td><td>Limitar a 64 KiB el tamaño del cuerpo en el gateway</td><td><code>seguridad/gateway-limite-cuerpo</code></td><td>gateway-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b1fde3a</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/102">#102</a></td><td>Limitar la longitud de los parámetros de búsqueda de clientes</td><td><code>seguridad/clientes-limites-busqueda</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>8550a35</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/101">#101</a></td><td>Agregar escaneo de imágenes de contenedor con Trivy</td><td><code>seguridad/escaneo-imagenes</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>2225ed4</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/100">#100</a></td><td>Agregar escaneo de secretos con gitleaks en push y PR</td><td><code>seguridad/escaneo-secretos</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4d8d3d6</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/99">#99</a></td><td>Agregar base de manifiestos de Kubernetes para ui-ms y gateway-ms</td><td><code>seguridad/k8s-base</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>216f9e1</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/98">#98</a></td><td>Publicar UI solo en localhost y marcar pendiente de actuator</td><td><code>seguridad/actuator-prometheus</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>03204c1</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/97">#97</a></td><td>docs: registrar el retiro de la versión 1 y las variables de clave única</td><td><code>docs/retiro-version-1</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>a2790f9</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/96">#96</a></td><td>docs: registrar el estado de la rotación de claves de cifrado</td><td><code>docs/inventario-resultados-prueba</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>5a6a4b4</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/95">#95</a></td><td>docs: reconstruir imágenes antes de reiniciar en la guía de prueba</td><td><code>docs/guia-prueba-reconstruir</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>10641b0</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/94">#94</a></td><td>docs: guía de prueba para rotar la clave de cifrado</td><td><code>docs/guia-prueba-rotacion-clave</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>5ec3b9b</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/93">#93</a></td><td>feat(usuarios): re-cifrado por lotes de correo y nombre</td><td><code>feature/recifrado-lotes-usuarios</code></td><td>usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>dac63ac</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/92">#92</a></td><td>feat(compras): re-cifrado por lotes del RFC y correo de proveedores</td><td><code>feature/recifrado-lotes-compras</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>1a8dd23</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/91">#91</a></td><td>feat(clientes): re-cifrado por lotes a la versión activa de la clave</td><td><code>feature/recifrado-lotes-clientes</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c39986a</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/90">#90</a></td><td>feat(usuarios): versionar la clave de cifrado de correo y nombre</td><td><code>feature/cifrado-version-usuarios</code></td><td>usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d792d87</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/89">#89</a></td><td>feat(compras): versionar la clave de cifrado del RFC</td><td><code>feature/cifrado-version-compras</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4f666fb</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/88">#88</a></td><td>feat(clientes): versionar la clave de cifrado de campos personales</td><td><code>feature/cifrado-version-clave</code></td><td>clientes-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>ad19e84</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/87">#87</a></td><td>docs: registrar decisiones sobre versión de clave</td><td><code>docs/decisiones-version-clave</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>58c729b</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/86">#86</a></td><td>docs: diseño propuesto de versión de clave para datos cifrados</td><td><code>docs/diseno-version-clave</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>142e9a2</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/85">#85</a></td><td>seguridad: inventario de claves, verificador de .env y respaldo</td><td><code>feature/inventario-claves</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>8aa94c9</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/84">#84</a></td><td>seguridad: TLS interno hacia el gateway con CA interna (opt-in)</td><td><code>feature/tls-interno-gateway</code></td><td>nexus-ms, ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>da4b0d6</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/83">#83</a></td><td>seguridad(gateway): TLS con CA interna, desactivado por defecto</td><td><code>feature/tls-gateway</code></td><td>gateway-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>49da34f</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/82">#82</a></td><td>test(compras): pruebas de límites de tamaño y decimales</td><td><code>feature/pruebas-limites-entrada</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>597704b</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/81">#81</a></td><td>seguridad(gateway): límite de intentos por IP en login</td><td><code>feature/limite-intentos-gateway</code></td><td>gateway-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>f2d8f7a</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/80">#80</a></td><td>seguridad: límites de tamaño y decimales en solicitudes</td><td><code>feature/validacion-entrada</code></td><td>compras-proveedores-ms, inventario-operaciones-ms, pedidos-ventas-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>31d65af</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/79">#79</a></td><td>seguridad: actuator del gateway fuera del puerto publicado y sin correo en logs</td><td><code>feature/seguridad-actuator-logs</code></td><td>gateway-ms, nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>59254f2</code></td><td>2026-11-06</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/78">#78</a></td><td>docs: guías paso a paso con diagramas</td><td><code>feature/sprint-documentacion</code></td><td>nexus-ms, usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d1f4418</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/77">#77</a></td><td>Listar los últimos usuarios para administradores</td><td><code>feature/listar-usuarios</code></td><td>nexus-ms, usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>274f953</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/76">#76</a></td><td>Buscar documentos legales por título</td><td><code>feature/buscar-documentos</code></td><td>documentos-cumplimiento-ms, nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4735dfa</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/75">#75</a></td><td>Listar los últimos movimientos de un artículo</td><td><code>feature/movimientos-articulo</code></td><td>inventario-operaciones-ms, nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>8185b8c</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/74">#74</a></td><td>Listar artículos bajo su mínimo</td><td><code>feature/articulos-bajo-minimo</code></td><td>inventario-operaciones-ms, nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>da8c1b4</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/73">#73</a></td><td>Listar comprobantes emitidos con saldo por cobrar</td><td><code>feature/comprobantes-pendientes-cobro</code></td><td>facturacion-pagos-ms, nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>3602654</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/72">#72</a></td><td>Listar los últimos pagos a proveedores</td><td><code>feature/listar-pagos-proveedor</code></td><td>facturacion-pagos-ms, nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>09e743c</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/71">#71</a></td><td>Alta de usuarios con contraseña en la pantalla de altas</td><td><code>feature/alta-usuarios</code></td><td>nexus-comun, nexus-ms, ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e2f6174</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/70">#70</a></td><td>Corrige clave compras duplicada en application.yml de compras-proveedores-ms</td><td><code>fix/compras-yaml-duplicado</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>46254d5</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/69">#69</a></td><td>Agrega herramientas consultar_catalogo_cuentas y listar_ordenes_compra al asistente Nexus</td><td><code>feature/herramientas-nexus</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>f1c4403</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/68">#68</a></td><td>Agrega GET /v1/ordenes-compra con filtro por estatus y límite de 15</td><td><code>feature/listar-ordenes-compra</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>706f96d</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/67">#67</a></td><td>Agrega pendiente de registro de PRs y merges, para al final</td><td><code>feature/pendiente-registro-prs</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>25ae567</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/66">#66</a></td><td>Agrega JaCoCo, Checkstyle, PMD, SpotBugs y OWASP en modo reporte</td><td><code>feature/calidad-maven</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>876ca97</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/65">#65</a></td><td>Mueve pendientes fuera de docs/ para que no se publiquen</td><td><code>feature/mover-pendientes</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>15527d1</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/64">#64</a></td><td>Bloqueo de cuenta a 5 minutos (decisión de Said Olano)</td><td><code>feature/bloqueo-5-minutos</code></td><td>ui-ms, usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>82dbc90</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/63">#63</a></td><td>Agrega pendientes de guías paso a paso y de calidad y seguridad</td><td><code>feature/pendientes-documentacion</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>b0364c8</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/62">#62</a></td><td>Agrega cuentas por pagar a proveedores</td><td><code>feature/cuentas-por-pagar</code></td><td>facturacion-pagos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>354a101</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/61">#61</a></td><td>Incluye la moneda en el evento orden-compra-aprobada</td><td><code>feature/compras-moneda-evento</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>5079dce</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/60">#60</a></td><td>Agrega pendientes de diagramas por área y por microservicio</td><td><code>feature/pendientes-diagramas</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>fbc32e5</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/59">#59</a></td><td>Documenta reglas de negocio vigentes en READMEs, diseños y manuales</td><td><code>feature/documentacion-reglas-negocio</code></td><td>compras-proveedores-ms, contabilidad-ms, facturacion-pagos-ms, inventario-operaciones-ms, pedidos-ventas-ms, usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>bcad60f</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/58">#58</a></td><td>Hace configurable el límite de aprobación de órdenes de compra</td><td><code>feature/compras-limite-aprobacion</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>81cda7b</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/57">#57</a></td><td>Retoma reservas de Idempotency-Key sin completar tras 2 minutos</td><td><code>feature/idempotencia-expiracion</code></td><td>compras-proveedores-ms, contabilidad-ms, facturacion-pagos-ms, inventario-operaciones-ms, pedidos-ventas-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>0fd289f</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/56">#56</a></td><td>usuarios-accesos: cifrado de correo y nombre, métricas de negocio y trazas</td><td><code>feature/usuarios-cifrado-metricas-trazas</code></td><td>usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>f74b534</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/55">#55</a></td><td>facturacion: IVA fronterizo 8 % desde 2026-11-01, tasa fijada por el servidor</td><td><code>feature/facturacion-iva-fronterizo</code></td><td>facturacion-pagos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>ec579cc</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/54">#54</a></td><td>infra: quitar puerto publicado de nexus-ms; /actuator/prometheus queda solo en red interna</td><td><code>fix/nexus-sin-puerto-publicado</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>95dddc2</code></td><td>2026-11-05</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/53">#53</a></td><td>ui-ms: lock por sesión para renovar el refresh token sin reusarlo</td><td><code>feature/ui-ms-lock-renovacion</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e7d6c2e</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/52">#52</a></td><td>ui-ms: reintenta una vez tras 401 renovando la sesión</td><td><code>feature/ui-ms-sesion-401</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>cdd83c3</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/51">#51</a></td><td>documentos: extiende a 10 años la retención existente de CONTRATO y REGISTRO_LEGAL</td><td><code>feature/documentos-retencion-existentes</code></td><td>documentos-cumplimiento-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>95af84f</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/50">#50</a></td><td>infra: publica los puertos de infraestructura solo en 127.0.0.1</td><td><code>fix/infra-puertos-localhost</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c6ce414</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/49">#49</a></td><td>discovery-ms: publica el puerto 8761 solo en 127.0.0.1</td><td><code>fix/discovery-prometheus-localhost</code></td><td>discovery-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d19ebed</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/48">#48</a></td><td>docs(usuarios-accesos): rotación de RS256 con traslape, ya implementada</td><td><code>docs/rotacion-clave-rs256</code></td><td>usuarios-accesos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>98e13b5</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/47">#47</a></td><td>ui-ms: cierre de sesión revoca refresh token y sesión expirada redirige al login</td><td><code>feature/ui-ms-refresh-logout</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>886eeca</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/46">#46</a></td><td>docs(reportes): permisos por área ya implementados</td><td><code>docs/reportes-permisos-area-implementados</code></td><td>reportes-ejecutivos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>bd1a61c</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/45">#45</a></td><td>documentos: retención 10/5/10 años y purga física con confirmación</td><td><code>feature/documentos-retencion-purga</code></td><td>documentos-cumplimiento-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>23842bb</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/44">#44</a></td><td>Valida que el cliente siga activo al convertir una cotización en pedido</td><td><code>feature/pedidos-validar-cliente-conversion</code></td><td>pedidos-ventas-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c6916b7</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/43">#43</a></td><td>Quita la línea namespace sin efecto de la configuración de sesiones</td><td><code>feature/ui-ms-limpieza-redis</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>c8a220a</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/42">#42</a></td><td>Agrega pruebas del login de ui-ms: éxito, fallo, bloqueo y reinicio d…</td><td><code>feature/ui-ms-test-login</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4649804</code></td><td>2026-11-04</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/41">#41</a></td><td>Guarda las sesiones de ui-ms en Redis</td><td><code>feature/ui-ms-acciones</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>ba03425</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/40">#40</a></td><td>Bloquea temporalmente el login de un correo tras 5 intentos fallidos</td><td><code>feature/ui-ms-acciones</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>f8595f0</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/39">#39</a></td><td>Permite revertir pólizas desde la página de detalle en ui-ms</td><td><code>feature/ui-ms-acciones</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>9cfd198</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/38">#38</a></td><td>Agrega página para proponer, confirmar o cancelar pólizas en ui-ms</td><td><code>feature/ui-ms-acciones</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>749a72c</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/37">#37</a></td><td>Devuelve código de confirmación en la sugerencia de pólizas REST</td><td><code>feature/nexus-sugerencia-codigo</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>065e4bd</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/36">#36</a></td><td>Feature/nexus confirmacion rest</td><td><code>feature/nexus-confirmacion-rest</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>1f223bd</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/35">#35</a></td><td>Agrega listado y detalle de pólizas en ui-ms (solo lectura)</td><td><code>feature/ui-ms-polizas</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>fe9c370</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/34">#34</a></td><td>Agrega cuentas contables y cambio de contraseña temporal en ui-ms</td><td><code>feature/ui-ms-cuentas</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>036ed7e</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/33">#33</a></td><td>Agrega login con JWT en sesión del servidor a ui-ms</td><td><code>feature/ui-ms-login</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>de328af</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/32">#32</a></td><td>Agrega esqueleto de ui-ms con Thymeleaf</td><td><code>feature/ui-ms-base</code></td><td>ui-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>ed24a36</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/31">#31</a></td><td>Agrega scripts de piloto de Nexus</td><td><code>chore/scripts-piloto-nexus</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e4264f0</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/30">#30</a></td><td>Nexus: RAG de políticas, cuentas, servidor MCP y piloto (F2 a F6)</td><td><code>feature/nexus-rag-politicas</code></td><td>contabilidad-ms, gateway-ms, nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>bf6ce60</code></td><td>2026-11-03</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/29">#29</a></td><td>Agrega aprobación de órdenes por monto y segregación de funciones en compras</td><td><code>feature/compras-aprobacion-monto</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>342c061</code></td><td>2026-11-01</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/28">#28</a></td><td>Agrega README de nexus-ms</td><td><code>feature/nexus-readme</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e4db628</code></td><td>2026-11-01</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/27">#27</a></td><td>Agrega tope mensual de tokens del servicio, avisos y alarmas de Prometheus</td><td><code>feature/nexus-tope-servicio</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>43c3bfc</code></td><td>2026-11-01</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/26">#26</a></td><td>Agrega tope diario y mensual de tokens por usuario en Nexus</td><td><code>feature/nexus-presupuesto-tokens</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>ff4d31d</code></td><td>2026-11-01</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/25">#25</a></td><td>Agrega acciones restantes de ventas con confirmación (punto 3)</td><td><code>feature/nexus-acciones-restantes</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>25f26e3</code></td><td>2026-11-01</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/24">#24</a></td><td>Agrega enviar, aceptar y convertir cotización con confirmación</td><td><code>feature/nexus-cotizaciones</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4477e6a</code></td><td>2026-11-01</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/23">#23</a></td><td>Agrega prospecto, confirmar y cancelar pedido con confirmación</td><td><code>feature/nexus-acciones-ventas</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>6d6f158</code></td><td>2026-11-01</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/22">#22</a></td><td>Agrega preparar_pedido_borrador con confirmación</td><td><code>feature/nexus-preparar-pedido</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>ab08ba6</code></td><td>2026-11-01</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/21">#21</a></td><td>Permite consultas de Nexus a cualquier usuario autenticado</td><td><code>feature/nexus-consultas-autenticadas</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>53dce82</code></td><td>2026-11-01</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/20">#20</a></td><td>feat(nexus): búsqueda de proveedores, comprobantes por folio y pólizas por periodo</td><td><code>feature/nexus-busqueda-folio-nombre</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>738b950</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/19">#19</a></td><td>feat(contabilidad): listar pólizas por periodo</td><td><code>feature/contabilidad-listar-polizas</code></td><td>contabilidad-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>da58f8c</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/18">#18</a></td><td>feat(facturacion): buscar comprobante por folio</td><td><code>feature/facturacion-buscar-folio</code></td><td>facturacion-pagos-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>77292ad</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/17">#17</a></td><td>feat(compras): buscar proveedores por razón social</td><td><code>feature/compras-buscar-proveedores</code></td><td>compras-proveedores-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>f2de2e4</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/16">#16</a></td><td>fix(nexus): resumen_ventas también para FINANZAS</td><td><code>feature/nexus-resumen-ventas-finanzas</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e962a86</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/15">#15</a></td><td>fix(nexus): gating de herramientas por rol individual</td><td><code>feature/nexus-gating-por-herramienta</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>646989a</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/14">#14</a></td><td>feat(nexus): herramienta de consulta de usuarios</td><td><code>feature/nexus-herramientas-usuarios</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>60b9011</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/13">#13</a></td><td>feat(nexus): herramientas de documentos legales y vencimientos</td><td><code>feature/nexus-herramientas-cumplimiento</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>8a73725</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/12">#12</a></td><td>feat(nexus): herramientas de existencias y trazabilidad de lotes</td><td><code>feature/nexus-herramientas-inventario</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>0fd4803</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/11">#11</a></td><td>feat(nexus): herramientas de pólizas y estados financieros</td><td><code>feature/nexus-herramientas-contabilidad</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>e6dc370</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/10">#10</a></td><td>feat(nexus): herramienta de comprobantes de facturación</td><td><code>feature/nexus-herramientas-finanzas</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>68937a4</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/9">#9</a></td><td>feat(nexus): herramientas de proveedores y órdenes de compra</td><td><code>feature/nexus-herramientas-compras</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>9ea3a60</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/8">#8</a></td><td>feat(nexus): herramientas de pedidos y resumen de ventas</td><td><code>feature/nexus-herramientas-ventas</code></td><td>nexus-ms</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>47bceb8</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/7">#7</a></td><td>Nexus: asistente de consulta (Fase 1)</td><td><code>feature/nexus-ms-esqueleto</code></td><td>Todos los servicios</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>0b39150</code></td><td>2026-10-31</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/6">#6</a></td><td>Fase 0 de Nexus: módulo compartido nexus-comun</td><td><code>feature/nexus-comun-filtro-datos</code></td><td>nexus-comun</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>777f120</code></td><td>2026-10-30</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/5">#5</a></td><td>Translate project page to Spanish</td><td><code>spanish-page</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>4c8dee8</code></td><td>2026-10-30</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/4">#4</a></td><td>Switch project page to Risograph theme</td><td><code>risograph-theme</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>d53268e</code></td><td>2026-10-30</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/3">#3</a></td><td>Switch project page to Bauhaus theme</td><td><code>bauhaus-theme</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>06f68c7</code></td><td>2026-10-30</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/2">#2</a></td><td>Remove duplicate technical presentation PDF</td><td><code>dedupe-presentacion-pdf</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>6f14753</code></td><td>2026-10-30</td></tr>
+<tr data-est="fusionado"><td><a href="https://github.com/josesaid/EMPRESA_JOSESAID/pull/1">#1</a></td><td>Add GitHub Pages portfolio page and project documents</td><td><code>pages-portfolio-index</code></td><td>Documentación</td><td><span class="estado estado-fusionado">fusionado</span></td><td><code>3b7fff2</code></td><td>2026-10-30</td></tr>
 </tbody>
 </table></div>
+<nav class="paginacion" aria-label="Paginación"><span id="resumen-pag"></span><div class="controles" id="controles"></div></nav>
 <h2 id="decisiones-registradas">Decisiones registradas</h2>
 <ul>
 <li><strong>#64 bloqueo de cuenta a 5 minutos:</strong> decisión de Said
@@ -492,5 +362,30 @@ HMAC de compras y clave NVD quedan omitidos por decisión.</li>
   </article>
 </main>
 <footer><span>EMPRESA_JOSESAID · Registro de PRs</span><a href="../index.html">Índice</a></footer>
+<script>
+(function(){
+  var TAM=20, filas=Array.prototype.slice.call(document.querySelectorAll('#prs tbody tr'));
+  var total=filas.length, paginas=Math.max(1,Math.ceil(total/TAM)), actual=1;
+  var controles=document.getElementById('controles'), rango=document.getElementById('rango'), resumen=document.getElementById('resumen-pag');
+  function boton(txt,pag,activo,deshab){var b=document.createElement('button');b.type='button';b.textContent=txt;
+    if(activo)b.setAttribute('aria-current','page'); if(deshab)b.disabled=true;
+    b.addEventListener('click',function(){ir(pag)});return b;}
+  function ventana(){var v=[],ini=Math.max(1,actual-2),fin=Math.min(paginas,ini+4);ini=Math.max(1,fin-4);
+    for(var i=ini;i<=fin;i++)v.push(i);return v;}
+  function ir(p){actual=p;var ini=(p-1)*TAM,fin=Math.min(total,ini+TAM);
+    filas.forEach(function(f,i){f.hidden=!(i>=ini&&i<fin);});
+    controles.innerHTML='';
+    controles.appendChild(boton('« Anterior',p-1,false,p===1));
+    ventana().forEach(function(n){controles.appendChild(boton(String(n),n,n===p,false));});
+    controles.appendChild(boton('Siguiente »',p+1,false,p===paginas));
+    rango.textContent='mostrando '+(ini+1)+'–'+fin+' de '+total;
+    resumen.textContent='Página '+p+' de '+paginas;
+    var t=document.querySelector('.paginacion');if(p>1&&t&&window.__pagClick){t.scrollIntoView({block:'nearest'});}
+  }
+  window.__pagClick=false;
+  ir(1);
+  controles.addEventListener('click',function(){window.__pagClick=true;});
+})();
+</script>
 </body>
 </html>
