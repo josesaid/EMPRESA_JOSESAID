@@ -33,10 +33,10 @@ public class ComprasService {
     /**
      * Fila del listado: sin RFC, sin montos y sin líneas.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param estatus componente de tipo {@code EstatusOrdenCompra}.
-     * @param razonSocialProveedor componente de tipo {@code String}.
-     * @param creadaUtc componente de tipo {@code Instant}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusOrdenCompra}.
+     * @param razonSocialProveedor razon social proveedor, de tipo {@code String}.
+     * @param creadaUtc creada utc, de tipo {@code Instant}.
      */
     public record ResumenListado(UUID id, EstatusOrdenCompra estatus, String razonSocialProveedor, Instant creadaUtc) {
     }

@@ -1341,6 +1341,7 @@ def main():
         f.write(PAGINA_VISOR)
     servicios = servicios_documentados()
     resumen = []
+    estados = {}
     for svc in servicios:
         svc_dir = os.path.join(RAIZ, svc)
         spec, n = construir_spec(svc)
@@ -1377,15 +1378,45 @@ def main():
         with open(os.path.join(SALIDA, svc + ".html"), "w", encoding="utf-8") as f:
             f.write(pagina_ficha(svc, datos, spec if n else None, hue))
         resumen.append((svc, n))
+        estados[svc] = {t["id"]: (lambda r: r[2] if r else None)(resultados_de(svc_dir, t["id"]))
+                        for t in TECNOLOGIAS}
         print(f"✅ {svc}: {n} endpoints · {len(diagramas)} diagramas · README {'sí' if readme else 'no'}")
     with open(os.path.join(SALIDA, "index.html"), "w", encoding="utf-8") as f:
-        f.write(pagina_indice(resumen))
+        f.write(pagina_indice(resumen, estados=estados))
     with open(os.path.join(RAIZ, "index.html"), "w", encoding="utf-8") as f:
-        f.write(pagina_indice(resumen, desde_raiz=True))
+        f.write(pagina_indice(resumen, desde_raiz=True, estados=estados))
     print(f"🏁 Fichas generadas en {SALIDA}")
 
 
-def pagina_indice(resumen, desde_raiz=False):
+def bloque_reportes(estados):
+    """Tabla de estado de cada herramienta de calidad por servicio (✓ con fecha, o —)."""
+    if not estados:
+        return ""
+    herramientas = [(t["id"], t["nombre"]) for t in TECNOLOGIAS]
+    e = html.escape
+    filas = []
+    completos = 0
+    for svc, por_tid in estados.items():
+        celdas = []
+        for tid, _ in herramientas:
+            fecha = por_tid.get(tid)
+            if fecha:
+                celdas.append(f'<td class="ok" title="{e(fecha)}">✓</td>')
+            else:
+                celdas.append('<td class="no">—</td>')
+        completos += all(por_tid.get(tid) for tid, _ in herramientas)
+        filas.append(f'<tr><th scope="row">{e(svc)}</th>{"".join(celdas)}</tr>')
+    cabecera = "".join(f"<th>{e(nombre)}</th>" for _, nombre in herramientas)
+    return (f"  <h2>Reportes de calidad</h2>\n"
+            f"  <p class=\"lead-tabla\">{completos} de {len(estados)} servicios con todos los reportes generados. "
+            f"Pasa el cursor sobre ✓ para ver la fecha de cada reporte.</p>\n"
+            f"  <div class=\"tabla-wrap\"><table class=\"reportes\">\n"
+            f"    <thead><tr><th>Servicio</th>{cabecera}</tr></thead>\n"
+            f"    <tbody>{''.join(filas)}</tbody>\n"
+            f"  </table></div>")
+
+
+def pagina_indice(resumen, desde_raiz=False, estados=None):
     total = sum(n for _, n in resumen)
     pre_api = "docs/api/" if desde_raiz else ""
     pre_raiz = "" if desde_raiz else "../../"
@@ -1457,6 +1488,14 @@ h2{{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
 .nombre{{font-weight:650;word-break:break-word}}
 .conteo{{color:var(--muted);font-size:13px}}
 .ver{{margin-top:6px;color:var(--acento);font-size:13px;font-weight:600}}
+table.reportes{{width:100%;border-collapse:collapse;background:var(--superficie);font-size:14px}}
+.tabla-wrap{{overflow-x:auto;border:1px solid var(--linea);border-radius:14px;box-shadow:0 6px 20px var(--sombra)}}
+table.reportes th,table.reportes td{{padding:10px 12px;border-bottom:1px solid var(--linea);text-align:center;white-space:nowrap}}
+table.reportes th{{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--superficie)}}
+table.reportes tbody th{{text-align:left;text-transform:none;letter-spacing:0;font-size:14px;color:var(--fg);font-weight:600}}
+table.reportes td.ok{{color:var(--acento);font-weight:700;cursor:help}}
+table.reportes td.no{{color:var(--muted)}}
+.lead-tabla{{color:var(--muted);font-size:14px;margin:0 0 10px}}
 footer{{margin-top:32px;color:var(--muted);font-size:13px}}
 @media (prefers-color-scheme: dark){{:root:not([data-theme="light"]) .tarjeta{{background:linear-gradient(160deg,hsl(var(--h) 45% 16%),var(--superficie) 60%)}}
 :root:not([data-theme="light"]) .tarjeta{{border-left-color:hsl(var(--h) 85% 66%)}}
@@ -1537,6 +1576,7 @@ footer{{margin-top:32px;color:var(--muted);font-size:13px}}
   <div class="grid">
 {tarjetas}
   </div>
+{bloque_reportes(estados)}
 </main>
 </body>
 </html>

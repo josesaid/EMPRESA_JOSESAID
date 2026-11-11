@@ -6,13 +6,13 @@ import java.util.UUID;
 /**
  * Refresh token de una sesión. Guarda el hash del token, no el token. Es inmutable: marcar
  * como usado produce una copia.
-  * @param id componente de tipo {@code UUID}.
-  * @param usuarioId componente de tipo {@code UUID}.
-  * @param familiaId componente de tipo {@code UUID}.
-  * @param hash componente de tipo {@code String}.
-  * @param expiraUtc componente de tipo {@code Instant}.
-  * @param usadoUtc componente de tipo {@code Instant}.
-  * @param revocadoUtc componente de tipo {@code Instant}.
+  * @param id identificador único del registro, de tipo {@code UUID}.
+  * @param usuarioId identificador del usuario, de tipo {@code UUID}.
+  * @param familiaId identificador del familia, de tipo {@code UUID}.
+  * @param hash hash, de tipo {@code String}.
+  * @param expiraUtc expira utc, de tipo {@code Instant}.
+  * @param usadoUtc usado utc, de tipo {@code Instant}.
+  * @param revocadoUtc revocado utc, de tipo {@code Instant}.
  */
 public record RefreshToken(UUID id, UUID usuarioId, UUID familiaId, String hash,
                            Instant expiraUtc, Instant usadoUtc, Instant revocadoUtc) {

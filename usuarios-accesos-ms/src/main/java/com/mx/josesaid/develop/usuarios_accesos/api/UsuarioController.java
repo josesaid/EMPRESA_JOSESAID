@@ -80,10 +80,10 @@ public class UsuarioController {
     /**
      * Datos para crear un usuario: correo, nombre completo, contraseña temporal y roles.
      *
-     * @param correo componente de tipo {@code String}.
-     * @param nombreCompleto componente de tipo {@code String}.
-     * @param password componente de tipo {@code String}.
-     * @param roles componente de tipo {@code Set<Rol>}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param nombreCompleto nombre completo, de tipo {@code String}.
+     * @param password password, de tipo {@code String}.
+     * @param roles roles asignados, de tipo {@code Set<Rol>}.
      */
     public record CrearUsuarioSolicitud(
             @NotBlank @Email String correo,
@@ -95,8 +95,8 @@ public class UsuarioController {
     /**
      * Área a asignar y motivo del cambio.
      *
-     * @param area componente de tipo {@code String}.
-     * @param motivo componente de tipo {@code String}.
+     * @param area área de negocio a la que pertenece, de tipo {@code String}.
+     * @param motivo motivo del registro o de la acción, de tipo {@code String}.
      */
     public record AsignarAreaSolicitud(
             @NotBlank @Size(max = 40) String area,
@@ -106,8 +106,8 @@ public class UsuarioController {
     /**
      * Roles nuevos y motivo del cambio.
      *
-     * @param roles componente de tipo {@code Set<Rol>}.
-     * @param motivo componente de tipo {@code String}.
+     * @param roles roles asignados, de tipo {@code Set<Rol>}.
+     * @param motivo motivo del registro o de la acción, de tipo {@code String}.
      */
     public record AsignarRolesSolicitud(
             @NotNull @NotEmpty Set<Rol> roles,
@@ -117,12 +117,12 @@ public class UsuarioController {
     /**
      * Respuesta con datos personales enmascarados.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param correo componente de tipo {@code String}.
-     * @param nombreCompleto componente de tipo {@code String}.
-     * @param estatus componente de tipo {@code String}.
-     * @param roles componente de tipo {@code Set<Rol>}.
-     * @param area componente de tipo {@code String}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param nombreCompleto nombre completo, de tipo {@code String}.
+     * @param estatus estado actual del registro, de tipo {@code String}.
+     * @param roles roles asignados, de tipo {@code Set<Rol>}.
+     * @param area área de negocio a la que pertenece, de tipo {@code String}.
      */
     public record UsuarioRespuesta(UUID id, String correo, String nombreCompleto, String estatus, Set<Rol> roles,
                                    String area) {

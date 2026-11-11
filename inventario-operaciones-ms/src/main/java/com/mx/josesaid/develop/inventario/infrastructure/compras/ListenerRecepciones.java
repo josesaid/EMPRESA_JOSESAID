@@ -83,9 +83,9 @@ public class ListenerRecepciones {
     /**
      * Sobre que publica compras-proveedores-ms por el outbox.
      *
-     * @param tipo componente de tipo {@code String}.
-     * @param agregadoId componente de tipo {@code String}.
-     * @param datos componente de tipo {@code Map<String, Object>}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code String}.
+     * @param agregadoId identificador del agregado de dominio al que pertenece el evento, de tipo {@code String}.
+     * @param datos datos específicos de la operación, de tipo {@code Map<String, Object>}.
      */
     public record Sobre(String tipo, String agregadoId, Map<String, Object> datos) {
     }

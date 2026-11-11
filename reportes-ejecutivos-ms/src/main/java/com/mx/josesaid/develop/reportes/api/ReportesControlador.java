@@ -128,11 +128,11 @@ public class ReportesControlador {
     /**
      * Cuerpo para registrar un indicador: área, nombre, periodo, valor y fecha de la fuente.
      *
-     * @param area componente de tipo {@code Area}.
-     * @param nombre componente de tipo {@code String}.
-     * @param periodo componente de tipo {@code String}.
-     * @param valor componente de tipo {@code BigDecimal}.
-     * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
+     * @param area área de negocio a la que pertenece, de tipo {@code Area}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param periodo periodo de referencia (por ejemplo, año y mes), de tipo {@code String}.
+     * @param valor valor registrado, de tipo {@code BigDecimal}.
+     * @param fuenteActualizadaUtc fecha y hora (UTC) de la última actualización de la fuente, de tipo {@code Instant}.
      */
     public record RegistrarIndicadorPeticion(
             @NotNull Area area,
@@ -147,13 +147,13 @@ public class ReportesControlador {
     /**
      * Indicador tal como lo ve el cliente. Marca si la fuente está desactualizada.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param area componente de tipo {@code Area}.
-     * @param nombre componente de tipo {@code String}.
-     * @param valor componente de tipo {@code BigDecimal}.
-     * @param periodo componente de tipo {@code String}.
-     * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
-     * @param desactualizado componente de tipo {@code boolean}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param area área de negocio a la que pertenece, de tipo {@code Area}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param valor valor registrado, de tipo {@code BigDecimal}.
+     * @param periodo periodo de referencia (por ejemplo, año y mes), de tipo {@code String}.
+     * @param fuenteActualizadaUtc fecha y hora (UTC) de la última actualización de la fuente, de tipo {@code Instant}.
+     * @param desactualizado desactualizado, de tipo {@code boolean}.
      */
     public record IndicadorRespuesta(UUID id, Area area, String nombre, BigDecimal valor, String periodo,
                                      Instant fuenteActualizadaUtc, boolean desactualizado) {
@@ -167,12 +167,12 @@ public class ReportesControlador {
     /**
      * Indicador consolidado de un reporte cerrado.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param area componente de tipo {@code Area}.
-     * @param nombre componente de tipo {@code String}.
-     * @param valor componente de tipo {@code BigDecimal}.
-     * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
-     * @param desactualizado componente de tipo {@code boolean}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param area área de negocio a la que pertenece, de tipo {@code Area}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param valor valor registrado, de tipo {@code BigDecimal}.
+     * @param fuenteActualizadaUtc fecha y hora (UTC) de la última actualización de la fuente, de tipo {@code Instant}.
+     * @param desactualizado desactualizado, de tipo {@code boolean}.
      */
     public record IndicadorConsolidadoRespuesta(UUID id, Area area, String nombre, BigDecimal valor,
                                                 Instant fuenteActualizadaUtc, boolean desactualizado) {
@@ -186,12 +186,12 @@ public class ReportesControlador {
     /**
      * Reporte con sus indicadores. Si está cerrado, incluye los consolidados.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param periodo componente de tipo {@code String}.
-     * @param estatus componente de tipo {@code EstatusReporte}.
-     * @param creadoUtc componente de tipo {@code Instant}.
-     * @param cerradoUtc componente de tipo {@code Instant}.
-     * @param indicadores componente de tipo {@code List<IndicadorConsolidadoRespuesta>}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param periodo periodo de referencia (por ejemplo, año y mes), de tipo {@code String}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusReporte}.
+     * @param creadoUtc creado utc, de tipo {@code Instant}.
+     * @param cerradoUtc cerrado utc, de tipo {@code Instant}.
+     * @param indicadores indicadores, de tipo {@code List<IndicadorConsolidadoRespuesta>}.
      */
     public record ReporteRespuesta(UUID id, String periodo, EstatusReporte estatus, Instant creadoUtc,
                                    Instant cerradoUtc, List<IndicadorConsolidadoRespuesta> indicadores) {

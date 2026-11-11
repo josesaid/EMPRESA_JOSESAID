@@ -16,9 +16,9 @@ public interface ContextoContable {
     /**
      * Cuenta del catálogo contable, usada como ejemplo para el modelo.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param codigo componente de tipo {@code String}.
-     * @param nombre componente de tipo {@code String}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param codigo código legible que identifica el registro, de tipo {@code String}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
      */
     record CuentaCatalogo(UUID id, String codigo, String nombre) {
     }
@@ -26,9 +26,9 @@ public interface ContextoContable {
     /**
      * Póliza de ejemplo para que el modelo copie el formato correcto.
      *
-     * @param tipo componente de tipo {@code String}.
-     * @param fecha componente de tipo {@code LocalDate}.
-     * @param lineas componente de tipo {@code List<LineaEjemplo>}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code String}.
+     * @param fecha fecha del registro, de tipo {@code LocalDate}.
+     * @param lineas líneas o renglones del documento, de tipo {@code List<LineaEjemplo>}.
      */
     record PolizaEjemplo(String tipo, LocalDate fecha, List<LineaEjemplo> lineas) {
     }
@@ -36,9 +36,9 @@ public interface ContextoContable {
     /**
      * Línea de una póliza de ejemplo: cuenta, cargo y abono.
      *
-     * @param cuentaId componente de tipo {@code UUID}.
-     * @param cargo componente de tipo {@code BigDecimal}.
-     * @param abono componente de tipo {@code BigDecimal}.
+     * @param cuentaId identificador de la cuenta contable, de tipo {@code UUID}.
+     * @param cargo importe del cargo, de tipo {@code BigDecimal}.
+     * @param abono importe del abono, de tipo {@code BigDecimal}.
      */
     record LineaEjemplo(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
     }

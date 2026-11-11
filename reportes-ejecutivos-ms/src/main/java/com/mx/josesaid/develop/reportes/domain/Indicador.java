@@ -8,12 +8,12 @@ import java.util.UUID;
 /**
  * Valor de un indicador de un área en un periodo. Se identifica por área, nombre y periodo.
  *
- * @param id componente de tipo {@code UUID}.
- * @param area componente de tipo {@code Area}.
- * @param nombre componente de tipo {@code String}.
- * @param valor componente de tipo {@code BigDecimal}.
- * @param periodo componente de tipo {@code Periodo}.
- * @param fuenteActualizadaUtc componente de tipo {@code Instant}.
+ * @param id identificador único del registro, de tipo {@code UUID}.
+ * @param area área de negocio a la que pertenece, de tipo {@code Area}.
+ * @param nombre nombre descriptivo, de tipo {@code String}.
+ * @param valor valor registrado, de tipo {@code BigDecimal}.
+ * @param periodo periodo de referencia (por ejemplo, año y mes), de tipo {@code Periodo}.
+ * @param fuenteActualizadaUtc fecha y hora (UTC) de la última actualización de la fuente, de tipo {@code Instant}.
  */
 public record Indicador(UUID id, Area area, String nombre, BigDecimal valor, Periodo periodo,
                         Instant fuenteActualizadaUtc) {

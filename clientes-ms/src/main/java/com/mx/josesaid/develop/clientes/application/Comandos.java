@@ -17,9 +17,9 @@ public final class Comandos {
     /**
      * Datos de un contacto recibidos para registrar.
      *
-     * @param nombre componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
-     * @param rol componente de tipo {@code RolContacto}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param rol rol asignado, de tipo {@code RolContacto}.
      */
     public record DatosContacto(String nombre, String correo, RolContacto rol) {
     }
@@ -27,11 +27,11 @@ public final class Comandos {
     /**
      * Datos para registrar un prospecto. Si confirmarDuplicado es verdadero, se acepta una coincidencia parcial.
      *
-     * @param nombre componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param fuente componente de tipo {@code Fuente}.
-     * @param confirmarDuplicado componente de tipo {@code boolean}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param fuente fuente, de tipo {@code Fuente}.
+     * @param confirmarDuplicado confirmar duplicado, de tipo {@code boolean}.
      */
     public record NuevoProspecto(String nombre, String correo, String rfc, Fuente fuente, boolean confirmarDuplicado) {
     }
@@ -39,9 +39,9 @@ public final class Comandos {
     /**
      * Datos para convertir un prospecto en cliente.
      *
-     * @param razonSocial componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param contactoPrincipal componente de tipo {@code DatosContacto}.
+     * @param razonSocial razón social, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param contactoPrincipal contacto principal, de tipo {@code DatosContacto}.
      */
     public record ConvertirProspecto(String razonSocial, String rfc, DatosContacto contactoPrincipal) {
     }
@@ -49,10 +49,10 @@ public final class Comandos {
     /**
      * Datos para dar de alta un cliente directo.
      *
-     * @param razonSocial componente de tipo {@code String}.
-     * @param rfc componente de tipo {@code String}.
-     * @param contactoPrincipal componente de tipo {@code DatosContacto}.
-     * @param confirmarDuplicado componente de tipo {@code boolean}.
+     * @param razonSocial razón social, de tipo {@code String}.
+     * @param rfc RFC fiscal de la persona o empresa, de tipo {@code String}.
+     * @param contactoPrincipal contacto principal, de tipo {@code DatosContacto}.
+     * @param confirmarDuplicado confirmar duplicado, de tipo {@code boolean}.
      */
     public record NuevoCliente(String razonSocial, String rfc, DatosContacto contactoPrincipal, boolean confirmarDuplicado) {
     }
@@ -60,10 +60,10 @@ public final class Comandos {
     /**
      * Datos de un contacto a agregar a un cliente.
      *
-     * @param nombre componente de tipo {@code String}.
-     * @param correo componente de tipo {@code String}.
-     * @param rol componente de tipo {@code RolContacto}.
-     * @param principal componente de tipo {@code boolean}.
+     * @param nombre nombre descriptivo, de tipo {@code String}.
+     * @param correo correo electrónico de contacto, de tipo {@code String}.
+     * @param rol rol asignado, de tipo {@code RolContacto}.
+     * @param principal principal, de tipo {@code boolean}.
      */
     public record NuevoContacto(String nombre, String correo, RolContacto rol, boolean principal) {
     }
@@ -71,9 +71,9 @@ public final class Comandos {
     /**
      * Datos de una interacción comercial.
      *
-     * @param tipo componente de tipo {@code TipoInteraccion}.
-     * @param fecha componente de tipo {@code Instant}.
-     * @param resumen componente de tipo {@code String}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoInteraccion}.
+     * @param fecha fecha del registro, de tipo {@code Instant}.
+     * @param resumen resumen breve, de tipo {@code String}.
      */
     public record NuevaInteraccion(TipoInteraccion tipo, Instant fecha, String resumen) {
     }
@@ -81,10 +81,10 @@ public final class Comandos {
     /**
      * Datos de un consentimiento a registrar.
      *
-     * @param finalidad componente de tipo {@code String}.
-     * @param fechaOtorgado componente de tipo {@code Instant}.
-     * @param medio componente de tipo {@code MedioConsentimiento}.
-     * @param vigencia componente de tipo {@code LocalDate}.
+     * @param finalidad finalidad, de tipo {@code String}.
+     * @param fechaOtorgado fecha otorgado, de tipo {@code Instant}.
+     * @param medio medio, de tipo {@code MedioConsentimiento}.
+     * @param vigencia vigencia del registro, de tipo {@code LocalDate}.
      */
     public record NuevoConsentimiento(String finalidad, Instant fechaOtorgado, MedioConsentimiento medio, LocalDate vigencia) {
     }

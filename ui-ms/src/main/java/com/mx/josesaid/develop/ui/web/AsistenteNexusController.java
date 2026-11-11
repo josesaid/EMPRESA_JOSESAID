@@ -28,8 +28,8 @@ public class AsistenteNexusController {
     /**
      * Un turno del chat: quién escribió y qué dijo.
      *
-     * @param autor componente de tipo {@code String}.
-     * @param texto componente de tipo {@code String}.
+     * @param autor autor, de tipo {@code String}.
+     * @param texto texto libre, de tipo {@code String}.
      */
     public record Mensaje(String autor, String texto) implements Serializable {
     }

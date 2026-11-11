@@ -137,10 +137,10 @@ public class DocumentosControlador {
     /**
      * Datos del alta de un documento: tipo, título, área y fecha de vencimiento si aplica.
      *
-     * @param tipo componente de tipo {@code TipoDocumento}.
-     * @param titulo componente de tipo {@code String}.
-     * @param area componente de tipo {@code String}.
-     * @param venceEn componente de tipo {@code LocalDate}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoDocumento}.
+     * @param titulo título, de tipo {@code String}.
+     * @param area área de negocio a la que pertenece, de tipo {@code String}.
+     * @param venceEn vence en, de tipo {@code LocalDate}.
      */
     public record CrearDocumentoPeticion(
             @NotNull TipoDocumento tipo,
@@ -152,7 +152,7 @@ public class DocumentosControlador {
     /**
      * Motivo de la eliminación, de hasta 300 caracteres.
      *
-     * @param motivo componente de tipo {@code String}.
+     * @param motivo motivo del registro o de la acción, de tipo {@code String}.
      */
     public record MotivoPeticion(@NotBlank @Size(max = 300) String motivo) {
     }
@@ -160,7 +160,7 @@ public class DocumentosControlador {
     /**
      * La confirmación debe ser el identificador del documento, tecleado por quien purga.
      *
-     * @param confirmacion componente de tipo {@code String}.
+     * @param confirmacion confirmacion, de tipo {@code String}.
      */
     public record PurgaPeticion(@NotBlank String confirmacion) {
     }
@@ -170,9 +170,9 @@ public class DocumentosControlador {
     /**
      * Versión de un documento: número, huella SHA-256 del contenido y fecha de creación.
      *
-     * @param numero componente de tipo {@code int}.
-     * @param hashSha256 componente de tipo {@code String}.
-     * @param creadoUtc componente de tipo {@code Instant}.
+     * @param numero numero, de tipo {@code int}.
+     * @param hashSha256 hash sha256, de tipo {@code String}.
+     * @param creadoUtc creado utc, de tipo {@code Instant}.
      */
     public record VersionRespuesta(int numero, String hashSha256, Instant creadoUtc) {
         /** Convierte una versión del dominio en su respuesta. */
@@ -184,16 +184,16 @@ public class DocumentosControlador {
     /**
      * Documento tal como lo ve el cliente. Nunca incluye la referencia de almacenamiento.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param tipo componente de tipo {@code TipoDocumento}.
-     * @param titulo componente de tipo {@code String}.
-     * @param area componente de tipo {@code String}.
-     * @param venceEn componente de tipo {@code LocalDate}.
-     * @param retencionHasta componente de tipo {@code LocalDate}.
-     * @param versionActual componente de tipo {@code int}.
-     * @param eliminado componente de tipo {@code boolean}.
-     * @param purgado componente de tipo {@code boolean}.
-     * @param versiones componente de tipo {@code List<VersionRespuesta>}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param tipo tipo o clasificación del registro, de tipo {@code TipoDocumento}.
+     * @param titulo título, de tipo {@code String}.
+     * @param area área de negocio a la que pertenece, de tipo {@code String}.
+     * @param venceEn vence en, de tipo {@code LocalDate}.
+     * @param retencionHasta retencion hasta, de tipo {@code LocalDate}.
+     * @param versionActual version actual, de tipo {@code int}.
+     * @param eliminado eliminado, de tipo {@code boolean}.
+     * @param purgado purgado, de tipo {@code boolean}.
+     * @param versiones versiones, de tipo {@code List<VersionRespuesta>}.
      */
     public record DocumentoRespuesta(UUID id, TipoDocumento tipo, String titulo, String area, LocalDate venceEn,
                                      LocalDate retencionHasta, int versionActual, boolean eliminado,

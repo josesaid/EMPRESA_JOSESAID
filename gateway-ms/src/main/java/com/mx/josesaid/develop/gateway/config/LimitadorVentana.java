@@ -16,8 +16,8 @@ public final class LimitadorVentana {
     /**
      * Resultado de un intento: permitido, o bloqueado con los segundos para reintentar.
      *
-     * @param permitido componente de tipo {@code boolean}.
-     * @param reintentarEnSegundos componente de tipo {@code long}.
+     * @param permitido permitido, de tipo {@code boolean}.
+     * @param reintentarEnSegundos reintentar en segundos, de tipo {@code long}.
      */
     public record Resultado(boolean permitido, long reintentarEnSegundos) {
     }
@@ -27,8 +27,8 @@ public final class LimitadorVentana {
     /**
      * Contador de una ventana para una clave: inicio de la ventana y número de intentos.
      *
-     * @param inicio componente de tipo {@code Instant}.
-     * @param conteo componente de tipo {@code AtomicInteger}.
+     * @param inicio inicio, de tipo {@code Instant}.
+     * @param conteo conteo, de tipo {@code AtomicInteger}.
      */
     private record Cubo(Instant inicio, AtomicInteger conteo) {
     }

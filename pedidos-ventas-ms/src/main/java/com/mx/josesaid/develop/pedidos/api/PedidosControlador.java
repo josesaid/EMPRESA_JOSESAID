@@ -205,10 +205,10 @@ public class PedidosControlador {
     /**
      * Línea de una cotización o pedido: producto, cantidad y precio.
      *
-     * @param productoId componente de tipo {@code UUID}.
-     * @param descripcion componente de tipo {@code String}.
-     * @param cantidad componente de tipo {@code int}.
-     * @param precioUnitario componente de tipo {@code BigDecimal}.
+     * @param productoId identificador del producto, de tipo {@code UUID}.
+     * @param descripcion descripcion, de tipo {@code String}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code int}.
+     * @param precioUnitario precio unitario, de tipo {@code BigDecimal}.
      */
     public record LineaPeticion(
             @NotNull UUID productoId,
@@ -220,12 +220,12 @@ public class PedidosControlador {
     /**
      * Datos para crear una cotización.
      *
-     * @param clienteId componente de tipo {@code UUID}.
-     * @param canal componente de tipo {@code Canal}.
-     * @param moneda componente de tipo {@code String}.
-     * @param tasaIva componente de tipo {@code TasaIva}.
-     * @param vigenteHasta componente de tipo {@code LocalDate}.
-     * @param lineas componente de tipo {@code List<LineaPeticion>}.
+     * @param clienteId identificador del cliente, de tipo {@code UUID}.
+     * @param canal canal, de tipo {@code Canal}.
+     * @param moneda código de moneda (por ejemplo, MXN), de tipo {@code String}.
+     * @param tasaIva tasa de IVA aplicable, de tipo {@code TasaIva}.
+     * @param vigenteHasta vigente hasta, de tipo {@code LocalDate}.
+     * @param lineas líneas o renglones del documento, de tipo {@code List<LineaPeticion>}.
      */
     public record CrearCotizacionPeticion(
             @NotNull UUID clienteId,
@@ -239,11 +239,11 @@ public class PedidosControlador {
     /**
      * Datos para crear un pedido directo.
      *
-     * @param clienteId componente de tipo {@code UUID}.
-     * @param canal componente de tipo {@code Canal}.
-     * @param moneda componente de tipo {@code String}.
-     * @param tasaIva componente de tipo {@code TasaIva}.
-     * @param lineas componente de tipo {@code List<LineaPeticion>}.
+     * @param clienteId identificador del cliente, de tipo {@code UUID}.
+     * @param canal canal, de tipo {@code Canal}.
+     * @param moneda código de moneda (por ejemplo, MXN), de tipo {@code String}.
+     * @param tasaIva tasa de IVA aplicable, de tipo {@code TasaIva}.
+     * @param lineas líneas o renglones del documento, de tipo {@code List<LineaPeticion>}.
      */
     public record CrearPedidoPeticion(
             @NotNull UUID clienteId,
@@ -256,7 +256,7 @@ public class PedidosControlador {
     /**
      * Lista de líneas para reemplazar las del pedido.
      *
-     * @param lineas componente de tipo {@code List<LineaPeticion>}.
+     * @param lineas líneas o renglones del documento, de tipo {@code List<LineaPeticion>}.
      */
     public record LineasPeticion(@NotNull @Size(max = 100) List<@Valid LineaPeticion> lineas) {
     }
@@ -264,7 +264,7 @@ public class PedidosControlador {
     /**
      * Motivo de la cancelación.
      *
-     * @param motivo componente de tipo {@code MotivoCancelacion}.
+     * @param motivo motivo del registro o de la acción, de tipo {@code MotivoCancelacion}.
      */
     public record CancelacionPeticion(@NotNull MotivoCancelacion motivo) {
     }
@@ -274,11 +274,11 @@ public class PedidosControlador {
     /**
      * Respuesta de una línea.
      *
-     * @param productoId componente de tipo {@code UUID}.
-     * @param descripcion componente de tipo {@code String}.
-     * @param cantidad componente de tipo {@code int}.
-     * @param precioUnitario componente de tipo {@code BigDecimal}.
-     * @param subtotal componente de tipo {@code BigDecimal}.
+     * @param productoId identificador del producto, de tipo {@code UUID}.
+     * @param descripcion descripcion, de tipo {@code String}.
+     * @param cantidad cantidad solicitada o registrada, de tipo {@code int}.
+     * @param precioUnitario precio unitario, de tipo {@code BigDecimal}.
+     * @param subtotal subtotal antes de impuestos, de tipo {@code BigDecimal}.
      */
     public record LineaRespuesta(UUID productoId, String descripcion, int cantidad,
                                  BigDecimal precioUnitario, BigDecimal subtotal) {
@@ -294,16 +294,16 @@ public class PedidosControlador {
     /**
      * Respuesta de una cotización.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param clienteId componente de tipo {@code UUID}.
-     * @param canal componente de tipo {@code Canal}.
-     * @param moneda componente de tipo {@code String}.
-     * @param tasaIva componente de tipo {@code TasaIva}.
-     * @param vigenteHasta componente de tipo {@code LocalDate}.
-     * @param estatus componente de tipo {@code EstatusCotizacion}.
-     * @param pedidoId componente de tipo {@code UUID}.
-     * @param lineas componente de tipo {@code List<LineaRespuesta>}.
-     * @param totales componente de tipo {@code Totales}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param clienteId identificador del cliente, de tipo {@code UUID}.
+     * @param canal canal, de tipo {@code Canal}.
+     * @param moneda código de moneda (por ejemplo, MXN), de tipo {@code String}.
+     * @param tasaIva tasa de IVA aplicable, de tipo {@code TasaIva}.
+     * @param vigenteHasta vigente hasta, de tipo {@code LocalDate}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusCotizacion}.
+     * @param pedidoId identificador del pedido, de tipo {@code UUID}.
+     * @param lineas líneas o renglones del documento, de tipo {@code List<LineaRespuesta>}.
+     * @param totales totales, de tipo {@code Totales}.
      */
     public record CotizacionRespuesta(UUID id, UUID clienteId, Canal canal, String moneda, TasaIva tasaIva,
                                       LocalDate vigenteHasta, EstatusCotizacion estatus, UUID pedidoId,
@@ -319,18 +319,18 @@ public class PedidosControlador {
     /**
      * Respuesta de un pedido.
      *
-     * @param id componente de tipo {@code UUID}.
-     * @param clienteId componente de tipo {@code UUID}.
-     * @param cotizacionId componente de tipo {@code UUID}.
-     * @param canal componente de tipo {@code Canal}.
-     * @param moneda componente de tipo {@code String}.
-     * @param tasaIva componente de tipo {@code TasaIva}.
-     * @param estatus componente de tipo {@code EstatusPedido}.
-     * @param lineas componente de tipo {@code List<LineaRespuesta>}.
-     * @param totales componente de tipo {@code Totales}.
-     * @param fechaConfirmacion componente de tipo {@code Instant}.
-     * @param fechaEntrega componente de tipo {@code Instant}.
-     * @param motivoCancelacion componente de tipo {@code MotivoCancelacion}.
+     * @param id identificador único del registro, de tipo {@code UUID}.
+     * @param clienteId identificador del cliente, de tipo {@code UUID}.
+     * @param cotizacionId identificador del cotizacion, de tipo {@code UUID}.
+     * @param canal canal, de tipo {@code Canal}.
+     * @param moneda código de moneda (por ejemplo, MXN), de tipo {@code String}.
+     * @param tasaIva tasa de IVA aplicable, de tipo {@code TasaIva}.
+     * @param estatus estado actual del registro, de tipo {@code EstatusPedido}.
+     * @param lineas líneas o renglones del documento, de tipo {@code List<LineaRespuesta>}.
+     * @param totales totales, de tipo {@code Totales}.
+     * @param fechaConfirmacion fecha confirmacion, de tipo {@code Instant}.
+     * @param fechaEntrega fecha entrega, de tipo {@code Instant}.
+     * @param motivoCancelacion motivo cancelacion, de tipo {@code MotivoCancelacion}.
      */
     public record PedidoRespuesta(UUID id, UUID clienteId, UUID cotizacionId, Canal canal, String moneda,
                                   TasaIva tasaIva, EstatusPedido estatus, List<LineaRespuesta> lineas,
@@ -347,9 +347,9 @@ public class PedidosControlador {
     /**
      * Resumen de ventas de un mes.
      *
-     * @param mes componente de tipo {@code String}.
-     * @param pedidos componente de tipo {@code long}.
-     * @param ventasPorMoneda componente de tipo {@code Map<String, BigDecimal>}.
+     * @param mes mes, de tipo {@code String}.
+     * @param pedidos pedidos, de tipo {@code long}.
+     * @param ventasPorMoneda ventas por moneda, de tipo {@code Map<String, BigDecimal>}.
      */
     public record ResumenVentasRespuesta(String mes, long pedidos, Map<String, BigDecimal> ventasPorMoneda) {
     }

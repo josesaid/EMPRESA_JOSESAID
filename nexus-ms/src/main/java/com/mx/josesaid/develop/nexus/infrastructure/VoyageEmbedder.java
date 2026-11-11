@@ -109,7 +109,7 @@ public final class VoyageEmbedder implements Embedder {
     /**
      * Respuesta de Voyage: lista de embeddings.
      *
-     * @param data componente de tipo {@code List<Dato>}.
+     * @param data data, de tipo {@code List<Dato>}.
      */
     record RespuestaEmbeddings(List<Dato> data) {
     }
@@ -117,8 +117,8 @@ public final class VoyageEmbedder implements Embedder {
     /**
      * Embedding de un texto, identificado por su posición en la petición.
      *
-     * @param index componente de tipo {@code int}.
-     * @param embedding componente de tipo {@code List<Float>}.
+     * @param index index, de tipo {@code int}.
+     * @param embedding embedding, de tipo {@code List<Float>}.
      */
     record Dato(int index, List<Float> embedding) {
     }

@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 /**
  * Periodo mensual (2026-10), trimestral (2026-Q4) o anual (2026).
  *
- * @param clave componente de tipo {@code String}.
+ * @param clave clave, de tipo {@code String}.
  */
 public record Periodo(String clave) {
 
