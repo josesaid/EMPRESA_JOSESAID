@@ -15,13 +15,6 @@ Procedimientos completos, con pasos numerados, diagramas y verificación. Cada g
 | 9 | [Consultar indicadores y generar reportes](09-indicadores-y-reportes.md) | Reporte ejecutivo mensual, trimestral o anual |
 | 10 | [Rastrear un request en Jaeger](10-rastrear-request-jaeger.md) | Ver por dónde pasó un request y en qué paso se tardó o falló |
 
-## Pendientes de diseño
-
-Estos procedimientos todavía no tienen guía porque el procedimiento no está definido. No se escriben pasos que aún no existen.
-
-- **Derechos ARCO** (acceso, rectificación, cancelación y oposición) de datos personales en `clientes-ms`: falta definir el proceso de anonimización.
-- **Rotación de la clave de cifrado y de la clave HMAC de `compras-proveedores-ms`:** falta el diseño de la rotación y de su prueba.
-
 ## Convenciones
 
 - `HOST` es la dirección del gateway (por ejemplo `localhost:8080`). Las rutas de API van bajo el prefijo del servicio, por ejemplo `/compras-proveedores-ms/v1`.
