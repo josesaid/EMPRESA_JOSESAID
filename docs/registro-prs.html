@@ -16,11 +16,11 @@ code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--codi
 pre{background:var(--codigo);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;max-width:100%}
 pre code{background:transparent;padding:0;font-size:13px}
 .cabecera{background:linear-gradient(135deg,var(--cabecera-a),var(--cabecera-b));color:#facc15;padding:26px max(16px,env(safe-area-inset-left,0px)) 62px}
-.cabecera .in{max-width:960px;margin:0 auto}
+.cabecera .in{max-width:95%;margin:0 auto}
 .volver{color:#facc15;opacity:.9;font-size:14px;text-decoration:none}
 .volver:hover{opacity:1;text-decoration:underline}
 .cabecera h1{margin:14px 0 0;font:700 clamp(22px,4vw,32px)/1.2 system-ui,sans-serif;letter-spacing:-.01em;text-wrap:balance}
-main{max-width:960px;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:95%;margin:-36px auto 0;padding:0 max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px var(--sombra);padding:24px 26px;margin:0 0 20px;min-width:0;overflow-wrap:anywhere}
 .panel h1{display:none}
 .panel h2{margin:26px 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:6px}
@@ -37,7 +37,7 @@ tr:last-child td{border-bottom:0}
 blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);background:var(--acento-suave);border-radius:10px}
 blockquote p{margin:4px 0}
 hr{border:0;border-top:1px solid var(--line);margin:22px 0}
-footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer{max-width:95%;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 @media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
 
 main{max-width:1080px}
@@ -71,7 +71,7 @@ PRs de la sesión de seguridad y pruebas</h1>
 <main>
   <article class="panel">
 <p>Listado completo de los 258 pull requests del repositorio (fusionados, cerrados y abiertos), del más reciente al más antiguo. Los servicios salen de los archivos que cambió cada PR.</p>
-<p class="resumen-total">Mostrando páginas de 20 · <span id="rango"></span></p>
+<p class="resumen-total">Páginas de 20 · <span id="rango"></span></p>
 <div class="tabla-wrap"><table id="prs">
 <thead><tr><th>PR</th><th>Título</th><th>Rama</th><th>Servicios</th><th>Estado</th><th>Commit de fusión</th><th>Fecha</th></tr></thead>
 <tbody>
