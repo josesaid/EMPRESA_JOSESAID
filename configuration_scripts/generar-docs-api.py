@@ -900,7 +900,9 @@ def resultados_de(svc_dir, tid):
         por_prio = {}
         for _, v in viol:
             por_prio[v.get("priority", "?")] = por_prio.get(v.get("priority", "?"), 0) + 1
-        filas = [("Archivos revisados", len(archivos)), ("Incidencias", len(viol))]
+        # pmd.xml solo lista archivos con incidencias: los revisados son las fuentes de src/main/java
+        revisados = glob.glob(os.path.join(svc_dir, "src", "main", "java", "**", "*.java"), recursive=True)
+        filas = [("Archivos revisados", len(revisados)), ("Incidencias", len(viol))]
         for p in sorted(por_prio):
             filas.append((f"Prioridad {p}", por_prio[p]))
         detalle = [(n, v.get("beginline", "?"), v.get("priority", "?"), v.get("rule", ""),
@@ -999,6 +1001,8 @@ def seccion_resultados(svc_dir, tid):
         cuerpo = "".join("<tr>" + "".join(f"<td{clase(i)}>{celda(i, c)}</td>" for i, c in enumerate(fila)) + "</tr>" for fila in detalle)
         lista = ("<h2 style='margin-top:16px'>Detalle</h2><div style='overflow-x:auto'><table><tr>"
                  + "".join(f"<th{clase(i)}>{e(h)}</th>" for i, h in enumerate(cab)) + "</tr>" + cuerpo + "</table></div>")
+    elif tid in ("pmd", "checkstyle", "spotbugs"):
+        lista = "<p class='aviso'>Sin incidencias en el código revisado.</p>"
     else:
         lista = "<p class='aviso'>Sin elementos que mostrar.</p>"
     return f"<section class='panel'><h2>Resultados · {e(fecha)}</h2>{tabla}{lista}</section>"
