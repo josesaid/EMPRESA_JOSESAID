@@ -10,3 +10,7 @@ target/
 infra/tls/out/
 __pycache__/
 Claude outputs/
+
+# Libro de despliegue (no versionar)
+Libro.html
+libro-despliegue-empresa-josesaid.html
