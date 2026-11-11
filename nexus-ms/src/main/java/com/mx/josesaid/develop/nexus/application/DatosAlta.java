@@ -13,6 +13,7 @@ public record DatosAlta(String correo, String nombreCompleto, List<String> roles
 
     private static final ObjectMapper JSON = new ObjectMapper();
 
+    /** Lee los datos de un alta de usuario desde el JSON guardado en la acción. Si el JSON no es válido, lanza una excepción. */
     public static DatosAlta de(String payload) {
         try {
             return JSON.readValue(payload, DatosAlta.class);

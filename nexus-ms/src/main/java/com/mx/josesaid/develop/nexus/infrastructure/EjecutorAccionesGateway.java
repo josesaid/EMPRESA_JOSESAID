@@ -31,10 +31,12 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
 
     private final RestClient gateway;
 
+    /** Recibe el cliente del gateway, que es quien ejecuta las acciones confirmadas. */
     public EjecutorAccionesGateway(RestClient gateway) {
         this.gateway = gateway;
     }
 
+    /** Ejecuta la acción confirmada llamando al servicio que corresponde a su tipo. Un tipo sin implementación lanza excepción. */
     @Override
     public String ejecutar(String tipo, String payload) {
         return switch (tipo) {
@@ -133,6 +135,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
         };
     }
 
+    /** Cambia el estatus de un cliente (ACTIVO, SUSPENDIDO o BAJA). */
     private String cambiarEstatusCliente(String payload) {
         JsonNode datos = leer(payload);
         return gateway.patch()
@@ -143,6 +146,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
                 .body(String.class);
     }
 
+    /** Actualiza los datos de un cliente. */
     private String actualizarCliente(String payload) {
         JsonNode datos = leer(payload);
         return gateway.patch()
@@ -192,6 +196,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
                 .body(String.class);
     }
 
+    /** Elimina un documento. */
     private String eliminarDocumento(String payload) {
         JsonNode datos = leer(payload);
         return gateway.post()
@@ -202,6 +207,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
                 .body(String.class);
     }
 
+    /** Ejecuta una acción sobre una cotización (enviar, aceptar o convertir), según el parámetro accion. */
     private String accionCotizacion(String payload, String accion) {
         String cotizacionId = leer(payload).get("cotizacionId").asText();
         return gateway.post()
@@ -210,6 +216,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
                 .body(String.class);
     }
 
+    /** Envía un POST con el payload al endpoint indicado y devuelve la respuesta. */
     private String enviar(String ruta, String payload) {
         return gateway.post()
                 .uri(ruta)
@@ -219,6 +226,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
                 .body(String.class);
     }
 
+    /** Convierte el payload JSON en un árbol. Si el JSON no es válido, lanza excepción. */
     private static JsonNode leer(String payload) {
         try {
             return JSON.readTree(payload);
@@ -227,6 +235,7 @@ public final class EjecutorAccionesGateway implements EjecutorAcciones {
         }
     }
 
+    /** Lee un campo de texto del payload. */
     private static String id(String payload, String campo) {
         return leer(payload).get(campo).asText();
     }

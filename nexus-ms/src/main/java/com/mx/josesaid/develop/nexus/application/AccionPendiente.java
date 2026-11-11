@@ -12,6 +12,7 @@ public record AccionPendiente(UUID id, String usuario, String tipo, String paylo
     public static final String EXPIRADA = "EXPIRADA";
     public static final String CANCELADA = "CANCELADA";
 
+    /** Devuelve una copia de la acción con otro estatus. Los registros son inmutables; cambiar el estatus siempre crea una nueva instancia. */
     public AccionPendiente conEstatus(String nuevoEstatus) {
         return new AccionPendiente(id, usuario, tipo, payload, resumen, nuevoEstatus, creadaUtc, expiraUtc);
     }

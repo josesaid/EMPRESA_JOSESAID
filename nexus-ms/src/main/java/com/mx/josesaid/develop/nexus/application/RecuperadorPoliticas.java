@@ -21,12 +21,14 @@ public final class RecuperadorPoliticas {
     private final AlmacenFragmentos almacen;
     private final Clock reloj;
 
+    /** Recibe el generador de embeddings, el almacén de fragmentos y el reloj. */
     public RecuperadorPoliticas(Embedder embedder, AlmacenFragmentos almacen, Clock reloj) {
         this.embedder = embedder;
         this.almacen = almacen;
         this.reloj = reloj;
     }
 
+    /** Busca las políticas más parecidas a la pregunta. Solo devuelve fragmentos de políticas que los roles del usuario pueden ver. Los roles se normalizan a mayúsculas. */
     public List<ResultadoPolitica> buscar(String pregunta, Set<String> roles, int limite) {
         Set<String> normalizados = roles.stream()
                 .filter(Objects::nonNull)

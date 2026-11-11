@@ -40,9 +40,11 @@ public final class ClaudeSugeridorPolizas implements SugeridorPolizas {
             """;
 
     private final ChatClient cliente;
+    /** Lector JSON que ignora propiedades nuevas, por si el modelo agrega campos. */
     private final ObjectMapper json = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+    /** Crea el cliente del modelo con las instrucciones de sistema y registra el consumo de tokens. */
     public ClaudeSugeridorPolizas(ChatModel modelo, RegistroTokens registro) {
         this.cliente = ChatClient.builder(modelo)
                 .defaultSystem(INSTRUCCIONES)
@@ -50,6 +52,7 @@ public final class ClaudeSugeridorPolizas implements SugeridorPolizas {
                 .build();
     }
 
+    /** Pide al modelo la póliza sugerida y convierte su respuesta JSON en una sugerencia. Cualquier respuesta que no cumpla el formato se rechaza. */
     @Override
     public PolizaSugerida sugerir(String usuario, String descripcion, List<CuentaCatalogo> catalogo,
                                   List<PolizaEjemplo> ejemplos) {
@@ -67,6 +70,7 @@ public final class ClaudeSugeridorPolizas implements SugeridorPolizas {
         return new PolizaSugerida(r.tipo(), lineas, r.confianza(), r.motivo());
     }
 
+    /** Arma el texto de contexto para el modelo: la descripción, el catálogo de cuentas y ejemplos recientes. Las cuentas van con su código, no con su identificador. */
     static String contexto(String descripcion, List<CuentaCatalogo> catalogo, List<PolizaEjemplo> ejemplos) {
         Map<java.util.UUID, String> codigoPorId = catalogo.stream()
                 .collect(Collectors.toMap(CuentaCatalogo::id, CuentaCatalogo::codigo, (a, b) -> a));
@@ -85,6 +89,7 @@ public final class ClaudeSugeridorPolizas implements SugeridorPolizas {
         return sb.toString();
     }
 
+    /** Lee la respuesta JSON del modelo. Si está vacía o no es JSON válido, lanza SugerenciaPolizaInvalidaException. */
     private RespuestaModelo parsear(String respuesta) {
         if (respuesta == null) {
             throw new SugerenciaPolizaInvalidaException("El modelo no devolvió respuesta");
@@ -101,9 +106,11 @@ public final class ClaudeSugeridorPolizas implements SugeridorPolizas {
         }
     }
 
+    /** Respuesta del modelo: tipo de póliza, líneas, nivel de confianza y motivo. */
     record RespuestaModelo(String tipo, List<LineaModelo> lineas, double confianza, String motivo) {
     }
 
+    /** Línea propuesta por el modelo: código de cuenta, cargo y abono. */
     record LineaModelo(String codigo, BigDecimal cargo, BigDecimal abono) {
     }
 }

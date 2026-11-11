@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class BloqueoRutasInternasFilter implements WebFilter {
 
+    /** Responde 404 a cualquier ruta interna (/actuator o /discovery-ms) para no revelar que existe. Se ejecuta primero, antes del resto de filtros. */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String ruta = exchange.getRequest().getPath().value();

@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 
+/** Crea el almacén de límites. Usa Redis si GATEWAY_LIMITE_ALMACEN=redis (compartido entre réplicas); en otro caso, memoria local por instancia. */
 @Configuration
 public class LimitadorIntentosConfig {
 
+    /** Crea el límite de intentos de autenticación. Usa Redis o memoria según GATEWAY_LIMITE_ALMACEN y el máximo por minuto de GATEWAY_LIMITE_AUTH_POR_MINUTO. */
     @Bean
     LimitadorIntentos limitadorIntentos(
             @Value("${GATEWAY_LIMITE_ALMACEN:memoria}") String almacen,

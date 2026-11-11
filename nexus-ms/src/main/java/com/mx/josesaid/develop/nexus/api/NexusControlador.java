@@ -35,6 +35,7 @@ import com.mx.josesaid.develop.nexus.application.PresupuestoTokens;
 import com.mx.josesaid.develop.nexus.application.RegistroConsulta;
 import com.mx.josesaid.develop.nexus.comun.filtro.FiltroDatosSensibles;
 
+/** Endpoints del asistente Nexus: consultas, confirmación de acciones y administración de presupuesto. Todos requieren un JWT válido. */
 @RestController
 @RequestMapping("/nexus")
 @Validated
@@ -46,6 +47,7 @@ public class NexusControlador {
     private final PresupuestoTokens presupuesto;
     private final ConfirmacionAcciones confirmacion;
 
+    /** Recibe el asistente, la auditoría, el registro de acciones, el control de presupuesto de tokens y la confirmación de acciones. */
     public NexusControlador(AsistenteIA asistente, AuditoriaConsultas auditoria, AccionesPendientes acciones,
                             PresupuestoTokens presupuesto, ConfirmacionAcciones confirmacion) {
         this.asistente = asistente;
@@ -110,24 +112,29 @@ public class NexusControlador {
         return ResponseEntity.noContent().build();
     }
 
+    /** Código de confirmación de 8 dígitos que el usuario escribe para ejecutar una acción pendiente. */
     public record ConfirmacionSolicitud(@NotBlank @Pattern(regexp = "\\d{8}") String codigo) {
     }
 
+    /** Responde 422 cuando el código de confirmación no coincide o ya no sirve. */
     @ExceptionHandler(CodigoConfirmacionInvalidoException.class)
     ResponseEntity<String> codigoInvalido(CodigoConfirmacionInvalidoException e) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
     }
 
+    /** Responde 409 cuando la acción ya fue confirmada, cancelada o expiró. */
     @ExceptionHandler(AccionNoPendienteException.class)
     ResponseEntity<String> noPendiente(AccionNoPendienteException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
+    /** Responde 404 cuando la acción no existe o es de otro usuario. */
     @ExceptionHandler(AccionNoEncontradaException.class)
     ResponseEntity<String> noEncontrada(AccionNoEncontradaException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    /** Responde una consulta en lenguaje natural. Antes de llamar al modelo verifica el presupuesto de tokens, y después registra la consulta en auditoría. Sus herramientas solo preparan acciones; nunca las ejecutan. */
     @PostMapping("/consultas")
     @PreAuthorize("isAuthenticated()")
     public ConsultaResponse consultar(@RequestBody @Valid ConsultaRequest solicitud,

@@ -21,10 +21,12 @@ public final class HerramientasPoliticas {
 
     private final RecuperadorPoliticas recuperador;
 
+    /** Recibe el recuperador de políticas. */
     public HerramientasPoliticas(RecuperadorPoliticas recuperador) {
         this.recuperador = recuperador;
     }
 
+    /** Herramienta del asistente: busca en las políticas de la empresa la respuesta a una pregunta. */
     @Tool(name = "consultar_politicas",
           description = "Busca en las políticas internas de la empresa que tu rol puede consultar y devuelve los fragmentos relevantes con su fuente. "
                   + "Úsala para preguntas sobre reglas, límites o procesos internos. "

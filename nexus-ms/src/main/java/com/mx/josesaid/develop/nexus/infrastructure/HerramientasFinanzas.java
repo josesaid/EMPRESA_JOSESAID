@@ -34,15 +34,18 @@ public final class HerramientasFinanzas {
     private final RestClient gateway;
     private final AccionesPendientes acciones;
 
+    /** Versión sin registro de acciones: solo permite consultar. */
     public HerramientasFinanzas(RestClient gateway) {
         this(gateway, null);
     }
 
+    /** Recibe el cliente del gateway y el registro de acciones. */
     public HerramientasFinanzas(RestClient gateway, AccionesPendientes acciones) {
         this.gateway = gateway;
         this.acciones = acciones;
     }
 
+    /** Herramienta del asistente: devuelve un comprobante. */
     @Tool(name = "consultar_comprobante",
           description = "Devuelve un comprobante por su identificador UUID: folio, subtotal, IVA, total, estatus, "
                   + "estatus de cobro, monto pagado, saldo y lista de pagos.")
@@ -57,6 +60,7 @@ public final class HerramientasFinanzas {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: busca un comprobante por su folio exacto. */
     @Tool(name = "buscar_comprobante_por_folio",
           description = "Devuelve un comprobante por su folio exacto (por ejemplo, el folio asignado al emitir).")
     public String buscarComprobantePorFolio(
@@ -71,6 +75,7 @@ public final class HerramientasFinanzas {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: lista los pagos a proveedores. */
     @Tool(name = "listar_pagos_proveedor",
           description = "Lista los últimos 15 pagos registrados a proveedores, del más reciente al más antiguo: "
                   + "monto, fecha de pago, referencia y la cuenta por pagar a la que pertenecen.")
@@ -83,6 +88,7 @@ public final class HerramientasFinanzas {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: lista los comprobantes pendientes de cobro. */
     @Tool(name = "listar_comprobantes_pendientes_cobro",
           description = "Lista los últimos 15 comprobantes emitidos con saldo por cobrar, del más reciente al más "
                   + "antiguo: folio, moneda, total, saldo y estatus de cobro (PENDIENTE o PARCIAL).")
@@ -95,6 +101,7 @@ public final class HerramientasFinanzas {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: devuelve una cuenta por pagar. */
     @Tool(name = "consultar_cuenta_por_pagar",
           description = "Devuelve una cuenta por pagar a proveedor por su identificador UUID: proveedor, monto, saldo y pagos.")
     public String consultarCuentaPorPagar(
@@ -115,6 +122,7 @@ public final class HerramientasFinanzas {
         }
     }
 
+    /** Herramienta del asistente: prepara el registro de un pago sobre un comprobante. Requiere confirmación. */
     @Tool(name = "registrar_pago_comprobante",
           description = "Prepara el registro de un cobro sobre un comprobante. NO lo registra: devuelve un resumen y un "
                   + "accion_id. El usuario debe confirmarlo en la aplicación. Solo FINANZAS puede usarla.")
@@ -183,6 +191,7 @@ public final class HerramientasFinanzas {
         }
     }
 
+    /** Convierte un texto en UUID. Lanza excepción si no tiene formato válido. */
     private static UUID identificador(String valor) {
         try {
             return valor == null ? null : UUID.fromString(valor.trim());
@@ -191,10 +200,12 @@ public final class HerramientasFinanzas {
         }
     }
 
+    /** Devuelve el nombre del usuario autenticado. */
     private static String usuarioActual() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    /** Convierte un mapa en JSON para guardarlo en la acción pendiente. */
     private static String aJson(Map<String, Object> datos) {
         try {
             return JSON.writeValueAsString(datos);

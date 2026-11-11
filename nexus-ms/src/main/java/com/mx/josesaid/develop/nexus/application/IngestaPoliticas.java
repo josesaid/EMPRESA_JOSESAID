@@ -12,6 +12,7 @@ public final class IngestaPoliticas {
     private final Embedder embedder;
     private final AlmacenFragmentos almacen;
 
+    /** Recibe el generador de embeddings y el almacén de fragmentos. */
     public IngestaPoliticas(Embedder embedder, AlmacenFragmentos almacen) {
         this.embedder = embedder;
         this.almacen = almacen;
@@ -44,6 +45,7 @@ public final class IngestaPoliticas {
         return total;
     }
 
+    /** Parte el texto de una política en trozos. Cada trozo es una línea no vacía, para que la búsqueda encuentre fragmentos pequeños y precisos. */
     static List<String> trocear(Politica politica) {
         List<String> trozos = new ArrayList<>();
         for (String linea : politica.cuerpo().split("\\R")) {

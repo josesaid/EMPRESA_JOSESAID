@@ -9,6 +9,7 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 @EnableEurekaServer
 public class DiscoveryApplication {
 
+    /** Arranca el servidor Eureka. Cada servicio de EMPRESA_JOSESAID se registra aquí para que gateway-ms y los demás lo encuentren por nombre. */
     public static void main(String[] args) {
         SpringApplication.run(DiscoveryApplication.class, args);
     }

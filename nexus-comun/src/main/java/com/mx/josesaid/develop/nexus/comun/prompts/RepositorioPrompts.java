@@ -21,10 +21,12 @@ public final class RepositorioPrompts {
     private final ClassLoader cargador;
     private final Map<String, Integer> vigentes;
 
+    /** Carga los prompts desde los resources del classpath de esta aplicación. */
     public RepositorioPrompts() {
         this(RepositorioPrompts.class.getClassLoader());
     }
 
+    /** Igual que el anterior, pero lee los recursos con el cargador de clases indicado. Útil en pruebas. */
     public RepositorioPrompts(ClassLoader cargador) {
         this.cargador = cargador;
         this.vigentes = cargarIndice();
@@ -47,10 +49,12 @@ public final class RepositorioPrompts {
                         "No existe la versión " + version + " del prompt " + nombre));
     }
 
+    /** Mapa de nombre de prompt a versión vigente, de solo lectura. */
     public Map<String, Integer> versionesVigentes() {
         return Map.copyOf(vigentes);
     }
 
+    /** Lee el texto de una versión. Devuelve vacío si el archivo no existe, en lugar de lanzar error. */
     private Optional<String> leer(String nombre, int version) {
         String ruta = RAIZ + nombre + "/v" + version + ".txt";
         try (InputStream entrada = cargador.getResourceAsStream(ruta)) {
@@ -63,6 +67,7 @@ public final class RepositorioPrompts {
         }
     }
 
+    /** Lee indice.properties y devuelve la versión vigente de cada prompt. Si el índice no existe, el repositorio arranca sin prompts. */
     private Map<String, Integer> cargarIndice() {
         Properties props = new Properties();
         try (InputStream entrada = cargador.getResourceAsStream(INDICE)) {

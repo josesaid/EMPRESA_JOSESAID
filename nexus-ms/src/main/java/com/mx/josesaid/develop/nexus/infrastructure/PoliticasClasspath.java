@@ -15,9 +15,11 @@ public final class PoliticasClasspath {
 
     private static final String PATRON = "classpath*:politicas/*.md";
 
+    /** Clase de utilidad: no se instancia. */
     private PoliticasClasspath() {
     }
 
+    /** Lee todas las políticas desde los resources del classpath, en la carpeta nexus/politicas. */
     public static List<Politica> cargar() throws IOException {
         Resource[] recursos = new PathMatchingResourcePatternResolver().getResources(PATRON);
         List<Politica> politicas = new ArrayList<>();

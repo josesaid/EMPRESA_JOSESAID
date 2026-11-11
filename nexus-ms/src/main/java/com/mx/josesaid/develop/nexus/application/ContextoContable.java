@@ -13,12 +13,15 @@ public interface ContextoContable {
     /** Pólizas aplicadas recientes, usadas como ejemplos few-shot. */
     List<PolizaEjemplo> ejemplosRecientes();
 
+    /** Cuenta del catálogo contable, usada como ejemplo para el modelo. */
     record CuentaCatalogo(UUID id, String codigo, String nombre) {
     }
 
+    /** Póliza de ejemplo para que el modelo copie el formato correcto. */
     record PolizaEjemplo(String tipo, LocalDate fecha, List<LineaEjemplo> lineas) {
     }
 
+    /** Línea de una póliza de ejemplo: cuenta, cargo y abono. */
     record LineaEjemplo(UUID cuentaId, BigDecimal cargo, BigDecimal abono) {
     }
 }

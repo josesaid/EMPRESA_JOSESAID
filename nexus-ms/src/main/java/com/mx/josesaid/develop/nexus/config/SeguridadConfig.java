@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SeguridadConfig {
 
+    /** Cadena de seguridad: exige JWT válido en todas las rutas, salvo las públicas de salud. Los roles del token se leen de la claim roles con el prefijo ROLE_. */
     @Bean
     SecurityFilterChain cadenaSeguridad(HttpSecurity http) throws Exception {
         JwtGrantedAuthoritiesConverter autoridades = new JwtGrantedAuthoritiesConverter();

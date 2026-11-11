@@ -18,10 +18,12 @@ public final class HerramientasContabilidad {
 
     private final RestClient gateway;
 
+    /** Recibe el cliente del gateway. Contabilidad es solo lectura: no prepara acciones. */
     public HerramientasContabilidad(RestClient gateway) {
         this.gateway = gateway;
     }
 
+    /** Herramienta del asistente: devuelve una póliza contable. */
     @Tool(name = "consultar_poliza",
           description = "Devuelve una póliza contable por su identificador UUID: periodo, tipo, fecha, estatus y movimientos (cargos y abonos por cuenta).")
     public String consultarPoliza(
@@ -35,6 +37,7 @@ public final class HerramientasContabilidad {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: devuelve los estados financieros de un periodo. */
     @Tool(name = "consultar_estados_financieros",
           description = "Devuelve la balanza de comprobación de un periodo contable: saldos por cuenta. El periodo es AAAA-MM.")
     public String consultarEstadosFinancieros(
@@ -49,6 +52,7 @@ public final class HerramientasContabilidad {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: lista las pólizas de un periodo. */
     @Tool(name = "listar_polizas",
           description = "Lista las pólizas contables de un periodo: identificador, tipo, fecha, estatus y movimientos.")
     public String listarPolizas(
@@ -63,6 +67,7 @@ public final class HerramientasContabilidad {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: devuelve el catálogo de cuentas. */
     @Tool(name = "consultar_catalogo_cuentas",
           description = "Lista las cuentas contables activas del catálogo: código, nombre, tipo y naturaleza.")
     public String consultarCatalogoCuentas() {

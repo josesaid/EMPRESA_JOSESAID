@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
  */
 public final class FiltroDatosSensibles {
 
+    /** Tipos de dato sensible. Cada uno tiene la marca que reemplaza al dato en el texto. */
     public enum Tipo {
         RFC("[RFC]"),
         CORREO("[CORREO]"),
@@ -26,16 +27,19 @@ public final class FiltroDatosSensibles {
             this.marca = marca;
         }
 
+        /** Marca con la que se reemplaza el dato, por ejemplo [CORREO]. */
         public String marca() {
             return marca;
         }
     }
 
+    /** Texto ya redactado y cuántas veces se redactó cada tipo. */
     public record Resultado(String texto, Map<Tipo, Integer> conteo) {
         public Resultado {
             conteo = Map.copyOf(conteo);
         }
 
+        /** Número total de datos redactados, sumando todos los tipos. */
         public int total() {
             return conteo.values().stream().mapToInt(Integer::intValue).sum();
         }
@@ -46,14 +50,17 @@ public final class FiltroDatosSensibles {
     private static final Pattern CORREO = Pattern.compile("[\\w.+-]+@[\\w-]+(?:\\.[\\w-]+)+");
     // 10 dígitos, opcionalmente con prefijo 52 o +52 y separadores; no se pega a montos con coma o punto.
     // No puede estar pegado a letras, dígitos ni guiones: así no corta UUID ni identificadores como 6a78ec71-9742-4122-...
+    /** Teléfono de 10 dígitos con o sin separadores. Se describe en el comentario de arriba. */
     private static final Pattern TELEFONO = Pattern.compile(
             "(?<![\\p{L}\\p{N}_-])(?<!\\d[.,])(?:\\+?52[\\s-]?)?(?:\\d{2}[\\s-]?\\d{4}[\\s-]?\\d{4}|\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{4})(?![\\p{L}\\p{N}_-])(?![.,]\\d)");
     private static final Pattern CLABE = Pattern.compile("(?<!\\d)(?<!\\d[.,])\\d{18}(?!\\d)(?![.,]\\d)");
     private static final Pattern TARJETA = Pattern.compile("(?<!\\d)(?<!\\d[.,])(?:\\d{4}[\\s-]?){3}\\d{4}(?!\\d)(?![.,]\\d)");
 
+    /** Clase de utilidad: no se instancia. */
     private FiltroDatosSensibles() {
     }
 
+    /** Redacta todos los tipos de dato sensible. El orden importa: primero CLABE y tarjeta, que son números largos, para que el teléfono no los corte. */
     public static Resultado redactar(String texto) {
         return redactar(texto, EnumSet.noneOf(Tipo.class));
     }
@@ -74,6 +81,7 @@ public final class FiltroDatosSensibles {
         return new Resultado(salida, conteo);
     }
 
+    /** Reemplaza todas las coincidencias de un patrón por su marca y suma las cantidades en el conteo. */
     private static String reemplazar(String texto, Pattern patron, Tipo tipo, Map<Tipo, Integer> conteo) {
         Matcher m = patron.matcher(texto);
         int n = 0;

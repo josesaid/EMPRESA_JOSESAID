@@ -40,6 +40,7 @@ public class McpConfig {
 
     private static final Logger log = LoggerFactory.getLogger(McpConfig.class);
 
+    /** Crea el generador de códigos de confirmación. Si no hay secreto configurado usa uno aleatorio por instancia: los códigos dejan de valer al reiniciar y no se pueden confirmar entre réplicas. */
     @Bean
     CodigoConfirmacion codigoConfirmacion(@Value("${nexus.mcp.confirmacion-secreto:}") String secreto) {
         if (secreto == null || secreto.isBlank()) {
@@ -52,16 +53,19 @@ public class McpConfig {
         return new CodigoConfirmacion(secreto.getBytes(StandardCharsets.UTF_8));
     }
 
+    /** Crea el servicio de confirmación de acciones con código. */
     @Bean
     ConfirmacionAcciones confirmacionAcciones(AccionesPendientes acciones, CodigoConfirmacion codigos) {
         return new ConfirmacionAcciones(acciones, codigos);
     }
 
+    /** Crea las herramientas MCP de pólizas. Usa un proveedor perezoso porque el servicio de pólizas puede no existir en todos los perfiles. */
     @Bean
     HerramientasPolizas herramientasPolizas(ObjectProvider<ServicioPolizas> servicio, CodigoConfirmacion codigos) {
         return new HerramientasPolizas(servicio::getObject, codigos);
     }
 
+    /** Crea las herramientas MCP para confirmar y cancelar acciones. */
     @Bean
     HerramientasAccionesMcp herramientasAccionesMcp(ConfirmacionAcciones confirmaciones, AccionesPendientes acciones) {
         return new HerramientasAccionesMcp(confirmaciones, acciones);
@@ -77,6 +81,7 @@ public class McpConfig {
                 .toList();
     }
 
+    /** Crea el transporte HTTP del servidor MCP en el endpoint configurado (por defecto /mcp). */
     @Bean
     WebMvcStreamableServerTransportProvider webMvcStreamableServerTransportProvider(
             @Value("${spring.ai.mcp.server.streamable-http.mcp-endpoint:/mcp}") String endpoint) {

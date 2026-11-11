@@ -52,6 +52,7 @@ public final class HerramientasVentas {
     private final RestClient gateway;
     private final AccionesPendientes acciones;
 
+    /** Versión sin registro de acciones: solo permite consultar. */
     public HerramientasVentas(RestClient gateway) {
         this(gateway, null);
     }
@@ -62,6 +63,7 @@ public final class HerramientasVentas {
         this.acciones = acciones;
     }
 
+    /** Herramienta del asistente: lista pedidos, opcionalmente filtrados por estatus. */
     @Tool(name = "consultar_pedidos",
           description = "Lista pedidos de venta. Filtros opcionales: estatus (BORRADOR, CONFIRMADO, ENTREGADO, CANCELADO), "
                   + "canal (WEB, TIENDA, TELEFONO) y clienteId (UUID). Vacío para no filtrar.")
@@ -90,6 +92,7 @@ public final class HerramientasVentas {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: resumen de ventas de un periodo. */
     @Tool(name = "resumen_ventas",
           description = "Devuelve el resumen de ventas de un mes: número de pedidos y ventas por moneda. El mes es AAAA-MM.")
     public String resumenVentas(
@@ -104,6 +107,7 @@ public final class HerramientasVentas {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: devuelve una cotización. */
     @Tool(name = "obtener_cotizacion",
           description = "Devuelve una cotización por su identificador UUID: cliente, líneas, totales, vigencia y estatus.")
     public String obtenerCotizacion(
@@ -116,6 +120,7 @@ public final class HerramientasVentas {
         return lectura(RUTA_BASE + "/cotizaciones/" + id, "No encontré esa cotización.");
     }
 
+    /** Herramienta del asistente: devuelve un pedido. */
     @Tool(name = "obtener_pedido",
           description = "Devuelve un pedido por su identificador UUID: cliente, canal, líneas, totales y estatus.")
     public String obtenerPedido(
@@ -128,6 +133,7 @@ public final class HerramientasVentas {
         return lectura(RUTA_BASE + "/pedidos/" + id, "No encontré ese pedido.");
     }
 
+    /** Herramienta del asistente: devuelve las tasas de IVA vigentes. */
     @Tool(name = "consultar_tasas_iva",
           description = "Devuelve las tasas de IVA que acepta el sistema para los pedidos y cotizaciones.")
     public String consultarTasasIva() {
@@ -135,6 +141,7 @@ public final class HerramientasVentas {
         return lectura(RUTA_BASE + "/catalogos/tasas-iva", "No encontré el catálogo de tasas de IVA.");
     }
 
+    /** Herramienta del asistente: devuelve las monedas disponibles. */
     @Tool(name = "consultar_monedas",
           description = "Devuelve las monedas que acepta el sistema para pedidos y cotizaciones.")
     public String consultarMonedas() {
@@ -155,6 +162,7 @@ public final class HerramientasVentas {
         }
     }
 
+    /** Herramienta del asistente: prepara un pedido borrador. No lo crea hasta que el usuario lo confirme. */
     @Tool(name = "preparar_pedido_borrador",
           description = "Prepara un pedido de venta en borrador. NO lo guarda: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación antes de que se guarde. Úsala solo cuando el usuario pida crear un pedido.")
@@ -196,6 +204,7 @@ public final class HerramientasVentas {
                 .texto();
     }
 
+    /** Herramienta del asistente: prepara un prospecto borrador para su confirmación. */
     @Tool(name = "crear_prospecto_borrador",
           description = "Prepara un prospecto nuevo. NO lo guarda: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. Úsala solo cuando el usuario pida registrar un prospecto.")
@@ -227,6 +236,7 @@ public final class HerramientasVentas {
                 "Prospecto preparado, no guardado.");
     }
 
+    /** Herramienta del asistente: prepara la confirmación de un pedido. */
     @Tool(name = "confirmar_pedido",
           description = "Prepara la confirmación de un pedido en borrador. NO lo confirma: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación.")
@@ -255,6 +265,7 @@ public final class HerramientasVentas {
                 "Confirmación preparada, no ejecutada.");
     }
 
+    /** Herramienta del asistente: prepara la cancelación de un pedido. */
     @Tool(name = "cancelar_pedido",
           description = "Prepara la cancelación de un pedido en borrador o confirmado. NO lo cancela: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. Los motivos válidos son CANCELACION_CLIENTE o ERROR_CAPTURA.")
@@ -289,6 +300,7 @@ public final class HerramientasVentas {
                 "Cancelación preparada, no ejecutada.");
     }
 
+    /** Herramienta del asistente: prepara el registro de la entrega de un pedido. Esa entrega descuenta inventario al ejecutarse. */
     @Tool(name = "registrar_entrega_pedido",
           description = "Prepara la entrega de un pedido confirmado. NO la registra: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. Solo ALMACEN y DIRECCION pueden usarla.")
@@ -308,6 +320,7 @@ public final class HerramientasVentas {
                 "Registrar entrega del pedido " + id, "Entrega preparada, no registrada.");
     }
 
+    /** Guarda la acción pendiente del usuario y devuelve un texto con su identificador. */
     private String guardarAccion(String tipo, String payload, String resumen, String encabezado) {
         AccionPendiente accion = acciones.preparar(usuarioActual(), tipo, payload, resumen);
         return FiltroDatosSensibles.redactar(encabezado + " " + resumen
@@ -315,6 +328,7 @@ public final class HerramientasVentas {
                 .texto();
     }
 
+    /** Herramienta del asistente: prepara el envío de una cotización al cliente. */
     @Tool(name = "enviar_cotizacion",
           description = "Prepara el envío de una cotización en borrador. NO la envía: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación.")
@@ -325,6 +339,7 @@ public final class HerramientasVentas {
                 "Enviar cotización", "Envío preparado, no ejecutado.", "solo una cotización en borrador puede enviarse");
     }
 
+    /** Herramienta del asistente: prepara la aceptación de una cotización por el cliente. */
     @Tool(name = "aceptar_cotizacion",
           description = "Prepara la aceptación de una cotización enviada. NO la acepta: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación.")
@@ -335,6 +350,7 @@ public final class HerramientasVentas {
                 "Aceptar cotización", "Aceptación preparada, no ejecutada.", "solo una cotización enviada puede aceptarse");
     }
 
+    /** Herramienta del asistente: prepara la conversión de una cotización aceptada en pedido. */
     @Tool(name = "convertir_cotizacion_en_pedido",
           description = "Prepara la conversión de una cotización aceptada en pedido. NO crea el pedido: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación.")
@@ -346,6 +362,7 @@ public final class HerramientasVentas {
                 "solo una cotización aceptada puede convertirse en pedido");
     }
 
+    /** Herramienta del asistente: prepara una cotización borrador. */
     @Tool(name = "crear_cotizacion_borrador",
           description = "Prepara una cotización nueva para un cliente con una línea. NO la guarda: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarla en la aplicación. Úsala solo cuando el usuario pida crear una cotización.")
@@ -401,6 +418,7 @@ public final class HerramientasVentas {
                 "Cotización preparada, no guardada.");
     }
 
+    /** Herramienta del asistente: prepara el reemplazo de las líneas de un pedido. */
     @Tool(name = "reemplazar_lineas_pedido",
           description = "Prepara el reemplazo de las líneas de un pedido en borrador por una sola línea. NO lo cambia: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación.")
@@ -438,6 +456,7 @@ public final class HerramientasVentas {
                 "Cambio de líneas preparado, no ejecutado.");
     }
 
+    /** Herramienta del asistente: prepara la devolución de un pedido. */
     @Tool(name = "registrar_devolucion_pedido",
           description = "Prepara la devolución total de un pedido entregado. NO la registra: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación.")
@@ -466,6 +485,7 @@ public final class HerramientasVentas {
                 "Devolución preparada, no registrada.");
     }
 
+    /** Herramienta del asistente: prepara el cambio de estatus de un prospecto. */
     @Tool(name = "cambiar_estatus_prospecto",
           description = "Prepara el cambio de estatus de un prospecto a CONTACTADO, CALIFICADO o PERDIDO. NO lo cambia: devuelve un resumen y un accion_id. "
                   + "Para convertir un prospecto en cliente usa convertir_prospecto_en_cliente. El usuario debe confirmarlo en la aplicación.")
@@ -500,6 +520,7 @@ public final class HerramientasVentas {
                 "Cambio de estatus preparado, no ejecutado.");
     }
 
+    /** Herramienta del asistente: prepara la conversión de un prospecto en cliente. */
     @Tool(name = "convertir_prospecto_en_cliente",
           description = "Prepara la conversión de un prospecto calificado en cliente con su contacto principal. "
                   + "NO lo convierte: devuelve un resumen y un accion_id. El usuario debe confirmarlo en la aplicación.")
@@ -549,6 +570,7 @@ public final class HerramientasVentas {
                 "Conversión preparada, no ejecutada.");
     }
 
+    /** Herramienta del asistente: prepara el registro de una interacción con un cliente. */
     @Tool(name = "registrar_interaccion_cliente",
           description = "Prepara el registro de una interacción con un cliente: llamada, correo o visita. NO la guarda: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarla en la aplicación.")
@@ -591,6 +613,7 @@ public final class HerramientasVentas {
                 "Interacción preparada, no guardada.");
     }
 
+    /** Construye una línea de pedido con producto, descripción, cantidad y precio unitario. */
     private static Map<String, Object> linea(String productoId, String descripcion, int cantidad, String precioUnitario) {
         Map<String, Object> linea = new LinkedHashMap<>();
         linea.put("productoId", productoId.trim());
@@ -600,14 +623,17 @@ public final class HerramientasVentas {
         return linea;
     }
 
+    /** Quita espacios y pasa el texto a mayúsculas. Un valor nulo se convierte en cadena vacía. */
     private static String normalizar(String valor) {
         return valor == null ? "" : valor.trim().toUpperCase();
     }
 
+    /** Indica si el texto es nulo o está en blanco. */
     private static boolean vacio(String valor) {
         return valor == null || valor.isBlank();
     }
 
+    /** Prepara una acción sobre una cotización solo si está en el estatus requerido. Si no, responde con un mensaje y no crea la acción. */
     private String prepararAccionCotizacion(String cotizacionId, String estatusRequerido, String tipo,
                                             String etiqueta, String encabezado, String motivoRechazo) {
         if (acciones == null) {
@@ -651,6 +677,7 @@ public final class HerramientasVentas {
         return recurso(RUTA_CLIENTES_BASE + "/clientes/" + id);
     }
 
+    /** Consulta un recurso del gateway y devuelve su contenido como árbol JSON. */
     private JsonNode recurso(String ruta) {
         try {
             String cuerpo = gateway.get()
@@ -665,6 +692,7 @@ public final class HerramientasVentas {
         }
     }
 
+    /** Convierte un texto en UUID. Lanza excepción si no tiene formato válido. */
     private static UUID identificador(String valor) {
         try {
             return valor == null ? null : UUID.fromString(valor.trim());
@@ -673,6 +701,7 @@ public final class HerramientasVentas {
         }
     }
 
+    /** Devuelve el nombre del usuario autenticado. */
     private static String usuarioActual() {
         var autenticacion = SecurityContextHolder.getContext().getAuthentication();
         if (autenticacion instanceof JwtAuthenticationToken jwt) {
@@ -681,6 +710,7 @@ public final class HerramientasVentas {
         throw new IllegalStateException("No hay un usuario autenticado para preparar la acción");
     }
 
+    /** Convierte un mapa en JSON para guardarlo en la acción pendiente. */
     private static String aJson(Map<String, Object> cuerpo) {
         try {
             return JSON.writeValueAsString(cuerpo);

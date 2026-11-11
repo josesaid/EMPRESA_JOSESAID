@@ -26,6 +26,7 @@ public record Politica(String id, String titulo, LocalDate vigencia, List<String
         }
     }
 
+    /** Crea una política a partir de su archivo. El archivo debe empezar con el bloque de metadatos (front matter); si no, lanza una excepción. */
     public static Politica desde(String id, String contenido) {
         String[] lineas = contenido.split("\\R");
         if (lineas.length == 0 || !SEPARADOR.equals(lineas[0].trim())) {
@@ -59,6 +60,7 @@ public record Politica(String id, String titulo, LocalDate vigencia, List<String
         return new Politica(id, titulo, vigencia, roles, cuerpo);
     }
 
+    /** Devuelve un metadato obligatorio. Si falta o está vacío, lanza una excepción que indica la política y el campo. */
     private static String requerido(String id, Map<String, String> meta, String clave) {
         String valor = meta.get(clave);
         if (valor == null || valor.isBlank()) {

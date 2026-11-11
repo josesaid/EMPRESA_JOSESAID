@@ -11,11 +11,13 @@ public final class ConfirmacionAcciones {
     private final AccionesPendientes acciones;
     private final CodigoConfirmacion codigos;
 
+    /** Recibe el registro de acciones y el verificador de códigos. */
     public ConfirmacionAcciones(AccionesPendientes acciones, CodigoConfirmacion codigos) {
         this.acciones = acciones;
         this.codigos = codigos;
     }
 
+    /** Confirma una acción pidiendo el código de confirmación. Primero verifica que esté pendiente y que el código coincida. Solo si todo es válido la ejecuta. */
     public String confirmarConCodigo(UUID id, String usuario, String codigo) {
         AccionPendiente accion = acciones.consultar(id, usuario);
         if (!AccionPendiente.PENDIENTE.equals(accion.estatus())) {

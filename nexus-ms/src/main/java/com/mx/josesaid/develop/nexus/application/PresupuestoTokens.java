@@ -41,6 +41,7 @@ public final class PresupuestoTokens {
     private final AtomicLong consumoServicioMes = new AtomicLong();
     private final AtomicReference<YearMonth> avisoEmitido = new AtomicReference<>();
 
+    /** Recibe los límites de tokens mensual, diario y del servicio, el reloj y el registro de métricas. */
     public PresupuestoTokens(ConsumoTokens consumo, long tokensMensuales, long tokensDiarios,
                              long tokensServicioMensuales, Clock reloj, MeterRegistry registro) {
         this.consumo = consumo;
@@ -74,6 +75,7 @@ public final class PresupuestoTokens {
         revisarServicio(hoy, inicioMes, usuario);
     }
 
+    /** Revisa el consumo mensual del servicio completo. Si lo supera, bloquea todas las consultas. */
     private void revisarServicio(LocalDate hoy, Instant inicioMes, String usuario) {
         long usado = consumo.delServicio(inicioMes);
         consumoServicioMes.set(usado);
@@ -86,6 +88,7 @@ public final class PresupuestoTokens {
         }
     }
 
+    /** Emite un aviso una sola vez al mes cuando el consumo llega al umbral de alerta. */
     private void avisarUmbral(YearMonth mes, long usado) {
         YearMonth previo = avisoEmitido.get();
         if (mes.equals(previo) || !avisoEmitido.compareAndSet(previo, mes)) {
@@ -96,6 +99,7 @@ public final class PresupuestoTokens {
                 (int) (UMBRAL_AVISO * 100), usado, tokensServicioMensuales, mes);
     }
 
+    /** Registra el bloqueo en métricas y log, y lanza PresupuestoAgotadoException. */
     private void bloquear(String ambito, String usuario, String mensaje) {
         registro.counter("nexus.presupuesto.bloqueos", "ambito", ambito).increment();
         log.warn("Consulta bloqueada por presupuesto de tokens: ámbito={} usuario={}", ambito, etiqueta(usuario));

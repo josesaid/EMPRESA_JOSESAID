@@ -32,15 +32,18 @@ public final class HerramientasDocumentos {
     private final RestClient gateway;
     private final AccionesPendientes acciones;
 
+    /** Versión sin registro de acciones: solo permite consultar. */
     public HerramientasDocumentos(RestClient gateway) {
         this(gateway, null);
     }
 
+    /** Recibe el cliente del gateway y el registro de acciones. */
     public HerramientasDocumentos(RestClient gateway, AccionesPendientes acciones) {
         this.gateway = gateway;
         this.acciones = acciones;
     }
 
+    /** Herramienta del asistente: devuelve los tipos de documento disponibles. */
     @Tool(name = "consultar_tipos_documento",
           description = "Devuelve el catálogo de tipos de documento legal que acepta el sistema.")
     public String consultarTiposDocumento() {
@@ -52,6 +55,7 @@ public final class HerramientasDocumentos {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: prepara la eliminación de un documento. Requiere confirmación del usuario. */
     @Tool(name = "solicitar_eliminacion_documento",
           description = "Prepara la eliminación de un documento legal. NO lo elimina: devuelve un resumen y un accion_id. "
                   + "El usuario debe confirmarlo en la aplicación. No se puede eliminar un documento dentro de su "
@@ -91,6 +95,7 @@ public final class HerramientasDocumentos {
                 .texto();
     }
 
+    /** Indica si el documento existe. Si la consulta falla, lanza excepción. */
     private boolean existe(UUID id) {
         try {
             gateway.get().uri(RUTA_BASE + "/documentos/" + id).retrieve().body(String.class);
@@ -100,10 +105,12 @@ public final class HerramientasDocumentos {
         }
     }
 
+    /** Devuelve el nombre del usuario autenticado. */
     private static String usuarioActual() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    /** Convierte un mapa en JSON para guardarlo en la acción pendiente. */
     private static String aJson(Map<String, Object> datos) {
         try {
             return JSON.writeValueAsString(datos);
@@ -112,6 +119,7 @@ public final class HerramientasDocumentos {
         }
     }
 
+    /** Herramienta del asistente: devuelve un documento. */
     @Tool(name = "consultar_documento",
           description = "Devuelve los datos de un documento legal por su identificador UUID: título, tipo, área, fecha de vencimiento y versiones (número, hash y fecha). No devuelve el contenido del archivo.")
     public String consultarDocumento(
@@ -125,6 +133,7 @@ public final class HerramientasDocumentos {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: lista los documentos que vencen en los próximos días. */
     @Tool(name = "consultar_documentos_por_vencer",
           description = "Lista los documentos que vencen en los próximos N días.")
     public String consultarDocumentosPorVencer(
@@ -139,6 +148,7 @@ public final class HerramientasDocumentos {
         return FiltroDatosSensibles.redactar(cuerpo).texto();
     }
 
+    /** Herramienta del asistente: busca documentos por texto en el título. */
     @Tool(name = "buscar_documentos",
           description = "Busca documentos legales no eliminados cuyo título contiene el texto (sin distinguir "
                   + "mayúsculas). Devuelve hasta 15 documentos por título, con tipo, área, vencimiento y versiones. "

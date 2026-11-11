@@ -30,11 +30,13 @@ public final class AlmacenFragmentosJdbc implements AlmacenFragmentos {
     private final JdbcTemplate jdbc;
     private final TransactionTemplate transacciones;
 
+    /** Recibe JdbcTemplate y el gestor de transacciones para las operaciones de fragmentos con vectores. */
     public AlmacenFragmentosJdbc(JdbcTemplate jdbc, TransactionTemplate transacciones) {
         this.jdbc = jdbc;
         this.transacciones = transacciones;
     }
 
+    /** Reemplaza todos los fragmentos de una política por los nuevos, dentro de una transacción. Así una política nunca queda a medio indexar. */
     @Override
     public void reemplazar(String politicaId, List<FragmentoIndexado> fragmentos) {
         transacciones.executeWithoutResult(estado -> {
@@ -55,6 +57,7 @@ public final class AlmacenFragmentosJdbc implements AlmacenFragmentos {
         });
     }
 
+    /** Busca los fragmentos más parecidos a la consulta. Solo devuelve políticas vigentes a la fecha y visibles para los roles indicados. */
     @Override
     public List<ResultadoPolitica> buscar(Set<String> roles, float[] consulta, LocalDate hoy, int limite) {
         String vector = aLiteral(consulta);

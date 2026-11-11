@@ -31,6 +31,7 @@ public final class ServicioPolizas {
     private final Clock reloj;
     private final ObjectMapper json = new ObjectMapper();
 
+    /** Recibe el contexto contable, el sugeridor de pólizas, el registro de acciones, el presupuesto de tokens y el reloj con zona de México. */
     public ServicioPolizas(ContextoContable contexto, SugeridorPolizas sugeridor, AccionesPendientes acciones,
                            PresupuestoTokens presupuesto, Clock reloj) {
         this.contexto = contexto;
@@ -40,6 +41,7 @@ public final class ServicioPolizas {
         this.reloj = reloj;
     }
 
+    /** Prepara una sugerencia de póliza. Verifica el presupuesto, pide la sugerencia al modelo, la valida contra el catálogo y la guarda como acción pendiente. No registra nada en contabilidad. */
     public AccionPendiente preparar(String usuario, String descripcion) {
         presupuesto.exigirDisponible(usuario);
         List<CuentaCatalogo> catalogo = contexto.catalogo();
@@ -55,6 +57,7 @@ public final class ServicioPolizas {
                 resumen(sugerencia, fecha));
     }
 
+    /** Valida que la sugerencia sea coherente: tipo permitido, cuentas que existen en el catálogo, al menos dos líneas y cargos iguales a abonos. Si algo falla, lanza SugerenciaPolizaInvalidaException. */
     static void validar(PolizaSugerida s, Map<String, CuentaCatalogo> porCodigo) {
         if (s == null || !TIPOS.contains(s.tipo())) {
             throw new SugerenciaPolizaInvalidaException("Tipo de póliza no válido");
@@ -85,6 +88,7 @@ public final class ServicioPolizas {
         }
     }
 
+    /** Arma el payload JSON de la póliza que ejecutará la acción al confirmarse. Los cargos y abonos se envían como texto para no perder decimales. */
     private String payload(PolizaSugerida s, Map<String, CuentaCatalogo> porCodigo, LocalDate fecha) {
         List<Map<String, Object>> movimientos = new ArrayList<>();
         for (LineaSugerida l : s.lineas()) {
@@ -105,6 +109,7 @@ public final class ServicioPolizas {
         }
     }
 
+    /** Genera el resumen legible de la póliza que el contador ve antes de confirmar: tipo, fecha, total y cuentas afectadas. */
     private static String resumen(PolizaSugerida s, LocalDate fecha) {
         BigDecimal total = s.lineas().stream().map(LineaSugerida::cargo).reduce(BigDecimal.ZERO, BigDecimal::add);
         String cuentas = s.lineas().stream()

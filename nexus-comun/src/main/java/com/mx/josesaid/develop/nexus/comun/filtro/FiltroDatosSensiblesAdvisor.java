@@ -29,16 +29,19 @@ public final class FiltroDatosSensiblesAdvisor implements CallAdvisor {
     /** Se ejecuta primero, antes de cualquier otro advisor que pueda leer el prompt. */
     private static final int ORDEN = Integer.MIN_VALUE + 100;
 
+    /** Nombre con el que el advisor aparece en la cadena de advisors. */
     @Override
     public String getName() {
         return NOMBRE;
     }
 
+    /** Orden de ejecución: el valor más bajo, para ejecutarse antes que cualquier otro advisor. */
     @Override
     public int getOrder() {
         return ORDEN;
     }
 
+    /** Redacta el contenido de los mensajes de usuario antes de llamar al modelo. El RFC siempre se redacta; el correo solo si la petición marca correoPermitido. */
     @Override
     public ChatClientResponse adviseCall(ChatClientRequest request, CallAdvisorChain chain) {
         Prompt original = request.prompt();

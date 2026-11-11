@@ -29,6 +29,7 @@ public final class VoyageEmbedder implements Embedder {
     private final String modelo;
     private final Duration espera;
 
+    /** Recibe el cliente HTTP, la clave de API y el modelo de embeddings de Voyage. */
     public VoyageEmbedder(RestClient cliente, String apiKey, String modelo) {
         this(cliente, apiKey, modelo, ESPERA_429);
     }
@@ -40,6 +41,7 @@ public final class VoyageEmbedder implements Embedder {
         this.espera = espera;
     }
 
+    /** Calcula el embedding de cada texto. Los embeddings de consultas y documentos usan el tipo de entrada indicado. */
     @Override
     public List<float[]> embeber(List<String> textos, TipoEntrada tipo) {
         if (apiKey == null || apiKey.isBlank()) {
@@ -65,6 +67,7 @@ public final class VoyageEmbedder implements Embedder {
         return new ArrayList<>(Arrays.asList(vectores));
     }
 
+    /** Envía la petición a Voyage. Si el servicio responde con límite de solicitudes, espera y reintenta. */
     private RespuestaEmbeddings pedir(Map<String, Object> cuerpo) {
         for (int intento = 1; ; intento++) {
             try {
@@ -84,6 +87,7 @@ public final class VoyageEmbedder implements Embedder {
         }
     }
 
+    /** Espera un intervalo corto entre peticiones para no superar el límite de Voyage. */
     private void esperar() {
         try {
             Thread.sleep(espera.toMillis());
@@ -93,6 +97,7 @@ public final class VoyageEmbedder implements Embedder {
         }
     }
 
+    /** Convierte la lista de números de la respuesta en un arreglo de float. */
     private static float[] aFloat(List<Float> valores) {
         float[] resultado = new float[valores.size()];
         for (int i = 0; i < resultado.length; i++) {
@@ -101,9 +106,11 @@ public final class VoyageEmbedder implements Embedder {
         return resultado;
     }
 
+    /** Respuesta de Voyage: lista de embeddings. */
     record RespuestaEmbeddings(List<Dato> data) {
     }
 
+    /** Embedding de un texto, identificado por su posición en la petición. */
     record Dato(int index, List<Float> embedding) {
     }
 }
