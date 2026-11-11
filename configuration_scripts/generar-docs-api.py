@@ -723,10 +723,6 @@ TECNOLOGIAS = [
      "que": "Genera documentación técnica a partir de los comentarios /** */.",
      "comando": "mvn -f {svc}/pom.xml javadoc:javadoc",
      "reportes": "target/site/apidocs/index.html"},
-    {"id": "cobertura", "nombre": "Cobertura", "plugin": "cobertura-maven-plugin",
-     "que": "Alternativa a JaCoCo para medir la cobertura de pruebas.",
-     "comando": "mvn -f {svc}/pom.xml cobertura:cobertura",
-     "reportes": "target/site/cobertura/index.html"},
 ]
 
 CSS_TEC = (
@@ -795,7 +791,6 @@ ENCABEZADOS_DETALLE = {
     "pmd": ["Archivo", "Línea", "Prioridad", "Regla", "Mensaje"],
     "spotbugs": ["Tipo", "Clase", "Categoría", "Prioridad", "Descripción"],
     "jacoco": ["Paquete", "Clase", "Líneas", "Ramas", "Métodos"],
-    "cobertura": ["Paquete", "Clase", "Líneas", "Ramas"],
     "javadoc": ["Paquete", "Clases documentadas"],
 }
 
@@ -963,24 +958,6 @@ def resultados_de(svc_dir, tid):
         detalle.sort()
         fecha = fecha_de([os.path.join(base, "index.html")]) if os.path.exists(os.path.join(base, "index.html")) else fecha_de([base])
         return [("Clases documentadas", clases), ("Paquetes documentados", len(paquetes))], detalle, fecha
-
-    if tid == "cobertura":
-        ruta = os.path.join(tgt, "site", "cobertura", "coverage.xml")
-        if not os.path.exists(ruta):
-            ruta = os.path.join(tgt, "coverage.xml")
-        r = raiz(ruta) if os.path.exists(ruta) else None
-        if r is None:
-            return None
-        lr = float(r.get("line-rate", 0)) * 100
-        br = float(r.get("branch-rate", 0)) * 100
-        detalle = []
-        for paquete in r.iter("package"):
-            for clase in paquete.iter("class"):
-                detalle.append((paquete.get("name", ""), clase.get("name", ""),
-                                f"{float(clase.get('line-rate', 0)) * 100:.1f} %",
-                                f"{float(clase.get('branch-rate', 0)) * 100:.1f} %"))
-        detalle.sort()
-        return [("Líneas", f"{lr:.1f} %"), ("Ramas", f"{br:.1f} %")], detalle, fecha_de([ruta])
 
     return None
 

@@ -301,11 +301,6 @@ if [ "$SIN_MAVEN" != "1" ] && command -v mvn >/dev/null 2>&1; then
     else
       echo "      ${AMARILLO}⚠️  Algún reporte falló en $d (log: $LOGS/reportes-$d.log)${RST}"
     fi
-    if (cd "$d" && mvn -B -q cobertura:cobertura) > "$LOGS/cobertura-$d.log" 2>&1; then
-      echo "      ${VERDE}✅ cobertura: $d${RST}"
-    else
-      echo "      ${AMARILLO}⚠️  Cobertura falló en $d (log: $LOGS/cobertura-$d.log)${RST}"
-    fi
   done
 fi
 if command -v python3 >/dev/null 2>&1; then
