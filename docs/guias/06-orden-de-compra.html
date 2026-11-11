@@ -40,7 +40,7 @@ blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);b
 blockquote p{margin:4px 0}
 hr{border:0;border-top:1px solid var(--linea);margin:22px 0}
 footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}th{white-space:nowrap}table{font-size:13px}}
 </style>
 </head>
 <body>
@@ -61,7 +61,7 @@ el gateway como entrada. Todas las rutas van bajo
 <code>/compras-proveedores-ms/v1</code>.</p>
 <p><img src="img/06-ciclo-compra.svg" alt="Ciclo de compra" /></p>
 <h2 id="roles">Roles</h2>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Paso</th>
@@ -99,7 +99,7 @@ el gateway como entrada. Todas las rutas van bajo
 <code>DIRECCION</code></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>Para todo, usa un access token vigente en el encabezado
 <code>Authorization: Bearer ACCESS_TOKEN</code>.</p>
 <h2 id="antes-de-empezar">Antes de empezar</h2>
@@ -167,7 +167,7 @@ aprobada y, al final de la recepción, las cantidades recibidas.</li>
 total de la orden.</li>
 </ul>
 <h2 id="problemas-comunes">Problemas comunes</h2>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Síntoma</th>
@@ -199,7 +199,7 @@ logs de <code>facturacion-pagos-ms</code> y de Kafka</td>
 <code>inventario-operaciones-ms</code></td>
 </tr>
 </tbody>
-</table>
+</table></div>
   </article>
 </main>
 <footer>

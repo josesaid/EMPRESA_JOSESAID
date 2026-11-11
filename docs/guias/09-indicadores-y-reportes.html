@@ -39,7 +39,7 @@ blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);b
 blockquote p{margin:4px 0}
 hr{border:0;border-top:1px solid var(--linea);margin:22px 0}
 footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}th{white-space:nowrap}table{font-size:13px}}
 </style>
 </head>
 <body>
@@ -58,7 +58,7 @@ consultarlos y generar el reporte mensual, que se puede exportar.</p>
 <p><img src="img/09-indicadores-reportes.svg"
 alt="Flujo de indicadores y reportes" /></p>
 <h2 id="roles">Roles</h2>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Acción</th>
@@ -88,7 +88,7 @@ alt="Flujo de indicadores y reportes" /></p>
 <td><code>DIRECCION</code></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h2 id="antes-de-empezar">Antes de empezar</h2>
 <ul>
 <li>Usuario con el rol correspondiente. Para <code>JEFE_AREA</code>, el
@@ -143,7 +143,7 @@ recién registrado.</li>
 consolidados.</li>
 </ul>
 <h2 id="problemas-comunes">Problemas comunes</h2>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Síntoma</th>
@@ -174,7 +174,7 @@ consolidados.</li>
 siguiente</td>
 </tr>
 </tbody>
-</table>
+</table></div>
   </article>
 </main>
 <footer>

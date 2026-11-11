@@ -39,7 +39,7 @@ blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);b
 blockquote p{margin:4px 0}
 hr{border:0;border-top:1px solid var(--linea);margin:22px 0}
 footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}th{white-space:nowrap}table{font-size:13px}}
 </style>
 </head>
 <body>
@@ -93,7 +93,7 @@ guárdala <strong>solo</strong> en el gestor de secretos:</p>
 <p>No la pegues en el chat, en un commit ni en un archivo del
 repositorio.</p></li>
 <li><p><strong>Actualiza el <code>.env</code> de la raíz:</strong></p>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Variable</th>
@@ -118,7 +118,7 @@ repositorio.</p></li>
 <td>El <code>kid</code> anterior</td>
 </tr>
 </tbody>
-</table></li>
+</table></div></li>
 <li><p><strong>Primer reinicio.</strong> Desde aquí el JWKS publica las
 dos claves y los tokens nuevos se firman con la clave nueva:</p>
 <pre class="bash"><code>docker compose up -d usuarios-accesos-ms</code></pre></li>
@@ -159,7 +159,7 @@ validarse.</li>
 sesión.</li>
 </ol>
 <h2 id="problemas-comunes">Problemas comunes</h2>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Síntoma</th>
@@ -186,7 +186,7 @@ vez</td>
 desconocido; si persiste, reinícialo</td>
 </tr>
 </tbody>
-</table>
+</table></div>
   </article>
 </main>
 <footer>

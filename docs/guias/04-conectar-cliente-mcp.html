@@ -39,7 +39,7 @@ blockquote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--acento);b
 blockquote p{margin:4px 0}
 hr{border:0;border-top:1px solid var(--linea);margin:22px 0}
 footer{max-width:960px;margin:0 auto;padding:8px max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}}
+@media (max-width:560px){.panel{padding:18px 16px}td,th{padding:8px 6px}th{white-space:nowrap}table{font-size:13px}}
 </style>
 </head>
 <body>
@@ -128,7 +128,7 @@ que pedir una nueva propuesta.</p>
 confirmas.</li>
 </ul>
 <h2 id="problemas-comunes">Problemas comunes</h2>
-<table>
+<div class="tabla-wrap"><table>
 <thead>
 <tr class="header">
 <th>Síntoma</th>
@@ -158,7 +158,7 @@ confirmas.</li>
 <td>Corrige la URL del paso 2</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>Notas del piloto y decisiones de diseño: <a
 href="../../nexus-ms/docs/conexion-mcp.md">conexion-mcp.md</a>.</p>
   </article>
